@@ -59,7 +59,7 @@ public class NodeFactoryUtils {
 
         VariableScope variableScope = new VariableScope();
         return nodeFactory
-                .independent(true)
+                .independent(false)
                 .metaData("BPMN.InputTypes", types)
                 .metaData("BPMN.OutputTypes", types)
                 .mapDataInputAssociation(inputDa)

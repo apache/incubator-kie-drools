@@ -156,4 +156,53 @@ class SubFlowsIT {
 
     }
 
+    @Test
+    void testCancelSubFlows() {
+        String mainId = given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/MainFlow")
+                .then()
+                .statusCode(201)
+                .extract().path("id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/SubFlow1")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1));
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/MainFlow")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1));
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .delete("/MainFlow/" + mainId)
+                .then()
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/SubFlow1")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(0));
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .get("/MainFlow")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(0));
+    }
 }
