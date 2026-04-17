@@ -103,9 +103,13 @@ class BFEELDialectHandlerTest {
 
     @Test
     void testArithmeticOperations() {
-        // Power - returns false for invalid
-        assertThat(handler.executePow("2", 3, ctx)).isEqualTo(Boolean.FALSE);
+        // Power - B-FEEL implicit coercion: string "2" can be coerced to number 2
+        assertThat(handler.executePow("2", 3, ctx)).isEqualTo(new BigDecimal("8")); // "2" coerced to 2, then 2^3 = 8
         assertThat(handler.executePow(2, 3, ctx)).isEqualTo(new BigDecimal("8"));
+        assertThat(handler.executePow(2, "3", ctx)).isEqualTo(new BigDecimal("8")); // "3" coerced to 3
+        assertThat(handler.executePow(2, "invalid", ctx)).isEqualTo(BigDecimal.ZERO); // Invalid string returns 0
+        assertThat(handler.executePow(null, 3, ctx)).isEqualTo(BigDecimal.ZERO); // Null returns 0
+        assertThat(handler.executePow(2, null, ctx)).isEqualTo(BigDecimal.ZERO); // Null returns 0
         
         // Subtraction - returns empty string for invalid
         assertThat(handler.executeSub("10", 5, ctx)).isEqualTo("");
@@ -186,6 +190,46 @@ class BFEELDialectHandlerTest {
         
         // Comparison with non-comparable types
         assertThat(handler.executeGt(new Object(), new Object(), ctx)).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    void testBFEELExponentiationRules() {
+        // Basic exponentiation
+        assertThat(handler.executePow(2, 3, ctx)).isEqualTo(new BigDecimal("8"));
+        assertThat(handler.executePow(4, 2, ctx)).isEqualTo(new BigDecimal("16"));
+        
+        // Negative base - Note: -4 ** 2 is parsed as (-4) ** 2 = 16 by the parser
+        // This test verifies the handler correctly computes (-4) ** 2
+        assertThat(handler.executePow(-4, 2, ctx)).isEqualTo(new BigDecimal("16"));
+        assertThat(handler.executePow(-2, 3, ctx)).isEqualTo(new BigDecimal("-8"));
+        
+        // Implicit coercion: Duration to number (seconds)
+        assertThat(handler.executePow(Duration.ofSeconds(2), 3, ctx)).isEqualTo(new BigDecimal("8"));
+        
+        // Error handling: Returns 0 instead of null
+        assertThat(handler.executePow(null, 2, ctx)).isEqualTo(BigDecimal.ZERO);
+        assertThat(handler.executePow(2, null, ctx)).isEqualTo(BigDecimal.ZERO);
+        assertThat(handler.executePow("invalid", 2, ctx)).isEqualTo(BigDecimal.ZERO);
+        assertThat(handler.executePow(2, "invalid", ctx)).isEqualTo(BigDecimal.ZERO);
+        
+        // Exponent range validation: [-999,999,999..999,999,999]
+        assertThat(handler.executePow(2, 999999999, ctx)).isInstanceOf(BigDecimal.class);
+        assertThat(handler.executePow(2, -999999999, ctx)).isInstanceOf(BigDecimal.class);
+        
+        // Out of range exponent returns 0
+        assertThat(handler.executePow(2, new BigDecimal("1000000000"), ctx)).isEqualTo(BigDecimal.ZERO);
+        assertThat(handler.executePow(2, new BigDecimal("-1000000000"), ctx)).isEqualTo(BigDecimal.ZERO);
+        
+        // Fractional exponents
+        BigDecimal sqrtResult = (BigDecimal) handler.executePow(4, 0.5, ctx);
+        assertThat(sqrtResult.compareTo(new BigDecimal("2"))).isEqualTo(0);
+        assertThat(handler.executePow(8, new BigDecimal("0.333333333333333"), ctx))
+                .isInstanceOf(BigDecimal.class);
+        
+        // Zero and one cases
+        assertThat(handler.executePow(0, 5, ctx)).isEqualTo(BigDecimal.ZERO);
+        assertThat(handler.executePow(5, 0, ctx)).isEqualTo(BigDecimal.ONE);
+        assertThat(handler.executePow(1, 1000, ctx)).isEqualTo(BigDecimal.ONE);
     }
 }
 

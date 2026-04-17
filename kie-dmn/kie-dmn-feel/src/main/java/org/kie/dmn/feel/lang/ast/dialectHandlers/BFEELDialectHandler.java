@@ -34,6 +34,8 @@ import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.infixexecutors.EqExecutor;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
+
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getString;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
@@ -346,19 +348,69 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
 
     /**
      * Builds the BFeel specific 'Power' operations.
-     * 
+     * <p>
+     * B-FEEL exponentiation rules:
+     * <ul>
+     *   <li>Implicit Coercion: Both operands are converted to numbers using B-FEEL number() function</li>
+     *   <li>Error Handling: Returns 0 instead of null for semantic errors or out-of-range scale</li>
+     *   <li>Precision: Result limited to 34 digits of precision</li>
+     *   <li>Range: Exponent must be in range [-999,999,999..999,999,999]</li>
+     *   <li>Precedence: -4 ** 2 is interpreted as (-4) ** 2 = 16 (handled by parser)</li>
+     * </ul>
+     *
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the BFeel specific 'Power' operations
      */
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getPowOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        //TODO Change pow behaviour for BFeel
+        
+        // B-FEEL: Implicit coercion to numbers, return 0 on error instead of null
         map.put(
-                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
-                (left, right) -> Boolean.FALSE);
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    // Implicit coercion: convert both operands to numbers using B-FEEL number() semantics
+                    BigDecimal leftNum = getBigDecimalOrNull(left);
+                    BigDecimal rightNum = getBigDecimalOrNull(right);
+                    
+                    // B-FEEL implicit coercion: Duration → seconds
+                    if (leftNum == null && left instanceof Duration) {
+                        leftNum = BigDecimal.valueOf(((Duration) left).getSeconds());
+                    }
+                    if (rightNum == null && right instanceof Duration) {
+                        rightNum = BigDecimal.valueOf(((Duration) right).getSeconds());
+                    }
+                    
+                    // B-FEEL implicit coercion: ChronoPeriod → total months
+                    if (leftNum == null && left instanceof ChronoPeriod) {
+                        leftNum = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
+                    }
+                    if (rightNum == null && right instanceof ChronoPeriod) {
+                        rightNum = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
+                    }
+                    
+                    // B-FEEL returns 0 instead of null for invalid operations
+                    if (leftNum == null || rightNum == null) {
+                        return BigDecimal.ZERO;
+                    }
+                    
+                    // Check exponent range: [-999,999,999..999,999,999]
+                    BigDecimal minExponent = new BigDecimal("-999999999");
+                    BigDecimal maxExponent = new BigDecimal("999999999");
+                    if (rightNum.compareTo(minExponent) < 0 || rightNum.compareTo(maxExponent) > 0) {
+                        return BigDecimal.ZERO; // Out of range, return 0
+                    }
+                    
+                    try {
+                        // Apply standard FEEL semantics with 34 digits precision (DECIMAL128)
+                        BigDecimal result = BigDecimalMath.pow(leftNum, rightNum, MathContext.DECIMAL128);
+                        return result;
+                    } catch (ArithmeticException e) {
+                        // B-FEEL returns 0 for arithmetic errors instead of null
+                        return BigDecimal.ZERO;
+                    }
+                });
 
-        map.putAll(getCommonPowOperations(ctx));
         return map;
     }
 
@@ -510,6 +562,17 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         // null ÷ number
         map.put(new CheckedPredicate((l, r) -> l == null && r instanceof Number, false),
                 (l, r) -> BigDecimal.ZERO);
+
+        // number ÷ number (including division by zero) → B-FEEL returns BigDecimal.ZERO for division by zero
+        map.put(new CheckedPredicate((l, r) -> l instanceof Number && r instanceof Number, false),
+                (l, r) -> {
+                    BigDecimal leftBD = getBigDecimalOrNull(l);
+                    BigDecimal rightBD = getBigDecimalOrNull(r);
+                    if (leftBD == null || rightBD == null || rightBD.compareTo(BigDecimal.ZERO) == 0) {
+                        return BigDecimal.ZERO; // B-FEEL returns 0 for division by zero
+                    }
+                    return leftBD.divide(rightBD, MathContext.DECIMAL128);
+                });
 
         // duration ÷ duration → number (B-FEEL: returns 0 instead of null when divisor is zero)
         map.put(new CheckedPredicate((l, r) -> l instanceof Duration && r instanceof Duration, false),
