@@ -53,6 +53,9 @@ import org.drools.util.DateUtils;
 import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.ParseExpressionErrorResult;
+import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.compiler.compiler.SelfReferencingConstraint;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.drools.model.codegen.execmodel.errors.VariableUsedInBindingError;
 import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
@@ -690,6 +693,19 @@ public class ConstraintParser {
 
         boolean equalityExpr = operator == EQUALS || operator == NOT_EQUALS;
 
+        try {
+            if (isBooleanOperator(operator) && isSelfComparison(left, right)) {
+                String fieldName = printNode(binaryExpr.getLeft());
+                TypeDeclarationContext typeDeclarationContext = context.getTypeDeclarationContext();
+                KnowledgeBuilderConfiguration config = typeDeclarationContext != null ? typeDeclarationContext.getBuilderConfiguration() : null;
+                context.addCompilationWarning(new SelfReferencingConstraint(
+                        context.getRuleDescr() != null ? context.getRuleDescr().getResource() : null,
+                        config, fieldName, printNode(binaryExpr)));
+            }
+        } catch (Exception e) {
+            LOG.debug("Unable to check for self-comparison: {}", e.getMessage());
+        }
+
         CoercedExpression.CoercedExpressionResult coerced;
         try {
             coerced = new CoercedExpression(left, right, equalityExpr).coerce();
@@ -797,6 +813,15 @@ public class ConstraintParser {
     private boolean isPredicateBooleanExpression(BinaryExpr expr) {
         BinaryExpr.Operator op = expr.getOperator();
         return op == AND || op == OR || op == EQUALS || op == NOT_EQUALS || op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
+    }
+
+    private static boolean isSelfComparison(TypedExpression left, TypedExpression right) {
+        if (left.getExpression() == null || right.getExpression() == null) {
+            return false;
+        }
+        String leftStr = printNode(left.getExpression());
+        String rightStr = printNode(right.getExpression());
+        return leftStr.equals(rightStr) && leftStr.contains(THIS_PLACEHOLDER + ".");
     }
 
     public static TypedExpression getCoercedRightExpression( PackageModel packageModel, CoercedExpression.CoercedExpressionResult coerced ) {

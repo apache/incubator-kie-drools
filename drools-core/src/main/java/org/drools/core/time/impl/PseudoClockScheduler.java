@@ -45,7 +45,9 @@ import org.slf4j.LoggerFactory;
  * that allows the user to explicitly control current time.
  */
 public class PseudoClockScheduler implements TimerService, SessionPseudoClock, Externalizable, InternalSchedulerService {
-    
+    static final String CANCELLED_JOB_PURGE_THRESHOLD_PROPERTY = "drools.pseudoclock.cancelledJobPurgeThreshold";
+    static final int DEFAULT_CANCELLED_JOB_PURGE_THRESHOLD = 1000;
+
     private final Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class );
 
     protected AtomicLong timer = new AtomicLong(0);
@@ -57,6 +59,7 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
     protected AtomicLong idCounter = new AtomicLong(0);
 
     private int cancelledJob = 0;
+    private final int cancelledJobPurgeThreshold = initCancelledJobPurgeThreshold();
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -117,7 +120,7 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
     public synchronized void removeJob(JobHandle jobHandle) {
         jobHandle.cancel();
         jobFactoryManager.removeTimerJobInstance(jobHandle);
-        if ( ++cancelledJob > 1000 ) {
+        if ( ++cancelledJob > cancelledJobPurgeThreshold ) {
             purgeCancelledJob();
         }
     }
@@ -200,5 +203,13 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
     @Override
     public Collection<TimerJobInstance> getTimerJobInstances(long id) {
         return jobFactoryManager.getTimerJobInstances();
+    }
+
+    private static int initCancelledJobPurgeThreshold() {
+        int threshold = Integer.getInteger(CANCELLED_JOB_PURGE_THRESHOLD_PROPERTY, DEFAULT_CANCELLED_JOB_PURGE_THRESHOLD);
+        if (threshold <= 0) {
+            throw new IllegalArgumentException("Property " + CANCELLED_JOB_PURGE_THRESHOLD_PROPERTY + " must be > 0");
+        }
+        return threshold;
     }
 }
