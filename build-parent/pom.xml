@@ -71,7 +71,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.14.12</version.io.micrometer>
-    <version.io.quarkus>3.27.2</version.io.quarkus>
+    <version.io.quarkus>3.27.3</version.io.quarkus>
     <version.io.netty>4.1.132.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
@@ -222,13 +222,13 @@
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
-    <version.io.vertx>4.5.24</version.io.vertx>
+    <version.io.vertx>4.5.25</version.io.vertx>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <!-- Version overrides to fix vulnerabilities. -->
-      <!-- Override vertx-core version from Quarkus 3.27.2 BOM (CVE fix) -->
+      <!-- Override vertx-core version from Quarkus 3.27.3 BOM (CVE fix) -->
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-core</artifactId>
