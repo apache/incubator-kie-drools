@@ -19,7 +19,6 @@
 package org.kie.kogito.codegen.core;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +45,7 @@ public class CustomDashboardGeneratedUtils {
     }
 
     private static final Function<Resource, String> grouperFunction = resource -> {
-        String fileName = resource.getSourcePath().substring(resource.getSourcePath().lastIndexOf(File.separator) + 1);
+        String fileName = resource.getSourcePath().substring(resource.getSourcePath().lastIndexOf('/') + 1);
         if (fileName.startsWith(OPERATIONAL_DASHBOARD_PREFIX)) {
             return OPERATIONAL_DASHBOARD_PREFIX;
         } else if (fileName.startsWith(DOMAIN_DASHBOARD_PREFIX)) {
@@ -92,7 +91,7 @@ public class CustomDashboardGeneratedUtils {
                                 StandardCharsets.UTF_8))
                                         .lines()
                                         .collect(Collectors.joining("\n"));
-                String dashboardName = resource.getSourcePath().substring(resource.getSourcePath().lastIndexOf(File.separator) + 1).substring(dashboardPrefix.length());
+                String dashboardName = resource.getSourcePath().substring(resource.getSourcePath().lastIndexOf('/') + 1).substring(dashboardPrefix.length());
                 target.addAll(generator.apply(dashboard, dashboardName));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -109,8 +108,8 @@ public class CustomDashboardGeneratedUtils {
 
     static boolean isValidResource(CollectedResource toVerify) {
         String sourcePath = toVerify.resource().getSourcePath();
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf(File.separator) + 1);
-        return sourcePath.contains("META-INF" + File.separator + "dashboards") &&
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+        return sourcePath.contains("META-INF/dashboards") &&
                 (fileName.startsWith(OPERATIONAL_DASHBOARD_PREFIX) || fileName.startsWith(DOMAIN_DASHBOARD_PREFIX)) &&
                 fileName.endsWith(".json");
     }

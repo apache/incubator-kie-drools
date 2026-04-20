@@ -900,7 +900,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         Files.write(dtdFile.toPath(), dtdContent.getBytes("UTF-8"));
 
-        byte[] data = Files.readAllBytes(Paths.get(this.getClass().getResource("/xxe-protection/BPMN2-XXE-Process.bpmn2").getPath()));
+        byte[] data = Files.readAllBytes(Paths.get(this.getClass().getResource("/xxe-protection/BPMN2-XXE-Process.bpmn2").toURI()));
         String processAsString = new String(data, "UTF-8");
         // replace place holders with actual paths
         File testFiles = new File("src/test/resources/xxe-protection");

@@ -67,7 +67,7 @@ class CustomDashboardGeneratedUtilsTest {
                 OPERATIONAL_DASHBOARD_PREFIX);
         assertThat(toPopulate).hasSameSizeAs(dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX));
         String sourcePath = dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX).get(0).getSourcePath();
-        String originalFileName = sourcePath.substring(sourcePath.lastIndexOf(File.separator) + 1);
+        String originalFileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
         validateGeneratedFile(toPopulate.iterator().next(),
                 OPERATIONAL_DASHBOARD_PREFIX,
                 originalFileName);
@@ -77,7 +77,7 @@ class CustomDashboardGeneratedUtilsTest {
                 DOMAIN_DASHBOARD_PREFIX);
         assertThat(toPopulate).hasSameSizeAs(dashboardJsonsMap.get(DOMAIN_DASHBOARD_PREFIX));
         sourcePath = dashboardJsonsMap.get(DOMAIN_DASHBOARD_PREFIX).get(0).getSourcePath();
-        originalFileName = sourcePath.substring(sourcePath.lastIndexOf(File.separator) + 1);
+        originalFileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
         validateGeneratedFile(toPopulate.iterator().next(),
                 DOMAIN_DASHBOARD_PREFIX,
                 originalFileName);
@@ -102,7 +102,7 @@ class CustomDashboardGeneratedUtilsTest {
         assertThat(toValidate.type().name()).isEqualTo("DASHBOARD");
         assertThat(toValidate.category().name()).isEqualTo("STATIC_HTTP_RESOURCE");
         String fileName =
-                toValidate.relativePath().substring(toValidate.relativePath().lastIndexOf(File.separator) + 1);
+                toValidate.relativePath().substring(toValidate.relativePath().lastIndexOf('/') + 1);
         assertThat(fileName).startsWith(dashboardType)
                 .isEqualTo(originalFileName);
     }

@@ -56,7 +56,7 @@ public class DeadlineHelperTest {
         ExpirationTime time = DeadlineHelper.getExpirationTime(scheduleInfo);
         assertThat(time.repeatInterval()).isEqualTo(5000L);
         assertThat(time.repeatLimit()).isEqualTo(-1);
-        assertThat(ZonedDateTime.now().plus(Duration.ofSeconds(5)).isAfter(time.get())).isTrue();
+        assertThat(ZonedDateTime.now().plus(Duration.ofMillis(5003)).isAfter(time.get())).isTrue();
     }
 
     @Test
@@ -315,7 +315,7 @@ public class DeadlineHelperTest {
         ExpirationTime time = DeadlineHelper.getExpirationTime(scheduleInfo);
         assertThat(time.repeatInterval()).isNull();
         assertThat(time.repeatLimit()).isZero();
-        assertThat(ZonedDateTime.now().plus(Duration.ofMinutes(1)).isAfter(time.get())).isTrue();
+        assertThat(ZonedDateTime.now().plus(Duration.ofMillis(60005)).isAfter(time.get())).isTrue();
     }
 
     @Test

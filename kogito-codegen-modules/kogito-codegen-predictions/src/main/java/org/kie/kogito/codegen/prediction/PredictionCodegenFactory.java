@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.codegen.prediction;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -101,9 +100,9 @@ public class PredictionCodegenFactory implements GeneratorFactory {
         resources.forEach(resource -> {
             KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
                     new KieMemoryCompiler.MemoryCompilerClassLoader(classLoader);
-            String fileName = resource.getSourcePath();
-            if (fileName.contains(File.separator)) {
-                fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
+            String fileName = resource.getSourcePath(); // this is in fact PortablePath instance
+            if (fileName.contains("/")) {
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
             }
             EfestoResource<InputStream> efestoResource;
             PMMLCompilationContext compilationContext = getPMMLCompilationContext(fileName, memoryCompilerClassLoader);

@@ -19,6 +19,7 @@
 package org.kie.kogito.codegen.json;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -229,7 +230,7 @@ public class JsonSchemaGeneratorTest {
         Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(WhitespacesTask.class)).build().generate();
         assertThat(files).hasSize(1);
         GeneratedFile file = files.iterator().next();
-        assertThat(file.relativePath()).isEqualTo(JsonSchemaUtil.getJsonDir().resolve("InputOutput_name_with_spaces.json").toString());
+        assertThat(Path.of(file.relativePath())).isEqualTo(JsonSchemaUtil.getJsonDir().resolve("InputOutput_name_with_spaces.json"));
     }
 
     @Test
@@ -270,7 +271,7 @@ public class JsonSchemaGeneratorTest {
     }
 
     private void assertEmptyProcessSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion) throws IOException {
-        assertThat(file.relativePath()).isEqualTo(JsonSchemaUtil.getJsonDir().resolve(fileName).toString());
+        assertThat(Path.of(file.relativePath())).isEqualTo(JsonSchemaUtil.getJsonDir().resolve(fileName));
 
         ObjectReader reader = new ObjectMapper().reader();
         JsonNode node = reader.readTree(file.contents());
@@ -281,7 +282,7 @@ public class JsonSchemaGeneratorTest {
     }
 
     private void assertProcessSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion) throws IOException {
-        assertThat(file.relativePath()).isEqualTo(JsonSchemaUtil.getJsonDir().resolve(fileName).toString());
+        assertThat(Path.of(file.relativePath())).isEqualTo(JsonSchemaUtil.getJsonDir().resolve(fileName));
         ObjectReader reader = new ObjectMapper().reader();
         JsonNode node = reader.readTree(file.contents());
         assertThat(node.get("$schema").asText()).isEqualTo(schemaVersion.getIdentifier());
@@ -303,7 +304,7 @@ public class JsonSchemaGeneratorTest {
     }
 
     private void assertTaskSchema(String fileName, GeneratedFile file, SchemaVersion schemaVersion, List<String> inputs, List<String> outputs) throws IOException {
-        assertThat(file.relativePath()).isEqualTo(JsonSchemaUtil.getJsonDir().resolve(fileName).toString());
+        assertThat(Path.of(file.relativePath())).isEqualTo(JsonSchemaUtil.getJsonDir().resolve(fileName));
         ObjectReader reader = new ObjectMapper().reader();
         JsonNode node = reader.readTree(file.contents());
         assertThat(node.get("$schema").asText()).isEqualTo(schemaVersion.getIdentifier());

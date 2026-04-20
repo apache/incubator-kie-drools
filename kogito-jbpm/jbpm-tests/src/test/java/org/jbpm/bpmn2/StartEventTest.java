@@ -152,7 +152,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testTimerStartDateISO() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
-        byte[] content = Files.readAllBytes(Paths.get(this.getClass().getResource("/org/jbpm/bpmn2/start/BPMN2-TimerStartDate.bpmn2").getPath()));
+        byte[] content = Files.readAllBytes(Paths.get(this.getClass().getResource("/org/jbpm/bpmn2/start/BPMN2-TimerStartDate.bpmn2").toURI()));
         String processContent = new String(content, "UTF-8");
 
         OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);

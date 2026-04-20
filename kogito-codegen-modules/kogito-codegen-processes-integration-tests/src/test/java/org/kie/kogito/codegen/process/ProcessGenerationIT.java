@@ -21,6 +21,7 @@ package org.kie.kogito.codegen.process;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -116,12 +117,20 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
 
     static Stream<String> processesProvider() throws IOException {
         Set<String> ignoredFiles = Files.lines(BASE_PATH.resolve("org/kie/kogito/codegen/process/process-generation-test.skip.txt"))
+                .filter(it -> {
+                    try {
+                        Path.of(it);
+                        return true;
+                    } catch (InvalidPathException ipe) {
+                        return false;
+                    }
+                })
                 .collect(Collectors.toSet());
         return Files.find(BASE_PATH, 10, ((path, basicFileAttributes) -> basicFileAttributes.isRegularFile()
                 && SupportedExtensions.isSourceFile(path)))
                 .map(BASE_PATH::relativize)
-                .map(Path::toString)
-                .filter(p -> ignoredFiles.stream().noneMatch(ignored -> p.contains(ignored)));
+                .filter(p -> ignoredFiles.stream().noneMatch(ignored -> p.startsWith(ignored)))
+                .map(Path::toString);
     }
 
     @ParameterizedTest

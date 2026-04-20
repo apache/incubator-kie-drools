@@ -18,6 +18,7 @@
  */
 package org.jbpm.bpmn2;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -31,10 +32,10 @@ public class BrokenStructureRefTest {
 
     @Test
     public void testProcessWithBrokenItemDefinitionUri() throws Exception {
-        String inputBpmn = getClass().getResource("/org/jbpm/bpmn2/flow/BPMN2-BrokenStructureRef.bpmn2").getPath();
+        URL resource = getClass().getResource("/org/jbpm/bpmn2/flow/BPMN2-BrokenStructureRef.bpmn2");
         XmlProcessDumper dumper = XmlProcessDumperFactory.getXmlProcessDumperFactoryService().newXmlProcessDumper();
         assertThat(dumper).isNotNull();
-        String processXml = new String(Files.readAllBytes(Paths.get(inputBpmn)));
+        String processXml = new String(Files.readAllBytes(Paths.get(resource.toURI())));
         assertThat(processXml).isNotNull();
         org.kie.api.definition.process.Process proc = dumper.readProcess(processXml);
         assertThat(proc).isNotNull();

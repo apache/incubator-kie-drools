@@ -76,7 +76,7 @@ public class SourceFilesProviderProducerUtilTest {
         for (Path appResourcePath : appPaths.getResourcePaths()) {
             String fullWorkflowPath = appResourcePath.resolve(WORKFLOW_RELATIVE_PATH).toString();
             String calculatedRelativePath = getResourceRelativePath(context, new KieBuilderSetImpl.DummyResource(fullWorkflowPath));
-            assertThat(calculatedRelativePath).isEqualTo(WORKFLOW_RELATIVE_PATH);
+            assertThat(Path.of(calculatedRelativePath)).isEqualTo(Path.of(WORKFLOW_RELATIVE_PATH));
         }
     }
 
