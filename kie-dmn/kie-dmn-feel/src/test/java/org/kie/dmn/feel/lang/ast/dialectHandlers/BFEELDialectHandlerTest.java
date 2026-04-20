@@ -76,6 +76,14 @@ class BFEELDialectHandlerTest {
         assertThat(handler.executeAdd(new BigDecimal("10.5"), LocalDate.of(2024, 1, 1), ctx))
                 .isEqualTo(new BigDecimal("10.5"));
         
+        // Duration + number → seconds + number (Row 2: NUMBER precedence)
+        assertThat(handler.executeAdd(Duration.ofSeconds(10), 5, ctx)).isEqualTo(new BigDecimal("15"));
+        assertThat(handler.executeAdd(5, Duration.ofSeconds(10), ctx)).isEqualTo(new BigDecimal("15"));
+        
+        // Period + number → months + number (Row 2: NUMBER precedence)
+        assertThat(handler.executeAdd(Period.ofMonths(12), 3, ctx)).isEqualTo(new BigDecimal("15"));
+        assertThat(handler.executeAdd(3, Period.ofMonths(12), ctx)).isEqualTo(new BigDecimal("15"));
+        
         // Case 3: DATE - If either operand is a date, convert non-date to duration
         // Left: date + duration
         assertThat(handler.executeAdd(LocalDate.of(2024, 1, 1), Duration.ofDays(5), ctx))
@@ -89,6 +97,7 @@ class BFEELDialectHandlerTest {
     void testSubtractionWithPrecedenceOrder() {
         // Basic subtraction operation
         assertThat(handler.executeSub(20, 10, ctx)).isEqualTo(new BigDecimal("10"));
+        
         // Case 1: STRING - If either operand is a string, subtraction returns empty string ""
         // Left: string - other
         assertThat(handler.executeSub("Hello", 123, ctx)).isEqualTo("");

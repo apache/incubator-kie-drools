@@ -55,22 +55,82 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // BFEEL Section 11.9: If one operand is a number, the non-number value is converted to a number
-        // using the number() B-FEEL function, and Table 58 (standard numeric addition) applies.
-        // In B-FEEL, number(date) returns 0 (not null as in standard FEEL per Section 11.3).
-        // This takes precedence over other type combinations.
+        // B-FEEL Precedence Table for Addition (DMN 1.6 Section 11.9):
+        // Row 1: STRING - The non-string value is converted to a string using the string() B-FEEL function
+        //                 and Table 58 applies. Subtraction returns an empty string.
+        // Row 2: NUMBER - The non-number value is converted to a number using the number() B-FEEL function
+        //                 and Table 58 applies.
+        // Row 3: DATE AND TIME - The non-date and time value is converted to a duration using the duration()
+        //                        B-FEEL function and Table 58 applies.
+        // Row 4: DATE - The non-date value is converted to a duration using the duration() B-FEEL function
+        //               and Table 58 applies.
+        // Row 5: TIME - The non-time value is converted to a duration using the duration() B-FEEL function
+        //               and Table 58 applies.
+        // Row 6: YEARS AND MONTHS DURATION - The non-years and months duration value is converted to a
+        //                                     duration using the duration() B-FEEL function and Table 58 applies.
+        // Row 7: DAYS AND TIME DURATION - The non-days and time duration value is converted to a duration
+        //                                  using the duration() B-FEEL function and Table 58 applies.
         
-        // date + number → convert date to 0, then add: 0 + number = number
+        // Row 1: STRING - any String operand → concatenate both as strings (subtraction returns "")
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
+                (left, right) -> {
+                    String leftNum = getString(left);
+                    String rightNum = getString(right);
+                    return leftNum + rightNum;
+                });
+
+        // Row 2: NUMBER - date + number → convert date to 0, then add: 0 + number = number
         // Since 0 + number = number, we return the number operand directly
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Number, false),
                 (left, right) -> right);
         
-        // number + date → convert date to 0, then add: number + 0 = number
+        // Row 2: NUMBER - number + date → convert date to 0, then add: number + 0 = number
         // Since number + 0 = number, we return the number operand directly
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Number && right instanceof LocalDate, false),
                 (left, right) -> left);
+
+        // Row 2: NUMBER - duration + number → convert duration to seconds, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Number, false),
+                (left, right) -> {
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) left).getSeconds());
+                    BigDecimal rightNum = getBigDecimalOrNull(right);
+                    if (seconds == null || rightNum == null) return rightNum != null ? rightNum : BigDecimal.ZERO;
+                    return seconds.add(rightNum, MathContext.DECIMAL128);
+                });
+
+        // Row 2: NUMBER - number + duration → convert duration to seconds, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof Duration, false),
+                (left, right) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(left);
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) right).getSeconds());
+                    if (leftNum == null || seconds == null) return leftNum != null ? leftNum : BigDecimal.ZERO;
+                    return leftNum.add(seconds, MathContext.DECIMAL128);
+                });
+
+        // Row 2: NUMBER - period + number → convert period to months, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Number, false),
+                (left, right) -> {
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
+                    BigDecimal rightNum = getBigDecimalOrNull(right);
+                    if (months == null || rightNum == null) return rightNum != null ? rightNum : BigDecimal.ZERO;
+                    return months.add(rightNum, MathContext.DECIMAL128);
+                });
+
+        // Row 2: NUMBER - number + period → convert period to months, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof ChronoPeriod, false),
+                (left, right) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(left);
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
+                    if (leftNum == null || months == null) return leftNum != null ? leftNum : BigDecimal.ZERO;
+                    return leftNum.add(months, MathContext.DECIMAL128);
+                });
 
         // Number + null → number (null converts to 0 in B-FEEL numeric context)
         map.put(
@@ -81,16 +141,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> left == null && right instanceof Number, false),
                 (left, right) -> right);
-
-        // any String operand → concatenate both as strings
-        // This comes after number checks per BFEEL Table 11.9
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
-                (left, right) -> {
-                    String leftNum = getString(left);
-                    String rightNum = getString(right);
-                    return leftNum + rightNum;
-                });
 
         map.putAll(getCommonAddOperations(ctx));
         return map;
