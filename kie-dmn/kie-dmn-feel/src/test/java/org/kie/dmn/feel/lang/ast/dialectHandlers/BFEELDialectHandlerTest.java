@@ -148,15 +148,17 @@ class BFEELDialectHandlerTest {
         assertThat(handler.executeMult(2, Duration.ofDays(5), ctx))
                 .isEqualTo(Duration.ofDays(10));
         
-        // Period × Duration: Duration converted to seconds, result is Period
+        // Period × Duration: B-FEEL Section 11.10 - YMD has higher precedence than DTD
+        // Duration converted to seconds (as number), result is Period
         // P1Y (12 months) × PT1S (1 second) = P12M
         assertThat(handler.executeMult(Period.ofYears(1), Duration.ofSeconds(1), ctx))
                 .isEqualTo(ComparablePeriod.ofMonths(12));
         
-        // Duration × Period: Period converted to months, result is Duration
-        // PT1S (1 second) × P1Y (12 months) = PT12S
+        // Duration × Period: B-FEEL Section 11.10 - YMD has higher precedence than DTD
+        // Duration converted to seconds (as number), result is Period
+        // PT1S (1 second) × P1Y (12 months) = P12M (or P1Y)
         assertThat(handler.executeMult(Duration.ofSeconds(1), Period.ofYears(1), ctx))
-                .isEqualTo(Duration.ofSeconds(12));
+                .isEqualTo(ComparablePeriod.ofMonths(12));
     }
     
     @Test

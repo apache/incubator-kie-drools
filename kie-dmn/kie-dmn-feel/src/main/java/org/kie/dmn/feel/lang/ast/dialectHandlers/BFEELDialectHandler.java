@@ -479,7 +479,8 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> left == null && right instanceof ChronoPeriod, false),
                 (left, right) -> ComparablePeriod.ofMonths(0));
 
-        // Period × Duration (mixed types) → B-FEEL implicit coercion: convert Duration to seconds, multiply
+        // Period × Duration (mixed types) → B-FEEL Section 11.10: YMD has higher precedence than DTD
+        // Convert Duration to seconds (as number), result is Period
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Duration, false),
                 (left, right) -> {
@@ -490,15 +491,16 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                     return ComparablePeriod.ofMonths(months.multiply(seconds, MathContext.DECIMAL128).intValue());
                 });
 
-        // Duration × Period (mixed types) → B-FEEL implicit coercion: convert Period to months, multiply
+        // Duration × Period (mixed types) → B-FEEL Section 11.10: YMD has higher precedence than DTD
+        // Convert Duration to seconds (as number), result is Period
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof ChronoPeriod, false),
                 (left, right) -> {
                     BigDecimal seconds = getBigDecimalOrNull(((Duration) left).getSeconds());
                     BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
                     if (seconds == null || months == null)
-                        return Duration.ZERO;
-                    return Duration.ofSeconds(seconds.multiply(months, MathContext.DECIMAL128).longValue());
+                        return ComparablePeriod.ofMonths(0);
+                    return ComparablePeriod.ofMonths(seconds.multiply(months, MathContext.DECIMAL128).intValue());
                 });
 
         // Duration × Duration (same type) → returns zero duration (B-FEEL default for disallowed operation)
