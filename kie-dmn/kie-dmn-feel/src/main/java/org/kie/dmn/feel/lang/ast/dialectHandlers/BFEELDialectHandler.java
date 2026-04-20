@@ -55,7 +55,35 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
+        // BFEEL Section 11.9: If one operand is a number, the non-number value is converted to a number
+        // using the number() B-FEEL function, and Table 58 (standard numeric addition) applies.
+        // In B-FEEL, number(date) returns 0 (not null as in standard FEEL per Section 11.3).
+        // This takes precedence over other type combinations.
+        
+        // date + number → convert date to 0, then add: 0 + number = number
+        // Since 0 + number = number, we return the number operand directly
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Number, false),
+                (left, right) -> right);
+        
+        // number + date → convert date to 0, then add: number + 0 = number
+        // Since number + 0 = number, we return the number operand directly
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof LocalDate, false),
+                (left, right) -> left);
+
+        // Number + null → number (null converts to 0 in B-FEEL numeric context)
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right == null, false),
+                (left, right) -> left);
+
+        // null + Number → number (null converts to 0 in B-FEEL numeric context)
+        map.put(
+                new CheckedPredicate((left, right) -> left == null && right instanceof Number, false),
+                (left, right) -> right);
+
         // any String operand → concatenate both as strings
+        // This comes after number checks per BFEEL Table 11.9
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
                 (left, right) -> {
@@ -63,24 +91,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                     String rightNum = getString(right);
                     return leftNum + rightNum;
                 });
-
-        // date + number → return the number
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Number, false),
-                (left, right) -> right);
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof LocalDate, false),
-                (left, right) -> left);
-
-        // Number + null → number
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof Number && right == null, false),
-                (left, right) -> left);
-
-        // null + Number → number
-        map.put(
-                new CheckedPredicate((left, right) -> left == null && right instanceof Number, false),
-                (left, right) -> right);
 
         map.putAll(getCommonAddOperations(ctx));
         return map;
