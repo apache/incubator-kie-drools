@@ -191,7 +191,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
         if ( allUpdatesSucceeded ) {
             log.info("The following artifacts have been updated: " + updatedArtifacts);
         } else {
-            log.error("Some errors occured while updating the following artifacts: " + updatedArtifacts);
+            log.error("Some errors occurred while updating the following artifacts: " + updatedArtifacts);
         }
     }
 
