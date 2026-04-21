@@ -19,11 +19,12 @@
 package org.drools.codegen.common.context;
 
 import org.drools.util.FileUtils;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
@@ -31,17 +32,20 @@ import java.util.TreeMap;
 
 import static org.drools.codegen.common.DroolsModelBuildContext.APPLICATION_PROPERTIES_YAML_FILE_NAME;
 import static org.drools.codegen.common.DroolsModelBuildContext.APPLICATION_PROPERTIES_YML_FILE_NAME;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-class AbstractDroolsModelBuildContextTest {
+class ModelBuildContextUtilsTest {
 
     @MethodSource("testData")
     @ParameterizedTest
-    void loadYmlProperties(String fileName) {
+    void loadYmlPropertiesByFile(String fileName) {
         File ymlFile = FileUtils.getFile(fileName);
         assertTrue(ymlFile.exists());
         Properties properties = new Properties();
-        AbstractDroolsModelBuildContext.loadYmlProperties(ymlFile, properties);
+        ModelBuildContextUtils.loadYmlProperties(ymlFile, properties);
         assertEquals("test", properties.getProperty("this.is.a"));
         assertEquals("notNull", properties.getProperty("this.is.b"));
         assertEquals("test", properties.getProperty("this.was.a"));
@@ -54,12 +58,38 @@ class AbstractDroolsModelBuildContextTest {
 
     @MethodSource("testData")
     @ParameterizedTest
+    void loadYmlPropertiesByInputStream(String fileName) {
+        File ymlFile = FileUtils.getFile(fileName);
+        assertTrue(ymlFile.exists());
+        Properties properties = new Properties();
+        try (InputStream ymlResourceStream = new FileInputStream(ymlFile)) {
+            ModelBuildContextUtils.loadYmlProperties(ymlResourceStream, properties);
+            assertEquals("test", properties.getProperty("this.is.a"));
+            assertEquals("notNull", properties.getProperty("this.is.b"));
+            assertEquals("test", properties.getProperty("this.was.a"));
+            assertEquals("notNull", properties.getProperty("this.was.b"));
+            assertEquals("test", properties.getProperty("that.is.a"));
+            assertEquals("notNull", properties.getProperty("that.is.b"));
+            assertEquals("test", properties.getProperty("that.was.a"));
+            assertEquals("notNull", properties.getProperty("that.was.b"));
+        } catch (Exception e) {
+            fail("Unexpected exception while loading yml string map from file: " + fileName, e);
+        }
+
+    }
+
+    @MethodSource("testData")
+    @ParameterizedTest
     void loadYmlStringMap(String fileName) {
         File ymlFile = FileUtils.getFile(fileName);
         assertTrue(ymlFile.exists());
-        Map<String, String> retrieved = AbstractDroolsModelBuildContext.loadYmlStringMap(ymlFile);
-        assertNotNull(retrieved);
-        commonCheck(retrieved);
+        try (InputStream ymlResourceStream = new FileInputStream(ymlFile)) {
+            Map<String, String> retrieved = ModelBuildContextUtils.loadYmlStringMap(ymlResourceStream);
+            assertNotNull(retrieved);
+            commonCheck(retrieved);
+        } catch (Exception e) {
+            fail("Unexpected exception while loading yml string map from file: " + fileName, e);
+        }
     }
 
     @MethodSource("testData")
@@ -67,9 +97,13 @@ class AbstractDroolsModelBuildContextTest {
     void loadYmlMap(String fileName) {
         File ymlFile = FileUtils.getFile(fileName);
         assertTrue(ymlFile.exists());
-        TreeMap<String, Object> retrieved = AbstractDroolsModelBuildContext.loadYmlMap(ymlFile);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.containsKey("this"));
+        try (InputStream ymlResourceStream = new FileInputStream(ymlFile)) {
+            TreeMap<String, Object> retrieved = ModelBuildContextUtils.loadYmlMap(ymlResourceStream);
+            assertNotNull(retrieved);
+            assertTrue(retrieved.containsKey("this"));
+        } catch (Exception e) {
+            fail("Unexpected exception while loading yml string map from file: " + fileName, e);
+        }
     }
 
 
@@ -78,11 +112,14 @@ class AbstractDroolsModelBuildContextTest {
     void convertYamlObjectToMap(String fileName) {
         File ymlFile = FileUtils.getFile(fileName);
         assertTrue(ymlFile.exists());
-        TreeMap<String, Object> ymlMap = AbstractDroolsModelBuildContext.loadYmlMap(ymlFile);
-        assertNotNull(ymlMap);
-
-        Map<String, String> retrieved = AbstractDroolsModelBuildContext.convertYamlObjectToMap(ymlMap);
-        commonCheck(retrieved);
+        try (InputStream ymlResourceStream = new FileInputStream(ymlFile)) {
+            TreeMap<String, Object> ymlMap = ModelBuildContextUtils.loadYmlMap(ymlResourceStream);
+            assertNotNull(ymlMap);
+            Map<String, String> retrieved = ModelBuildContextUtils.convertYamlObjectToMap(ymlMap);
+            commonCheck(retrieved);
+        } catch (Exception e) {
+            fail("Unexpected exception while loading yml string map from file: " + fileName, e);
+        }
     }
 
     private static Collection<String> testData() {
