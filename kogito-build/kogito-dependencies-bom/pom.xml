@@ -50,8 +50,9 @@
 
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
-    <version.com.fasterxml.jackson>2.19.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.19.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson>2.21.1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.21.1</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.21</version.com.fasterxml.jackson.annotations>
     <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
     <version.com.ongres.scram>3.2</version.com.ongres.scram>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
@@ -63,7 +64,7 @@
     <version.io.quarkiverse.embedded.postgresql>0.8.0</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
-    <version.com.fasterxml.jackson.datatype>2.19.2</version.com.fasterxml.jackson.datatype>
+    <version.com.fasterxml.jackson.datatype>2.21.1</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.37.0</version.com.github.victools>
     <version.org.wiremock>3.13.0</version.org.wiremock>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
@@ -505,7 +506,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
+        <version>${version.com.fasterxml.jackson.annotations}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
