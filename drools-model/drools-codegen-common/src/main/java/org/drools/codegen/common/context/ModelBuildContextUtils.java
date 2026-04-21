@@ -66,19 +66,6 @@ public class ModelBuildContextUtils {
         }
     }
 
-    /*static TreeMap<String, Object> loadYmlMap(File ymlFile) {
-        if (ymlFile.exists() && ymlFile.isFile() && ymlFile.canRead()) {
-            try (InputStream ymlResourceStream = new FileInputStream(ymlFile)) {
-                return loadYmlMap(ymlResourceStream);
-            } catch (IOException e) {
-                LOGGER.debug("Unable to load '{}'.", ymlFile.getName(), e);
-            }
-        } else {
-            LOGGER.debug("Unable to load '{}'.", ymlFile.getName());
-        }
-        return null;
-    }*/
-
     static TreeMap<String, Object> loadYmlMap(InputStream ymlStream) {
         if (ymlStream != null) {
             Yaml yaml = new Yaml();
