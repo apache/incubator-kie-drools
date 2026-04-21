@@ -44,7 +44,7 @@
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework>6.2.17</version.org.springframework>
     <version.org.springframework.boot>3.5.10</version.org.springframework.boot>
-    <version.org.apache.kafka>4.0.2</version.org.apache.kafka>
+    <version.org.apache.kafka>4.1.2</version.org.apache.kafka>
 
     <version.org.bouncycastle.bc.jdk18on>1.84</version.org.bouncycastle.bc.jdk18on>
 
