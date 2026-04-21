@@ -223,6 +223,7 @@
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
     <version.io.vertx>4.5.24</version.io.vertx>
+    <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
   </properties>
 
   <dependencyManagement>
@@ -238,6 +239,11 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
         <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${version.org.codehaus.plexus.plexus-utils}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
 
