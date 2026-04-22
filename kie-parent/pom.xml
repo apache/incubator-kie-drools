@@ -366,7 +366,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
+        <version>${version.com.fasterxml.jackson.annotations}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -436,7 +436,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson.annotations}</version>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
