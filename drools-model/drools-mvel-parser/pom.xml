@@ -73,7 +73,6 @@
             </goals>
             <configuration>
               <grammarEncoding>${project.build.sourceEncoding}</grammarEncoding>
-              <jdkVersion>${java.version}</jdkVersion>
             </configuration>
           </execution>
         </executions>

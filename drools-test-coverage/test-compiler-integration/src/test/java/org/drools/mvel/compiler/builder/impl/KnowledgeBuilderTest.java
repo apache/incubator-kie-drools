@@ -33,6 +33,7 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
+import org.drools.compiler.compiler.SelfReferencingConstraint;
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
@@ -113,6 +114,7 @@ public class KnowledgeBuilderTest {
         System.getProperties().remove( "drools.warning.filters" );
         System.getProperties().remove( "drools.kbuilder.severity." + DuplicateFunction.KEY);
         System.getProperties().remove( "drools.kbuilder.severity." + DuplicateRule.KEY);
+        System.getProperties().remove( "drools.kbuilder.severity." + SelfReferencingConstraint.KEY);
     }
 
     @Test
