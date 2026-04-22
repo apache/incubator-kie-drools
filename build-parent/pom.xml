@@ -57,9 +57,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.20.0</version.commons-io>
     <version.common-text>1.14.0</version.common-text>
-    <version.com.fasterxml.jackson>2.19.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.19.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.19.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.21.1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.21.1</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.21</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.37.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
@@ -283,12 +283,12 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
+        <version>${version.com.fasterxml.jackson.annotations}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson.annotations}</version>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
