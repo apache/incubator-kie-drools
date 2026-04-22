@@ -28,6 +28,8 @@
   <properties>
     <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie:kie-parent</allowedPomsList>
+    <!-- Used to define wich artifact are allowed in dependency management even if not implemented in the multimodule project; e.g. if those are generated on-the-fly by script -->
+    <allowed_GA></allowed_GA>
     <!-- CHECKSTYLE -->
     <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
@@ -59,6 +61,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!--suppress UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
+    <!-- Used by noExternalManagedDependencyRule -->
+    <!-- Should point to the topmost multimodule pom.xml -->
+    <!-- To be overridden by poms with dependency management to point to actual root -->
+    <root_pom>../pom.xml</root_pom>
     <!-- Set to "true" on every project that has no violations. -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <surefire.forkCount>1</surefire.forkCount>
@@ -2253,6 +2259,11 @@
               <artifactId>kie-no-dependencymanagement-enforcer-rule</artifactId>
               <version>${project.version}</version>
             </dependency>
+            <dependency>
+              <groupId>org.kie</groupId>
+              <artifactId>kie-no-external-manageddependency-enforcer-rule</artifactId>
+              <version>${project.version}</version>
+            </dependency>
           </dependencies>
           <executions>
             <execution>
@@ -2452,6 +2463,21 @@
                   <noDependencyManagementRule>
                     <allowedPoms>${allowedPomsList}</allowedPoms>
                   </noDependencyManagementRule>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-externalmanageddependency</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <noExternalManagedDependencyRule>
+                    <rootPom>${root_pom}</rootPom>
+                    <filteredGroupIds>org.kie,org.kie.kogito,org.drools,org.apache.kie.sonataflow,org.jbpm</filteredGroupIds>
+                    <allowedGA>${allowed_GA}</allowedGA>
+                  </noExternalManagedDependencyRule>
                 </rules>
               </configuration>
             </execution>

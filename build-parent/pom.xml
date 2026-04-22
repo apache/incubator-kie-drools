@@ -24,9 +24,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
+    <artifactId>kie-parent-drools</artifactId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../kie-parent/pom.xml</relativePath>
+    <relativePath>../kie-parent-drools/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -36,47 +36,17 @@
 
   <properties>
    <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
-    <victims.updates>weekly</victims.updates><!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
+    <victims.updates>weekly</victims.updates>
+    <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie:drools-build-parent</allowedPomsList>
+    <!-- Used to define which artifact are allowed in dependency management even if not implemented in the multimodule project; e.g. if those are generated on-the-fly by script -->
+    <allowed_GA>org.drools:drools-docs</allowed_GA>
+    <!-- To be overridden by poms with dependency management -->
+    <root_pom>../pom.xml</root_pom>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-core-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-efesto-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
@@ -307,8 +277,6 @@
             </execution>
           </executions>
         </plugin>
-
-
       </plugins>
     </pluginManagement>
 

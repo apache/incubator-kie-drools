@@ -42,6 +42,8 @@
     <version.io.quarkus>3.27.2</version.io.quarkus>
     <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie:kie-quarkus-build-parent</allowedPomsList>
+    <!-- To be overridden by poms with dependency management -->
+    <root_pom>../pom.xml</root_pom>
   </properties>
 
   <dependencyManagement>
