@@ -37,7 +37,6 @@
 
   <properties>
     <java.module.name>org.drools.traits</java.module.name>
-    <surefire.forkCount>2</surefire.forkCount>
 
     <!-- These are properties used in the database profiles. Some of them must be initialized
      to be empty so that Maven applies their values via filtering to the resources. -->
