@@ -165,6 +165,29 @@
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
+      <!-- EFESTO -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency> <!-- this is not a user dependency, hence was not added to the boms. -->
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-ruleset2dmn</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-validation</artifactId>
@@ -175,6 +198,12 @@
         <artifactId>kie-dmn-validation</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
+      </dependency>
+      <dependency> <!-- this is not a user dependency, hence is was added to the boms. -->
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-validation-bootstrap</artifactId>
+        <optional>true</optional>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
@@ -201,16 +230,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-xsd-resources</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-efesto-compilation</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-efesto-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
