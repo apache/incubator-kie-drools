@@ -133,6 +133,11 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             }
         }
 
+        // Check if constructor was successfully created
+        if (konst == null) {
+            throw new LogicalTypeInconsistencyException("Could not create proxy constructor for trait " + trait + " and core " + core.getClass(), trait, core.getClass());
+        }
+
         T proxy;
         HierarchyEncoder hier = getHierarchyEncoder();
         try {
@@ -148,8 +153,15 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             }
 
             return proxy;
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            LOG.error("Exception", e);
+        } catch (InstantiationException e) {
+            LOG.error("Failed to instantiate proxy for trait {} on core class {}: {}", trait.getName(), core.getClass().getName(), e.getMessage(), e);
+            throw new LogicalTypeInconsistencyException("Could not instantiate trait proxy for " + trait + " on object " + core, trait, core.getClass());
+        } catch (InvocationTargetException e) {
+            LOG.error("Constructor invocation failed for trait {} on core class {}: {}", trait.getName(), core.getClass().getName(), e.getTargetException().getMessage(), e);
+            throw new LogicalTypeInconsistencyException("Constructor invocation failed for trait " + trait + " on object " + core, trait, core.getClass());
+        } catch (IllegalAccessException e) {
+            LOG.error("Illegal access to constructor for trait {} on core class {}: {}", trait.getName(), core.getClass().getName(), e.getMessage(), e);
+            throw new LogicalTypeInconsistencyException("Illegal access to constructor for trait " + trait + " on object " + core, trait, core.getClass());
         }
         throw new LogicalTypeInconsistencyException("Could not apply trait " + trait + " to object " + core, trait, core.getClass());
     }
@@ -176,7 +188,8 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             factoryCache.put(key, konst);
             return konst;
         } catch (NoSuchMethodException e) {
-            LOG.error("Exception", e);
+            LOG.error("Failed to find constructor for proxy class {} with mode {}: required constructor signature not found for trait {} and core {}",
+                     proxyClass.getName(), mode, trait.getName(), core.getClass().getName(), e);
             return null;
         }
     }
@@ -241,7 +254,8 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             byte[] propWrapper = propWrapperBuilder.buildClass(cdef, getRootClassLoader());
             registerAndLoadTypeDefinition(wrapperName, propWrapper);
         } catch (Exception e) {
-            LOG.error("Exception", e);
+            LOG.error("Failed to build property wrapper class {} for trait {} and core {}", wrapperName, trait.getName(), coreKlass.getName(), e);
+            return null;
         }
 
         TraitProxyClassBuilder proxyBuilder = traitClassBuilderFactory.getTraitProxyBuilder();
@@ -251,7 +265,8 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             byte[] proxy = proxyBuilder.buildClass(cdef, getRootClassLoader());
             registerAndLoadTypeDefinition(proxyName, proxy);
         } catch (Exception e) {
-            LOG.error("Exception", e);
+            LOG.error("Failed to build proxy class {} for trait {} and core {}", proxyName, trait.getName(), coreKlass.getName(), e);
+            return null;
         }
 
         try {
@@ -259,7 +274,8 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             getRootClassLoader().loadClass(wrapperName);
             return (Class<T>) getRootClassLoader().loadClass(proxyName);
         } catch (ClassNotFoundException e) {
-            LOG.error("Exception", e);
+            LOG.error("Failed to load generated proxy or wrapper class for trait {} and core {}: proxy={}, wrapper={}",
+                     trait.getName(), coreKlass.getName(), proxyName, wrapperName, e);
             return null;
         }
     }
@@ -274,7 +290,11 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         } else {
             try {
                 wrapperClass = buildCoreWrapper(coreKlazz, coreDef);
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
+                LOG.error("Failed to build core wrapper for class {}: I/O error", coreKlazz.getName(), e);
+                return null;
+            } catch (ClassNotFoundException e) {
+                LOG.error("Failed to build core wrapper for class {}: class not found", coreKlazz.getName(), e);
                 return null;
             }
             wrapperCache.put(coreKlazz, wrapperClass);
@@ -283,7 +303,14 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         try {
             getTraitRegistry().addTraitable(buildClassDefinition(coreKlazz, wrapperClass));
             return wrapperClass != null ? wrapperClass.newInstance() : null;
-        } catch (InstantiationException | IllegalAccessException | IOException e) {
+        } catch (InstantiationException e) {
+            LOG.error("Failed to instantiate core wrapper for class {}", coreKlazz.getName(), e);
+            return null;
+        } catch (IllegalAccessException e) {
+            LOG.error("Illegal access when instantiating core wrapper for class {}", coreKlazz.getName(), e);
+            return null;
+        } catch (IOException e) {
+            LOG.error("I/O error when building class definition for core wrapper of class {}", coreKlazz.getName(), e);
             return null;
         }
     }
@@ -294,7 +321,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             try {
                 coreDef = buildClassDefinition(core.getClass(), core.getClass());
             } catch (IOException e) {
-                LOG.error("Exception", e);
+                LOG.error("Failed to build class definition for core object of class {}", core.getClass().getName(), e);
             }
         }
         if (coreDef == null) {
