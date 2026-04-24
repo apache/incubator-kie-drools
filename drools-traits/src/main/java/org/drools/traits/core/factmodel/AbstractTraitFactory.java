@@ -163,7 +163,6 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             LOG.error("Illegal access to constructor for trait {} on core class {}: {}", trait.getName(), core.getClass().getName(), e.getMessage(), e);
             throw new LogicalTypeInconsistencyException("Illegal access to constructor for trait " + trait + " on object " + core, trait, core.getClass());
         }
-        throw new LogicalTypeInconsistencyException("Could not apply trait " + trait + " to object " + core, trait, core.getClass());
     }
 
     protected Constructor<T> cacheConstructor(String key, K core, Class<?> trait) {
