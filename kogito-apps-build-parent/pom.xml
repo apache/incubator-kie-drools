@@ -82,6 +82,9 @@
         <!-- Mutiny Zero Flow Adapters -->
         <version.io.smallrye.reactive.mutiny-zero>1.1.1</version.io.smallrye.reactive.mutiny-zero>
         <version.drools.util>${project.version}</version.drools.util>
+         <!-- Plexus Utils version -->
+        <version.plexus.utils>3.6.1</version.plexus.utils>
+
     </properties>
 
     <build>
@@ -147,6 +150,12 @@
                 <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${version.org.hibernate}</version>
+            </dependency>
+            <!-- Override plexus-utils version to 3.6.1 -->
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${version.plexus.utils}</version>
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
