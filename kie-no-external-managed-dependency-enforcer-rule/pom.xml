@@ -29,7 +29,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-no-external-manageddependency-enforcer-rule</artifactId>
+  <artifactId>kie-no-external-managed-dependency-enforcer-rule</artifactId>
   <name>Drools :: No External Managed Dependency Rule</name>
   <description>Enforcer rule to forbid declaration of dependency management of artifacts not being part of the current multi-module project.</description>
 

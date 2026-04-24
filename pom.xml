@@ -133,8 +133,8 @@
   </build>
 
   <modules>
-    <module>kie-no-dependencymanagement-enforcer-rule</module>
-    <module>kie-no-external-manageddependency-enforcer-rule</module>
+    <module>kie-no-dependency-management-enforcer-rule</module>
+    <module>kie-no-external-managed-dependency-enforcer-rule</module>
     <module>kie-parent</module>
     <module>kie-parent-drools</module>
     <module>bom</module>

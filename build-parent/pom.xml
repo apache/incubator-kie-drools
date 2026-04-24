@@ -176,12 +176,12 @@
             </dependency>
             <dependency>
               <groupId>org.kie</groupId>
-              <artifactId>kie-no-dependencymanagement-enforcer-rule</artifactId>
+              <artifactId>kie-no-dependency-management-enforcer-rule</artifactId>
               <version>${project.version}</version>
             </dependency>
             <dependency>
               <groupId>org.kie</groupId>
-              <artifactId>kie-no-external-manageddependency-enforcer-rule</artifactId>
+              <artifactId>kie-no-external-managed-dependency-enforcer-rule</artifactId>
               <version>${project.version}</version>
             </dependency>
           </dependencies>

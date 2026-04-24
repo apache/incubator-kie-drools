@@ -1912,7 +1912,12 @@
       <!-- It is the only "kie" dependency that should be declared in this bom, as it should be inherited everywhere else. -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-no-dependencymanagement-enforcer-rule</artifactId>
+        <artifactId>kie-no-dependency-management-enforcer-rule</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-no-external-managed-dependency-enforcer-rule</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
