@@ -27,15 +27,16 @@ import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
 import org.kie.kogito.index.jpa.storage.UserTaskInstanceEntityStorage;
 import org.kie.kogito.index.test.query.AbstractUserTaskInstanceQueryIT;
 
-import jakarta.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.in;
 
 public abstract class AbstractUserTaskInstanceEntityQueryIT extends AbstractUserTaskInstanceQueryIT {
 
-    @Inject
     UserTaskInstanceEntityStorage storage;
+
+    public AbstractUserTaskInstanceEntityQueryIT(UserTaskInstanceEntityStorage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public UserTaskInstanceEntityStorage getStorage() {

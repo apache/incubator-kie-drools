@@ -27,15 +27,13 @@ import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 
-import jakarta.inject.Inject;
-
 public abstract class AbstractJobStorageIT extends AbstractStorageIT<String, JobEntity, Job> {
 
-    @Inject
     JobEntityStorage storage;
 
-    public AbstractJobStorageIT() {
+    public AbstractJobStorageIT(JobEntityStorage storage) {
         super(Job.class);
+        this.storage = storage;
     }
 
     @Override

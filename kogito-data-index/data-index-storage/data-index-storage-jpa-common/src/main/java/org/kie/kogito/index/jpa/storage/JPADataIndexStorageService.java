@@ -31,10 +31,6 @@ import org.kie.kogito.persistence.api.StorageServiceCapability;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
-@ApplicationScoped
 public class JPADataIndexStorageService implements DataIndexStorageService {
 
     ProcessDefinitionEntityStorage definitionStorage;
@@ -45,7 +41,9 @@ public class JPADataIndexStorageService implements DataIndexStorageService {
 
     UserTaskInstanceStorage userTaskInstanceStorage;
 
-    @Inject
+    public JPADataIndexStorageService() {
+    }
+
     public JPADataIndexStorageService(ProcessDefinitionEntityStorage definitionStorage, JobEntityStorage jobsStorage, ProcessInstanceStorage processInstanceStorage,
             UserTaskInstanceStorage userTaskInstanceStorage) {
         this.definitionStorage = definitionStorage;

@@ -19,12 +19,19 @@
 package org.kie.kogito.index.postgresql.storage;
 
 import org.kie.kogito.index.jpa.storage.AbstractProcessDefinitionStorageIT;
+import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
+import jakarta.inject.Inject;
+
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessDefinitionStorageIT extends AbstractProcessDefinitionStorageIT {
+    @Inject
+    public ProcessDefinitionStorageIT(ProcessDefinitionEntityStorage storage) {
+        super(storage);
+    }
 }

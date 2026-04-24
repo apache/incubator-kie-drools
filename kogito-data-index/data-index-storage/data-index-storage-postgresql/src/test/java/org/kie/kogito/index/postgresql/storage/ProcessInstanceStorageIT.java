@@ -19,14 +19,21 @@
 package org.kie.kogito.index.postgresql.storage;
 
 import org.kie.kogito.index.jpa.storage.AbstractProcessInstanceStorageIT;
+import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
+import jakarta.inject.Inject;
+
 @QuarkusTest
 @TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 public class ProcessInstanceStorageIT extends AbstractProcessInstanceStorageIT {
+    @Inject
+    public ProcessInstanceStorageIT(ProcessInstanceEntityStorage storage) {
+        super(storage);
+    }
 }

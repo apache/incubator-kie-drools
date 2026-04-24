@@ -28,6 +28,8 @@ import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.SortDirection;
 
+import jakarta.transaction.Transactional;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.test.QueryTestUtils.assertWithKey;
@@ -45,6 +47,7 @@ public abstract class AbstractProcessDefinitionQueryIT extends QueryTestBase<Pro
     public abstract Storage<ProcessDefinitionKey, ProcessDefinition> getStorage();
 
     @Test
+    @Transactional
     void testProcessDefinitionQuery() {
         String processId = "travels";
         ProcessDefinition pdv1 = TestUtils.createProcessDefinition(processId, "1.0", Set.of("admin", "kogito"));

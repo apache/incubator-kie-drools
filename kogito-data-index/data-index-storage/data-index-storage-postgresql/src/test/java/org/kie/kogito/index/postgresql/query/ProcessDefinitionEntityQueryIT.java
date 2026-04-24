@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.query.AbstractProcessDefinitionEntityQueryIT;
+import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.test.TestUtils;
@@ -32,6 +33,8 @@ import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.json.JsonUtils.jsonFilter;
@@ -43,6 +46,11 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessDefinitionEntityQueryIT extends AbstractProcessDefinitionEntityQueryIT {
+
+    @Inject
+    public ProcessDefinitionEntityQueryIT(ProcessDefinitionEntityStorage storage) {
+        super(storage);
+    }
 
     @Test
     void testMetadata() {

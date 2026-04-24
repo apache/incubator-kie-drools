@@ -25,21 +25,16 @@ import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
 
-@ApplicationScoped
 public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefinitionKey, ProcessDefinitionEntity, ProcessDefinition> {
 
     protected ProcessDefinitionEntityStorage() {
     }
 
-    @Inject
-    public ProcessDefinitionEntityStorage(EntityManager em, Instance<JsonPredicateBuilder> predicateBuilder) {
+    public ProcessDefinitionEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> predicateBuilder) {
         this(em, predicateBuilder, ProcessDefinitionEntityMapper.INSTANCE);
     }
 

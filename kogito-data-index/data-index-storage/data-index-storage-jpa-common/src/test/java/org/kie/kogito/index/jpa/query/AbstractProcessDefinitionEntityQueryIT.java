@@ -29,15 +29,16 @@ import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.index.test.query.AbstractProcessDefinitionQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 
-import jakarta.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
 
 public abstract class AbstractProcessDefinitionEntityQueryIT extends AbstractProcessDefinitionQueryIT {
 
-    @Inject
     ProcessDefinitionEntityStorage storage;
+
+    public AbstractProcessDefinitionEntityQueryIT(ProcessDefinitionEntityStorage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public Storage<ProcessDefinitionKey, ProcessDefinition> getStorage() {
@@ -51,5 +52,4 @@ public abstract class AbstractProcessDefinitionEntityQueryIT extends AbstractPro
         assertThat(storage.query().count()).isNotZero();
         assertThat(storage.query().filter(List.of(equalTo("version", "60.0"))).count()).isZero();
     }
-
 }

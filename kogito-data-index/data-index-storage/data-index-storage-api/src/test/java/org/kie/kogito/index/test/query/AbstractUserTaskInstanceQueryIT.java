@@ -27,6 +27,8 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.index.test.QueryTestBase;
 
+import jakarta.transaction.Transactional;
+
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.test.QueryTestUtils.assertWithId;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
@@ -36,6 +38,7 @@ public abstract class AbstractUserTaskInstanceQueryIT extends QueryTestBase<Stri
     public abstract UserTaskInstanceStorage getStorage();
 
     @Test
+    @Transactional
     void testUserTaskInstanceQuery() {
         String taskId = UUID.randomUUID().toString();
         String processInstanceId = UUID.randomUUID().toString();

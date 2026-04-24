@@ -35,8 +35,6 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import jakarta.inject.Inject;
-
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,8 +44,11 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
     UserTaskInstance userTaskInstance = new UserTaskInstance();
     UserTaskInstanceEntity userTaskInstanceEntity = new UserTaskInstanceEntity();
 
-    @Inject
     ObjectMapper jsonMapper;
+
+    public AbstractUserTaskInstanceEntityMapperIT(ObjectMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
 
     @BeforeEach
     void setup() {

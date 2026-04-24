@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.index.jpa.query.AbstractProcessInstanceEntityQueryIT;
 import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
+import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
@@ -42,22 +43,8 @@ import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.json.JsonUtils.jsonFilter;
 import static org.kie.kogito.index.test.QueryTestUtils.assertNotId;
 import static org.kie.kogito.index.test.QueryTestUtils.assertWithId;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.and;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.between;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.*;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.containsAll;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.containsAny;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.greaterThan;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.greaterThanEqual;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.in;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.isNull;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThan;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThanEqual;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.like;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.not;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.or;
 
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
@@ -65,6 +52,11 @@ class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT 
 
     @Inject
     ProcessDefinitionEntityStorage definitionStorage;
+
+    @Inject
+    public ProcessInstanceEntityQueryIT(ProcessInstanceEntityStorage storage) {
+        super(storage);
+    }
 
     @Test
     void testProcessInstanceVariables() {

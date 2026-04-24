@@ -27,7 +27,6 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.test.TestUtils;
 
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 public abstract class AbstractProcessInstanceStorageIT {
@@ -35,8 +34,11 @@ public abstract class AbstractProcessInstanceStorageIT {
     private static final String TRAVELER_NAME = "John";
     private static final String TRAVELER_LAST_NAME = "Doe";
 
-    @Inject
     ProcessInstanceEntityStorage storage;
+
+    public AbstractProcessInstanceStorageIT(ProcessInstanceEntityStorage storage) {
+        this.storage = storage;
+    }
 
     @Test
     @Transactional

@@ -27,16 +27,17 @@ import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.index.test.query.AbstractProcessInstanceQueryIT;
 
-import jakarta.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
-import static org.kie.kogito.persistence.api.query.QueryFilterFactory.in;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.*;
 
 public abstract class AbstractProcessInstanceEntityQueryIT extends AbstractProcessInstanceQueryIT {
 
-    @Inject
     ProcessInstanceEntityStorage storage;
+
+    public AbstractProcessInstanceEntityQueryIT(ProcessInstanceEntityStorage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public ProcessInstanceEntityStorage getStorage() {

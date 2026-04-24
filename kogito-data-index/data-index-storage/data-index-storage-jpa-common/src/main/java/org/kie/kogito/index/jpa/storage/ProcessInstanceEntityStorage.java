@@ -54,9 +54,6 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 import org.kie.kogito.persistence.api.StorageServiceCapabilityProvider;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
@@ -69,14 +66,12 @@ import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TY
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
 
-@ApplicationScoped
 public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<String, ProcessInstanceEntity, ProcessInstance> implements ProcessInstanceStorage {
 
     protected ProcessInstanceEntityStorage() {
     }
 
-    @Inject
-    public ProcessInstanceEntityStorage(EntityManager em, Instance<JsonPredicateBuilder> jsonPredicateBuilder) {
+    public ProcessInstanceEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> jsonPredicateBuilder) {
         this(em, jsonPredicateBuilder, ProcessInstanceEntityMapper.INSTANCE);
     }
 

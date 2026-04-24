@@ -30,7 +30,6 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.index.test.TestUtils;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
@@ -40,11 +39,14 @@ public abstract class AbstractUserTaskInstanceStorageIT {
     private static final String PROCESS_ID = "travels";
     private static final String TASK_NAME = "HR Interview";
 
-    @Inject
     UserTaskInstanceStorage storage;
 
-    @Inject
     EntityManager em;
+
+    public AbstractUserTaskInstanceStorageIT(UserTaskInstanceStorage storage, EntityManager em) {
+        this.storage = storage;
+        this.em = em;
+    }
 
     @Test
     @Transactional

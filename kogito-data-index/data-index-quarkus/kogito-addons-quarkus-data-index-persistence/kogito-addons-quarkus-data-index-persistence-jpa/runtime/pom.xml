@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-storage-jpa</artifactId>
+      <artifactId>data-index-storage-jpa-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

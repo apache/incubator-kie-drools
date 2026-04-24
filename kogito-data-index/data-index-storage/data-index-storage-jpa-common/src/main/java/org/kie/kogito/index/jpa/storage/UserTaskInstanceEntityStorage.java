@@ -51,21 +51,17 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.net.UrlEscapers;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 import static java.lang.String.format;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
-@ApplicationScoped
 public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<String, UserTaskInstanceEntity, UserTaskInstance> implements UserTaskInstanceStorage {
 
     protected UserTaskInstanceEntityStorage() {
     }
 
-    @Inject
     public UserTaskInstanceEntityStorage(EntityManager em) {
         super(em, UserTaskInstanceEntity.class, UserTaskInstanceEntityMapper.INSTANCE::mapToModel);
     }

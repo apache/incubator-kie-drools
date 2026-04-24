@@ -29,15 +29,16 @@ import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.index.test.query.AbstractJobQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 
-import jakarta.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
 
 public abstract class AbstractJobEntityQueryIT extends AbstractJobQueryIT {
 
-    @Inject
     JobEntityStorage storage;
+
+    public AbstractJobEntityQueryIT(JobEntityStorage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public Storage<String, Job> getStorage() {

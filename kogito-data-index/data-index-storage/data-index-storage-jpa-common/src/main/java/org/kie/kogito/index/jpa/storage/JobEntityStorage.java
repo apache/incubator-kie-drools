@@ -24,18 +24,14 @@ import org.kie.kogito.index.jpa.model.JobEntity;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.storage.JobInstanceStorage;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
-@ApplicationScoped
 public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> implements JobInstanceStorage {
 
     protected JobEntityStorage() {
     }
 
-    @Inject
     public JobEntityStorage(EntityManager em) {
         super(em, Job.class, JobEntity.class, JobEntityMapper.INSTANCE::mapToModel, JobEntityMapper.INSTANCE::mapToEntity, AbstractEntity::getId);
     }

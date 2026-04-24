@@ -20,8 +20,16 @@ package org.kie.kogito.index.postgresql.mapper;
 
 import org.kie.kogito.index.jpa.mapper.AbstractUserTaskInstanceEntityMapperIT;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 @QuarkusTest
 class UserTaskInstanceEntityMapperIT extends AbstractUserTaskInstanceEntityMapperIT {
+    @Inject
+    public UserTaskInstanceEntityMapperIT(ObjectMapper jsonMapper) {
+        super(jsonMapper);
+    }
 }

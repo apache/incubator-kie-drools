@@ -27,6 +27,8 @@ import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.index.test.QueryTestBase;
 import org.kie.kogito.index.test.TestUtils;
 
+import jakarta.transaction.Transactional;
+
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.test.QueryTestUtils.assertWithId;
@@ -37,6 +39,7 @@ public abstract class AbstractProcessInstanceQueryIT extends QueryTestBase<Strin
     public abstract ProcessInstanceStorage getStorage();
 
     @Test
+    @Transactional
     void testProcessInstanceQuery() {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
@@ -50,6 +53,7 @@ public abstract class AbstractProcessInstanceQueryIT extends QueryTestBase<Strin
     }
 
     @Test
+    @Transactional
     void testProcessRetriggerQuery() {
         String processId = "no_retrigger";
         String processInstanceId = UUID.randomUUID().toString();

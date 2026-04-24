@@ -34,6 +34,7 @@
     <module>data-index-service-postgresql</module>
     <module>data-index-service-mongodb</module>
     <module>data-index-service-quarkus-common</module>
+    <module>data-index-storage-jpa-quarkus</module>
     <module>kogito-addons-quarkus-data-index-persistence</module>
     <module>kogito-addons-quarkus-data-index</module>
   </modules>

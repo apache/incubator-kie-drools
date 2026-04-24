@@ -19,12 +19,19 @@
 package org.kie.kogito.index.postgresql.storage;
 
 import org.kie.kogito.index.jpa.storage.AbstractJobStorageIT;
+import org.kie.kogito.index.jpa.storage.JobEntityStorage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
+import jakarta.inject.Inject;
+
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 public class JobStorageIT extends AbstractJobStorageIT {
+    @Inject
+    public JobStorageIT(JobEntityStorage storage) {
+        super(storage);
+    }
 }
