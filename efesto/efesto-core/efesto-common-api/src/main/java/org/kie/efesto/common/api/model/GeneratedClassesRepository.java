@@ -56,4 +56,11 @@ enum GeneratedClassesRepository {
     public void clear() {
         generatedClassesMap.clear();
     }
+
+    @Override
+    public String toString() {
+        return "GeneratedClassesRepository{" +
+                "generatedClassesMap=" + generatedClassesMap +
+                "} " + super.toString();
+    }
 }
