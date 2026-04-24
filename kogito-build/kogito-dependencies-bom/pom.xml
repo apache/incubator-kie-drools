@@ -161,7 +161,7 @@
     <version.maven.plugin.testing.harness>4.0.0-alpha-2</version.maven.plugin.testing.harness>
     <version.plexus>2.1.0</version.plexus>
     <version.plexus.classworld>2.6.0</version.plexus.classworld>
-
+    <version.plexus.utils>3.6.1</version.plexus.utils>
     <!-- see: https://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#parallel-test-execution-and-single-thread-execution -->
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.2.0</version.black.ninia>
@@ -1049,6 +1049,11 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-classworlds</artifactId>
         <version>${version.plexus.classworld}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${version.plexus.utils}</version>
       </dependency>
 
       <dependency>
