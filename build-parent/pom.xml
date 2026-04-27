@@ -222,12 +222,8 @@
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
-<<<<<<< HEAD
-    <version.io.vertx>4.5.24</version.io.vertx>
-    <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
-=======
     <version.io.vertx>4.5.25</version.io.vertx>
->>>>>>> 6422710d81 (Upgrade Quarkus to 3.27.3 and vertx-core to 4.5.25 to mitigate CVE-2026-33870, CVE-2026-33871 (netty-codec-http-4.1.131.Final))
+    <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
   </properties>
 
   <dependencyManagement>
