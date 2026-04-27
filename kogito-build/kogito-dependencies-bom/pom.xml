@@ -40,7 +40,7 @@
     <!-- End of various transitive overrides. -->
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.27.2</version.io.quarkus>
+    <version.io.quarkus>3.27.3</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework>6.2.17</version.org.springframework>
     <version.org.springframework.boot>3.5.12</version.org.springframework.boot>
@@ -102,10 +102,10 @@
 
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.21.3</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.5.24</version.io.vertx>
+    <version.io.vertx>4.5.25</version.io.vertx>
     <version.io.grpc>1.76.0</version.io.grpc>
 
-    <version.io.quarkus.camel>3.27.2</version.io.quarkus.camel>
+    <version.io.quarkus.camel>3.27.3</version.io.quarkus.camel>
 
     <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
