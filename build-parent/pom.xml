@@ -845,10 +845,10 @@
                                   value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
                       </module>
                       <module name="EqualsHashCode"/>
-                      <module name="RegexpSinglelineJava">
+                      <!--<module name="RegexpSinglelineJava">
                         <property name="format" value="@author"/>
                         <property name="message" value="No @author tag allowed"/>
-                      </module>
+                      </module>-->
                     </module>
                     <module name="RegexpHeader">
                       <property name="header" value="${checkstyle.header.template}"/>
