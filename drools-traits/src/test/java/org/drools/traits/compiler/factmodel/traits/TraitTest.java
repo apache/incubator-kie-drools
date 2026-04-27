@@ -2911,7 +2911,6 @@ public class TraitTest extends CommonTraitTest {
             String C = "" + c;
             source += "rule Rule" + C +
                       " when \n" + C + "() \nthen\n" +
-                      " System.out.println(\"Rule " + C + "\");\n" +
                       " list.add('"+ C + "'); \n" +
                       "end \n";
         }
@@ -2925,7 +2924,6 @@ public class TraitTest extends CommonTraitTest {
                         "";
 
 
-        System.out.println(source);
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
