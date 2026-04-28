@@ -18,19 +18,18 @@
  */
 package $Package$;
 
-import java.util.List;
-
 import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import org.drools.ruleunits.api.DataSource;
@@ -38,25 +37,22 @@ import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.SingletonStore;
 
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+// TODO Spring Boot 4 removed Jackson2ObjectMapperBuilderCustomizer; this template now configures
+// the existing Jackson 2 ObjectMapper bean (provided by GlobalObjectMapperSpringTemplate) with
+// rule-units deserializers via constructor injection. After the kogito-dependencies-bom split
+// lands and the Spring-side migrates to Jackson 3, port this template to tools.jackson.databind.*
+// and remove this shim.
 @SpringBootConfiguration
 public class RestObjectMapper {
 
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizeObjectMapper() {
-        return new Jackson2ObjectMapperBuilderCustomizer() {
-            @Override
-            public void customize(Jackson2ObjectMapperBuilder builder) {
-                //addDefaultDeserializers
-                builder.deserializerByType(DataStream.class, new DataStreamDeserializer());
-                builder.deserializerByType(DataStore.class, new DataStoreDeserializer());
-                builder.deserializerByType(SingletonStore.class, new SingletonStoreDeserializer());
-            }
-        };
+    public RestObjectMapper(ObjectMapper objectMapper) {
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(DataStream.class, new DataStreamDeserializer());
+        module.addDeserializer(DataStore.class, new DataStoreDeserializer());
+        module.addDeserializer(SingletonStore.class, new SingletonStoreDeserializer());
+        objectMapper.registerModule(module);
     }
 
     public static class DataStreamDeserializer extends JsonDeserializer<DataStream<?>> implements ContextualDeserializer {
