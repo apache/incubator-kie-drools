@@ -101,13 +101,6 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
         <artifactId>maven-plugin-testing-harness</artifactId>
         <version>${plugin.testing.harness.version}</version>
@@ -219,6 +212,12 @@
     </dependency>
     <!-- Internal dependencies -->
     <!-- org.drools -->
+    <!-- Build-order dependency: required so this BOM POM is available before invoker ITs resolve SNAPSHOT artifacts. -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-bom</artifactId>
+      <type>pom</type>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-engine</artifactId>
@@ -256,11 +255,23 @@
       <scope>runtime</scope>
     </dependency>
     <!-- org.kie -->
+    <!-- Build-order dependency: required so this BOM POM is available before invoker ITs resolve SNAPSHOT artifacts. -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-core-bom</artifactId>
+      <type>pom</type>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-memory-compiler</artifactId>
     </dependency>
     <!-- TRUSTY PMML -->
+    <!-- Build-order dependency: required so this BOM POM is available before invoker ITs resolve SNAPSHOT artifacts. -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-bom</artifactId>
+      <type>pom</type>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
@@ -279,6 +290,12 @@
       <artifactId>kie-pmml-compiler-core</artifactId>
     </dependency>
     <!-- required to fetch before maven-invoker-plugin -->
+    <!-- Build-order dependency: required so this BOM POM is available before invoker ITs resolve SNAPSHOT artifacts. -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-bom</artifactId>
+      <type>pom</type>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
@@ -292,6 +309,12 @@
       <artifactId>kie-dmn-api</artifactId>
     </dependency>
     <!-- EFESTO -->
+    <!-- Build-order dependency: required so this BOM POM is available before invoker ITs resolve SNAPSHOT artifacts. -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-efesto-bom</artifactId>
+      <type>pom</type>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>efesto-compilation-manager-core</artifactId>

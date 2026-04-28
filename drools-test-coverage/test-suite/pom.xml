@@ -180,7 +180,7 @@
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>        
     <dependency>
@@ -192,6 +192,9 @@
 
   <build>
     <plugins>
+      <!-- The tests in this module use generated KJARs stored under src/test/resources/kjar.
+           They are produced by the drools-test-coverage-jars setup/profile when missing, and
+           must be removed by clean to avoid reusing stale artifacts between builds. -->
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
