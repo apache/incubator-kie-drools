@@ -57,9 +57,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.20.0</version.commons-io>
     <version.common-text>1.14.0</version.common-text>
-    <version.com.fasterxml.jackson>2.19.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.19.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.19.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.21.1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.21.1</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.21</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.37.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
@@ -71,11 +71,11 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.14.12</version.io.micrometer>
-    <version.io.quarkus>3.27.2</version.io.quarkus>
+    <version.io.quarkus>3.27.3</version.io.quarkus>
     <version.io.netty>4.1.132.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
-    <version.org.apache.kafka>4.0.2</version.org.apache.kafka>
+    <version.org.apache.kafka>4.1.2</version.org.apache.kafka>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.2</version.junit>
@@ -222,13 +222,14 @@
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
-    <version.io.vertx>4.5.24</version.io.vertx>
+    <version.io.vertx>4.5.25</version.io.vertx>
+    <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <!-- Version overrides to fix vulnerabilities. -->
-      <!-- Override vertx-core version from Quarkus 3.27.2 BOM (CVE fix) -->
+      <!-- Override vertx-core version from Quarkus 3.27.3 BOM (CVE fix) -->
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-core</artifactId>
@@ -238,6 +239,11 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
         <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${version.org.codehaus.plexus.plexus-utils}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
 
@@ -283,12 +289,12 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson}</version>
+        <version>${version.com.fasterxml.jackson.annotations}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
-        <version>${version.com.fasterxml.jackson.annotations}</version>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>

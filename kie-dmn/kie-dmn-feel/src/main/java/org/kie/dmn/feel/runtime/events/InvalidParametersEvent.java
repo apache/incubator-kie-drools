@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An event class to report an evaluation error occured due to invalid parameters.
+ * An event class to report an evaluation error occurred due to invalid parameters.
  */
 public class InvalidParametersEvent
         extends FEELEventBase
