@@ -1,0 +1,35 @@
+specVersion: alpha
+kind: YaRD
+name: Insurance Base Price
+inputs:
+  - name: Age
+    type: number
+  - name: Previous incidents
+    type: number
+elements:
+  - name: Base price
+    type: number
+    requirements:
+      - Age
+      - Previous incidents
+    logic:
+      type: DecisionTable
+      inputs:
+        - Age
+        - Previous incidents
+      rules:
+        - when: [">60", ">0"]
+          then: [2000]
+        - when: [">60", "<=0"]
+          then: [1500]
+        - when: ["<=60", ">0"]
+          then: [1200]
+        - when: ["<=60", "<=0"]
+          then: [800]
+  - name: Downpayment
+    type: number
+    requirements:
+      - Base price
+    logic:
+      type: LiteralExpression
+      expression: "Math.max(Base price * 0.07, 50)"

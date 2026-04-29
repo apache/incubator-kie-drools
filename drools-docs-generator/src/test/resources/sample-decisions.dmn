@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             id="_greeting-model"
+             name="Greeting Model"
+             namespace="https://example.org/greeting">
+
+    <inputData id="_full-name" name="Full Name">
+        <variable name="Full Name" typeRef="string"/>
+    </inputData>
+
+    <decision id="_greeting-decision" name="Greeting Message">
+        <variable name="Greeting Message" typeRef="string"/>
+        <informationRequirement>
+            <requiredInput href="#_full-name"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"Hello " + Full Name</text>
+        </literalExpression>
+    </decision>
+</definitions>

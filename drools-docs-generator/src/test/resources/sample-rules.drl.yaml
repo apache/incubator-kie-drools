@@ -1,0 +1,21 @@
+name: org.example.drinks
+imports:
+  - org.example.model.Person
+  - org.example.model.DrinkResult
+rules:
+  - name: "Can Drink - Adult"
+    when:
+      - given: Person
+        as: $p
+        having:
+          - age >= 21
+    then: |
+      $r.setValue("Allowed");
+  - name: "Cannot Drink - Minor"
+    when:
+      - given: Person
+        as: $p
+        having:
+          - age < 21
+    then: |
+      $r.setValue("Not Allowed");

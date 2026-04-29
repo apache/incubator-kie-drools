@@ -1,0 +1,47 @@
+package org.example.loans;
+
+import org.example.model.Applicant;
+import org.example.model.LoanApplication;
+
+global java.util.List approvedApplications;
+
+declare Applicant
+    name : String
+    age : int
+    creditScore : int
+end
+
+declare LoanApplication
+    applicant : Applicant
+    amount : double
+    approved : boolean
+end
+
+rule "Eligible Age Check"
+    salience 10
+    when
+        $app : LoanApplication( $applicant : applicant )
+        Applicant( age >= 18, age <= 70 ) from $applicant
+    then
+        System.out.println("Age is eligible for: " + $applicant.getName());
+end
+
+rule "Credit Score Approval"
+    salience 5
+    when
+        $app : LoanApplication( $applicant : applicant, amount <= 100000 )
+        Applicant( creditScore >= 700 ) from $applicant
+    then
+        $app.setApproved(true);
+        update($app);
+        approvedApplications.add($app);
+end
+
+rule "High Risk Rejection"
+    when
+        $app : LoanApplication( $applicant : applicant, amount > 500000 )
+        Applicant( creditScore < 600 ) from $applicant
+    then
+        $app.setApproved(false);
+        update($app);
+end
