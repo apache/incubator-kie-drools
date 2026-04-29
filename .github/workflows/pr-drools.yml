@@ -80,3 +80,12 @@ jobs:
         with:
           name: dependency-trees-logs_drools_${{ matrix.os }}
           path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
+      - name: Upload Build Compare
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
+          path: |
+            '**/target/reference'
+            '**/target/*.buildcompare'
+            '**/target/*.buildinfo'    
