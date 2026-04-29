@@ -30,6 +30,7 @@
     <allowedPomsList>org.kie:kie-parent</allowedPomsList>
     <!-- Used to define wich artifact are allowed in dependency management even if not implemented in the multimodule project; e.g. if those are generated on-the-fly by script -->
     <allowed_GA></allowed_GA>
+    <buildlogs.dir>build_logs</buildlogs.dir>
     <!-- CHECKSTYLE -->
     <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
