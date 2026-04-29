@@ -147,12 +147,6 @@
       </modules>
     </profile>
     <profile>
-      <id>jitexecutor-native</id>
-      <modules>
-        <module>jitexecutor-native</module>
-      </modules>
-    </profile>
-    <profile>
       <id>reproducible-build</id>
       <activation>
         <property>

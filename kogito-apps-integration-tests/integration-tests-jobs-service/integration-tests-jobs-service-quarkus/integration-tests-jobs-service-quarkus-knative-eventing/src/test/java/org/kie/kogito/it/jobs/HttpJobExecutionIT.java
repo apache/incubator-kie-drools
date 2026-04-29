@@ -44,6 +44,7 @@ import static org.kie.kogito.test.TestUtils.assertJobExists;
 import static org.kie.kogito.test.resources.JobServiceCompositeQuarkusTestResource.JOBS_SERVICE_URL;
 
 @QuarkusIntegrationTest
+@QuarkusTestResource(SinkMock.class)
 @QuarkusTestResource(JobRecipientMock.class)
 @JobServiceTestResource(knativeEventingEnabled = true)
 class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAware, JobServiceHealthAware {

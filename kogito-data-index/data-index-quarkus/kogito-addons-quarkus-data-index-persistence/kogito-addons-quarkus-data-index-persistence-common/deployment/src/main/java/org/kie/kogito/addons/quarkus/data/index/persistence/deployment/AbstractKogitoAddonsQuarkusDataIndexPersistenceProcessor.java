@@ -29,7 +29,7 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 public abstract class AbstractKogitoAddonsQuarkusDataIndexPersistenceProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     AbstractKogitoAddonsQuarkusDataIndexPersistenceProcessor() {
-        super(KogitoCapability.SERVERLESS_WORKFLOW, KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES);
     }
 
     protected void reflectiveHierarchy(Class<?> clazz, BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass) {

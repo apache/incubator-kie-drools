@@ -55,3 +55,6 @@ package-lock.json
 
 # Apache RAT check excludes file
 !.rat-excludes
+
+# Jobs Service ITs
+apps-integration-tests/integration-tests-jobs-service/**/src/main/resources/shared/

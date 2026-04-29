@@ -44,7 +44,7 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKog
     private static final String DATA_SOURCE_NAME_KEY = "datasource.name";
 
     KogitoAddonsQuarkusJobsServiceEmbeddedProcessor() {
-        super(KogitoCapability.SERVERLESS_WORKFLOW, KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

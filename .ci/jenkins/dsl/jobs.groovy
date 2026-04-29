@@ -72,14 +72,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
                     BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'}"
                 ],
-            ], [
-                id: 'serverless-workflow-examples',
-                repository: 'incubator-kie-kogito-examples',
-                dependsOn: 'kogito-apps',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
-                    BUILD_MVN_OPTS_CURRENT: "${defaultBuildMvnOptsCurrent} ${isNative(jobFolder) ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'}"
-                ],
             ]
         ]
     ]

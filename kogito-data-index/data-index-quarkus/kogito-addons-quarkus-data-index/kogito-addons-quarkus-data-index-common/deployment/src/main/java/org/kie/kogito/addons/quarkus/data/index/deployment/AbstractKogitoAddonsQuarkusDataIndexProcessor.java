@@ -51,7 +51,7 @@ public abstract class AbstractKogitoAddonsQuarkusDataIndexProcessor extends OneO
     private static final String SKIP_DEFAULT_DATA_INDEX_URL_PROP = "kogito.data-index-addons.skip-default-data-index-url";
 
     AbstractKogitoAddonsQuarkusDataIndexProcessor() {
-        super(KogitoCapability.SERVERLESS_WORKFLOW, KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)

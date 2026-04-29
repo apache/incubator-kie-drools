@@ -38,9 +38,9 @@
       <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.kie.sonataflow</groupId>
-      <artifactId>sonataflow-quarkus</artifactId>
-     <optional>true</optional>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -82,6 +82,11 @@
       <groupId>org.kie.kogito</groupId>
         <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
         <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
     </dependency>
     <!--  keep build order in place -->
     <dependency>

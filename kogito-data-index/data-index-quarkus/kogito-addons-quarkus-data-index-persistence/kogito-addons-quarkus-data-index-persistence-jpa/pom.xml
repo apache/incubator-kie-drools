@@ -40,7 +40,6 @@
     <module>deployment</module>
     <module>runtime</module>
     <module>integration-tests-process</module>
-    <module>integration-tests-sw</module>
   </modules>
 
 </project>
