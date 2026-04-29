@@ -1142,12 +1142,6 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-scenario-simulation-backend</artifactId>
         <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-scenario-simulation-backend</artifactId>
-        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
@@ -1165,11 +1159,6 @@
       <!-- Efesto plugins -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-drl-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
         <artifactId>kie-drl-compilation-common</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1181,16 +1170,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-kiesession-local-runtime</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-runtime-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-tests</artifactId>
         <version>${project.version}</version>
       </dependency>
       

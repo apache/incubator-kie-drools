@@ -38,6 +38,7 @@
 
   <properties>
     <java.module.name>org.kie.maven.plugin</java.module.name>
+    <path.to.buildlog.directory>${project.basedir}/../${buildlogs.dir}</path.to.buildlog.directory>
   </properties>
 
   <build>
@@ -66,7 +67,7 @@
           <projectsDirectory>src/it</projectsDirectory>
           <debug>true</debug>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <logDirectory>${project.build.directory}/it</logDirectory>
+          <logDirectory>${path.to.buildlog.directory}</logDirectory>
           <filterProperties>
             <org.kie.version>${project.version}</org.kie.version>
           </filterProperties>
