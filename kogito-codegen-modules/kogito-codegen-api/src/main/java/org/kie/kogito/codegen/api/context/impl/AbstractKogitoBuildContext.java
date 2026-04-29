@@ -21,7 +21,6 @@ package org.kie.kogito.codegen.api.context.impl;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import javax.lang.model.SourceVersion;
@@ -49,7 +47,8 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.Yaml;
+
+import static org.drools.codegen.common.context.ModelBuildContextUtils.loadYmlProperties;
 
 public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
 
@@ -110,55 +109,6 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         }
 
         return applicationProperties;
-    }
-
-    protected static void loadYmlProperties(File ymlFile, Properties applicationProperties) {
-        Map<String, String> ymlMap = loadYmlStringMap(ymlFile);
-        if (ymlMap != null) {
-            applicationProperties.putAll(ymlMap);
-        }
-    }
-
-    protected static Map<String, String> loadYmlStringMap(File ymlFile) {
-        TreeMap<String, Object> ymlMap = loadYmlMap(ymlFile);
-        if (ymlMap != null) {
-            return convertYamlObjectToMap(ymlMap);
-        } else {
-            return null;
-        }
-    }
-
-    protected static TreeMap<String, Object> loadYmlMap(File ymlFile) {
-        if (ymlFile.exists() && ymlFile.isFile() && ymlFile.canRead()) {
-            Yaml yaml = new Yaml();
-            try (FileReader yamlFileReader = new FileReader(ymlFile, StandardCharsets.UTF_8)) {
-                return yaml.loadAs(yamlFileReader, TreeMap.class);
-            } catch (IOException e) {
-                LOGGER.debug("Unable to load '{}'.", ymlFile.getName(), e);
-            }
-        } else {
-            LOGGER.debug("Unable to load '{}'.", ymlFile.getName());
-        }
-        return null;
-    }
-
-    protected static Map<String, String> convertYamlObjectToMap(TreeMap<String, Object> toConvert) {
-        Map<String, String> toReturn = new HashMap<>();
-        convertYamlObjectToMap(toConvert, new StringBuilder(), toReturn);
-        return toReturn;
-    }
-
-    protected static void convertYamlObjectToMap(Map<String, Object> toRead, StringBuilder builder, Map<String, String> toPopulate) {
-        toRead.forEach((key, value) -> {
-            if (value instanceof Map) {
-                StringBuilder newBuilder = new StringBuilder(builder);
-                convertYamlObjectToMap((Map<String, Object>) value, newBuilder.append(key).append("."), toPopulate);
-            } else {
-                String property = builder.toString() + key;
-                String propertyValue = value != null ? value.toString() : "";
-                toPopulate.put(property, propertyValue);
-            }
-        });
     }
 
     @Override
