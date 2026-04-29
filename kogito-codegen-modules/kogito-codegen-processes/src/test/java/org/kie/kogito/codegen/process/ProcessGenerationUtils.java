@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.io.FileSystemResource;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.Process;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
@@ -67,11 +66,8 @@ public class ProcessGenerationUtils {
                                 process.setResource(r);
                                 processes.add(process);
                             });
-                } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
-                    KogitoWorkflowProcess swfWorkflow = ProcessCodegen.parseWorkflowFile(r, JavaKogitoBuildContext.builder().build()).info();
-                    swfWorkflow.setResource(r);
-                    processes.add(swfWorkflow);
                 }
+
                 if (processes.isEmpty()) {
                     throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);
                 }

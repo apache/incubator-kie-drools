@@ -89,7 +89,6 @@ public abstract class AbstractProtoGeneratorTest<T> {
 
     @Test
     void testJsonNode() {
-        // this test is for serverless workflow generation data.
         AbstractProtoGenerator<T> generator = protoGeneratorBuilder()
                 .build(Collections.singleton(convertToType(JacksonData.class)));
         Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");

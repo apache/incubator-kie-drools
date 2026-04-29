@@ -82,7 +82,6 @@ import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.kie.kogito.codegen.core.utils.CodegenUtil.isFaultToleranceEnabled;
 import static org.kie.kogito.codegen.core.utils.CodegenUtil.isTransactionEnabled;
 import static org.kie.kogito.codegen.faultTolerance.FaultToleranceUtil.lookFaultToleranceAnnotatorForContext;
-import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
 
 public class UserTaskCodegen extends AbstractGenerator {
 
@@ -395,7 +394,7 @@ public class UserTaskCodegen extends AbstractGenerator {
             ValidationLogDecorator decorator = new ValidationLogDecorator(processesErrors);
             decorator.decorate();
             //rethrow exception to break the flow after decoration unless property is set to false
-            if (context.getApplicationProperty(FAIL_ON_ERROR_PROPERTY, Boolean.class).orElse(true)) {
+            if (context.getApplicationProperty("kogito.codegen.process.failOnError", Boolean.class).orElse(true)) {
                 throw new ProcessCodegenException("Processes with errors are " + decorator.toString());
             }
         }

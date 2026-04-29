@@ -28,7 +28,6 @@ public interface KogitoWorkflowProcess extends WorkflowProcess {
     String PRIVATE_VISIBILITY = "Private";
     String NONE_VISIBILITY = "None";
     String BPMN_TYPE = "BPMN";
-    String SW_TYPE = "SW";
     String RULEFLOW_TYPE = "RuleFlow";
 
     String getVisibility();

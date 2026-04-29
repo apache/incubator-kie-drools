@@ -30,7 +30,7 @@ class KogitoAddOnPersistenceRocksDBProcessor extends OneOfCapabilityKogitoAddOnP
     private static final String FEATURE = "kie-addon-persistence-rocksdb-extension";
 
     KogitoAddOnPersistenceRocksDBProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

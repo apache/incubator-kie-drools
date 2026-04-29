@@ -29,7 +29,7 @@ class KogitoAddOnPersistenceInfinispanProcessor extends OneOfCapabilityKogitoAdd
     private static final String FEATURE = "kie-addon-persistence-infinispan-extension";
 
     KogitoAddOnPersistenceInfinispanProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

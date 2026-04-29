@@ -32,7 +32,7 @@ class KogitoAddOnPersistenceJDBCProcessor extends OneOfCapabilityKogitoAddOnProc
     private static final String FEATURE = "kie-addon-persistence-jdbc-extension";
 
     KogitoAddOnPersistenceJDBCProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

@@ -421,7 +421,7 @@ public class ProcessResourceGenerator {
     }
 
     private boolean isTransactionEnabled() {
-        return transactionEnabled && context.hasDI() && !isServerless();
+        return transactionEnabled && context.hasDI();
     }
 
     /**
@@ -431,7 +431,7 @@ public class ProcessResourceGenerator {
      *
      */
     protected void manageTransactional(CompilationUnit compilationUnit) {
-        if (isTransactionEnabled()) { // disabling transaction for serverless
+        if (isTransactionEnabled()) {
             LOG.debug("Transaction is enabled, adding annotations...");
             DependencyInjectionAnnotator dependencyInjectionAnnotator = context.getDependencyInjectionAnnotator();
             getRestMethods(compilationUnit)
@@ -446,7 +446,7 @@ public class ProcessResourceGenerator {
      *
      */
     protected void manageFaultTolerance(CompilationUnit compilationUnit) {
-        if (faultToleranceEnabled && !isServerless()) {// disabling fault tolerance for serverless
+        if (faultToleranceEnabled) {
             if (!isTransactionEnabled()) {
                 throw new ProcessCodegenException("Fault tolerance is enabled, but transactions are disabled. Please enable transactions before fault tolerance.");
             }
@@ -589,9 +589,5 @@ public class ProcessResourceGenerator {
 
     protected boolean isPublic() {
         return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
-    }
-
-    protected boolean isServerless() {
-        return KogitoWorkflowProcess.SW_TYPE.equalsIgnoreCase(process.getType());
     }
 }

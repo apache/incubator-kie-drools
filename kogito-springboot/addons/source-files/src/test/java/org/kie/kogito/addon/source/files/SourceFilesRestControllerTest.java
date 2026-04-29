@@ -64,7 +64,7 @@ public class SourceFilesRestControllerTest {
 
     @Test
     void getValidSourceFileByProcessIdTest() throws Exception {
-        when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of(new SourceFile("petstore.sw.json")));
+        when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of(new SourceFile("hiring.bpmn")));
         assertThat(sourceFilesRestController.getSourceFileByProcessId(PROCESS_ID).getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
     }

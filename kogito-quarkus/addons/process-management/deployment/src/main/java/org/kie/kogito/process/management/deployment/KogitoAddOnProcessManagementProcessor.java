@@ -29,7 +29,7 @@ class KogitoAddOnProcessManagementProcessor extends OneOfCapabilityKogitoAddOnPr
     private static final String FEATURE = "kie-addon-process-management-extension";
 
     KogitoAddOnProcessManagementProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

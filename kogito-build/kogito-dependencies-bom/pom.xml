@@ -93,7 +93,6 @@
     <version.org.flywaydb>11.14.1</version.org.flywaydb>
     <version.org.postgresql>42.7.8</version.org.postgresql>
     <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
-    <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
     <version.io.smallrye-config>3.13.4</version.io.smallrye-config>
     <version.org.awaitility>4.3.0</version.org.awaitility>
@@ -1254,27 +1253,6 @@
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-json-org</artifactId>
         <version>${version.com.fasterxml.jackson.datatype}</version>
-      </dependency>
-      <!-- Serverless Workflow -->
-      <dependency>
-        <groupId>io.serverlessworkflow</groupId>
-        <artifactId>serverlessworkflow-api</artifactId>
-        <version>${version.io.serverlessworkflow}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.serverlessworkflow</groupId>
-        <artifactId>serverlessworkflow-spi</artifactId>
-        <version>${version.io.serverlessworkflow}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.serverlessworkflow</groupId>
-        <artifactId>serverlessworkflow-validation</artifactId>
-        <version>${version.io.serverlessworkflow}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.serverlessworkflow</groupId>
-        <artifactId>serverlessworkflow-diagram</artifactId>
-        <version>${version.io.serverlessworkflow}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>

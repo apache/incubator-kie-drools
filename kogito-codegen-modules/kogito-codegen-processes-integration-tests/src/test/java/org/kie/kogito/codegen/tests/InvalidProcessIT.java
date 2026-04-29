@@ -68,12 +68,6 @@ public class InvalidProcessIT extends AbstractCodegenIT {
                         "invalid/duplicated-process-id-2.bpmn2"));
         assertEquals("Duplicated item found with id duplicated. Please review the .bpmn files",
                 exceptionBpmn.getMessage());
-
-        final ProcessCodegenException exceptionWorkflow =
-                (ProcessCodegenException) catchThrowable(() -> generateCodeProcessesOnly("invalid/duplicated-workflow-id-1.sw.yml",
-                        "invalid/duplicated-workflow-id-2.sw.yml"));
-        assertEquals("Duplicated item found with id helloworld. Please review the .sw files",
-                exceptionWorkflow.getMessage());
     }
 
     @ParameterizedTest

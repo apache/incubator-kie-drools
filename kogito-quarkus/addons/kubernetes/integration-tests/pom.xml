@@ -57,8 +57,8 @@
             <artifactId>quarkus-smallrye-openapi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.kie.sonataflow</groupId>
-            <artifactId>sonataflow-quarkus</artifactId>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

@@ -22,8 +22,6 @@ import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 public class ModelClassGenerator {
 
@@ -32,8 +30,7 @@ public class ModelClassGenerator {
     private final String modelClassName;
 
     public ModelClassGenerator(KogitoBuildContext context, WorkflowProcess workFlowProcess) {
-        modelMetaData = workFlowProcess.getType().equals(KogitoWorkflowProcess.SW_TYPE) ? ServerlessWorkflowUtils.getModelMetadata(workFlowProcess)
-                : ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
+        modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
         modelClassName = modelMetaData.getModelClassName();
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
         modelMetaData.setSupportsValidation(context.isValidationSupported());

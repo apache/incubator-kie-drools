@@ -20,11 +20,10 @@
 # Kogito Messaging Add-on
 
 These add-ons provide a default implementation in our supported target platforms for EventEmitter and EventReceiver interfaces.
-EventEmitter and EventReceiver interfaces are used for enabling messaging by process, for serverless workflow events and for event decision handling.
+EventEmitter and EventReceiver interfaces are used for enabling messaging by process and for event decision handling.
 See the following sections in our documentation to find out more:
 
 - [Knative Eventing in Kogito services](https://docs.jboss.org/kogito/release/latest/html_single/#con-knative-eventing_kogito-developing-process-services)
-- [Serverless Workflow definitions](https://docs.jboss.org/kogito/release/latest/html_single/#con-serverless-workflow-definitions_kogito-orchestrating-serverless)
 - [Enabling Kafka messaging for Kogito services](https://docs.jboss.org/kogito/release/latest/html_single/#proc-messaging-enabling_kogito-configuring)
 
 ## Examples
@@ -37,9 +36,6 @@ Please check the following examples to explore more about this capability:
 - [process-kafka-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-kafka-quickstart-quarkus)
 - [process-kafka-quickstart-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-springboot-examples/process-kafka-quickstart-springboot)
 - [process-knative-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-knative-quickstart-quarkus)
-- [serverless-workflow-github-showcase](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-github-showcase)
-- [serverless-workflow-service-calls-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-service-calls-quarkus)
-- [serverless-workflow-temperature-conversion](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-temperature-conversion)
 
 ## Message Payload Decorator
 

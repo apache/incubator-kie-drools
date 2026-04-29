@@ -38,9 +38,6 @@ kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resou
 kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/org/kie/kogito/codegen/process/process-generation-test.skip.txt
 kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/test/resources/sampleFile1.txt
 kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/test/resources/sampleFile2.txt
-kogito-serverless-workflow/kogito-serverless-workflow-builder/src/test/resources/pepe a pepa.txt
-kogito-serverless-workflow/kogito-serverless-workflow-executor-python/requirements.txt
-kogito-serverless-workflow/kogito-serverless-workflow-executor-tests/src/test/resources/logback.xml
 quarkus/addons/dynamic/integration-tests/src/main/resources/application.properties
 quarkus/addons/dynamic/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/events/decisions/deployment/.gitignore
@@ -65,7 +62,6 @@ quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/mail/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/messaging/common/src/main/resources/META-INF/kogito.addon
 quarkus/addons/messaging/runtime/src/main/resources/META-INF/kogito.addon
-quarkus/addons/microprofile-config-service-catalog/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/monitoring/core/src/main/resources/META-INF/kogito.addon
 quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/kogito.addon
@@ -89,12 +85,6 @@ quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions-i
 quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/resources/PMMLRegression.pmml
 quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/adult.txt
 quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/drl1.txt
-quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/helloworldevent.sw.yaml
-quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/long-call.sw.yaml
-quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/__snapshots__/ServerlessWorkflowCodestartTest/testContent/src_test_resources_application.yml
-quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/application.properties
-quarkus/extensions/kogito-quarkus-serverless-workflow-jdbc-token-persistence-extension/kogito-quarkus-serverless-workflow-jdbc-token-persistence/src/main/resources/META-INF/beans.xml
-quarkus/extensions/kogito-quarkus-serverless-workflow-jdbc-token-persistence-extension/kogito-quarkus-serverless-workflow-jdbc-token-persistence-integration-test/src/test/resources/application.properties
 quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
 quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLRegression.pmml
 quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLTree.pmml

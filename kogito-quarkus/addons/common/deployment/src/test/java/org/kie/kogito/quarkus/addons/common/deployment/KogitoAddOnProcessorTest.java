@@ -42,15 +42,6 @@ public class KogitoAddOnProcessorTest {
     }
 
     @Test
-    void verifyAtLeastOneRequiredCapabilitiesWhenNotPresent() {
-        final RequireOneEngineAddonProcessor requireEngineAddonProcessor = new RequireOneEngineAddonProcessor();
-        final IllegalStateException exception =
-                assertThrows(IllegalStateException.class,
-                        () -> requireEngineAddonProcessor.verifyCapabilities(new Capabilities(Collections.emptySet())));
-        assertTrue(exception.getMessage().contains(KogitoCapability.SERVERLESS_WORKFLOW.getCapability()));
-    }
-
-    @Test
     void verifyAnyEngineRequiredButNotPresent() {
         final AnyEngineAddonProcessorImpl anyEngineAddonProcessorImpl = new AnyEngineAddonProcessorImpl();
         final IllegalStateException exception =
@@ -59,7 +50,6 @@ public class KogitoAddOnProcessorTest {
         assertTrue(exception.getMessage().contains(KogitoCapability.DECISIONS.getCapability()));
         assertTrue(exception.getMessage().contains(KogitoCapability.PREDICTIONS.getCapability()));
         assertTrue(exception.getMessage().contains(KogitoCapability.PROCESSES.getCapability()));
-        assertTrue(exception.getMessage().contains(KogitoCapability.SERVERLESS_WORKFLOW.getCapability()));
         assertTrue(exception.getMessage().contains(KogitoCapability.RULES.getCapability()));
     }
 
@@ -76,7 +66,7 @@ public class KogitoAddOnProcessorTest {
     void verifyOneRequiredCapabilitiesWhenPresent() {
         final RequireOneEngineAddonProcessor requireEngineAddonProcessor = new RequireOneEngineAddonProcessor();
         final Set<String> capabilities = new HashSet<>();
-        capabilities.add(KogitoCapability.SERVERLESS_WORKFLOW.getCapability());
+        capabilities.add(KogitoCapability.PROCESSES.getCapability());
         assertDoesNotThrow(() -> requireEngineAddonProcessor.verifyCapabilities(new Capabilities(capabilities)));
     }
 

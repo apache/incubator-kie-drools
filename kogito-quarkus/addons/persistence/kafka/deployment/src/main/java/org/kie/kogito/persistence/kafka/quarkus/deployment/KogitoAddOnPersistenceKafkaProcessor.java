@@ -32,7 +32,7 @@ class KogitoAddOnPersistenceKafkaProcessor extends OneOfCapabilityKogitoAddOnPro
     private static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
 
     KogitoAddOnPersistenceKafkaProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

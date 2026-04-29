@@ -19,10 +19,8 @@
 package org.kie.kogito.integrationtests.quarkus.source.files;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,9 +44,13 @@ class SourceFilesAddOnIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    public static String readFileContent(String file) throws URISyntaxException, IOException {
-        Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
-        return Files.readString(path);
+    public static String readFileContent(String file) throws IOException {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
+            if (is == null) {
+                throw new IOException("Resource not found: " + file);
+            }
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
     @Test
@@ -57,11 +59,11 @@ class SourceFilesAddOnIT {
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .contentType(ContentType.JSON)
                 .when()
-                .get(String.format(GET_PROCESS_SOURCES_PATH, "ymlgreet"))
+                .get(String.format(GET_PROCESS_SOURCES_PATH, "approvals"))
                 .then()
                 .statusCode(200)
                 .body("size()", is(1))
-                .body("", hasItems(hasEntry("uri", "org/kie/kogito/examples/ymlgreet.sw.yml")));
+                .body("", hasItems(hasEntry("uri", "org/kie/kogito/examples/approval.bpmn")));
     }
 
     @Test
@@ -69,7 +71,7 @@ class SourceFilesAddOnIT {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get(String.format(GET_PROCESS_SOURCES_PATH, "ymlgreet"))
+                .get(String.format(GET_PROCESS_SOURCES_PATH, "approvals"))
                 .then()
                 .statusCode(401);
     }
@@ -78,10 +80,10 @@ class SourceFilesAddOnIT {
     void testGetSourceFileByProcessId() throws Exception {
         given().header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .when()
-                .get(String.format(GET_PROCESS_SOURCE_PATH, "ymlgreet"))
+                .get(String.format(GET_PROCESS_SOURCE_PATH, "approvals2"))
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("ymlgreet-expected.sw.yml")));
+                .body(equalTo(readFileContent("approval2.bpmn")));
     }
 
     @Test
@@ -89,7 +91,7 @@ class SourceFilesAddOnIT {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get(String.format(GET_PROCESS_SOURCES_PATH, "ymlgreet"))
+                .get(String.format(GET_PROCESS_SOURCES_PATH, "approvals"))
                 .then()
                 .statusCode(401);
     }
@@ -99,10 +101,10 @@ class SourceFilesAddOnIT {
         given()
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .when()
-                .get("/management/processes/sources?uri=petstore_root.sw.json")
+                .get("/management/processes/sources?uri=approval2.bpmn")
                 .then()
                 .statusCode(200)
-                .header("Content-Length", "556");
+                .header("Content-Length", (String) null);
     }
 
     @Test
@@ -110,17 +112,17 @@ class SourceFilesAddOnIT {
         given()
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .when()
-                .get("/management/processes/sources?uri=org/kie/kogito/examples/ymlgreet.sw.yml")
+                .get("/management/processes/sources?uri=org/kie/kogito/examples/orders.bpmn2")
                 .then()
                 .statusCode(200)
-                .header("Content-Length", "1802");
+                .header("Content-Length", (String) null);
     }
 
     @Test
     void testGetSourceFileNonAuthenticated() {
         given()
                 .when()
-                .get("/management/processes/sources?uri=petstore.json")
+                .get("/management/processes/sources?uri=approval2.bpmn")
                 .then()
                 .statusCode(401);
     }

@@ -35,7 +35,7 @@ class KogitoAddOnEventProcessProcessor extends OneOfCapabilityKogitoAddOnProcess
     private static final String FEATURE = "kie-addon-events-process-extension";
 
     KogitoAddOnEventProcessProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

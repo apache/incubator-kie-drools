@@ -31,15 +31,12 @@ public final class KogitoCapability {
     public static final KogitoCapability PROCESSES = new KogitoCapability("org.jbpm.processes", new KogitoCapabilityExtension("org.jbpm", "jbpm-quarkus"));
     public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.predictions", new KogitoCapabilityExtension("org.kie", "kie-quarkus-predictions"));
     public static final KogitoCapability RULES = new KogitoCapability("org.drools.rules", new KogitoCapabilityExtension("org.drools", "drools-quarkus-rules"));
-    public static final KogitoCapability SERVERLESS_WORKFLOW =
-            new KogitoCapability("org.apache.kie.sonataflow.serverless-workflow", new KogitoCapabilityExtension("org.apache.kie.sonataflow", "sonataflow-quarkus"));
 
     public static final List<KogitoCapability> ENGINES = asList(
             KogitoCapability.DECISIONS,
             KogitoCapability.PROCESSES,
             KogitoCapability.PREDICTIONS,
-            KogitoCapability.RULES,
-            KogitoCapability.SERVERLESS_WORKFLOW);
+            KogitoCapability.RULES);
 
     private final String capability;
     private final KogitoCapabilityExtension offeredBy;

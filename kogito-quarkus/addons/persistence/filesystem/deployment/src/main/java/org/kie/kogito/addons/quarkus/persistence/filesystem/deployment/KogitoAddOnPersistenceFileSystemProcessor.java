@@ -29,7 +29,7 @@ class KogitoAddOnPersistenceFileSystemProcessor extends OneOfCapabilityKogitoAdd
     private static final String FEATURE = "kie-addon-persistence-filesystem-extension";
 
     KogitoAddOnPersistenceFileSystemProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

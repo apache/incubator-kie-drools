@@ -35,7 +35,6 @@
   </properties>
 
   <modules>
-    <module>integration-tests-quarkus-openapi-client</module>
     <!-- TODO:Figure out Kafka containers, ports, resources -->
     <module>integration-tests-quarkus-rules</module>
     <module>integration-tests-quarkus-legacy-rules</module>

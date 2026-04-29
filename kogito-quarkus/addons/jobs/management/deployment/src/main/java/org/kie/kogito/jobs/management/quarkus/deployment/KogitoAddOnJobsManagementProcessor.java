@@ -33,7 +33,7 @@ class KogitoAddOnJobsManagementProcessor extends OneOfCapabilityKogitoAddOnProce
     private static final String FEATURE = "kogito-addon-jobs-management-extension";
 
     KogitoAddOnJobsManagementProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

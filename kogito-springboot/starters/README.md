@@ -45,7 +45,7 @@ Replace `${version.kogito}` with the [current version of Kogito](https://github.
 ## jBPM with Drools Spring Boot Starter
 
 The `jbpm-with-drools-spring-boot-starter` is an all-in-one descriptor for projects that needs every Business Automation engine. 
-It includes Decisions, Rules, Process, Predictions and the Serverless Workflow implementation.
+It includes Decisions, Rules, Process, and the Predictions implementations.
 
 If your project has all these assets or you want a quick way of getting started, this is the
 starter you need. For a more granular approach, consider the specific starters (or a combination of them). See below in

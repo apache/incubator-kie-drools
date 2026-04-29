@@ -52,7 +52,6 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
         logger.info("Consumer for {} started", trigger);
     }
 
-    // this will be overriden by serverless workflow
     protected Function<DataEvent<D>, D> getDataResolver() {
         return this::justData;
     }

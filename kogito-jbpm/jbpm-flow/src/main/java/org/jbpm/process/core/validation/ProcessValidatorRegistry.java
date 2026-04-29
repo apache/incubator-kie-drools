@@ -38,7 +38,6 @@ public class ProcessValidatorRegistry {
     private ProcessValidatorRegistry() {
         defaultValidators.put(KogitoWorkflowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
         defaultValidators.put(KogitoWorkflowProcess.BPMN_TYPE, RuleFlowProcessValidator.getInstance());
-        defaultValidators.put(KogitoWorkflowProcess.SW_TYPE, RuleFlowProcessValidator.getInstance());
     }
 
     public static ProcessValidatorRegistry getInstance() {

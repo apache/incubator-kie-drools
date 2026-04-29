@@ -1,7 +1,0 @@
-{
-  "resources": {
-    "includes": [
-      {"pattern": "jep/.*\\.txt"}
-    ]
-  }
-}

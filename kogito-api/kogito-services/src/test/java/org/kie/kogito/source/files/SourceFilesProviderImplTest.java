@@ -34,29 +34,29 @@ class SourceFilesProviderImplTest {
 
     @Test
     void addSourceFile() {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.json"));
+        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.bpmn"));
 
         assertThat(sourceFilesProvider.getProcessSourceFiles("a_process"))
-                .contains(new SourceFile("myworkflow.sw.json"));
+                .contains(new SourceFile("myworkflow.bpmn"));
     }
 
     @Test
     void getSourceFilesByProcessId() {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.yaml"));
+        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.bpmn"));
+        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.bpmn2"));
 
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.yaml"));
+        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.bpmn"));
+        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.bpmn2"));
 
         assertThat(sourceFilesProvider.getProcessSourceFiles("a_process"))
                 .containsExactlyInAnyOrder(
-                        new SourceFile("myworkflow.sw.json"),
-                        new SourceFile("myworkflow.sw.yaml"));
+                        new SourceFile("myworkflow.bpmn"),
+                        new SourceFile("myworkflow.bpmn2"));
 
         assertThat(sourceFilesProvider.getProcessSourceFiles("another_process"))
                 .containsExactlyInAnyOrder(
-                        new SourceFile("myanotherworkflow.sw.json"),
-                        new SourceFile("myanotherworkflow.sw.yaml"));
+                        new SourceFile("myanotherworkflow.bpmn"),
+                        new SourceFile("myanotherworkflow.bpmn2"));
     }
 
     @Test
@@ -67,18 +67,10 @@ class SourceFilesProviderImplTest {
 
     @Test
     void getValidSourceFileDefinitionByProcessIdTest() {
-        SourceFile petstoreJson = new SourceFile("petstore.json");
-        SourceFile petstoreSwJson = new SourceFile("petstore.sw.json");
-        SourceFile ymlgreetSwYml = new SourceFile("ymlgreet.sw.yml");
         SourceFile hiringBpmn = new SourceFile("hiring.bpmn");
 
-        sourceFilesProvider.addSourceFile("petstore_json_process", petstoreJson);
-        sourceFilesProvider.addSourceFile("petstore_sw_json_process", petstoreSwJson);
-        sourceFilesProvider.addSourceFile("ymlgreet.sw_process", ymlgreetSwYml);
         sourceFilesProvider.addSourceFile("bpmn_process", hiringBpmn);
 
-        assertThat(sourceFilesProvider.getProcessSourceFile("petstore_sw_json_process")).contains(petstoreSwJson);
-        assertThat(sourceFilesProvider.getProcessSourceFile("ymlgreet.sw_process")).contains(ymlgreetSwYml);
         assertThat(sourceFilesProvider.getProcessSourceFile("bpmn_process")).contains(hiringBpmn);
     }
 

@@ -1,5 +1,0 @@
-quarkus:
-  http:
-    test-port: 0
-  devservices:
-    enabled: "false"

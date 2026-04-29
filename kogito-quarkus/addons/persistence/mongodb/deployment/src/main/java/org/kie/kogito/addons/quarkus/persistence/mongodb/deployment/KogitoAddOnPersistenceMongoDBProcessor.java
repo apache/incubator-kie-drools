@@ -29,7 +29,7 @@ class KogitoAddOnPersistenceMongoDBProcessor extends OneOfCapabilityKogitoAddOnP
     private static final String FEATURE = "kie-addon-persistence-mongodb-extension";
 
     KogitoAddOnPersistenceMongoDBProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

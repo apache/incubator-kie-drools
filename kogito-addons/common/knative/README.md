@@ -44,4 +44,3 @@ in our documentation to know more about this addon.
 Please check the following examples to explore more about this capability:
 
 - [process-knative-quickstart-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-knative-quickstart-quarkus)
-- [serverless-workflow-order-processing](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/serverless-workflow-order-processing)

@@ -33,7 +33,7 @@ class KogitoAddOnJobsMessagingProcessor extends OneOfCapabilityKogitoAddOnProces
     private static final String FEATURE = "kogito-addon-jobs-messaging-extension";
 
     KogitoAddOnJobsMessagingProcessor() {
-        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
+        super(KogitoCapability.PROCESSES);
     }
 
     @BuildStep

@@ -47,9 +47,7 @@
     <module>knative</module>
     <module>kubernetes</module>
     <module>events</module>
-    <module>camel</module>
     <module>fabric8-kubernetes-service-catalog</module>
-    <module>microprofile-config-service-catalog</module>
     <module>jobs</module>
     <module>explainability</module>
     <module>mail</module>
@@ -58,31 +56,9 @@
     <module>task-notification</module>
     <module>task-management</module>
     <module>marshallers</module>
-    <module>process-definitions</module>
-    <module>dynamic</module>
     <module>jbpm-usertask-storage-jpa</module>
-    <module>jwt-parser</module>
-    <module>token-exchange</module>
     <module>process-instance-migration</module>
-    <module>openapi</module>
-    <module>opentelemetry</module>
-    <module>grpc</module>
-    <module>asyncapi</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>full</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>python</module>
-       </modules>
-     </profile>
-  </profiles>
 
   <build>
     <pluginManagement>

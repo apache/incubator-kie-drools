@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.drools.io.InternalResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -75,8 +74,6 @@ import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.process.validation.ValidationLogDecorator;
-import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -97,7 +94,6 @@ import static org.kie.kogito.codegen.process.util.SourceFilesProviderProducerUti
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
 import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
-import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
 
 /**
  * Entry point to process code generation
@@ -168,10 +164,6 @@ public class ProcessCodegen extends AbstractGenerator {
                                 processSVG(resource, resources, p, processSVGMap);
                             }
                             return p.stream().map(KogitoWorkflowProcess.class::cast).map(GeneratedInfo::new).map(info -> addResource(info, resource));
-                        } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(resource.getSourcePath()::endsWith)) {
-                            GeneratedInfo<KogitoWorkflowProcess> generatedInfo = parseWorkflowFile(resource, context);
-                            notifySourceFileCodegenBindListeners(context, resource, Collections.singletonList(generatedInfo.info()));
-                            return Stream.of(addResource(generatedInfo, resource));
                         }
                     } catch (ValidationException e) {
                         processesErrors.put(resource.getSourcePath(), e);
@@ -200,7 +192,7 @@ public class ProcessCodegen extends AbstractGenerator {
             ValidationLogDecorator decorator = new ValidationLogDecorator(processesErrors);
             decorator.decorate();
             //rethrow exception to break the flow after decoration unless property is set to false
-            if (context.getApplicationProperty(FAIL_ON_ERROR_PROPERTY, Boolean.class).orElse(true)) {
+            if (context.getApplicationProperty("kogito.codegen.process.failOnError", Boolean.class).orElse(true)) {
                 throw new ProcessCodegenException("Processes with errors are " + decorator.toString());
             }
         }
@@ -253,21 +245,6 @@ public class ProcessCodegen extends AbstractGenerator {
         return new ProcessCodegen(context, processes);
     }
 
-    protected static GeneratedInfo<KogitoWorkflowProcess> parseWorkflowFile(Resource r, KogitoBuildContext context) {
-        InternalResource resource = (InternalResource) r;
-        try (Reader reader = resource.getReader()) {
-            ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(reader, WorkflowFormat.fromFileName(resource.getSourcePath()), context);
-            if (resource.hasURL()) {
-                parser.withBaseURI(resource.getURL());
-            } else {
-                parser.withBaseURI("classpath:" + resource.getSourcePath());
-            }
-            return parser.getProcessInfo();
-        } catch (Exception e) {
-            throw new ProcessParsingException(e);
-        }
-    }
-
     protected static Collection<Process> parseProcessFile(Resource r) {
         try (Reader reader = r.getReader()) {
             XmlProcessReader xmlReader = new XmlProcessReader(
@@ -306,7 +283,7 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     private boolean skipModelGeneration(WorkflowProcess process) {
-        return process.getType().equals(KogitoWorkflowProcess.SW_TYPE);
+        return false;
     }
 
     @Override
@@ -331,8 +308,8 @@ public class ProcessCodegen extends AbstractGenerator {
             if (workFlowProcess instanceof DummyProcess) {
                 continue; // Temporary hack for incubator-kie-issues#2060
             }
-            // transaction is disabled by default for SW types
-            boolean defaultTransactionEnabled = !KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType());
+            // transaction is enabled by default
+            boolean defaultTransactionEnabled = true;
             if (isTransactionEnabled(this, context(), defaultTransactionEnabled)) {
                 ((WorkflowProcessImpl) workFlowProcess).setMetaData(WorkflowProcessParameters.WORKFLOW_PARAM_TRANSACTIONS.getName(), "true");
             }
@@ -348,15 +325,10 @@ public class ProcessCodegen extends AbstractGenerator {
                 processIdToOutputModelGenerator.put(workFlowProcess.getId(), omcg);
             }
         }
-        boolean isServerless = false;
         // then we generate work items task inputs and outputs if any
         for (WorkflowProcess workFlowProcess : processes.values()) {
             if (workFlowProcess instanceof DummyProcess) {
                 continue; // Temporary hack for incubator-kie-issues#2060
-            }
-            isServerless |= KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType());
-            if (KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType())) {
-                continue;
             }
             WorkItemModelClassGenerator utcg = new WorkItemModelClassGenerator(workFlowProcess);
             processIdToWorkItemModel.put(workFlowProcess.getId(), utcg.generate());
@@ -505,7 +477,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         generateSourceFileProviderProducer();
 
-        if (isTransactionEnabled(this, context()) && !isServerless) {
+        if (isTransactionEnabled(this, context())) {
             String template = "ExceptionHandlerTransaction";
             TemplatedGenerator generator = TemplatedGenerator.builder()
                     .withTemplateBasePath("/class-templates/transaction/")

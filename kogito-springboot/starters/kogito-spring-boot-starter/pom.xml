@@ -32,7 +32,7 @@
   <groupId>org.jbpm</groupId>
   <artifactId>jbpm-with-drools-spring-boot-starter</artifactId>
   <name>jBPM with Drools :: Spring Boot :: Starter</name>
-  <description>Spring Boot Starter for jBPM with Drools Runtimes. Contains the following engines: Decisions, Rules, Processes, Predictions and Serverless Workflows</description>
+  <description>Spring Boot Starter for jBPM with Drools Runtimes. Contains the following engines: Decisions, Rules, Processes, and Predictions</description>
 
     <properties>
         <java.module.name>org.kie.kogito.springboot.starter</java.module.name>
