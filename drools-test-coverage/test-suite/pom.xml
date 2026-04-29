@@ -181,6 +181,7 @@
 
   <build>
     <plugins>
+      <!-- Ensures kie-maven-plugin is built before this module in the Maven reactor -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
