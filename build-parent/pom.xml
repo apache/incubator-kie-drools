@@ -1464,10 +1464,6 @@
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
                       <!-- Bundled by both com.sun:tools and com.sun.xml.bind:jaxb-xjc. No easy way to exclude one of them. -->
                       <ignoreClass>org.relaxng.datatype.*</ignoreClass>
-                      <!-- Old Eclipse Aether classes bundled in maven-artifact-transfer that conflict with maven-resolver-util -->
-                      <!-- maven-artifact-transfer is deprecated but still used by kie-maven-plugin -->
-                      <ignoreClass>org.eclipse.aether.util.*</ignoreClass>
-                      <ignoreClass>org.eclipse.aether.artifact.*</ignoreClass>
                       <!-- ignoring java 9 compatible class for modules -->
                       <ignoreClass>module-info</ignoreClass>
                       <!-- ignoring multirelease jar classes -->
