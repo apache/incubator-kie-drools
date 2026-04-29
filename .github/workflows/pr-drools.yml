@@ -47,7 +47,6 @@ jobs:
     name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     env:
       DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
-      BUILD_LOGS_DIR: 'build_logs'
     steps:
       - name: Clean Disk Space
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -86,7 +85,7 @@ jobs:
         if: ${{ always() }}
         with:
           name: build-logs_${{ matrix.job_name }}_${{ matrix.os }}
-          path: '**/${{ env.BUILD_LOGS_DIR }}'
+          path: '**/build.log'
       - name: Upload Build Compare
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
