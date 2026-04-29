@@ -87,3 +87,12 @@ jobs:
         with:
           name: build-logs_${{ matrix.job_name }}_${{ matrix.os }}
           path: '**/${{ env.BUILD_LOGS_DIR }}'
+      - name: Upload Build Compare
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
+          path: |
+            '**/target/reference'
+            '**/target/*.buildcompare'
+            '**/target/*.buildinfo'    
