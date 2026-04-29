@@ -33,13 +33,13 @@
   <properties>
     <org.kie.version>${project.version}</org.kie.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>11</maven.compiler.release>
-    <junit.version>4.13.1</junit.version>
-    <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    <maven.compiler.release>17</maven.compiler.release>
+    <junit.version>4.13.2</junit.version>
+    <junit.jupiter.version>5.13.4</junit.jupiter.version>
     <assertj.version>3.27.7</assertj.version>
-    <compiler.plugin.version>3.11.0</compiler.plugin.version>
-    <surefire.plugin.version>3.1.0</surefire.plugin.version>
-    <failsafe.plugin.version>3.1.0</failsafe.plugin.version>
+    <compiler.plugin.version>3.13.0</compiler.plugin.version>
+    <surefire.plugin.version>3.2.5</surefire.plugin.version>
+    <failsafe.plugin.version>3.2.5</failsafe.plugin.version>
   </properties>
 
   <dependencies>

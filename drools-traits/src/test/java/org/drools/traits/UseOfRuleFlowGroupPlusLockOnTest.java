@@ -63,8 +63,8 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
         KieSession ksession = kbase.newKieSession();
         if (LOGGER.isDebugEnabled()) {
             ReteDumper.dumpRete(ksession);
+            ksession.addEventListener( new DebugAgendaEventListener() );
         }
-        ksession.addEventListener( new DebugAgendaEventListener() );
         try {
             ksession.insert(new Person());
             ksession.insert(new Cheese("eidam"));
