@@ -2703,7 +2703,7 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
-          <version>${version.asciidoctor-maven-plugin>}</version>
+          <version>${version.asciidoctor-maven-plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.asciidoctor</groupId>
