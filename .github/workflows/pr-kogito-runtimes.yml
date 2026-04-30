@@ -79,3 +79,17 @@ jobs:
         with:
           name: dependency-trees-logs_kogito-runtimes_${{ matrix.os }}
           path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
+      - name: Upload Build logs
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: build-logs_${{ matrix.job_name }}_${{ matrix.os }}
+          path: '**/build.log'
+      - name: Upload Build Compare
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
+          path: |
+            **/*.buildcompare
+            **/*.buildinfo
