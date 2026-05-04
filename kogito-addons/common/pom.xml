@@ -45,6 +45,7 @@
     <module>process-dynamic</module>
     <module>knative</module>
     <module>kubernetes</module>
+    <module>kubernetes-service-catalog</module>
     <module>jobs</module>
     <module>events</module>
     <module>monitoring</module>
