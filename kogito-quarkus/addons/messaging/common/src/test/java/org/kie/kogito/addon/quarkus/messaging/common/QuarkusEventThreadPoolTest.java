@@ -21,8 +21,8 @@ package org.kie.kogito.addon.quarkus.messaging.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,6 +34,7 @@ import net.jcip.annotations.NotThreadSafe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @NotThreadSafe
 public class QuarkusEventThreadPoolTest {
@@ -113,18 +114,23 @@ public class QuarkusEventThreadPoolTest {
     }
 
     private void testIt(int numThreads, int queueSize, int count) throws InterruptedException, ExecutionException {
-        ExecutorService executor = new QuarkusEventThreadPool(numThreads, queueSize, controller, CHANNEL_NAME);
-        final AtomicInteger counter = new AtomicInteger(0);
+        QuarkusEventThreadPool executor = new QuarkusEventThreadPool(numThreads, queueSize, controller, CHANNEL_NAME);
+        final CountDownLatch latch = new CountDownLatch(count);
         List<Callable<Integer>> runnables = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             final int temp = i;
             runnables.add(() -> {
-                counter.incrementAndGet();
+                latch.countDown();
                 return temp + 1;
             });
         }
+
         List<Future<Integer>> answers = executor.invokeAll(runnables, 5, TimeUnit.MINUTES);
-        assertEquals(count, counter.get());
+
+        // Wait for all tasks to executed
+        assertTrue(latch.await(1, TimeUnit.MINUTES));
+        assertEquals(0, latch.getCount());
+
         for (int i = 0; i < answers.size(); i++) {
             assertEquals(i + 1, answers.get(i).get());
         }

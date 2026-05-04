@@ -55,7 +55,7 @@ public class QuarkusEventThreadPool extends ThreadPoolExecutor {
             resume = queued != null && overflowBuffer.isEmpty();
         }
         if (queued != null) {
-            logger.trace("Addding runnable {} back to the executor", queued);
+            logger.trace("Adding runnable {} back to the executor", queued);
             super.execute(queued);
             if (resume) {
                 logger.trace("Resuming emission");
