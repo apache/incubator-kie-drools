@@ -92,6 +92,5 @@ jobs:
         with:
           name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
           path: |
-             **/reference
-             **/*.buildcompare
-             **/*.buildinfo
+            **/*.buildcompare
+            **/*.buildinfo    

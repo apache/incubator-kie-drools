@@ -40,7 +40,7 @@ jobs:
     strategy:
       max-parallel: 20
       matrix:
-        job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples, kogito-gradle-examples  ]
+        job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, kogito-gradle-examples  ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.11']
@@ -58,9 +58,6 @@ jobs:
           - job_name: kogito-springboot-examples
             repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
-          - job_name: serverless-workflow-examples
-            repository: incubator-kie-kogito-examples
-            env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
           - job_name: kogito-gradle-examples
             repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: gradle-examples/
