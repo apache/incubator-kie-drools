@@ -93,4 +93,10 @@ jobs:
           name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
           path: |
             **/*.buildcompare
-            **/*.buildinfo    
+            **/*.buildinfo
+      - name: Upload Incremental Build
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: incremental-build_${{ matrix.job_name }}_${{ matrix.os }}
+          path: '**/incremental_build.log'
