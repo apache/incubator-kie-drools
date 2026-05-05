@@ -60,6 +60,11 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Temp workaround to test incremental build
+        with:
+          script: |
+            git remote add gitgabrio https://github.com/gitgabrio/drools.git
+            git fetch gitgabrio
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
