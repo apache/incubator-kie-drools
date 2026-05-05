@@ -142,6 +142,7 @@
         <configuration>
           <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
           <forceBuildModules>drools-verifier-drl</forceBuildModules>
+          <logImpactedTo>${pom.build.directory}/incremental_build.log</logImpactedTo>
           <!-- ... -->
         </configuration>
       </plugin>
