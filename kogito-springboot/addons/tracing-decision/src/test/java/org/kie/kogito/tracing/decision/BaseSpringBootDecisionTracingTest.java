@@ -19,6 +19,7 @@
 package org.kie.kogito.tracing.decision;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +90,7 @@ public abstract class BaseSpringBootDecisionTracingTest {
     }
 
     private DMNRuntime buildDMNRuntime() {
-        return DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, new java.io.InputStreamReader(
-                BaseSpringBootDecisionTracingTest.class.getResourceAsStream(TEST_RESOURCE)));
+        return DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, Map.of(TEST_RESOURCE, StandardCharsets.UTF_8.name()));
     }
 
     private DecisionModel buildDecisionModel(DMNRuntime runtime) {

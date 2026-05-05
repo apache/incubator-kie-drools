@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.explainability;
 
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +44,7 @@ public class ExplainabilityServiceTest {
     public static final String MODEL_NAME = "Traffic Violation";
 
     final static String TEST_EXECUTION_ID = "test";
-    final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, new InputStreamReader(
-            ExplainabilityServiceTest.class.getResourceAsStream(MODEL_RESOURCE)));
+    final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, Map.of(MODEL_RESOURCE, StandardCharsets.UTF_8.name()));
     final static DmnDecisionModelSpy decisionModel = new DmnDecisionModelSpy(genericDMNRuntime, MODEL_NAMESPACE, MODEL_NAME, () -> TEST_EXECUTION_ID);
 
     @Test

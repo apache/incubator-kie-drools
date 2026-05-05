@@ -19,6 +19,9 @@
  */
 package org.kie.kogito.codegen.decision;
 
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -77,6 +80,8 @@ import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesSt
 import static org.kie.kogito.codegen.decision.CodegenUtils.getDefinitionsFileFromModel;
 import static org.kie.kogito.codegen.decision.DecisionCodegen.STRONGLY_TYPED_CONFIGURATION_KEY;
 import static org.kie.kogito.codegen.decision.DecisionRestResourceGenerator.DMN_DEFINITIONS_JSON_REFS;
+import static org.kie.kogito.codegen.decision.ReadResourceUtil.getResourcePath;
+import static org.kie.kogito.dmn.AbstractDecisionModels.DMN_MODEL_PATHS_FILE;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class DecisionCodegenUtils {
@@ -94,6 +99,16 @@ public class DecisionCodegenUtils {
     private DecisionCodegenUtils() {
     }
 
+    /**
+     *
+     * @param generatedFiles Act as accumulator for all generated files
+     * @param classesForManualReflection
+     * @param cResources
+     * @param customDMNProfiles
+     * @param runtimeTypeCheckOption
+     * @param generator
+     * @return A Map.Entry with the dmn-specific generated files.
+     */
     static Map.Entry<String, GeneratedResources> generateModelsFromResources(Collection<GeneratedFile> generatedFiles,
             List<String> classesForManualReflection,
             List<CollectedResource> cResources,
@@ -115,6 +130,7 @@ public class DecisionCodegenUtils {
             }
             generateModel(generatedFiles, classesForManualReflection, model, generator, stronglyTypedEnabled, marshaller);
         }
+        generateModelPathsFile(generatedFiles, cResources);
         generateCloudEventsResources(generatedFiles, generator.context(), dmnModels);
         generateAndStoreDecisionModelResourcesProvider(generatedFiles, resources, generator.context(), generator.applicationCanonicalName());
         return generatedResourcesEntry;
@@ -256,6 +272,17 @@ public class DecisionCodegenUtils {
         storeFile(generatedFiles, GeneratedFileType.INTERNAL_RESOURCE, relativePath, marshaller.marshal(definitions));
     }
 
+    static void generateModelPathsFile(Collection<GeneratedFile> generatedFiles, Collection<CollectedResource> resources) {
+        StringBuilder builder = new StringBuilder();
+        for (CollectedResource resource : resources) {
+            String path = getResourcePath(resource);
+            Optional<String> encoding = determineEncoding(resource);
+            builder.append(String.format("%s:%s%n", path, encoding.orElse(StandardCharsets.UTF_8.name())));
+        }
+        String content = builder.toString();
+        storeFile(generatedFiles, GeneratedFileType.INTERNAL_RESOURCE, DMN_MODEL_PATHS_FILE, content);
+    }
+
     static void generateCloudEventsResources(Collection<GeneratedFile> generatedFiles, KogitoBuildContext context, List<DMNModel> dmnModels) {
         if (context.getAddonsConfig().useCloudEvents()) {
             final DecisionCloudEventMetaFactoryGenerator ceMetaFactoryGenerator = new DecisionCloudEventMetaFactoryGenerator(context, dmnModels);
@@ -332,6 +359,25 @@ public class DecisionCodegenUtils {
                 applicationCanonicalName,
                 resources);
         storeFile(generatedFiles, GeneratedFileType.SOURCE, generator.generatedFilePath(), generator.generate());
+    }
+
+    private static Optional<String> determineEncoding(CollectedResource resource) {
+        try (Reader reader = resource.resource().getReader()) {
+            BufferedReader br = new BufferedReader(reader);
+            StringBuilder sb = new StringBuilder(br.readLine());
+            sb.append(br.readLine());
+            String head = sb.toString();
+            boolean prologUTF8 = head.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"") || head.startsWith("<?xml version=\"1.0\" encoding=\"utf-8\"");
+            boolean kogitoDMNEditor = head.contains("xmlns:kie=\"http://www.drools.org/kie/dmn");
+            LOGGER.debug("resource {} determineEncoding results; prologUTF8 {}, kogitoDMNEditor {}.", resource.resource(), prologUTF8, kogitoDMNEditor);
+            if (prologUTF8 || kogitoDMNEditor) {
+                return Optional.of("UTF-8");
+            } else {
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     private static void storeFile(Collection<GeneratedFile> generatedFiles, GeneratedFileType type, String path, String source) {

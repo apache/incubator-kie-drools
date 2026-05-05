@@ -40,14 +40,23 @@ class ReadResourceUtil {
     }
 
     public static MethodCallExpr getReadResourceMethod(ClassOrInterfaceType applicationClass, CollectedResource resource) {
+        String resourcePath = getResourcePath(resource);
         if (resource.basePath().toString().endsWith(".jar")) {
             return new MethodCallExpr(
                     new MethodCallExpr(new NameExpr(IoUtils.class.getCanonicalName() + ".class"), "getClassLoader"),
-                    "getResourceAsStream").addArgument(new StringLiteralExpr(getDecisionModelJarResourcePath(resource)));
+                    "getResourceAsStream").addArgument(new StringLiteralExpr(resourcePath));
         }
 
         return new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream")
-                .addArgument(new StringLiteralExpr(getDecisionModelRelativeResourcePath(resource)));
+                .addArgument(new StringLiteralExpr(resourcePath));
+    }
+
+    public static String getResourcePath(CollectedResource resource) {
+        if (resource.basePath().toString().endsWith(".jar")) {
+            return getDecisionModelJarResourcePath(resource);
+        } else {
+            return getDecisionModelRelativeResourcePath(resource);
+        }
     }
 
     private static String getDecisionModelJarResourcePath(CollectedResource resource) {

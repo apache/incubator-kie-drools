@@ -19,12 +19,9 @@
 package org.kie.kogito.dmn;
 
 import java.io.Reader;
-import java.util.function.BiFunction;
+import java.util.Map;
 
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.kogito.ExecutionIdSupplier;
-import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.decision.DecisionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +38,11 @@ public final class DMNKogitoCallbacks {
     }
 
     public static void beforeCreateGenericDMNRuntime(Reader[] readers) {
-        if (isGraalVMNIRuntime()) {
-            LOG.warn("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", readers.length);
-        } else {
-            LOG.debug("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", readers.length);
-        }
+        beforeCreateGenericDMNRuntime(readers.length);
+    }
+
+    public static void beforeCreateGenericDMNRuntime(Map<String, String> modelPaths) {
+        beforeCreateGenericDMNRuntime(modelPaths.size());
     }
 
     public static void afterCreateGenericDMNRuntime(DMNRuntime dmnRuntime) {
@@ -56,9 +53,7 @@ public final class DMNKogitoCallbacks {
         }
     }
 
-    public static void beforeAbstractDecisionModelsInit(ExecutionIdSupplier executionIdSupplier,
-            BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformerInit,
-            Reader[] readers) {
+    public static void beforeAbstractDecisionModelsInit() {
         if (isGraalVMNIRuntime()) {
             LOG.warn("AbstractDecisionModels.init() called.");
         } else {
@@ -71,6 +66,14 @@ public final class DMNKogitoCallbacks {
             LOG.warn("AbstractDecisionModels.init() done.");
         } else {
             LOG.debug("AbstractDecisionModels.init() done.");
+        }
+    }
+
+    private static void beforeCreateGenericDMNRuntime(int size) {
+        if (isGraalVMNIRuntime()) {
+            LOG.warn("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", size);
+        } else {
+            LOG.debug("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", size);
         }
     }
 

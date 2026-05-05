@@ -18,12 +18,10 @@
  */
 package org.kie.kogito.codegen.decision;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -43,6 +41,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -51,7 +50,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static org.kie.kogito.codegen.core.CodegenUtils.newObject;
-import static org.kie.kogito.codegen.decision.ReadResourceUtil.getReadResourceMethod;
+import static org.kie.kogito.dmn.AbstractDecisionModels.DMN_MODEL_PATHS_FILE;
 
 public class DecisionContainerGenerator extends AbstractApplicationSection {
 
@@ -85,9 +84,6 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     @Override
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("Invalid Template: No CompilationUnit");
-
-        ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
-
         final InitializerDeclaration staticDeclaration = compilationUnit
                 .findFirst(InitializerDeclaration.class)
                 .orElseThrow(() -> new InvalidTemplateException(
@@ -103,35 +99,8 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         setupDecisionModelTransformerVariable(initMethod, context.getAddonsConfig().useMonitoring());
         setupCustomDMNProfiles(initMethod, customDMNProfiles);
         setupEnableRuntimeTypeCheckOption(initMethod, enableRuntimeTypeCheckOption);
-
-        for (CollectedResource resource : resources) {
-            Optional<String> encoding = determineEncoding(resource);
-            MethodCallExpr getResAsStream = getReadResourceMethod(applicationClass, resource);
-            MethodCallExpr isr = new MethodCallExpr("readResource").addArgument(getResAsStream);
-            encoding.map(StringLiteralExpr::new).ifPresent(isr::addArgument);
-            initMethod.addArgument(isr);
-        }
-
+        setupModelPathsFile(initMethod, applicationCanonicalName);
         return compilationUnit;
-    }
-
-    private Optional<String> determineEncoding(CollectedResource resource) {
-        try {
-            BufferedReader br = new BufferedReader(resource.resource().getReader());
-            StringBuilder sb = new StringBuilder(br.readLine());
-            sb.append(br.readLine());
-            String head = sb.toString();
-            boolean prologUTF8 = head.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"") || head.startsWith("<?xml version=\"1.0\" encoding=\"utf-8\"");
-            boolean kogitoDMNEditor = head.contains("xmlns:kie=\"http://www.drools.org/kie/dmn");
-            LOG.debug("resource {} determineEncoding results; prologUTF8 {}, kogitoDMNEditor {}.", resource.resource(), prologUTF8, kogitoDMNEditor);
-            if (prologUTF8 || kogitoDMNEditor) {
-                return Optional.of("UTF-8");
-            } else {
-                return Optional.empty();
-            }
-        } catch (Exception e) {
-            return Optional.empty();
-        }
     }
 
     static void setupExecIdSupplierVariable(MethodCallExpr initMethod, boolean useTracing) {
@@ -162,6 +131,14 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     static void setupEnableRuntimeTypeCheckOption(MethodCallExpr initMethod, boolean enableRuntimeTypeCheckOption) {
         Expression toAdd = new BooleanLiteralExpr(enableRuntimeTypeCheckOption);
         initMethod.addArgument(toAdd);
+    }
+
+    static void setupModelPathsFile(MethodCallExpr initMethod, String applicationCanonicalName) {
+        ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
+        FieldAccessExpr fieldAccessExpr = new FieldAccessExpr(applicationClass.getNameAsExpression(), "class");
+        MethodCallExpr methodCallExpr = new MethodCallExpr(fieldAccessExpr, "getResource")
+                .addArgument(new StringLiteralExpr("/" + DMN_MODEL_PATHS_FILE));
+        initMethod.addArgument(methodCallExpr);
     }
 
     public List<String> getClassesForManualReflection() {
