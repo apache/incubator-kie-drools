@@ -1,0 +1,2 @@
+drools-test-coverage/test-suite/pom.xml
+drools-test-coverage/test-suite/src/test/java/org/drools/testcoverage/SomeTest.java

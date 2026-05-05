@@ -1,0 +1,11 @@
+org.drools.testcoverage:drools-test-coverage-jars-with-invoker
+org.drools.testcoverage:drools-test-suite
+org.drools.testcoverage:test-compiler-integration
+org.drools.testcoverage:test-integration-nomvel
+org.drools.testcoverage:test-integration-notms
+org.kie:kie-archetypes
+org.kie:kie-drools-dmn-archetype
+org.kie:kie-drools-exec-model-archetype
+org.kie:kie-drools-exec-model-ruleunit-archetype
+org.kie:kie-drools-yaml-archetype
+org.kie:kie-maven-plugin
