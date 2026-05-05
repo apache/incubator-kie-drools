@@ -116,7 +116,7 @@
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
     <!-- incremental build -->
-    <gib.referenceBranch>refs/remotes/test_incremental</gib.referenceBranch>
+    <gib.referenceBranch>main</gib.referenceBranch>
   </properties>
 
   <build>
@@ -140,9 +140,10 @@
         <version>4.6.0</version>
         <extensions>true</extensions>
         <configuration>
-          <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
+          <buildAllIfNoChanges>false</buildAllIfNoChanges>
           <forceBuildModules>drools-verifier-drl</forceBuildModules>
           <logImpactedTo>${pom.build.directory}/incremental_build.log</logImpactedTo>
+          <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
           <!-- ... -->
         </configuration>
       </plugin>
