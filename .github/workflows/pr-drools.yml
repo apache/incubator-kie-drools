@@ -60,8 +60,8 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Setting remote origin for incremental build
-        run: git remote add origin https://github.com/apache/incubator-kie-drools.git
+#      - name: Setting remote origin for incremental build
+#        run: git remote add origin https://github.com/apache/incubator-kie-drools.git
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
