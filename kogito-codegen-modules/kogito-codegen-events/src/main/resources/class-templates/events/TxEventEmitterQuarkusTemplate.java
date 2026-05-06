@@ -25,7 +25,8 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.TransactionPhase;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
+import jakarta.transaction.Status;
+import jakarta.transaction.TransactionManager;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -64,6 +65,9 @@ public class $ClassName$ extends AbstractQuarkusCloudEventEmitter<$Type$> {
     @Inject
     MessageDecoratorProvider messageDecorator;
 
+    @Inject
+    TransactionManager transactionManager;
+
     class EmitEventType {
         DataEvent<?> data;
 
@@ -73,18 +77,28 @@ public class $ClassName$ extends AbstractQuarkusCloudEventEmitter<$Type$> {
     }
 
     public void observe(@Observes(during = TransactionPhase.AFTER_SUCCESS) EmitEventType emitEventType) {
-        logger.debug("publishing event {}", emitEventType.data);
         try {
+            // Verify transaction was actually committed successfully
+            int status = transactionManager.getStatus();
+            if (status != Status.STATUS_COMMITTED && status != Status.STATUS_NO_TRANSACTION) {
+                logger.debug("Skipping event publication - transaction status is {} (not committed)", status);
+                return;
+            }
+
+            logger.debug("publishing event {}", emitEventType.data);
             Message<$Type$> message = messageDecorator.decorate(getMessage(emitEventType.data));
             emitter.send(message);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } catch (Exception e) {
+            logger.error("Error checking transaction status or publishing event", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    @Transactional
     public void emit(DataEvent<?> dataEvent) {
+        logger.debug("emit event {}", dataEvent);
         event.fire(new EmitEventType(dataEvent));
     }
 

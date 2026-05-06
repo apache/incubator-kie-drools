@@ -20,32 +20,30 @@ package org.kie.kogito.addon.cloudevents.spring;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.io.UncheckedIOException;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 
-import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
-import org.kie.kogito.event.EventUnmarshaller;
-import org.kie.kogito.event.KogitoEventStreams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.kie.kogito.addon.cloudevents.spring.KogitoMessaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Spring implementation delegating to kafka template
+ * Spring transactional implementation using @TransactionalEventListener
+ * to ensure Kafka messages are only sent after database transaction commits
  */
 @Component("Emitter-$ChannelName$")
-@Transactional
 public class $ClassName$ implements EventEmitter {
+
+    private static final Logger logger = LoggerFactory.getLogger($ClassName$.class);
 
     @Autowired
     org.springframework.kafka.core.KafkaTemplate<String, $Type$> emitter;
@@ -53,9 +51,27 @@ public class $ClassName$ implements EventEmitter {
     @Autowired
     ObjectMapper mapper;
 
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
+
+    static class EmitEventType {
+        final DataEvent<?> data;
+
+        public EmitEventType(DataEvent<?> data) {
+            this.data = data;
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
+    public void observe(EmitEventType emitEventType) {
+        logger.debug("publishing event {}", emitEventType.data);
+        emitter.send("$Topic$", toTopicType(emitEventType.data));
+    }
+
     @Override
     public void emit(DataEvent<?> event) {
-        emitter.send("$Topic$", toTopicType(event));
+        logger.debug("emit event {}", event);
+        eventPublisher.publishEvent(new EmitEventType(event));
     }
 
     private $Type$ toTopicTypeCloud(DataEvent<?> event) {

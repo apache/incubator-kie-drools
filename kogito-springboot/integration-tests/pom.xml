@@ -42,6 +42,7 @@
     <module>integration-tests-springboot-norest-it</module>
     <module>integration-tests-springboot-processes-it</module>
     <module>integration-tests-springboot-processes-persistence-it</module>
+    <module>integration-tests-springboot-transactions-it</module>
     <module>integration-tests-springboot-usertasks-it</module>
     <module>integration-tests-springboot-usertask-listeners-rollback-it</module>
     <module>integration-tests-springboot-wshumantasks-it</module>
