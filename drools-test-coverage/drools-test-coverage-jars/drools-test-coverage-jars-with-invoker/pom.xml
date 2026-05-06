@@ -64,6 +64,8 @@
           <streamLogs>true</streamLogs>
           <goal>clean</goal>
           <goal>package</goal>
+          <skipInstallation>${skipITs}</skipInstallation>
+          <skipInvocation>${skipITs}</skipInvocation>
         </configuration>
         <executions>
           <execution>

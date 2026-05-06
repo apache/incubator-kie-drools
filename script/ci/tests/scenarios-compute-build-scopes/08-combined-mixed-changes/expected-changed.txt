@@ -1,0 +1,4 @@
+org.drools:drools-beliefs
+org.drools:drools-core
+org.drools:drools-drl
+org.drools:drools-kiesession

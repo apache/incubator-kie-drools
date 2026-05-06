@@ -1,0 +1,4 @@
+org.drools.testcoverage:drools-test-suite
+org.drools.testcoverage:test-compiler-integration
+org.drools.testcoverage:test-integration-nomvel
+org.drools.testcoverage:test-integration-notms
