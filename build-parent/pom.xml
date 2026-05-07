@@ -130,7 +130,7 @@
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.xerces>2.12.0.SP04</version.xerces>
-    <version.com.squareup.okhttp3>4.9.2</version.com.squareup.okhttp3>
+    <version.com.squareup.okhttp3>4.12.0</version.com.squareup.okhttp3>
 
     <!-- External dependency versions bom -->
     <!-- ################################################################################ -->
