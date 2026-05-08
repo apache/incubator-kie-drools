@@ -223,7 +223,7 @@
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
     <version.io.vertx>4.5.25</version.io.vertx>
-    <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
+    <version.org.codehaus.plexus.plexus-utils>4.0.3</version.org.codehaus.plexus.plexus-utils>
   </properties>
 
   <dependencyManagement>
