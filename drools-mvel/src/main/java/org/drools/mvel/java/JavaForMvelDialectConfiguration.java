@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
  * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
- * drools.dialect.java.compiler.lnglevel = <1.5|1.6>
- * 
- * The default compiler is Eclipse and the default lngLevel is 1.5.
+ * drools.dialect.java.compiler.lnglevel = <17|18|19|20|21>
+ *
+ * The default compiler is Eclipse and the default lngLevel is 17.
  * The lngLevel will attempt to autodiscover your system using the 
  * system property "java.version"
  */
