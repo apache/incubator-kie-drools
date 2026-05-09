@@ -16,11 +16,13 @@
 # under the License.
 
 target/
+!script/ci/tests/scenarios-summary/**/target/
 local/
 
 # Eclipse, Netbeans and IntelliJ files
 .*
 !.gitignore
+!script/ci/tests/scenarios-summary/**/.gitkeep
 !.github
 !.git-blame-ignore-revs
 !.openrewrite
