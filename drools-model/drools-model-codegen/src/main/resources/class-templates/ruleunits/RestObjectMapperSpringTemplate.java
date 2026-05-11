@@ -43,11 +43,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-// TODO Spring Boot 4 removed Jackson2ObjectMapperBuilderCustomizer; this template now configures
-// the existing Jackson 2 ObjectMapper bean (provided by GlobalObjectMapperSpringTemplate) with
-// rule-units deserializers via constructor injection. After the kogito-dependencies-bom split
-// lands and the Spring-side migrates to Jackson 3, port this template to tools.jackson.databind.*
-// and remove this shim.
+// TODO Jackson 3 migration: drop this shim when the Spring add-ons move to tools.jackson.databind.*.
 @SpringBootConfiguration
 public class RestObjectMapper {
 
