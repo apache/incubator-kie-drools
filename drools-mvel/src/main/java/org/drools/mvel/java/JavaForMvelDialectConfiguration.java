@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
  * drools.dialect.java.compiler.lnglevel = <17|18|19|20|21>
  *
- * The default compiler is Eclipse and the default lngLevel is 17.
- * The lngLevel will attempt to autodiscover your system using the 
- * system property "java.version"
+ * Defaults (Eclipse compiler, language level 17 with autodiscovery from the
+ * "java.version" system property) are applied by JavaDialectConfiguration#init
+ * during builder configuration, not by the no-arg constructor.
  */
 public class JavaForMvelDialectConfiguration extends JavaDialectConfiguration {
 

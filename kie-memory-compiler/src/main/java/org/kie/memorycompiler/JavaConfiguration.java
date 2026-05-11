@@ -32,10 +32,10 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
  * drools.dialect.java.compiler.lnglevel = <17|18|19|20|21>
- * 
- * The default compiler is Eclipse and the default lngLevel is 17.
- * The lngLevel will attempt to autodiscover your system using the 
- * system property "java.version"
+ *
+ * This base class holds the validated values; defaults (Eclipse compiler,
+ * language level 17 with autodiscovery from the "java.version" system
+ * property) are applied by subclasses such as JavaDialectConfiguration#init.
  */
 public class JavaConfiguration {
 
