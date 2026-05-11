@@ -4038,6 +4038,23 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void functionWithDiamondOperatorInLocalVariableDeclaration() {
+        final String text = "function List<String> testOfGenerics(String a) {\n" +
+                "    List<String> results = new ArrayList<>();\n" +
+                "    return results;\n" +
+                "}";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        FunctionDescr function = packageDescr.getFunctions().get(0);
+
+        assertThat(function.getName()).isEqualTo("testOfGenerics");
+        assertThat(function.getReturnType()).isEqualToIgnoringWhitespace("List<String>");
+        assertThat(function.getParameterTypes().get(0)).isEqualTo("String");
+        assertThat(function.getParameterNames().get(0)).isEqualTo("a");
+        assertThat(function.getBody()).isEqualToIgnoringWhitespace("List<String> results = new ArrayList<>(); return results;");
+    }
+
+    @Test
     void lhsPatternAnnotation() {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
