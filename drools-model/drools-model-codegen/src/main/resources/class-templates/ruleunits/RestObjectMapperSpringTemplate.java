@@ -38,6 +38,10 @@ import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.SingletonStore;
 
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 // TODO Spring Boot 4 removed Jackson2ObjectMapperBuilderCustomizer; this template now configures
 // the existing Jackson 2 ObjectMapper bean (provided by GlobalObjectMapperSpringTemplate) with
@@ -53,6 +57,23 @@ public class RestObjectMapper {
         module.addDeserializer(DataStore.class, new DataStoreDeserializer());
         module.addDeserializer(SingletonStore.class, new SingletonStoreDeserializer());
         objectMapper.registerModule(module);
+    }
+
+    // TODO Jackson 3 migration: SB 4 no longer auto-registers a Jackson 2 HTTP converter; register one
+    // here so the @RequestBody DataStore/DataStream/SingletonStore deserializers above are actually used.
+    // canWrite refuses String so DMN controllers' pre-serialized JSON passes through StringHttpMessageConverter.
+    @Bean
+    @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
+        return new MappingJackson2HttpMessageConverter(objectMapper) {
+            @Override
+            public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+                if (clazz == String.class) {
+                    return false;
+                }
+                return super.canWrite(clazz, mediaType);
+            }
+        };
     }
 
     public static class DataStreamDeserializer extends JsonDeserializer<DataStream<?>> implements ContextualDeserializer {
