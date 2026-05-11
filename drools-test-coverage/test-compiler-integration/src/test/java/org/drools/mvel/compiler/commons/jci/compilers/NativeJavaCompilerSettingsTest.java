@@ -35,8 +35,8 @@ public class NativeJavaCompilerSettingsTest {
         assertThat(options).hasSize(6);
         assertThat(options).contains("-source", "-target", "-encoding");
         // check the order is correct, value of the option needs to be right after the option name
-        assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-source") + 1));
-        assertThat(options).contains("1.8", Index.atIndex(options.indexOf("-target") + 1));
+        assertThat(options).contains("17", Index.atIndex(options.indexOf("-source") + 1));
+        assertThat(options).contains("17", Index.atIndex(options.indexOf("-target") + 1));
         assertThat(options).contains("UTF-8", Index.atIndex(options.indexOf("-encoding") + 1));
     }
 
@@ -47,8 +47,8 @@ public class NativeJavaCompilerSettingsTest {
         settings.setWarnings(true);
         settings.setDeprecations(true);
         settings.setSourceEncoding("My-Custom-Encoding");
-        settings.setSourceVersion("9");
-        settings.setTargetVersion("9");
+        settings.setSourceVersion("21");
+        settings.setTargetVersion("21");
         List<String> options = settings.toOptionsList();
 
         assertThat(options).hasSize(9);
@@ -56,8 +56,8 @@ public class NativeJavaCompilerSettingsTest {
         assertThat(options).contains("-Xlint:all");
         assertThat(options).contains("-deprecation");
         // check the order is correct, value of the option needs to be right after the option name
-        assertThat(options).contains("9", Index.atIndex(options.indexOf("-source") + 1));
-        assertThat(options).contains("9", Index.atIndex(options.indexOf("-target") + 1));
+        assertThat(options).contains("21", Index.atIndex(options.indexOf("-source") + 1));
+        assertThat(options).contains("21", Index.atIndex(options.indexOf("-target") + 1));
         assertThat(options).contains("My-Custom-Encoding", Index.atIndex(options.indexOf("-encoding") + 1));
     }
 
