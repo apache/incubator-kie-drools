@@ -1,0 +1,49 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+# CI scripts
+
+Used by [.github/workflows/ci.yaml](../../.github/workflows/ci.yaml).
+
+- [CiComputeBuildScopes.java](CiComputeBuildScopes.java) — figures out which modules a PR actually touches, so CI only builds and tests what's needed instead of the whole reactor.
+- [CiSummary.java](CiSummary.java) — turns the build's test results into the human-readable summary you see at the top of a CI run on GitHub.
+- [dep-graph-extractor/](dep-graph-extractor/) — Maven extension that writes the the reactor dependency graph. Required by `CiComputeBuildScopes` (and exercised transitively by its tests).
+
+## Developing these scripts
+
+If you change `CiComputeBuildScopes.java` or `CiSummary.java`, run the snapshot tests
+locally before pushing — they cover the scenarios under
+[tests/scenarios-compute-build-scopes/](tests/scenarios-compute-build-scopes/) and
+[tests/scenarios-summary/](tests/scenarios-summary/).
+
+```bash
+jbang script/ci/tests/CiComputeBuildScopesTest.java
+jbang script/ci/tests/CiSummaryTest.java
+```
+
+If a behavior change is intentional, regenerate the goldens by re-running the tests with
+`CI_UPDATE_GOLDEN=1` — they will rewrite the matching `expected-*.txt` /
+`expected-summary.md` files instead of asserting:
+
+```bash
+CI_UPDATE_GOLDEN=1 jbang script/ci/tests/CiComputeBuildScopesTest.java
+CI_UPDATE_GOLDEN=1 jbang script/ci/tests/CiSummaryTest.java
+```
+
+Review the diff and commit the updated goldens alongside the script change.

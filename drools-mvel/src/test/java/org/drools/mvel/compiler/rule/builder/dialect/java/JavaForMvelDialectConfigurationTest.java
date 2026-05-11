@@ -21,24 +21,26 @@ package org.drools.mvel.compiler.rule.builder.dialect.java;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 public class JavaForMvelDialectConfigurationTest {
 
     @Test
-    public void checkVersion() {
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("1.5");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("1.6");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("1.7");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("9");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("10");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("11");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("12");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("13");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("14");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("15");
-        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("16");
+    public void acceptsSupportedVersions() {
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("17");
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("18");
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("19");
+        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("20");
+        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("21");
     }
 
+    @Test
+    public void rejectsObsoleteVersions() {
+        assertThatThrownBy(() -> new JavaForMvelDialectConfiguration().setJavaLanguageLevel("1.8"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("not a valid language level");
+        assertThatThrownBy(() -> new JavaForMvelDialectConfiguration().setJavaLanguageLevel("11"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("not a valid language level");
+    }
 }

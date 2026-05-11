@@ -89,7 +89,7 @@ public class ParallelCompilationTest {
             Thread.sleep(Math.round(Math.random()*250));
 
             Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
-            kieModuleConfigurationProperties.put("drools.dialect.java.compiler.lnglevel", "1.6");
+            kieModuleConfigurationProperties.put("drools.dialect.java.compiler.lnglevel", "17");
             KieBase result = KieBaseUtil.getKieBaseFromClasspathResourcesWithClassLoaderForKieBuilder("test", getClass(), ParallelCompilationTest.class.getClass().getClassLoader(), myKieBaseTestConfiguration, kieModuleConfigurationProperties, DRL_FILE);
 
             return result;
