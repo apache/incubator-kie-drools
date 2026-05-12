@@ -64,20 +64,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+## THOSE are hardcoded to verify incremental build - to be removed
       - name: Add git gitgabrio remote
         run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
 
+      - name: Fetch gitgabrio
+        run: git fetch gitgabrio test_incremental
+
+## END
       - name: Show git remotes
         run: git remote -v
 
       - name: Fetch origin
         run: git fetch origin main
 
-      - name: Fetch gitgabrio
-        run: git fetch gitgabrio test_incremental
-
       - name: Show git refs
         run: git show-ref
+
+      - name: Checkout main
+        run: git checkout origin/main main
+
+      - name: Current status
+        run: git status
+
+      - name: Merge PR
+        run: git merge ${{ github.head_ref  }}
+
+      - name: Current status updated
+        run: git status
+
 
 #      - name: Incremental Build Chain
 #        ## TODO to be removed/adapted when the incremental build chain action will be available in the main branch of kogito-pipelines
