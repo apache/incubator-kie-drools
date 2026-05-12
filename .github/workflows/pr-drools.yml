@@ -79,32 +79,35 @@ jobs:
       - name: Show git config
         run: echo " "${{ github.event.pull_request.user.login }}
 
-#
-### THOSE are hardcoded to verify incremental build - to be removed
-#      - name: Add git gitgabrio remote
-#        run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
-#
-#      - name: Fetch gitgabrio
-#        run: git fetch gitgabrio test_incremental
-#
-### END
+
+## THOSE are hardcoded to verify incremental build - to be removed
+      - name: Add git gitgabrio remote
+        run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
+
+      - name: Fetch gitgabrio
+        run: git fetch gitgabrio test_incremental
+
+## END
 #      - name: Show git remotes
 #        run: git remote -v
 #
-#      - name: Fetch origin
-#        run: git fetch origin main
+      - name: Fetch origin
+        run: git fetch origin main
 #
 #      - name: Show git refs
 #        run: git show-ref
 #
-#      - name: Checkout main
-#        run: git switch -c main origin/main
+      - name: Checkout main
+        run: git switch -c main origin/main
 #
 #      - name: Current status
 #        run: git status
-#
-#      - name: Merge PR
-#        run: git merge ${{ github.repository }}/${{ github.head_ref }}
+
+#      - name: Fetch PR branch
+#        run: git fetch current_user main
+
+      - name: Merge PR
+        run: git merge ${{ github.event.pull_request.user.login }}/${{ github.event.pull_request.head.repo.name }}/${{ github.head_ref }}
 #
 #      - name: Current status updated
 #        run: git status
