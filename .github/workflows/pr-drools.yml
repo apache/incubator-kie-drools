@@ -82,7 +82,7 @@ jobs:
         run: git show-ref
 
       - name: Checkout main
-        run: git checkout origin/main main
+        run: git checkout origin/main
 
       - name: Current status
         run: git status
