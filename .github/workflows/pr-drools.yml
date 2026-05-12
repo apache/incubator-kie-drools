@@ -60,8 +60,22 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-#      - name: Setting remote origin for incremental build
-#        run: git remote add origin https://github.com/apache/incubator-kie-drools.git
+
+      - name: Add git gitgabrio remote
+        run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
+
+      - name: Show git remotes
+        run: git remote -v
+
+      - name: Fetch origin
+        run: git fetch origin main
+
+      - name: Fetch gitgabrio
+        run: git fetch gitgabrio test_incremental
+
+      - name: Show git refs
+        run: git show-ref
+
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
