@@ -112,7 +112,7 @@ jobs:
         run: export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.DROOLS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
 
       - name: Show MVN_CMD
-        run: echo "MVN_CMD -> $MVN_CMD"
+        run: echo "MVN_CMD -> "${{ env.MVN_CMD}}
 
 #      - name: Incremental Build Chain
 #        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
