@@ -72,7 +72,13 @@ jobs:
 
       - name: Show git config
         run: echo " "${{ github.head_ref }}
-#
+
+      - name: Show git config
+        run: echo " "${{ github.event.pull_request.head.label }}
+
+      - name: Show git config
+        run: echo " "${{ github.event.pull_request.user.login }}
+
 #
 ### THOSE are hardcoded to verify incremental build - to be removed
 #      - name: Add git gitgabrio remote
