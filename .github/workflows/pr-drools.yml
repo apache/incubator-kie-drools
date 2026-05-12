@@ -48,18 +48,18 @@ jobs:
     env:
       DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
     steps:
-#      - name: Clean Disk Space
-#        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
-#        if: ${{ matrix.os == 'ubuntu-latest' }}
-#      - name: Support long paths
-#        if: ${{ matrix.os == 'windows-latest' }}
-#        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
-#      - name: Java and Maven Setup
-#        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
-#        with:
-#          java-version: ${{ matrix.java-version }}
-#          maven-version: ${{ matrix.maven-version }}
-#          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Clean Disk Space
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Support long paths
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
+      - name: Java and Maven Setup
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
       - name: Checkout code
         uses: actions/checkout@v6
@@ -88,20 +88,12 @@ jobs:
         run: git fetch gitgabrio test_incremental
 
 ## END
-#      - name: Show git remotes
-#        run: git remote -v
-#
+
       - name: Fetch origin
         run: git fetch origin main
-#
-#      - name: Show git refs
-#        run: git show-ref
-#
+
       - name: Checkout main
         run: git switch -c main origin/main
-#
-#      - name: Current status
-#        run: git status
 
       - name: Add remote PR branch
         run: git remote add current_user_remote https://github.com/${{ github.event.pull_request.user.login }}/${{ github.event.pull_request.head.repo.name }}.git
@@ -111,49 +103,45 @@ jobs:
 
       - name: Merge PR
         run: git merge current_user_remote/${{ github.head_ref }}
-#
-#      - name: Current status updated
-#        run: git status
 
+      - name: Incremental Build Chain
+        ## TODO to be adapted when the incremental build chain action will be available in the main branch of kogito-pipelines
+        ## uses: incremental-build-chain@test_incremental_new
+        env:
+          BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
+          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
+          BUILD_MVN_OPTS: ${ BUILD_MVN_OPTS_CURRENT }" -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3"
+          MVN_CMD: `bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.DROOLS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
 
-#      - name: Incremental Build Chain
-#        ## TODO to be removed/adapted when the incremental build chain action will be available in the main branch of kogito-pipelines
-#        uses: incremental-build-chain@test_incremental_new
-#        env:
-#          BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
-#          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-#        with:
-#          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
-#          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-#          github-token: "${{ secrets.GITHUB_TOKEN }}"
-#      - name: Surefire Report
-#        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
-#        if: ${{ always() }}
-#        with:
-#          report_paths: '**/*-reports/TEST-*.xml'
-#      - name: Upload Dependency Trees
-#        uses: actions/upload-artifact@v7
-#        if: ${{ always() }}
-#        with:
-#          name: dependency-trees-logs_drools_${{ matrix.os }}
-#          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
-#      - name: Upload Build logs
-#        uses: actions/upload-artifact@v7
-#        if: ${{ always() }}
-#        with:
-#          name: build-logs_${{ matrix.job_name }}_${{ matrix.os }}
-#          path: '**/build.log'
-#      - name: Upload Build Compare
-#        uses: actions/upload-artifact@v7
-#        if: ${{ always() }}
-#        with:
-#          name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
-#          path: |
-#            **/*.buildcompare
-#            **/*.buildinfo
-#      - name: Upload Incremental Build
-#        uses: actions/upload-artifact@v7
-#        if: ${{ always() }}
-#        with:
-#          name: incremental-build_${{ matrix.job_name }}_${{ matrix.os }}
-#          path: '**/incremental_build.log'
+        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
+      - name: Surefire Report
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
+        if: ${{ always() }}
+        with:
+          report_paths: '**/*-reports/TEST-*.xml'
+      - name: Upload Dependency Trees
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: dependency-trees-logs_drools_${{ matrix.os }}
+          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
+      - name: Upload Build logs
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: build-logs_${{ matrix.job_name }}_${{ matrix.os }}
+          path: '**/build.log'
+      - name: Upload Build Compare
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
+          path: |
+            **/*.buildcompare
+            **/*.buildinfo
+      - name: Upload Incremental Build
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: incremental-build_${{ matrix.job_name }}_${{ matrix.os }}
+          path: '**/incremental_build.log'
