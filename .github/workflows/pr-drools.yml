@@ -108,26 +108,22 @@ jobs:
       - name: Merge PR
         run: git merge current_user_remote/${{ github.head_ref }}
 
-#      - name: Set MVN_CMD
-#        run: export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.DROOLS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
-#
-#      - name: Show MVN_CMD
-#        run: echo "MVN_CMD -> "${{ env.MVN_CMD}}
-
       - name: Incremental Build Chain
-        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
+#        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
+        run: mvn clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
 
       - name: Surefire Report
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
-      - name: Upload Dependency Trees
-        uses: actions/upload-artifact@v7
-        if: ${{ always() }}
-        with:
-          name: dependency-trees-logs_drools_${{ matrix.os }}
-          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
+          ## TEMP DISABLED: TODO RESTORE
+#      - name: Upload Dependency Trees
+#        uses: actions/upload-artifact@v7
+#        if: ${{ always() }}
+#        with:
+#          name: dependency-trees-logs_drools_${{ matrix.os }}
+#          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
       - name: Upload Build logs
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
