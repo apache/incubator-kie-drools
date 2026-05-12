@@ -61,6 +61,9 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       - name: Add git gitgabrio remote
         run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
 
