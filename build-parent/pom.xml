@@ -213,7 +213,7 @@
     <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
-    <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
+    <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
 
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
@@ -224,6 +224,11 @@
 
     <version.io.vertx>4.5.25</version.io.vertx>
     <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
+    
+    <!-- Revapi API Compatibility Check Configuration -->
+    <version.revapi.maven.plugin>0.15.1</version.revapi.maven.plugin>
+    <version.revapi.java>0.28.1</version.revapi.java>
+    <revapi.latestVersion>10.2.0</revapi.latestVersion>
   </properties>
 
   <dependencyManagement>
@@ -1357,6 +1362,22 @@
             <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.revapi</groupId>
+          <artifactId>revapi-maven-plugin</artifactId>
+          <version>${version.revapi.maven.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.revapi</groupId>
+              <artifactId>revapi-java</artifactId>
+              <version>${version.revapi.java}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <failOnMissingConfigurationFiles>false</failOnMissingConfigurationFiles>
+            <failOnUnresolvedArtifacts>false</failOnUnresolvedArtifacts>
+          </configuration>
+        </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1989,7 +2010,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.maven-javadoc-plugin.override}</version>
+          <version>${version.maven-javadoc-plugin}</version>
           <configuration>
             <header><![CDATA[<b>${project.name} ${project.version}</b>]]></header>
             <footer><![CDATA[<b>${project.name} ${project.version}</b>]]></footer>
