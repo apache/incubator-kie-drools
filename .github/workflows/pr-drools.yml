@@ -103,11 +103,14 @@ jobs:
 #      - name: Current status
 #        run: git status
 
-#      - name: Fetch PR branch
-#        run: git fetch current_user main
+      - name: Add remote PR branch
+        run: git remote add current_user_remote https://github.com/${{ github.event.pull_request.user.login }}/${{ github.event.pull_request.head.repo.name }}.git
+
+      - name: Fetch remote PR branch
+        run: git fetch current_user_remote ${{ github.head_ref }}
 
       - name: Merge PR
-        run: git merge ${{ github.event.pull_request.user.login }}/${{ github.event.pull_request.head.repo.name }}/${{ github.head_ref }}
+        run: git merge current_user_remote/${{ github.head_ref }}
 #
 #      - name: Current status updated
 #        run: git status
