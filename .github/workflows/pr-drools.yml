@@ -64,6 +64,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Naming branch
+        run: git switch -c ${{ github.head_ref }}
+
+      - name: Current status
+        run: git status
+
 ## THOSE are hardcoded to verify incremental build - to be removed
       - name: Add git gitgabrio remote
         run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
