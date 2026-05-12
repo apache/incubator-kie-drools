@@ -73,7 +73,6 @@
     <version.io.micrometer>1.16.4</version.io.micrometer>
     <version.io.quarkus>3.27.3</version.io.quarkus>
     <version.io.netty>4.1.132.Final</version.io.netty>
-    <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>4.1.2</version.org.apache.kafka>
@@ -1335,20 +1334,6 @@
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
         <version>${version.org.apache.kafka}</version>
-        <exclusions>
-          <!-- Exclude old org.lz4 to avoid duplicate classes with at.yawk.lz4 -->
-          <exclusion>
-            <groupId>org.lz4</groupId>
-            <artifactId>lz4-java</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- CVE fix: use at.yawk.lz4:lz4-java instead of org.lz4:lz4-java -->
-      <dependency>
-        <groupId>at.yawk.lz4</groupId>
-        <artifactId>lz4-java</artifactId>
-        <version>${version.at.yawk.lz4.java}</version>
       </dependency>
     </dependencies>
 
