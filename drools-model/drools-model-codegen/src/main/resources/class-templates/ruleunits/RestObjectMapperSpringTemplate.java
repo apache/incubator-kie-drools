@@ -55,15 +55,14 @@ public class RestObjectMapper {
         objectMapper.registerModule(module);
     }
 
-    // TODO Jackson 3 migration: SB 4 no longer auto-registers a Jackson 2 HTTP converter; register one
-    // here so the @RequestBody DataStore/DataStream/SingletonStore deserializers above are actually used.
-    // canWrite refuses String so DMN controllers' pre-serialized JSON passes through StringHttpMessageConverter.
+    // TODO Jackson 3 migration: drop the converter when the Spring add-ons move to tools.jackson.databind.*.
     @Bean
     @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
         return new MappingJackson2HttpMessageConverter(objectMapper) {
             @Override
             public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+                // Refuse String so DMN controllers' pre-serialized JSON passes through StringHttpMessageConverter.
                 if (clazz == String.class) {
                     return false;
                 }
