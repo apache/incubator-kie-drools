@@ -108,9 +108,6 @@ jobs:
       - name: Merge PR
         run: git merge current_user_remote/${{ github.head_ref }}
 
-      - name: Commit merge
-        run: git commit -m ""
-
       - name: Incremental Build Chain
 #        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
         run: mvn clean test verify ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
