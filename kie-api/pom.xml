@@ -80,10 +80,6 @@
               <title>Time API</title>
               <packages>org.kie.api.time*</packages>
             </group>
-            <group>
-              <title>Task API</title>
-              <packages>org.kie.api.task*</packages>
-            </group>
           </groups>
           <useStandardDocletOptions>true</useStandardDocletOptions>
         </configuration>
@@ -108,7 +104,7 @@
           <oldArtifacts>
             <artifact>org.kie:kie-api:${revapi.latestVersion}</artifact>
           </oldArtifacts>
-          <reportSeverity>nonBreaking</reportSeverity>
+          <reportCriticality>documented</reportCriticality>
         </configuration>
         <executions>
           <execution>

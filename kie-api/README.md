@@ -11,17 +11,17 @@ Revapi automatically detects breaking changes in the public API by comparing the
 
 ### Usage
 
-The `revapi.latestVersion` property defines which version to compare against.
+The `revapi.latestVersion` property defines which version to compare against. The current version is defined in `build-parent/pom.xml`.
 
 ```bash
 # Check API compatibility (uses revapi.latestVersion from global settings)
 mvn clean verify
 
-# Or specify version explicitly
-mvn clean verify -Drevapi.latestVersion=10.2.0
+# Or specify version explicitly (check build-parent/pom.xml for current version)
+mvn clean verify -Drevapi.latestVersion=<version>
 
 # Generate detailed HTML report
-mvn clean package -Drevapi.latestVersion=10.2.0
+mvn clean package -Drevapi.latestVersion=<version>
 # Report: target/site/revapi-report.html
 ```
 

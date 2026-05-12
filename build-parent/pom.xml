@@ -1373,10 +1373,6 @@
               <version>${version.revapi.java}</version>
             </dependency>
           </dependencies>
-          <configuration>
-            <failOnMissingConfigurationFiles>false</failOnMissingConfigurationFiles>
-            <failOnUnresolvedArtifacts>false</failOnUnresolvedArtifacts>
-          </configuration>
         </plugin>
 
         <plugin>
