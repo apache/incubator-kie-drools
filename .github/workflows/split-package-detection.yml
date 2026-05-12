@@ -37,9 +37,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Setting remote origin for incremental build
-        run: git remote add origin https://github.com/apache/incubator-kie-drools.git
-
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
