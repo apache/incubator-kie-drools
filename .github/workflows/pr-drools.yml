@@ -64,11 +64,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Naming branch
-        run: git switch -c ${{ github.head_ref }}
-
-      - name: Current status
-        run: git status
+#      - name: Properly checkout PR branch
+#        run: git switch -c ${{ github.head_ref }} ${{ github.repository }}/${{ github.head_ref }}
+#
+#      - name: Current status
+#        run: git status
 
 ## THOSE are hardcoded to verify incremental build - to be removed
       - name: Add git gitgabrio remote
@@ -94,7 +94,7 @@ jobs:
         run: git status
 
       - name: Merge PR
-        run: git merge ${{ github.head_ref  }}
+        run: git merge ${{ github.repository }}/${{ github.head_ref }}
 
       - name: Current status updated
         run: git status
