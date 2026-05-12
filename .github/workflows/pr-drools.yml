@@ -76,8 +76,9 @@ jobs:
       - name: Show git refs
         run: git show-ref
 
-      - name: Build Chain
-        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
+      - name: Incremental Build Chain
+        ## TODO to be removed/adapted when the incremental build chain action will be available in the main branch of kogito-pipelines
+        uses: incremental-build-chain@test_incremental_new
         env:
           BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
           MAVEN_OPTS: "-Dfile.encoding=UTF-8"
