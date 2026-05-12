@@ -43,11 +43,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setting remote origin for incremental build
-        run: git remote add puppa https://github.com/apache/incubator-kie-drools.git
-
       - name: Show git remotes
         run: git remote -v
+
+      - name: Fetch origin
+        run: git fetch --all
 
       - name: Show git refs
         run: git show-ref
