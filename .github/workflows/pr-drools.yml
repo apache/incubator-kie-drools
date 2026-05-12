@@ -48,7 +48,7 @@ jobs:
     env:
       DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
       MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-#      BUILD_MVN_OPTS: '-Dfull -Dreproducible -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3'
+      BUILD_MVN_OPTS: '-Dfull -Dreproducible -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3'
 #      MVN_CMD: `bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.DROOLS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
 
     steps:
@@ -107,6 +107,12 @@ jobs:
 
       - name: Merge PR
         run: git merge current_user_remote/${{ github.head_ref }}
+
+      - name: Set MVN_CMD
+        run: export MVN_CMD=`bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.DROOLS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
+
+      - name: Show MVN_CMD
+        run: echo "MVN_CMD -> $MVN_CMD"
 
 #      - name: Incremental Build Chain
 #        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean ${{ env.MVN_CMD }} ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
