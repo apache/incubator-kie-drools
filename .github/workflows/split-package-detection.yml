@@ -43,6 +43,12 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Show git remotes
+        run: git remote -v
+
+      - name: Show git refs
+        run: git show-ref
+
       - name: Build with Maven
         run: mvn package -Dquickly
 
