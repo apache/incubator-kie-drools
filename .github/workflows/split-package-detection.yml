@@ -47,13 +47,13 @@ jobs:
         run: git remote -v
 
       - name: Fetch origin
-        run: git fetch --all
+        run: git fetch origin main
 
       - name: Show git refs
         run: git show-ref
 
       - name: Build with Maven
-        run: mvn package -Dquickly
+        run: mvn package -Dquickly -Dgib.disable=true
 
       - name: Make script executable
         run: chmod +x ./check-split-packages.sh
