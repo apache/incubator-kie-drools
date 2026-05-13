@@ -90,12 +90,15 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       ResourceStore pStore,
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        JavaCompiler compiler = getJavaCompiler();
-
-        if (pResourcePaths == null || pResourcePaths.length == 0) {
+        if (pResourcePaths == null) {
+            throw new IllegalArgumentException("pResourcePaths must not be null");
+        }
+        if (pResourcePaths.length == 0) {
+            // No-op: avoid triggering getJavaCompiler() so empty compile() also succeeds on JRE-only runtimes.
             return new CompilationResult( new CompilationProblem[0] );
         }
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        JavaCompiler compiler = getJavaCompiler();
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, Charset.forName(pSettings.getSourceEncoding()))) {
             try {

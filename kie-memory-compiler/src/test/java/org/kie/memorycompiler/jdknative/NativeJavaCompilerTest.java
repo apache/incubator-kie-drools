@@ -21,7 +21,6 @@ package org.kie.memorycompiler.jdknative;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -36,6 +35,7 @@ import javax.tools.JavaCompiler;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.memorycompiler.KieMemoryCompilerException;
@@ -46,14 +46,24 @@ public class NativeJavaCompilerTest {
 	public void simulateJre() {
 		NativeJavaCompiler compiler = new NativeJavaCompiler(new NullJavaCompilerFinder());
 
-		assertThatExceptionOfType(KieMemoryCompilerException.class).isThrownBy(() -> compiler.compile(null, null, null, null, null));
+		// Non-null, non-empty paths so we reach getJavaCompiler() (the JRE-simulation point).
+		assertThatExceptionOfType(KieMemoryCompilerException.class)
+				.isThrownBy(() -> compiler.compile(new String[]{"Foo.java"}, null, null, null, null));
 	}
 
 	@Test
 	public void simulateJreWithException() {
 		NativeJavaCompiler compiler = new NativeJavaCompiler(new ExceptionThrowingJavaCompilerFinder());
 
-		assertThatExceptionOfType(KieMemoryCompilerException.class).isThrownBy(() -> compiler.compile(null, null, null, null, null));
+		assertThatExceptionOfType(KieMemoryCompilerException.class)
+				.isThrownBy(() -> compiler.compile(new String[]{"Foo.java"}, null, null, null, null));
+	}
+
+	@Test
+	public void nullSourcesShouldThrowIllegalArgument() {
+		NativeJavaCompiler compiler = new NativeJavaCompiler();
+		assertThatExceptionOfType(IllegalArgumentException.class)
+				.isThrownBy(() -> compiler.compile(null, null, null, null, compiler.createDefaultSettings()));
 	}
 
 	@Test
@@ -76,13 +86,13 @@ public class NativeJavaCompilerTest {
 	 */
 	@Test
 	public void compileWithDirectoryClasspath() throws Exception {
-		// target/classes contains compiled classes from this module as a directory (not a JAR)
-		File targetClasses = new File("target/classes");
+		// Resolve this module's classes directory from a known class, not via a relative path.
+		Path targetClasses = locateCompiledClassesRoot();
 		assertThat(targetClasses).isDirectory();
 
 		// Create a classloader with target/classes as a directory URL
 		try (URLClassLoader classLoader = new URLClassLoader(
-				new URL[]{targetClasses.toURI().toURL()},
+				new URL[]{targetClasses.toUri().toURL()},
 				ClassLoader.getPlatformClassLoader()
 		)) {
 			// Source that references CompilationResult from the directory-based classpath
@@ -113,11 +123,12 @@ public class NativeJavaCompilerTest {
 	 * with spaces or non-ASCII characters.
 	 */
 	@Test
-	public void compileWithEncodedDirectoryClasspath() throws Exception {
-		Path sourceClass = Paths.get("target/classes/org/kie/memorycompiler/CompilationResult.class");
+	public void compileWithEncodedDirectoryClasspath(@TempDir Path tempBase) throws Exception {
+		Path sourceClass = locateCompiledClassesRoot().resolve("org/kie/memorycompiler/CompilationResult.class");
 		assertThat(sourceClass).exists();
 
-		Path tempRoot = Paths.get("target", "encoded url classpath");
+		// Force a space in the path so the URL contains %20.
+		Path tempRoot = tempBase.resolve("encoded url classpath");
 		Path tempPackage = tempRoot.resolve("org/kie/memorycompiler");
 		Files.createDirectories(tempPackage);
 		Files.copy(sourceClass, tempPackage.resolve("CompilationResult.class"), StandardCopyOption.REPLACE_EXISTING);
@@ -191,6 +202,16 @@ public class NativeJavaCompilerTest {
 		} finally {
 			NativeJavaCompiler.resetVfsAccessForTest();
 		}
+	}
+
+	/**
+	 * Resolves the directory containing this module's compiled classes via a known class's
+	 * code source, rather than assuming a {@code target/classes} relative path. Robust to
+	 * Maven / IDE / Gradle test runners with different working directories.
+	 */
+	private static Path locateCompiledClassesRoot() throws Exception {
+		URL location = CompilationResult.class.getProtectionDomain().getCodeSource().getLocation();
+		return Paths.get(location.toURI());
 	}
 
 	private static class NullJavaCompilerFinder implements JavaCompilerFinder {
