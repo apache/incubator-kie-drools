@@ -29,8 +29,10 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  * shot method that will internally instantiate a KieSession, add all the user data and execute user commands, call fireAllRules, and then
  * call dispose(). While the main way to work with this class is via the BatchExecution Command as supported by the CommandExecutor interface,
  * two convenience methods are provided for when simple object insertion is all that's required.
- *
- * @apiNote Since 10.1.0, extends RuntimeSession for common session operations
+ * Extends RuntimeSession for common session operations.
+ * @since 10.1.0
+ * @apiNote Use this for fire-and-forget rule execution where you don't need to maintain session state
+ *          between invocations. For stateful sessions with iterative rule execution, use KieSession instead.
  *
  * <p>
  * Simple example showing a stateless session executing for a given collection of java objects using the convenience api. It will iterate the collection inserting

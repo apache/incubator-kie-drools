@@ -81,7 +81,6 @@
               <packages>org.kie.api.time*</packages>
             </group>
           </groups>
-          <useStandardDocletOptions>true</useStandardDocletOptions>
         </configuration>
         <executions>
           <execution>

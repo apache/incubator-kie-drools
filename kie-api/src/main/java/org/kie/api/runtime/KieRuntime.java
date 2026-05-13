@@ -25,7 +25,10 @@ import org.kie.api.time.SessionClock;
 
 /**
  * KieRuntime provides runtime capabilities for rule and process execution.
- * @apiNote Since 10.1.0, extends RuntimeSession for common session operations
+ * Extends RuntimeSession for common session operations.
+ * @since 10.1.0
+ * @apiNote This is the primary interface for stateful rule sessions. For stateless
+ *          execution, use StatelessKieSession instead.
  */
 public interface KieRuntime extends RuntimeSession, RuleRuntime, ProcessRuntime, KieRuntimeEventManager {
 

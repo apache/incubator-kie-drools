@@ -2014,7 +2014,13 @@
             </archive>
             <quiet>true</quiet>
             <doclint>none</doclint>
-            <legacyMode>true</legacyMode>
+            <tags>
+              <tag>
+                <name>apiNote</name>
+                <placement>a</placement>
+                <head>API Note:</head>
+              </tag>
+            </tags>
           </configuration>
         </plugin>
         <plugin>
