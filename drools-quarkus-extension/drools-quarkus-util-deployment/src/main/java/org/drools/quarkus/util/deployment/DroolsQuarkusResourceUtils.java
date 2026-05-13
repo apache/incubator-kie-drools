@@ -48,7 +48,6 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.kie.api.internal.utils.KieService;
-import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +148,10 @@ public class DroolsQuarkusResourceUtils {
     }
 
     private static JavaCompilerSettings createJavaCompilerSettings(DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies, boolean useDebugSymbols) {
-        JavaCompilerSettings compilerSettings = JavaCompiler.getCompiler().createDefaultSettings();
+        // Quarkus build-time compilation is Native-only (see KieMemoryCompiler.compileNoLoad).
+        // Construct settings directly instead of going through JavaCompiler.getCompiler(), so
+        // -Ddrools.dialect.java.compiler=ECLIPSE cannot affect (or break) the Quarkus build.
+        JavaCompilerSettings compilerSettings = new JavaCompilerSettings();
         compilerSettings.addOption("-proc:none"); // force disable annotation processing
         if (useDebugSymbols) {
             compilerSettings.addOption("-g");

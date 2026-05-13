@@ -38,8 +38,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -61,8 +63,12 @@ import org.kie.memorycompiler.StoreClassLoader;
 import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NativeJavaCompiler extends AbstractJavaCompiler {
+
+    private static final Logger logger = LoggerFactory.getLogger(NativeJavaCompiler.class);
 
     private JavaCompilerFinder javaCompilerFinder;
 
@@ -86,6 +92,10 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler compiler = getJavaCompiler();
+
+        if (pResourcePaths == null || pResourcePaths.length == 0) {
+            return new CompilationResult( new CompilationProblem[0] );
+        }
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, Charset.forName(pSettings.getSourceEncoding()))) {
             try {
@@ -166,6 +176,133 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
     private interface DroolsJavaFileObject extends JavaFileObject {
         String getBinaryName();
+    }
+
+    /**
+     * A class file enumerated from a non-standard classpath URL (e.g. JBoss VFS).
+     * Package-private so tests can drive {@link #listVfsChildren(URL, String)} directly.
+     */
+    static final class VfsClassResource {
+        final String resourceName;
+        final byte[] bytes;
+
+        VfsClassResource(String resourceName, byte[] bytes) {
+            this.resourceName = resourceName;
+            this.bytes = bytes;
+        }
+    }
+
+    /**
+     * Reflective handles into JBoss VFS. Resolved lazily, atomically, and cached.
+     * {@link #LOAD_FAILED} marks "we tried and the classes are not available" so we
+     * don't repeatedly pay the {@link Class#forName} cost on non-JBoss runtimes.
+     */
+    private static final class VfsAccess {
+        static final VfsAccess LOAD_FAILED = new VfsAccess(null, null, null, null);
+
+        final Method getChild;
+        final Method getChildren;
+        final Method getName;
+        final Method openStream;
+
+        VfsAccess(Method getChild, Method getChildren, Method getName, Method openStream) {
+            this.getChild = getChild;
+            this.getChildren = getChildren;
+            this.getName = getName;
+            this.openStream = openStream;
+        }
+
+        static VfsAccess load() {
+            try {
+                Class<?> vfsClass = loadJbossClass("org.jboss.vfs.VFS");
+                Class<?> vfClass = loadJbossClass("org.jboss.vfs.VirtualFile");
+                return new VfsAccess(
+                        vfsClass.getMethod("getChild", URI.class),
+                        vfClass.getMethod("getChildren"),
+                        vfClass.getMethod("getName"),
+                        vfClass.getMethod("openStream"));
+            } catch (ClassNotFoundException | NoSuchMethodException | LinkageError e) {
+                logger.debug("JBoss VFS not available; non-jar/non-file classpath URLs will be skipped", e);
+                return LOAD_FAILED;
+            }
+        }
+
+        private static Class<?> loadJbossClass(String name) throws ClassNotFoundException {
+            try {
+                return Class.forName(name);
+            } catch (ClassNotFoundException | LinkageError e) {
+                // In modular containers the calling classloader may not see VFS even when
+                // the TCCL does; also catch LinkageError because partial visibility can
+                // surface as NoClassDefFoundError rather than ClassNotFoundException.
+                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                if (tccl == null || tccl == NativeJavaCompiler.class.getClassLoader()) {
+                    if (e instanceof ClassNotFoundException) {
+                        throw (ClassNotFoundException) e;
+                    }
+                    throw new ClassNotFoundException(name, e);
+                }
+                return Class.forName(name, true, tccl);
+            }
+        }
+    }
+
+    private static volatile VfsAccess vfsAccess;
+
+    private static VfsAccess vfsAccess() {
+        VfsAccess access = vfsAccess;
+        if (access == null) {
+            access = VfsAccess.load();
+            vfsAccess = access;
+        }
+        return access == VfsAccess.LOAD_FAILED ? null : access;
+    }
+
+    /**
+     * For test reset only — clears the cached VFS access so a unit test that installs
+     * test-classpath {@code org.jboss.vfs.*} stubs can force a fresh resolution.
+     */
+    static void resetVfsAccessForTest() {
+        vfsAccess = null;
+    }
+
+    /**
+     * Enumerate {@code .class} resources from a non-standard classpath URL using JBoss VFS.
+     * Returns {@code null} if VFS is not on the classpath, the URL is not a VFS package
+     * directory, or enumeration fails. Package-private for direct testability.
+     */
+    @SuppressWarnings("unchecked")
+    static List<VfsClassResource> listVfsChildren(URL packageFolderURL, String packageName) {
+        VfsAccess access = vfsAccess();
+        if (access == null) {
+            return null;
+        }
+        try {
+            Object virtualFile = access.getChild.invoke(null, packageFolderURL.toURI());
+            if (virtualFile == null) {
+                return null;
+            }
+            List<Object> children = (List<Object>) access.getChildren.invoke(virtualFile);
+            if (children == null || children.isEmpty()) {
+                return null;
+            }
+            List<VfsClassResource> result = new ArrayList<>();
+            String resourcePrefix = packageName.replace('.', '/') + "/";
+            for (Object child : children) {
+                String name = (String) access.getName.invoke(child);
+                if (!name.endsWith(".class")) {
+                    continue;
+                }
+                byte[] bytes;
+                try (InputStream is = (InputStream) access.openStream.invoke(child)) {
+                    bytes = is.readAllBytes();
+                }
+                result.add(new VfsClassResource(resourcePrefix + name, bytes));
+            }
+            return result;
+        } catch (Exception | LinkageError e) {
+            logger.debug("Failed to enumerate VFS children for URL {} in package {}", packageFolderURL, packageName, e);
+            return null;
+        }
     }
 
     private static class CompilationOutput extends SimpleJavaFileObject implements DroolsJavaFileObject {
@@ -357,14 +494,16 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                 List<JavaFileObject> result = new ArrayList<>();
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
-                    if (!new File(packageFolderURL.getFile()).isDirectory()) {
-                        if (result == null) {
-                            result = processJar(packageFolderURL);
-                        } else {
-                            List<JavaFileObject> classesInJar = processJar(packageFolderURL);
-                            if (classesInJar != null) {
-                                result.addAll(classesInJar);
-                            }
+                    File dir = toFile(packageFolderURL);
+                    if (dir != null && dir.isDirectory()) {
+                        List<JavaFileObject> classesInDir = processDirectory(dir, packageName);
+                        if (classesInDir != null) {
+                            result.addAll(classesInDir);
+                        }
+                    } else {
+                        List<JavaFileObject> classesInJar = processJar(packageFolderURL, packageName);
+                        if (classesInJar != null) {
+                            result.addAll(classesInJar);
                         }
                     }
                 }
@@ -374,12 +513,41 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             }
         }
 
-        private List<JavaFileObject> processJar(URL packageFolderURL) throws IOException {
+        /**
+         * Resolve a classpath URL to a local {@link File}, handling URL-encoded paths
+         * (spaces, non-ASCII characters, etc.). Returns {@code null} if the URL is not
+         * a {@code file:} URL or cannot be converted (e.g. {@code vfs:} URLs).
+         */
+        private static File toFile(URL url) {
+            if (!"file".equals(url.getProtocol())) {
+                return null;
+            }
+            try {
+                return new File(url.toURI());
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                return new File(url.getFile());
+            }
+        }
+
+        private List<JavaFileObject> processDirectory(File directory, String packageName) {
+            File[] classFiles = directory.listFiles((dir, name) -> name.endsWith(".class"));
+            if (classFiles == null || classFiles.length == 0) {
+                return null;
+            }
+            List<JavaFileObject> result = new ArrayList<>();
+            for (File classFile : classFiles) {
+                String binaryName = packageName + "." + classFile.getName().substring(0, classFile.getName().length() - 6);
+                result.add(new CustomJavaFileObject(binaryName, classFile.toURI()));
+            }
+            return result;
+        }
+
+        private List<JavaFileObject> processJar(URL packageFolderURL, String packageName) throws IOException {
             String jarUri = jarUri(packageFolderURL.toExternalForm());
 
             URLConnection urlConnection = packageFolderURL.openConnection();
             if (!(urlConnection instanceof JarURLConnection)) {
-                return null;
+                return processNonStandardUrl(packageFolderURL, packageName);
             }
 
             JarURLConnection jarConn = (JarURLConnection) urlConnection;
@@ -398,6 +566,18 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                     }
                     result.add( new CustomJavaFileObject( binaryName, uri ) );
                 }
+            }
+            return result;
+        }
+
+        private List<JavaFileObject> processNonStandardUrl(URL packageFolderURL, String packageName) {
+            List<VfsClassResource> resources = listVfsChildren(packageFolderURL, packageName);
+            if (resources == null || resources.isEmpty()) {
+                return null;
+            }
+            List<JavaFileObject> result = new ArrayList<>(resources.size());
+            for (VfsClassResource resource : resources) {
+                result.add(new CompilationInput(resource.resourceName, new ByteArrayInputStream(resource.bytes)));
             }
             return result;
         }
