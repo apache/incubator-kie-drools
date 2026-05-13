@@ -108,8 +108,11 @@ jobs:
       - name: Merge PR
         run: git merge current_user_remote/${{ github.head_ref }}
 
+      - name: Show remotes
+        run: git remote -v
+
       - name: Show diff
-        run: git diff gitgabrio test_incremental
+        run: git diff test_incremental
 
       - name: Incremental Build Chain
 #        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
