@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-// TODO Jackson 3 migration: drop this shim when the Spring add-ons move to tools.jackson.databind.*.
+// Jackson 2 Spring configuration — remove when the Spring add-ons move to tools.jackson.databind.*.
 @SpringBootConfiguration
 public class RestObjectMapper {
 
@@ -55,7 +55,7 @@ public class RestObjectMapper {
         objectMapper.registerModule(module);
     }
 
-    // TODO Jackson 3 migration: drop the converter when the Spring add-ons move to tools.jackson.databind.*.
+    // Jackson 2 HTTP message converter — remove when the Spring add-ons move to tools.jackson.databind.*.
     @Bean
     @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
