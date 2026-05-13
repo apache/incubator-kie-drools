@@ -115,7 +115,7 @@ jobs:
         run: git branch --all
 
       - name: Show diff
-        run: git diff test_incremental
+        run: git diff main gitgabrio/test_incremental
 
       - name: Incremental Build Chain
 #        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
