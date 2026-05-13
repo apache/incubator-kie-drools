@@ -28,13 +28,10 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
     void makeImmutable();
 
     /**
-     * Gets an option value
+     * Sets an option value
      *
      * @param option the option class for the option being requested
      * @param <C extends T>
-     *
-     * @return the Option value for the given option. Returns null if option is
-     *         not configured.
      */
     <C extends T> void setOption( C option );
 
