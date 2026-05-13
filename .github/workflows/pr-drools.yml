@@ -111,6 +111,9 @@ jobs:
       - name: Show remotes
         run: git remote -v
 
+      - name: Show branches
+        run: git branch --all
+
       - name: Show diff
         run: git diff test_incremental
 
