@@ -68,7 +68,6 @@ jobs:
     name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
     env:
       DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_${{ matrix.job_name }}_${{ matrix.os }}.txt'
-      BUILD_LOGS_DIR: 'build_logs'
     steps:
       - name: Clean Disk Space
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main

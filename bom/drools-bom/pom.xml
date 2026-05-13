@@ -1045,12 +1045,6 @@
         <artifactId>default-kiesession</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- NOT SURE ABOUT THIS ONE!!!! -->
-      <!--<dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>cdi-example</artifactId>
-        <version>${project.version}</version>
-      </dependency>-->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>multiple-kbases</artifactId>

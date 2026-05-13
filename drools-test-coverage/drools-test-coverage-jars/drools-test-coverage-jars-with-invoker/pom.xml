@@ -36,7 +36,6 @@
     <java.module.name>org.drools.compiler.integrationtests.jars.with.invoker</java.module.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <org.kie.version>${project.version}</org.kie.version>
-    <path.to.buildlog.directory>${project.parent.parent.basedir}/../${buildlogs.dir}</path.to.buildlog.directory>
   </properties>
 
   <dependencies>
@@ -60,7 +59,6 @@
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <logDirectory>${path.to.buildlog.directory}</logDirectory>
           <streamLogs>true</streamLogs>
           <goal>clean</goal>
           <goal>package</goal>
