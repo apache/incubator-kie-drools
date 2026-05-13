@@ -23,6 +23,10 @@ import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.api.time.SessionClock;
 
+/**
+ * KieRuntime provides runtime capabilities for rule and process execution.
+ * @apiNote Since 10.1.0, extends RuntimeSession for common session operations
+ */
 public interface KieRuntime extends RuntimeSession, RuleRuntime, ProcessRuntime, KieRuntimeEventManager {
 
     /**

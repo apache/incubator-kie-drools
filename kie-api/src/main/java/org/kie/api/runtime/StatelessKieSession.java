@@ -30,6 +30,8 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  * call dispose(). While the main way to work with this class is via the BatchExecution Command as supported by the CommandExecutor interface,
  * two convenience methods are provided for when simple object insertion is all that's required.
  *
+ * @apiNote Since 10.1.0, extends RuntimeSession for common session operations
+ *
  * <p>
  * Simple example showing a stateless session executing for a given collection of java objects using the convenience api. It will iterate the collection inserting
  * each element in turn

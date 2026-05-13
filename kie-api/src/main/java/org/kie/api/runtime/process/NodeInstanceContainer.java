@@ -39,6 +39,8 @@ public interface NodeInstanceContainer {
      * within this container and are serializable
      *
      * @return the list of serializable node instances currently active
+     * @since 10.1.0
+     * @apiNote Used during serialization to filter out non-serializable instances
      */
     default Collection<NodeInstance> getSerializableNodeInstances() {
         return getNodeInstances(); // defaulting to getNodeInstances to avoid breaking

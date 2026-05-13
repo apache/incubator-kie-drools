@@ -22,6 +22,11 @@ import org.kie.api.KieBase;
 
 import java.util.Map;
 
+/**
+ * Common interface for runtime session operations.
+ * @since 10.1.0
+ * @apiNote Extracted from KieRuntime and StatelessKieSession for code reuse
+ */
 public interface RuntimeSession extends CommandExecutor {
 
     /**
