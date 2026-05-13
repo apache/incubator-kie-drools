@@ -18,7 +18,11 @@
  */
 package org.jbpm.compiler.canonical.descriptors;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.Expression;
 
 public interface TaskDescriptor {
 
@@ -33,5 +37,9 @@ public interface TaskDescriptor {
     String getType();
 
     CompilationUnit generateHandlerClassForService();
+
+    default Map<String, Expression> getCustomParams() {
+        return Collections.emptyMap();
+    }
 
 }

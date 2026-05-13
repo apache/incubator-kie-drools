@@ -16,30 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.process.codegen;
+package org.kie.kogito.auth.impl;
 
-import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
-import org.kogito.workitem.rest.RestWorkItemHandler;
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.sslWebClientOptions;
+import java.util.Optional;
 
+import org.kie.kogito.auth.AuthTokenProvider;
 
-public class xxxRestWorkItemHandler extends RestWorkItemHandler {
-
-    
-    public xxxRestWorkItemHandler() {
-        this(Vertx.vertx(), sslWebClientOptions());
-    }
-
-    
-    public xxxRestWorkItemHandler(Vertx vertx, WebClientOptions sslOptions) {
-    	super(WebClient.create(vertx), WebClient.create(vertx, sslOptions));
-    }
-    
+public class NoOpAuthTokenProvider implements AuthTokenProvider {
     @Override
-    public String getName() {
-        return this.getClass().getName();
+    public Optional<String> getAuthToken() {
+        return Optional.empty();
     }
-
 }

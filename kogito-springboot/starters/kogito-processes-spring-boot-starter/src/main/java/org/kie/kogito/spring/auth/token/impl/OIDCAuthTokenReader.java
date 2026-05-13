@@ -16,19 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.kie.kogito.spring.auth.token.impl;
 
-package org.kie.addons.springboot.auth;
-
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.kie.kogito.spring.auth.token.AuthTokenReader;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SecurityContextInitializer implements InitializingBean {
+@ConditionalOnClass({ OidcUser.class })
+public class OIDCAuthTokenReader implements AuthTokenReader<OidcUser> {
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        // ensure the security context is inherited to child threads
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+    public Class<OidcUser> getPrincipalType() {
+        return OidcUser.class;
+    }
+
+    @Override
+    public String readToken(OidcUser principal) {
+        return principal.getIdToken().getTokenValue();
     }
 }

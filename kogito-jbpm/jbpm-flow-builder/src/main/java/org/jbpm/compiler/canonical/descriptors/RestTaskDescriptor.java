@@ -18,7 +18,11 @@
  */
 package org.jbpm.compiler.canonical.descriptors;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -26,6 +30,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -37,9 +42,11 @@ public class RestTaskDescriptor implements TaskDescriptor {
     public static final String TYPE = "Rest";
 
     private final ProcessMetaData processMetadata;
+    private final WorkItemNode workItemNode;
 
-    protected RestTaskDescriptor(final ProcessMetaData processMetadata) {
+    protected RestTaskDescriptor(final ProcessMetaData processMetadata, final WorkItemNode workItemNode) {
         this.processMetadata = processMetadata;
+        this.workItemNode = workItemNode;
     }
 
     @Override
@@ -64,4 +71,10 @@ public class RestTaskDescriptor implements TaskDescriptor {
                 .forEach(m -> m.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(new StringLiteralExpr(className))))));
         return compilationUnit;
     }
+
+    @Override
+    public Map<String, Expression> getCustomParams() {
+        return Collections.emptyMap();
+    }
+
 }

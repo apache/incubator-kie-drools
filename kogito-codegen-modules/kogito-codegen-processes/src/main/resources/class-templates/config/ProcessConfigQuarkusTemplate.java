@@ -19,6 +19,7 @@
 package $Package$;
 
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.kogito.auth.AuthTokenProvider;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.event.EventPublisher;
@@ -46,6 +47,7 @@ public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessCo
             Instance<UnitOfWorkEventListener> unitOfWorkEventListeners,
             Instance<ProcessVersionResolver> versionResolver,
             Instance<IdentityProvider> identityProvider,
+            Instance<AuthTokenProvider> authTokenProvider,
             Instance<BusinessCalendar> businessCalendar) {
 
         super(workItemHandlerConfig,
@@ -58,7 +60,7 @@ public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessCo
                 unitOfWorkEventListeners,
                 versionResolver,
                 identityProvider,
+                authTokenProvider,
                 businessCalendar);
     }
-
 }

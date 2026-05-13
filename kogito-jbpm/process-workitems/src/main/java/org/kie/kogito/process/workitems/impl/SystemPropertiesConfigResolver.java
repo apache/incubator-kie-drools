@@ -16,30 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.process.codegen;
+package org.kie.kogito.process.workitems.impl;
 
-import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
-import org.kogito.workitem.rest.RestWorkItemHandler;
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.sslWebClientOptions;
+import java.util.Optional;
 
+public class SystemPropertiesConfigResolver implements ConfigResolver {
 
-public class xxxRestWorkItemHandler extends RestWorkItemHandler {
-
-    
-    public xxxRestWorkItemHandler() {
-        this(Vertx.vertx(), sslWebClientOptions());
-    }
-
-    
-    public xxxRestWorkItemHandler(Vertx vertx, WebClientOptions sslOptions) {
-    	super(WebClient.create(vertx), WebClient.create(vertx, sslOptions));
-    }
-    
     @Override
-    public String getName() {
-        return this.getClass().getName();
+    public <T> Optional<T> getConfigProperty(String name, Class<T> clazz) {
+        Object value = null;
+        if (Integer.class.isAssignableFrom(clazz)) {
+            value = Integer.getInteger(name);
+        } else if (String.class.isAssignableFrom(clazz) || Object.class.equals(clazz)) {
+            value = System.getProperty(name);
+        }
+        return Optional.ofNullable(clazz.cast(value));
     }
-
 }

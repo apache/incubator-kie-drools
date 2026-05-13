@@ -16,30 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.process.codegen;
+package org.kie.kogito.process.workitems.impl;
 
-import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
-import org.kogito.workitem.rest.RestWorkItemHandler;
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.sslWebClientOptions;
+public class ConfigResolverHolder {
 
+    private static ConfigResolver configResolver = new SystemPropertiesConfigResolver();
 
-public class xxxRestWorkItemHandler extends RestWorkItemHandler {
-
-    
-    public xxxRestWorkItemHandler() {
-        this(Vertx.vertx(), sslWebClientOptions());
+    public static void setConfigResolver(ConfigResolver resolver) {
+        ConfigResolverHolder.configResolver = resolver;
     }
 
-    
-    public xxxRestWorkItemHandler(Vertx vertx, WebClientOptions sslOptions) {
-    	super(WebClient.create(vertx), WebClient.create(vertx, sslOptions));
-    }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
+    public static ConfigResolver getConfigResolver() {
+        return configResolver;
     }
 
+    private ConfigResolverHolder() {
+    }
 }

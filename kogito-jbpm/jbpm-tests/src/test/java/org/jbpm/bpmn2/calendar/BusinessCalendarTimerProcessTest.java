@@ -114,7 +114,7 @@ public class BusinessCalendarTimerProcessTest {
     private static class MockProcessConfig extends AbstractProcessConfig {
         private MockProcessConfig(BusinessCalendar businessCalendar) {
             super(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                    Collections.emptyList(), null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), List.of(businessCalendar));
+                    Collections.emptyList(), null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), List.of(businessCalendar));
         }
     }
 }

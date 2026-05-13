@@ -54,6 +54,7 @@ import org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.decorators.ParamsDecorator;
 import org.kogito.workitem.rest.decorators.PrefixParamsDecorator;
 import org.kogito.workitem.rest.decorators.RequestDecorator;
+import org.kogito.workitem.rest.decorators.TokenPropagationDecorator;
 import org.kogito.workitem.rest.pathresolvers.DefaultPathParamResolver;
 import org.kogito.workitem.rest.pathresolvers.PathParamResolver;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
@@ -110,8 +111,11 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
     private static final Map<String, ParamsDecorator> paramsDecorators = new ConcurrentHashMap<>();
     private static final Map<String, PathParamResolver> pathParamsResolvers = new ConcurrentHashMap<>();
     private static final Map<String, AuthDecorator> authDecoratorsMap = new ConcurrentHashMap<>();
-    private static final Collection<AuthDecorator> DEFAULT_AUTH_DECORATORS = Arrays.asList(new ApiKeyAuthDecorator(), new BasicAuthDecorator(), new BearerTokenAuthDecorator());
-
+    private static final Collection<AuthDecorator> DEFAULT_AUTH_DECORATORS = Arrays.asList(
+            new ApiKeyAuthDecorator(),
+            new BasicAuthDecorator(),
+            new BearerTokenAuthDecorator(),
+            new TokenPropagationDecorator());
     protected final WebClient httpClient;
     protected final WebClient httpsClient;
     private Collection<RequestDecorator> requestDecorators;
@@ -127,8 +131,10 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
         //retrieving parameters
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
+
         //removing unnecessary parameter
         parameters.remove("TaskName");
+
         Class<?> targetInfo = getParamSupply(parameters, TARGET_TYPE, Class.class, () -> getTargetInfo(workItem));
         logger.debug("Using target {}", targetInfo);
 
@@ -190,7 +196,7 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
         authDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         paramsDecorator.decorate(workItem, parameters, request);
         Duration requestTimeout = getRequestTimeout(parameters);
-        HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)
+        HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT) || method.equals(HttpMethod.PATCH)
                 ? sendBody(request, bodyBuilder.apply(parameters), requestTimeout)
                 : send(request, requestTimeout);
         Object outputParams = resultHandler.apply(response, targetInfo, ContextFactory.fromItem(workItem));

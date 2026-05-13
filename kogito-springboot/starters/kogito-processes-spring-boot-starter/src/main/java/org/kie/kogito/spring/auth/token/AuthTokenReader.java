@@ -16,30 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.process.codegen;
+package org.kie.kogito.spring.auth.token;
 
-import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
-import org.kogito.workitem.rest.RestWorkItemHandler;
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.sslWebClientOptions;
+public interface AuthTokenReader<T> {
 
+    Class<T> getPrincipalType();
 
-public class xxxRestWorkItemHandler extends RestWorkItemHandler {
+    String readToken(T principal);
 
-    
-    public xxxRestWorkItemHandler() {
-        this(Vertx.vertx(), sslWebClientOptions());
+    default boolean acceptsPrincipal(Object principal) {
+        return getPrincipalType().isAssignableFrom(principal.getClass());
     }
-
-    
-    public xxxRestWorkItemHandler(Vertx vertx, WebClientOptions sslOptions) {
-    	super(WebClient.create(vertx), WebClient.create(vertx, sslOptions));
-    }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
 }

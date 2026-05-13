@@ -18,7 +18,9 @@
  */
 package org.kie.kogito.process.impl;
 
+import org.kie.kogito.auth.AuthTokenProvider;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.auth.impl.NoOpAuthTokenProvider;
 import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
@@ -45,6 +47,7 @@ public class StaticProcessConfig implements ProcessConfig {
     private ProcessVersionResolver versionResolver;
 
     private IdentityProvider identityProvider;
+    private AuthTokenProvider authTokenProvider;
     private BusinessCalendar businessCalendar;
 
     public StaticProcessConfig(JobsService jobService) {
@@ -80,6 +83,18 @@ public class StaticProcessConfig implements ProcessConfig {
             ProcessVersionResolver versionResolver,
             IdentityProvider identityProvider,
             BusinessCalendar calendar) {
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, jobsService, versionResolver, identityProvider, null, calendar);
+    }
+
+    public StaticProcessConfig(
+            WorkItemHandlerConfig workItemHandlerConfig,
+            ProcessEventListenerConfig processEventListenerConfig,
+            UnitOfWorkManager unitOfWorkManager,
+            JobsService jobsService,
+            ProcessVersionResolver versionResolver,
+            IdentityProvider identityProvider,
+            AuthTokenProvider authTokenProvider,
+            BusinessCalendar calendar) {
         this.unitOfWorkManager = unitOfWorkManager;
         this.workItemHandlerConfig = workItemHandlerConfig;
         this.processEventListenerConfig = processEventListenerConfig;
@@ -87,6 +102,7 @@ public class StaticProcessConfig implements ProcessConfig {
         this.jobsService = jobsService;
         this.versionResolver = versionResolver;
         this.identityProvider = identityProvider;
+        this.authTokenProvider = authTokenProvider;
         this.businessCalendar = calendar;
     }
 
@@ -136,6 +152,11 @@ public class StaticProcessConfig implements ProcessConfig {
     }
 
     @Override
+    public AuthTokenProvider authTokenProvider() {
+        return authTokenProvider;
+    }
+
+    @Override
     public BusinessCalendar getBusinessCalendar() {
         return this.businessCalendar;
     }
@@ -153,6 +174,7 @@ public class StaticProcessConfig implements ProcessConfig {
             StaticProcessConfig.this.jobsService = staticJobService();
             StaticProcessConfig.this.versionResolver = process -> process.version();
             StaticProcessConfig.this.identityProvider = new NoOpIdentityProvider();
+            StaticProcessConfig.this.authTokenProvider = new NoOpAuthTokenProvider();
             StaticProcessConfig.this.businessCalendar = null;
         }
 

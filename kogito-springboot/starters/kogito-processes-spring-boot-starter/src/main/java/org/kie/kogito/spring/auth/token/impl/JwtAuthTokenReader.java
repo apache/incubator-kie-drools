@@ -16,30 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.process.codegen;
+package org.kie.kogito.spring.auth.token.impl;
 
-import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
-import org.kogito.workitem.rest.RestWorkItemHandler;
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.sslWebClientOptions;
+import org.kie.kogito.spring.auth.token.AuthTokenReader;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Component;
 
+@Component
+@ConditionalOnClass(Jwt.class)
+public class JwtAuthTokenReader implements AuthTokenReader<Jwt> {
 
-public class xxxRestWorkItemHandler extends RestWorkItemHandler {
-
-    
-    public xxxRestWorkItemHandler() {
-        this(Vertx.vertx(), sslWebClientOptions());
-    }
-
-    
-    public xxxRestWorkItemHandler(Vertx vertx, WebClientOptions sslOptions) {
-    	super(WebClient.create(vertx), WebClient.create(vertx, sslOptions));
-    }
-    
     @Override
-    public String getName() {
-        return this.getClass().getName();
+    public Class<Jwt> getPrincipalType() {
+        return Jwt.class;
     }
 
+    @Override
+    public String readToken(Jwt principal) {
+        return principal.getTokenValue();
+    }
 }

@@ -71,7 +71,8 @@ public final class TaskDescriptorBuilder {
         switch (this.descriptorName) {
             case (RestTaskDescriptor.TYPE):
                 requireNonNull(this.metadata, "Error creating descriptor " + RestTaskDescriptor.TYPE + " ProcessMetadata can't be null");
-                return new RestTaskDescriptor(this.metadata);
+                requireNonNull(this.workItemNode, "Error creating descriptor " + RestTaskDescriptor.TYPE + " WorkItemNode can't be null");
+                return new RestTaskDescriptor(this.metadata, this.workItemNode);
             case (ServiceTaskDescriptor.TYPE):
                 requireNonNull(this.workItemNode, "Error creating descriptor " + ServiceTaskDescriptor.TYPE + " WorkItemNode can't be null");
                 requireNonNull(this.classLoader, "Error creating descriptor " + ServiceTaskDescriptor.TYPE + " Classloader can't be null");

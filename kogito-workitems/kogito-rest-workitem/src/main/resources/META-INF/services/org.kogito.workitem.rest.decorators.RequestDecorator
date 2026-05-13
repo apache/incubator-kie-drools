@@ -18,3 +18,4 @@
 #
 
 org.kogito.workitem.rest.decorators.HeaderMetadataDecorator
+org.kogito.workitem.rest.decorators.TokenPropagationDecorator

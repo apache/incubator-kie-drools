@@ -18,7 +18,10 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
@@ -86,6 +89,7 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
         String workName = node.getWork().getName();
         final String nodeId = getNodeId(node);
 
+        Map<String, Expression> customParams = new HashMap<>();
         if (TaskDescriptorBuilder.isBuilderSupported(workName)) {
             final TaskDescriptor taskDescriptor = new TaskDescriptorBuilder(workName)
                     .withProcessMetadata(metadata)
@@ -94,6 +98,7 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
                     .build();
             workName = taskDescriptor.getName();
             metadata.getGeneratedHandlers().put(workName, taskDescriptor.generateHandlerClassForService());
+            customParams.putAll(taskDescriptor.getCustomParams());
         }
 
         body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
@@ -104,7 +109,7 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
             body.addStatement(getFactoryMethod(nodeId, METHOD_WORK_PARAMETER_FACTORY, ExpressionUtils.getLiteralExpr(work.getWorkParametersFactory())));
         }
 
-        addWorkItemParameters(work, body, nodeId);
+        addWorkItemParameters(work, body, nodeId, customParams);
         addNodeMappings(node, body, nodeId);
 
         body.addStatement(getDoneMethod(nodeId));
@@ -116,10 +121,19 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
 
     protected void addWorkItemParameters(Work work, BlockStmt body, String variableName) {
         // This is to ensure that each run of the generator produces the same code.
+        addWorkItemParameters(work, body, variableName, Collections.emptyMap());
+    }
+
+    private void addWorkItemParameters(Work work, BlockStmt body, String variableName, Map<String, Expression> customParams) {
+        for (Map.Entry<String, Expression> entry : customParams.entrySet()) {
+            body.addStatement(getFactoryMethod(variableName, METHOD_WORK_PARAMETER,
+                    new StringLiteralExpr(entry.getKey()), entry.getValue()));
+        }
+
         final List<Entry<String, Object>> sortedParameters = work.getParameters().entrySet().stream().sorted(Entry.comparingByKey()).toList();
         for (Entry<String, Object> entry : sortedParameters) {
             if (entry.getValue() == null) {
-                continue; // interfaceImplementationRef ?
+                continue;// interfaceImplementationRef ?
             }
             String paramType = null;
             if (work.getParameterDefinition(entry.getKey()) != null) {

@@ -34,7 +34,7 @@ public class AbstractProcessConfigTest {
     private static class MockProcessConfig extends AbstractProcessConfig {
         protected MockProcessConfig(Iterable<WorkItemHandlerConfig> workItemHandlerConfig) {
             super(workItemHandlerConfig, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                    Collections.emptyList(), null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+                    Collections.emptyList(), null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         }
     }
 
