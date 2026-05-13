@@ -118,8 +118,7 @@ jobs:
         run: git diff main gitgabrio/test_incremental
 
       - name: Incremental Build Chain
-#        run: mvn dependency:tree -DoutputFile=${{ env.GITHUB_WORKSPACE }}/${{ env.DEPENDENCY_TREE_FILE }} -DappendOutput=true clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
-        run: mvn clean test verify ${{ env.BUILD_MVN_OPTS }} ${{ env.DROOLS_BUILD_MVN_OPTS }}
+        run: mvn clean test verify -Dfull -Dreproducible -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3
 
       - name: Surefire Report
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
