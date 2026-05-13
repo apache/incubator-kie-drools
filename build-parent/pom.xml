@@ -229,6 +229,9 @@
     <version.revapi.maven.plugin>0.15.1</version.revapi.maven.plugin>
     <version.revapi.java>0.28.1</version.revapi.java>
     <revapi.latestVersion>10.2.0</revapi.latestVersion>
+    
+    <!-- JApiCmp API Compatibility Check Configuration -->
+    <japicmp.oldVersion>${revapi.latestVersion}</japicmp.oldVersion>
   </properties>
 
   <dependencyManagement>
