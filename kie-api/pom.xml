@@ -123,36 +123,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>com.github.siom79.japicmp</groupId>
-        <artifactId>japicmp-maven-plugin</artifactId>
-        <version>0.18.3</version>
-        <configuration>
-          <oldVersion>
-            <dependency>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>${project.artifactId}</artifactId>
-              <version>${japicmp.oldVersion}</version>
-            </dependency>
-          </oldVersion>
-          <parameter>
-            <onlyModified>true</onlyModified>
-            <onlyBinaryIncompatible>false</onlyBinaryIncompatible>
-            <includeSynthetic>false</includeSynthetic>
-            <breakBuildOnBinaryIncompatibleModifications>false</breakBuildOnBinaryIncompatibleModifications>
-            <breakBuildOnSourceIncompatibleModifications>false</breakBuildOnSourceIncompatibleModifications>
-          </parameter>
-        </configuration>
-        <executions>
-          <execution>
-            <id>japicmp-report</id>
-            <phase>package</phase>
-            <goals>
-              <goal>cmp</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
