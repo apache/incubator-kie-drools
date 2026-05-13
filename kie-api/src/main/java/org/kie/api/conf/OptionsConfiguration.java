@@ -64,11 +64,14 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
 
     /**
      * Deprecated, KEY now exists top level, and its preferred to be explicit that this is a sub key
-     * @param optionKey
-     * @return
-     * @param <C>
+     *
+     * @param optionKey the option key
+     * @return the set of sub keys
+     * @param <C> the option type
+     * @deprecated since 8.35.0, use {@link #getOptionSubKeys(OptionKey)} instead. The method name
+     *             should explicitly indicate it returns sub keys. Will be removed in a future version.
      */
-    @Deprecated
+    @Deprecated(since = "8.35.0", forRemoval = true)
     default <C extends M> Set<String> getOptionKeys(OptionKey<C> optionKey) {
         return getOptionSubKeys(optionKey);
     }
