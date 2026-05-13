@@ -126,6 +126,8 @@ public class CiSummaryTest {
         extraEnv.put("CI_REPO_ROOT", root.toAbsolutePath().toString());
         // Unset so CiSummary writes to stdout rather than a summary file.
         extraEnv.put("GITHUB_STEP_SUMMARY", null);
+        // Fixture XMLs use TS- prefix to avoid matching action-surefire-report's TEST-*.xml glob.
+        extraEnv.put("CI_SUREFIRE_FILE_PREFIXES", "TS-");
 
         Path envProps = scenario.resolve("env.properties");
         if (Files.isRegularFile(envProps)) {
