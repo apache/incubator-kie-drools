@@ -130,7 +130,7 @@ public class NoExternalManagedDependencyRule extends AbstractEnforcerRule {
     }
 
     private boolean isAllowedGA(Dependency dependency) {
-        return allowedGA.stream()
+        return allowedGA != null && allowedGA.stream()
                 .anyMatch(allowedGA -> allowedGA.equals(dependency.getGroupId() + ":" + dependency.getArtifactId()));
     }
 

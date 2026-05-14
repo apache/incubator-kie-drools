@@ -70,6 +70,7 @@
           <logDirectory>${path.to.buildlog.directory}</logDirectory>
           <filterProperties>
             <org.kie.version>${project.version}</org.kie.version>
+            <path.to.buildlog.directory>${path.to.buildlog.directory}</path.to.buildlog.directory>
           </filterProperties>
         </configuration>
         <executions>
