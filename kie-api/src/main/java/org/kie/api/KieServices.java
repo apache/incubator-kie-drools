@@ -309,9 +309,11 @@ public interface KieServices extends KieService {
      * @param classLoader classLoader
      * @return new kiebase configuration
      *
-     * @deprecated The classLoader has to be defined when creating the KieContainer,
-     * so the one passed here will be just ignored
+     * @deprecated since 6.3.0, the classLoader must be defined when creating the KieContainer,
+     *             so the one passed here will be ignored. Use {@link #newKieBaseConfiguration(Properties)}
+     *             instead and set the ClassLoader on the KieContainer.
      */
+    @Deprecated(since = "6.3.0", forRemoval = true)
     KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader);
 
     /**
