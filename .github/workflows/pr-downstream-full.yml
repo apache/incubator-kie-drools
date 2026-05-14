@@ -63,7 +63,9 @@ jobs:
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
+          # TODO REMOVE THIS TEMPORARY OVERRIDE ONCE THE PULL REQUEST CONFIG FILE IS UPDATED IN THE MAIN BRANCH
+          # definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/gitgabrio/incubator-kie-kogito-pipelines/remove_unwanted_reproducible/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           flow-type: full-downstream
