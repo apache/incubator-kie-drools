@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityPolicy implements Policy {
 
+    static final String NOT_AUTHORIZED_MESSAGE_TEMPLATE = "Identity '%s' with roles '%s' is not allowed to access workItem '%s'";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPolicy.class);
 
     private IdentityProvider identity;
@@ -88,14 +90,14 @@ public class SecurityPolicy implements Policy {
             List<String> roles = actualRoles != null ? List.of(actualRoles.split(",")) : new ArrayList<>();
             List<String> userRoles = new ArrayList<>(identity.getRoles());
             userRoles.retainAll(roles);
-            LOGGER.debug("enforcing identity {} and roles {} with potential owners {} and potential groups {} and exclude groups {}",
-                    identity.getName(), identity.getRoles(), owners, roles, excluded);
+            LOGGER.debug("enforcing identity {} and roles {} with potential owners {} and potential groups {} and exclude groups {} on workItem {}",
+                    identity.getName(), identity.getRoles(), owners, roles, excluded, workItem.getStringId());
             if (!owners.contains(identity.getName()) && userRoles.isEmpty()) {
                 LOGGER.debug("not authorized with owner {} against identity {}", actualOwner, identity.getName());
-                throw new NotAuthorizedException("this work item " + workItem.getStringId() + " is not allows by this owner " + actualOwners + " or " + actualRoles);
+                throw new NotAuthorizedException(NOT_AUTHORIZED_MESSAGE_TEMPLATE.formatted(identity.getName(), identity.getRoles(), workItem.getStringId()));
             } else if (userRoles.isEmpty() && actualOwner != null && !identity.getName().equals(actualOwner)) {
                 LOGGER.debug("identity {} with roles {} not authorized in {}", identity.getName(), identity.getRoles(), roles);
-                throw new NotAuthorizedException("this work item " + workItem.getStringId() + " is not allows by this owner " + actualOwner);
+                throw new NotAuthorizedException(NOT_AUTHORIZED_MESSAGE_TEMPLATE.formatted(identity.getName(), identity.getRoles(), workItem.getStringId()));
             }
         }
     }

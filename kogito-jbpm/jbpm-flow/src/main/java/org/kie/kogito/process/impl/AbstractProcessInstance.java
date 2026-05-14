@@ -648,19 +648,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public WorkItem workItem(String workItemId, Policy... policies) {
-        return executeInWorkflowProcessInstanceRead(pi -> pi.getNodeInstances(true).stream()
-                .filter(WorkItemNodeInstance.class::isInstance)
-                .map(WorkItemNodeInstance.class::cast)
-                .filter(w -> enforceException(w.getWorkItem(), policies))
-                .filter(ni -> ni.getWorkItemId().equals(workItemId))
-                .map(this::toBaseWorkItem)
-                .findAny()
-                .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId)));
-    }
+        return executeInWorkflowProcessInstanceRead(pi -> {
+            WorkItemNodeInstance nodeInstance = pi.getNodeInstances(true).stream()
+                    .filter(WorkItemNodeInstance.class::isInstance)
+                    .map(WorkItemNodeInstance.class::cast)
+                    .filter(ni -> ni.getWorkItemId().equals(workItemId))
+                    .findAny()
+                    .orElseThrow(() -> new WorkItemNotFoundException("Work item with id '" + workItemId + "' was not found in process instance '" + id() + "'", workItemId));
 
-    private boolean enforceException(KogitoWorkItem kogitoWorkItem, Policy... policies) {
-        Stream.of(policies).forEach(p -> p.enforce(kogitoWorkItem));
-        return true;
+            // Enforcing policies after WorkItem is found
+            Stream.of(policies).forEach(p -> p.enforce(nodeInstance.getWorkItem()));
+
+            return toBaseWorkItem(nodeInstance);
+        });
     }
 
     @Override
