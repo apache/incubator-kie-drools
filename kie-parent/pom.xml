@@ -36,7 +36,6 @@
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
     <checkstyle.header.template>.*</checkstyle.header.template>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
-    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
     <drools.exclude.checkstyle/>
     <!-- ENFORCER -->
     <!-- set to "none" to disable the ban-duplicated-classes rule -->
@@ -190,7 +189,6 @@
     <version.junit>4.13.2</version.junit>
     <version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
     <version.maven>${version.org.apache.maven}</version.maven>
-    <version.maven>3.9.11</version.maven>
     <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.maven.enforcer>3.3.0</version.maven.enforcer>
