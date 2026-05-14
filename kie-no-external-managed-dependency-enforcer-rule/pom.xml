@@ -58,6 +58,12 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${version.org.apache.maven}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
         <version>1</version>
@@ -104,6 +110,36 @@
           <execution>
             <goals>
               <goal>main-index</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <skipInstallation>${skipITs}</skipInstallation>
+          <skipInvocation>${skipITs}</skipInvocation>
+          <!--<writeJunitReport>true</writeJunitReport>-->
+          <junitPackageName>org.kie.noexternalmanageddependencyrule</junitPackageName>
+          <postBuildHookScript>verify.groovy</postBuildHookScript>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <projectsDirectory>src/it</projectsDirectory>
+          <debug>true</debug>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <logDirectory>${path.to.buildlog.directory}</logDirectory>
+          <filterProperties>
+            <org.kie.version>${project.version}</org.kie.version>
+          </filterProperties>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>run</goal>
             </goals>
           </execution>
         </executions>
