@@ -1,0 +1,3 @@
+drools-drl/pom.xml
+drools-drl/drools-drl-removed-fixture/pom.xml
+drools-drl/drools-drl-removed-fixture/src/main/java/org/example/RemovedClass.java

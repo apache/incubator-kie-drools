@@ -1,0 +1,1 @@
+kie-maven-plugin/src/it/kie-maven-plugin-test-kjar-3/src/test/java/org/kie/maven/plugin/ittests/AdditionalPropertiesIntegrationTestIT.java

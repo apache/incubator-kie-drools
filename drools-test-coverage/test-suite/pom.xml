@@ -142,7 +142,6 @@
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools.testcoverage</groupId>
       <artifactId>drools-test-coverage-jars</artifactId>
@@ -179,6 +178,39 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Ensures kie-maven-plugin is built before this module in the Maven reactor -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-maven-plugin</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <!-- The tests in this module use generated KJARs stored under src/test/resources/kjar.
+           They are produced by the drools-test-coverage-jars setup/profile when missing, and
+           must be removed by clean to avoid reusing stale artifacts between builds. -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/test/resources/kjar</directory>
+              <includes>
+                <include>*.jar</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>

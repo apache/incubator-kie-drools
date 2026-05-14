@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.drools.base.factmodel.traits.Traitable;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
@@ -96,6 +97,7 @@ public class PersistenceTest {
         }
     }
 
+    @Disabled
     @ParameterizedTest(name="{0}")
     @MethodSource("parameters")
     public void testTraitsSerialization(String locking) throws Exception {

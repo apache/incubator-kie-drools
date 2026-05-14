@@ -1,0 +1,73 @@
+name: "Checkout @ Simulated squashed-merge if PR, else checkout current commit"
+description: ""
+
+inputs:
+  ref:
+    description: "Base ref of the PR to be checked out"
+    required: true
+  path:
+    description: "Path to clone kie-tools"
+    required: false
+    default: "."
+
+outputs:
+  base_sha:
+    description: "Base SHA"
+    value: ${{ steps.merge_changes.outputs.base_sha }}
+  head_sha:
+    description: "Head SHA"
+    value: ${{ steps.merge_changes.outputs.head_sha }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Clear git credentials to avoid duplicate Authorization header"
+      shell: bash
+      run: git config --unset-all http.https://github.com/.extraheader 2>/dev/null || true
+
+    - name: "Checkout kie-tools @ ${{ inputs.ref }}"
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ inputs.ref }}
+        fetch-depth: 0
+        path: ${{ inputs.path }}
+
+    - name: "Setup global Git user (kie-tools-bot)"
+      shell: bash
+      run: |
+        echo "STEP: Setup global Git user (kie-tools-bot)"
+        git config --global user.email "kietoolsbot@gmail.com"
+        git config --global user.name "Apache KIE Tools Bot"
+
+    - name: "Merge PR changes (squashed)"
+      id: merge_changes
+      shell: bash
+      env:
+        PR_HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.name }}
+        PR_HEAD_LABEL: ${{ github.event.pull_request.head.label }}
+        HEAD_REF: ${{ github.head_ref  }}
+      run: |
+        echo "STEP: Merge PR changes (squashed)"
+        cd ${{ inputs.path }}
+        if [ ${{ github.event.pull_request }} ]; then
+          USER=$(node -e "console.log('$PR_HEAD_LABEL'.match(/(.+)\:(.+)$/)[1])")
+
+          echo "Merge changes from $USER/$HEAD_REF"
+          git remote add $USER https://github.com/$USER/$PR_HEAD_REPO_NAME.git
+          git fetch $USER $HEAD_REF
+
+          echo "Before merging..."
+          git log -n 1
+          echo "base_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+          git merge --squash $USER/$HEAD_REF
+          git commit --no-edit
+
+          echo "After merging..."
+          git log -n 1
+          echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        else
+          echo "Skip merge, not a pull request"
+          echo "base_sha=$(git rev-parse HEAD^1)" >> $GITHUB_OUTPUT
+          echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        fi
