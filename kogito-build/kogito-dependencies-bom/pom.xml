@@ -1176,6 +1176,13 @@
       </dependency>
 
       <!-- Vertx libraries, including PostgreSQL client -->
+
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-pg-client</artifactId>
