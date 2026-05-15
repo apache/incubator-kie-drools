@@ -72,7 +72,7 @@
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.16.4</version.io.micrometer>
     <version.io.quarkus>3.27.3</version.io.quarkus>
-    <version.io.netty>4.1.132.Final</version.io.netty>
+    <version.io.netty>4.1.133.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>4.1.2</version.org.apache.kafka>
