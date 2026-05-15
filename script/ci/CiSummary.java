@@ -45,6 +45,8 @@ import java.util.stream.*;
  *   DEP_GRAPH_EXTRACTOR__OUTPUT_FILE TSV dump produced by the dep-graph-extractor Maven extension via CiComputeBuildScopes.
  *                                    Lines: `P<TAB>ga<TAB>abs-basedir` (one per reactor project)
  *                                           `D<TAB>dependent-ga<TAB>dependency-ga` (one per direct edge)
+ *   CI_SUREFIRE_FILE_PREFIXES        Comma-separated list of filename prefixes accepted as test report XMLs.
+ *                                    Default: `TEST-,IT-`
  */
 class CiSummary {
 
@@ -171,6 +173,8 @@ class CiSummary {
         mermaidExpanded = "true".equalsIgnoreCase(env("MERMAID_EXPANDED", "false"));
         matrixOs        = env("MATRIX_OS",   "");
         matrixJava      = env("MATRIX_JAVA", "");
+        var surefixPrefixesCsv = env("CI_SUREFIRE_FILE_PREFIXES", "TEST-,IT-");
+        var surefirePrefixes = List.of(surefixPrefixesCsv.split(","));
 
         if (graphPath != null) {
             try {
@@ -191,7 +195,7 @@ class CiSummary {
                 var name = p.getFileName().toString();
                 var dir  = p.getParent() == null ? "" : p.getParent().getFileName().toString();
                 return name.endsWith(".xml")
-                    && (name.startsWith("TEST-") || name.startsWith("IT-"))
+                    && surefirePrefixes.stream().anyMatch(name::startsWith)
                     && (dir.equals("surefire-reports") || dir.equals("failsafe-reports"));
             }).forEach(xmlFiles::add);
         }
