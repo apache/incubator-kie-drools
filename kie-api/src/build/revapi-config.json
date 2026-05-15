@@ -13,32 +13,19 @@
     }
   },
   {
-    "extension": "revapi.java",
+    "extension": "revapi.filter",
     "configuration": {
-      "filter": {
-        "packages": {
-          "regex": true,
-          "exclude": [
-            "org\\.kie\\.internal\\..*",
-            "org\\.kie\\.api\\.internal\\..*"
-          ]
-        },
-        "classes": {
-          "regex": true,
-          "exclude": []
-        }
-      }
-    }
-  },
-  {
-    "extension": "revapi.java",
-    "id": "deprecation-check",
-    "configuration": {
-      "checks": {
-        "deprecation": {
-          "enabled": true,
-          "reportNewDeprecations": false
-        }
+      "elements": {
+        "exclude": [
+          {
+            "matcher": "java-package",
+            "match": "org.kie.internal.**"
+          },
+          {
+            "matcher": "java-package",
+            "match": "org.kie.api.internal.**"
+          }
+        ]
       }
     }
   }
