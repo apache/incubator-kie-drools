@@ -233,10 +233,19 @@
     <version.io.vertx>4.5.25</version.io.vertx>
     <version.org.codehaus.plexus.plexus-utils>3.6.1</version.org.codehaus.plexus.plexus-utils>
     
+    <!-- Latest released Apache KIE version for API compatibility checks -->
+    <kie.latest.released.version>10.2.0</kie.latest.released.version>
+    
     <!-- Revapi API Compatibility Check Configuration -->
     <version.revapi.maven.plugin>0.15.1</version.revapi.maven.plugin>
     <version.revapi.java>0.28.1</version.revapi.java>
-    <revapi.latestVersion>10.2.0</revapi.latestVersion>
+    <revapi.latestVersion>${kie.latest.released.version}</revapi.latestVersion>
+    
+    <!-- JApiCmp API Compatibility Check Configuration -->
+    <version.japicmp.maven.plugin>0.18.3</version.japicmp.maven.plugin>
+    <japicmp.oldVersion.groupId>${project.groupId}</japicmp.oldVersion.groupId>
+    <japicmp.oldVersion.artifactId>${project.artifactId}</japicmp.oldVersion.artifactId>
+    <japicmp.oldVersion.version>${kie.latest.released.version}</japicmp.oldVersion.version>
   </properties>
 
   <dependencyManagement>

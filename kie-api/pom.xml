@@ -122,6 +122,35 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <version>${version.japicmp.maven.plugin}</version>
+        <configuration>
+          <oldVersion>
+            <dependency>
+              <groupId>${japicmp.oldVersion.groupId}</groupId>
+              <artifactId>${japicmp.oldVersion.artifactId}</artifactId>
+              <version>${japicmp.oldVersion.version}</version>
+            </dependency>
+          </oldVersion>
+          <parameter>
+            <excludes>
+              <exclude>org.kie.internal</exclude>
+              <exclude>org.kie.api.internal</exclude>
+            </excludes>
+          </parameter>
+        </configuration>
+        <executions>
+          <execution>
+            <id>japicmp-report</id>
+            <phase>package</phase>
+            <goals>
+              <goal>cmp</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
