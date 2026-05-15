@@ -113,13 +113,6 @@
               <goal>check</goal>
             </goals>
           </execution>
-          <execution>
-            <id>report-api-changes</id>
-            <phase>package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
       <plugin>
