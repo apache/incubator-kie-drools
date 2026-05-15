@@ -50,12 +50,12 @@ script/ci/tests/scenarios-summary/01-no-tests-no-scope/expected-summary.md
 script/ci/tests/scenarios-summary/01-no-tests-no-scope/root/.gitkeep
 script/ci/tests/scenarios-summary/02-full-build-all-pass/env.properties
 script/ci/tests/scenarios-summary/02-full-build-all-pass/expected-summary.md
-script/ci/tests/scenarios-summary/02-full-build-all-pass/root/module-a/target/surefire-reports/TEST-com.example.FooTest.xml
+script/ci/tests/scenarios-summary/02-full-build-all-pass/root/module-a/target/surefire-reports/TS-com.example.FooTest.xml
 script/ci/tests/scenarios-summary/03-pr-with-failures/env.properties
 script/ci/tests/scenarios-summary/03-pr-with-failures/expected-summary.md
 script/ci/tests/scenarios-summary/03-pr-with-failures/graph.tsv
-script/ci/tests/scenarios-summary/03-pr-with-failures/root/a1/target/surefire-reports/TEST-com.example.A1Test.xml
-script/ci/tests/scenarios-summary/03-pr-with-failures/root/u/target/surefire-reports/TEST-com.example.UTest.xml
+script/ci/tests/scenarios-summary/03-pr-with-failures/root/a1/target/surefire-reports/TS-com.example.A1Test.xml
+script/ci/tests/scenarios-summary/03-pr-with-failures/root/u/target/surefire-reports/TS-com.example.UTest.xml
 .rat-reports
 DISCLAIMER-WIP
 drools-core/src/test/resources/manners128.dat

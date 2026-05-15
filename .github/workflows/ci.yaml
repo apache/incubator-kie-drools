@@ -41,6 +41,9 @@ jobs:
       matrix:
         os:   [ubuntu-latest, macos-latest, windows-latest]
         java: [17, 21]
+        exclude:
+          - os: windows-latest
+            java: 17
 
     steps:
       - name: 'SETUP :: Set paths for temporary files'
@@ -79,8 +82,15 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - uses: jbangdev/setup-jbang@2b1b465a7b75f4222b81426f23a01e013aa7b95c
-        name: 'SETUP :: Install JBang'
+      # Temporary workaround while jbangdev/setup-jbang action doesn't include checksum verification.
+      # See https://github.com/apache/infrastructure-actions/pull/806
+      - name: 'SETUP :: Install JBang'
+        shell: bash
+        run: |
+          curl -sL https://github.com/jbangdev/jbang/releases/download/v0.138.0/jbang-0.138.0.zip -o jbang.zip
+          echo "3c9fb9ac5823ae5ab9d136dec08b896e2a0f6f6b313689b21f43c511b7c34b85  jbang.zip" | sha256sum -c -
+          unzip -q jbang.zip
+          echo "${{ github.workspace }}/jbang-0.138.0/bin" >> $GITHUB_PATH
 
       - name: 'SETUP :: Block apache.snapshots Maven repository'
         shell: bash
