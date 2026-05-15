@@ -1,0 +1,2 @@
+drools-core/src/main/java/org/drools/core/WorkingMemory.java
+drools-kiesession/src/main/java/org/drools/kiesession/session/StatefulKnowledgeSessionImpl.java

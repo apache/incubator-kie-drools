@@ -184,7 +184,6 @@
     <module>drools-quarkus-extension</module>
     <module>drools-reliability</module>
     <module>drools-drlonyaml-parent</module>
-    <module>kie-yard</module>
   </modules>
 
   <profiles>

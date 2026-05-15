@@ -1,0 +1,3 @@
+totally-removed-top-level/pom.xml
+totally-removed-top-level/some-sub-module/pom.xml
+totally-removed-top-level/some-sub-module/src/main/java/org/example/GoneClass.java

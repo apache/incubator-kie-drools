@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.chrono.ChronoPeriod;
@@ -33,7 +34,10 @@ import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.infixexecutors.EqExecutor;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
+
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getString;
+import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 /**
  * Handler implementation of the DialectHandler interface providing BFEEL specific
@@ -51,7 +55,23 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // any String operand → concatenate both as strings
+        // B-FEEL Precedence Table for Addition (DMN 1.6 Section 11.9):
+        // Row 1: STRING - The non-string value is converted to a string using the string() B-FEEL function
+        //                 and Table 58 applies. Subtraction returns an empty string.
+        // Row 2: NUMBER - The non-number value is converted to a number using the number() B-FEEL function
+        //                 and Table 58 applies.
+        // Row 3: DATE AND TIME - The non-date and time value is converted to a duration using the duration()
+        //                        B-FEEL function and Table 58 applies.
+        // Row 4: DATE - The non-date value is converted to a duration using the duration() B-FEEL function
+        //               and Table 58 applies.
+        // Row 5: TIME - The non-time value is converted to a duration using the duration() B-FEEL function
+        //               and Table 58 applies.
+        // Row 6: YEARS AND MONTHS DURATION - The non-years and months duration value is converted to a
+        //                                     duration using the duration() B-FEEL function and Table 58 applies.
+        // Row 7: DAYS AND TIME DURATION - The non-days and time duration value is converted to a duration
+        //                                  using the duration() B-FEEL function and Table 58 applies.
+        
+        // Row 1: STRING - any String operand → concatenate both as strings (subtraction returns "")
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
                 (left, right) -> {
@@ -60,20 +80,64 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                     return leftNum + rightNum;
                 });
 
-        // date + number → return the number
+        // Row 2: NUMBER - date + number → convert date to 0, then add: 0 + number = number
+        // Since 0 + number = number, we return the number operand directly
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Number, false),
                 (left, right) -> right);
+        
+        // Row 2: NUMBER - number + date → convert date to 0, then add: number + 0 = number
+        // Since number + 0 = number, we return the number operand directly
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Number && right instanceof LocalDate, false),
                 (left, right) -> left);
 
-        // Number + null → number
+        // Row 2: NUMBER - duration + number → convert duration to seconds, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Number, false),
+                (left, right) -> {
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) left).getSeconds());
+                    BigDecimal rightNum = getBigDecimalOrNull(right);
+                    if (seconds == null || rightNum == null) return rightNum != null ? rightNum : BigDecimal.ZERO;
+                    return seconds.add(rightNum, MathContext.DECIMAL128);
+                });
+
+        // Row 2: NUMBER - number + duration → convert duration to seconds, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof Duration, false),
+                (left, right) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(left);
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) right).getSeconds());
+                    if (leftNum == null || seconds == null) return leftNum != null ? leftNum : BigDecimal.ZERO;
+                    return leftNum.add(seconds, MathContext.DECIMAL128);
+                });
+
+        // Row 2: NUMBER - period + number → convert period to months, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Number, false),
+                (left, right) -> {
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
+                    BigDecimal rightNum = getBigDecimalOrNull(right);
+                    if (months == null || rightNum == null) return rightNum != null ? rightNum : BigDecimal.ZERO;
+                    return months.add(rightNum, MathContext.DECIMAL128);
+                });
+
+        // Row 2: NUMBER - number + period → convert period to months, then add
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof ChronoPeriod, false),
+                (left, right) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(left);
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
+                    if (leftNum == null || months == null) return leftNum != null ? leftNum : BigDecimal.ZERO;
+                    return leftNum.add(months, MathContext.DECIMAL128);
+                });
+
+        // Number + null → number (null converts to 0 in B-FEEL numeric context)
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Number && right == null, false),
                 (left, right) -> left);
 
-        // null + Number → number
+        // null + Number → number (null converts to 0 in B-FEEL numeric context)
         map.put(
                 new CheckedPredicate((left, right) -> left == null && right instanceof Number, false),
                 (left, right) -> right);
@@ -344,19 +408,69 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
 
     /**
      * Builds the BFeel specific 'Power' operations.
-     * 
+     * <p>
+     * B-FEEL exponentiation rules:
+     * <ul>
+     *   <li>Implicit Coercion: Both operands are converted to numbers using B-FEEL number() function</li>
+     *   <li>Error Handling: Returns 0 instead of null for semantic errors or out-of-range scale</li>
+     *   <li>Precision: Result limited to 34 digits of precision</li>
+     *   <li>Range: Exponent must be in range [-999,999,999..999,999,999]</li>
+     *   <li>Precedence: -4 ** 2 is interpreted as (-4) ** 2 = 16 (handled by parser)</li>
+     * </ul>
+     *
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the BFeel specific 'Power' operations
      */
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getPowOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        //TODO Change pow behaviour for BFeel
+        
+        // B-FEEL: Implicit coercion to numbers, return 0 on error instead of null
         map.put(
-                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
-                (left, right) -> Boolean.FALSE);
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    // Implicit coercion: convert both operands to numbers using B-FEEL number() semantics
+                    BigDecimal leftNum = getBigDecimalOrNull(left);
+                    BigDecimal rightNum = getBigDecimalOrNull(right);
+                    
+                    // B-FEEL implicit coercion: Duration → seconds
+                    if (leftNum == null && left instanceof Duration) {
+                        leftNum = BigDecimal.valueOf(((Duration) left).getSeconds());
+                    }
+                    if (rightNum == null && right instanceof Duration) {
+                        rightNum = BigDecimal.valueOf(((Duration) right).getSeconds());
+                    }
+                    
+                    // B-FEEL implicit coercion: ChronoPeriod → total months
+                    if (leftNum == null && left instanceof ChronoPeriod) {
+                        leftNum = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
+                    }
+                    if (rightNum == null && right instanceof ChronoPeriod) {
+                        rightNum = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
+                    }
+                    
+                    // B-FEEL returns 0 instead of null for invalid operations
+                    if (leftNum == null || rightNum == null) {
+                        return BigDecimal.ZERO;
+                    }
+                    
+                    // Check exponent range: [-999,999,999..999,999,999]
+                    BigDecimal minExponent = new BigDecimal("-999999999");
+                    BigDecimal maxExponent = new BigDecimal("999999999");
+                    if (rightNum.compareTo(minExponent) < 0 || rightNum.compareTo(maxExponent) > 0) {
+                        return BigDecimal.ZERO; // Out of range, return 0
+                    }
+                    
+                    try {
+                        // Apply standard FEEL semantics with 34 digits precision (DECIMAL128)
+                        BigDecimal result = BigDecimalMath.pow(leftNum, rightNum, MathContext.DECIMAL128);
+                        return result;
+                    } catch (ArithmeticException e) {
+                        // B-FEEL returns 0 for arithmetic errors instead of null
+                        return BigDecimal.ZERO;
+                    }
+                });
 
-        map.putAll(getCommonPowOperations(ctx));
         return map;
     }
 
@@ -415,13 +529,39 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> left == null && right instanceof ChronoPeriod, false),
                 (left, right) -> ComparablePeriod.ofMonths(0));
 
+        // Period × Duration (mixed types) → B-FEEL Section 11.10: YMD has higher precedence than DTD
+        // Convert Duration to seconds (as number), result is Period
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Duration, false),
+                (left, right) -> {
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) right).getSeconds());
+                    if (months == null || seconds == null)
+                        return ComparablePeriod.ofMonths(0);
+                    return ComparablePeriod.ofMonths(months.multiply(seconds, MathContext.DECIMAL128).intValue());
+                });
+
+        // Duration × Period (mixed types) → B-FEEL Section 11.10: YMD has higher precedence than DTD
+        // Convert Duration to seconds (as number), result is Period
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof ChronoPeriod, false),
+                (left, right) -> {
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) left).getSeconds());
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
+                    if (seconds == null || months == null)
+                        return ComparablePeriod.ofMonths(0);
+                    return ComparablePeriod.ofMonths(seconds.multiply(months, MathContext.DECIMAL128).intValue());
+                });
+
+        // Duration × Duration (same type) → returns zero duration (B-FEEL default for disallowed operation)
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, false),
-                (left, right) -> null);
+                (left, right) -> Duration.ZERO);
 
+        // Period × Period (same type) → returns zero period (B-FEEL default for disallowed operation)
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof ChronoPeriod, false),
-                (left, right) -> null);
+                (left, right) -> ComparablePeriod.ofMonths(0));
         map.putAll(getCommonMultOperations(ctx));
         return map;
     }
@@ -445,13 +585,25 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(new CheckedPredicate((l, r) -> l instanceof String && r instanceof String, false),
                 (l, r) -> BigDecimal.ZERO);
 
-        // number ÷ duration → invalid → null
+        // number ÷ duration → B-FEEL implicit coercion: convert duration to seconds, then divide
         map.put(new CheckedPredicate((l, r) -> l instanceof Number && r instanceof Duration, false),
-                (l, r) -> null);
+                (l, r) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(l);
+                    BigDecimal rightSecs = getBigDecimalOrNull(((Duration) r).getSeconds());
+                    if (leftNum == null || rightSecs == null || rightSecs.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftNum.divide(rightSecs, MathContext.DECIMAL128);
+                });
 
-        // number ÷ period → invalid → null
+        // number ÷ period → B-FEEL implicit coercion: convert period to total months, then divide
         map.put(new CheckedPredicate((l, r) -> l instanceof Number && r instanceof ChronoPeriod, false),
-                (l, r) -> null);
+                (l, r) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(l);
+                    BigDecimal rightMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) r));
+                    if (leftNum == null || rightMonths == null || rightMonths.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftNum.divide(rightMonths, MathContext.DECIMAL128);
+                });
 
         // duration ÷ null → Duration.ZERO
         map.put(new CheckedPredicate((l, r) -> l instanceof Duration && r == null, false),
@@ -472,6 +624,37 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         // null ÷ number
         map.put(new CheckedPredicate((l, r) -> l == null && r instanceof Number, false),
                 (l, r) -> BigDecimal.ZERO);
+
+        // number ÷ number (including division by zero) → B-FEEL returns BigDecimal.ZERO for division by zero
+        map.put(new CheckedPredicate((l, r) -> l instanceof Number && r instanceof Number, false),
+                (l, r) -> {
+                    BigDecimal leftBD = getBigDecimalOrNull(l);
+                    BigDecimal rightBD = getBigDecimalOrNull(r);
+                    if (leftBD == null || rightBD == null || rightBD.compareTo(BigDecimal.ZERO) == 0) {
+                        return BigDecimal.ZERO; // B-FEEL returns 0 for division by zero
+                    }
+                    return leftBD.divide(rightBD, MathContext.DECIMAL128);
+                });
+
+        // duration ÷ duration → number (B-FEEL: returns 0 instead of null when divisor is zero)
+        map.put(new CheckedPredicate((l, r) -> l instanceof Duration && r instanceof Duration, false),
+                (l, r) -> {
+                    BigDecimal leftSecs = getBigDecimalOrNull(((Duration) l).getSeconds());
+                    BigDecimal rightSecs = getBigDecimalOrNull(((Duration) r).getSeconds());
+                    if (leftSecs == null || rightSecs == null || rightSecs.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftSecs.divide(rightSecs, MathContext.DECIMAL128);
+                });
+
+        // period ÷ period → number (B-FEEL: returns 0 instead of null when divisor is zero)
+        map.put(new CheckedPredicate((l, r) -> l instanceof ChronoPeriod && r instanceof ChronoPeriod, false),
+                (l, r) -> {
+                    BigDecimal leftMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) l));
+                    BigDecimal rightMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) r));
+                    if (leftMonths == null || rightMonths == null || rightMonths.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftMonths.divide(rightMonths, MathContext.DECIMAL128);
+                });
 
         map.putAll(getCommonDivisionOperations(ctx));
         return map;
