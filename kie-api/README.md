@@ -4,7 +4,7 @@ The Apache KIE Public API module provides the core interfaces and classes for th
 
 ## API Change Management
 
-Apache KIE follows [Semantic Versioning](https://semver.org/) since release 10.2.0:
+Apache KIE follows [Semantic Versioning](https://semver.org/) since release 10.3.0:
 - **Major version** (X.0.0): Breaking changes allowed
 - **Minor version** (0.X.0): New features, backwards compatible
 - **Patch version** (0.0.X): Bug fixes only, backwards compatible
@@ -84,9 +84,12 @@ If Revapi detects API changes and you need to make **intentional** breaking or n
 - **Excludes**: Internal packages (`org.kie.internal.*`, `org.kie.api.internal.*`)
 - **Tracks**: Deprecations and API changes
 
-For detailed documentation, se
+For detailed documentation, see:
+- [REVAPI-USAGE.md](REVAPI-USAGE.md) - Quick start guide
+- [REVAPI-CONFIGURATION.md](REVAPI-CONFIGURATION.md) - Configuration options
+- [API-STABILITY-GUIDE.md](API-STABILITY-GUIDE.md) - API stability guidelines
 
-#### Resources
+**Resources:**
 - [Official Website](https://revapi.org/)
 - [GitHub Repository](https://github.com/revapi/revapi)
 - [Documentation](https://revapi.org/revapi-site/main/index.html)
