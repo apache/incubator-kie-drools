@@ -103,12 +103,7 @@ If Revapi detects API changes and you need to make **intentional** breaking or n
 - **Excludes**: Internal packages (`org.kie.internal.*`, `org.kie.api.internal.*`)
 - **Tracks**: Deprecations and API changes
 
-For detailed documentation, see:
-- [REVAPI-USAGE.md](REVAPI-USAGE.md) - Quick start guide
-- [REVAPI-CONFIGURATION.md](REVAPI-CONFIGURATION.md) - Configuration options
-- [API-STABILITY-GUIDE.md](API-STABILITY-GUIDE.md) - API stability guidelines
-
-**Resources:**
+#### Resources
 - [Official Website](https://revapi.org/)
 - [GitHub Repository](https://github.com/revapi/revapi)
 - [Documentation](https://revapi.org/revapi-site/main/index.html)

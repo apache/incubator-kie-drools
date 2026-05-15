@@ -216,12 +216,13 @@
     <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
 
     <!-- Javadoc branding properties - can be overridden via -D flags or CI environment -->
+    <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
     <javadoc.product.name>${project.name}</javadoc.product.name>
     <javadoc.product.version>${project.version}</javadoc.product.version>
     <javadoc.doctitle>${project.name} ${project.version} API</javadoc.doctitle>
     <javadoc.windowtitle>${project.name} ${project.version} API</javadoc.windowtitle>
-    <javadoc.footer><![CDATA[Copyright &#169; ${project.inceptionYear}&#x2013;2026 Apache Software Foundation. All rights reserved.]]></javadoc.footer>
-    <javadoc.bottom><![CDATA[Copyright &#169; ${project.inceptionYear}&#x2013;2026 Apache Software Foundation. All rights reserved.]]></javadoc.bottom>
+    <javadoc.footer><![CDATA[Copyright &#169; ${project.inceptionYear}&#x2023;${maven.build.timestamp} Apache Software Foundation. All rights reserved.]]></javadoc.footer>
+    <javadoc.bottom><![CDATA[Copyright &#169; ${project.inceptionYear}&#x2023;${maven.build.timestamp} Apache Software Foundation. All rights reserved.]]></javadoc.bottom>
 
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>

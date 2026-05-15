@@ -39,7 +39,8 @@ public interface KieStoreServices extends KieService {
      * @param environment the environment
      * @return the loaded KieSession
      * @deprecated since 6.3.0, use {@link #loadKieSession(Long, KieBase, KieSessionConfiguration, Environment)} instead.
-     *             This method uses int which can overflow for long-running sessions. Will be removed in a future version.
+     *             This overload uses an {@code int} session id; use the {@code Long}-based overload for a wider id range.
+     *             Will be removed in a future version.
      */
     @Deprecated(since = "6.3.0", forRemoval = true)
     KieSession loadKieSession(int id,
