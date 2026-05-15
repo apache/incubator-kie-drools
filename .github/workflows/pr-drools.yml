@@ -105,6 +105,12 @@ jobs:
       - name: Fetch remote PR branch
         run: git fetch current_user_remote ${{ github.head_ref }}
 
+      - name: Set current user name
+        run: git config user.name "${{ github.event.pull_request.user.login }}"
+
+      - name: Set current user email
+        run: git config user.email "${{ github.event.pull_request.user.email }}"
+
       - name: Merge PR
         run: git merge current_user_remote/${{ github.head_ref }}
 
