@@ -114,7 +114,9 @@
 
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <!-- This should be used by maven-artifact-plugin >= 3.5.2 to disable the outputTimestamp check during the reproducible build - an issue for incremental build -->
+    <diagnose>false</diagnose>
+    <version.maven.artifact.plugin>3.5.2</version.maven.artifact.plugin>
     <!-- incremental build -->
     <!--<gib.referenceBranch>refs/remotes/origin/main</gib.referenceBranch>-->
     <gib.referenceBranch>refs/remotes/gitgabrio/test_incremental</gib.referenceBranch>
