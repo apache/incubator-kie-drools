@@ -169,6 +169,8 @@
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
     <module>drools-metric</module>
+    <module>drools-opentelemetry</module>
+    <module>drools-replay</module>
     <module>drools-alphanetwork-compiler</module>
     <module>drools-engine</module>
     <module>drools-engine-classic</module>
