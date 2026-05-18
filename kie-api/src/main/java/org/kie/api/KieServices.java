@@ -40,8 +40,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 /**
  * <p>
  * The KieServices is a thread-safe singleton acting as a hub giving access to the other
- * Services provided by Kie. As general rule a getX() method just returns a reference to another
- * singleton while a newX() one creates a new instance.
+ * Services provided by Kie.
  * </p>
  * <p>
  * It is possible to obtain a KieServices reference via its Factory as it follows
