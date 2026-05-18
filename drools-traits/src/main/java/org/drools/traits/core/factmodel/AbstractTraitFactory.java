@@ -74,9 +74,13 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     protected static void setMode(VirtualPropertyMode newMode, InternalRuleBase kBase, RuntimeComponentFactory rcf) {
         TraitFactoryImpl traitFactory = (TraitFactoryImpl) rcf.getTraitFactory(kBase);
         traitFactory.mode = newMode;
-        switch (newMode) {
+        syncBuilderFactoryWithMode(newMode);
+    }
+
+    private static synchronized void syncBuilderFactoryWithMode(VirtualPropertyMode mode) {
+        switch (mode) {
             case MAP:
-                if (!(traitClassBuilderFactory.getPropertyWrapperBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
+                if (!(traitClassBuilderFactory.getPropertyWrapperBuilder() instanceof TraitMapPropertyWrapperClassBuilderImpl)) {
                     traitClassBuilderFactory.setPropertyWrapperBuilder(new TraitMapPropertyWrapperClassBuilderImpl());
                 }
                 if (!(traitClassBuilderFactory.getTraitProxyBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
@@ -92,7 +96,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
                 }
                 break;
             default:
-                throw new RuntimeException(" This should not happen : unexpected property wrapping method " + newMode);
+                throw new RuntimeException(" This should not happen : unexpected property wrapping method " + mode);
         }
     }
 
@@ -194,6 +198,10 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     }
 
     protected Class<T> buildProxyClass(K core, Class<?> trait) {
+        // The trait class builder factory is static and may have been left in a different
+        // VirtualPropertyMode by an earlier call. Re-sync it to this factory's mode so the
+        // generated proxy class has constructors that match the lookup in cacheConstructor.
+        syncBuilderFactoryWithMode(mode);
 
         Class coreKlass = core.getClass();
 
