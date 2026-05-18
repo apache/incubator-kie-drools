@@ -26,6 +26,9 @@ All notable changes to the Apache KIE Drools project will be documented in this 
 ### Added
 - YAML property retrieval support (PR #6662)
 
+### Fixed
+- PseudoClockScheduler may retain 1000 canceled jobs at most (PR #6660)
+
 ### Changed
 - Upgraded Quarkus to 3.27.3 (PR #6673)
 - Upgraded kafka-clients to 4.1.2 (PR #6671)
@@ -41,7 +44,6 @@ All notable changes to the Apache KIE Drools project will be documented in this 
 - Fixed CVE-2022-41853: Upgraded HSQLDB to 2.7.1 (PR #6563)
 
 ### Fixed
-- PseudoClockScheduler memory leak: Now retains max 1000 canceled jobs (PR #6660)
 - Flaky PersistenceTest by disabling parallel execution (PR #6675)
 
 ## [10.2.0] - 2026-03-28
@@ -76,6 +78,8 @@ All notable changes to the Apache KIE Drools project will be documented in this 
 - DMN missing evaluationHitIds in decision tables (PR #6553)
 - DMN missing evaluationHitIds in conditional expressions (PR #6568)
 - Null pointer with exists() clauses (PR #6585)
+- DMN/EFESTO LocalUriId generation in Gradle context (PR #6607)
+- Comparing lists using `in` does not work (PR #6557)
 - Activation-group not applied after rule fires (PR #6517)
 - Rules in agenda group with auto-focus issues (PR #6449, #6447)
 - Multiple rules in activation group firing (PR #6419)
