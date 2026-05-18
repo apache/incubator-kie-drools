@@ -58,6 +58,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-actuator</artifactId>
         </dependency>
+        <!-- spring-boot-health: hosts the actuator Health SPI used by @HealthIndicator below. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-health</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

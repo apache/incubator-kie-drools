@@ -20,11 +20,22 @@ package org.kie.kogito.index.jpa.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication(scanBasePackages = { "org.kie.kogito.**" })
 public class KogitoSpringBootApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(KogitoSpringBootApplication.class, args);
+    }
+
+    // Jackson 2 @Bean (data-index test fixture). Remove together with
+    // https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
+    @Bean
+    public ObjectMapper objectMapper() {
+        return Jackson2ObjectMapperBuilder.json().build();
     }
 }

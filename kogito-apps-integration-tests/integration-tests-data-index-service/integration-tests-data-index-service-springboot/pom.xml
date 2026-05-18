@@ -61,6 +61,13 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-springboot-events-process-kafka</artifactId>
     </dependency>
+    <!-- spring-boot-kafka: hosts the KafkaTemplate auto-configure used by
+         kie-addons-springboot-events-process-kafka. TODO move this into that addon's pom upstream so
+         consumers get it transitively. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-kafka</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-springboot-process-management</artifactId>

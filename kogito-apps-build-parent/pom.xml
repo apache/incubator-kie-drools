@@ -62,7 +62,9 @@
         <!-- OptaPlanner version -->
         <version.org.optaplanner>${project.version}</version.org.optaplanner>
 
-        <version.org.hibernate>7.1.14.Final</version.org.hibernate>
+        <!-- Aligned with kogito-runtimes' kogito-dependencies-bom. Pinned 7.1.x because Quarkus's
+             quarkus-hibernate-orm uses org.hibernate.internal.CoreLogging, removed in 7.2.x. -->
+        <version.org.hibernate>7.1.18.Final</version.org.hibernate>
         <version.org.apache.opennlp>2.5.9</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.10.0</version.org.apache.commons.csv>
         <version.org.jredisearch>2.2.0</version.org.jredisearch>
@@ -70,10 +72,10 @@
         <version.org.json>20231013</version.org.json>
         <version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
         <version.org.skyscreamer>1.5.1</version.org.skyscreamer>
-        <!-- graphql-java upgraded from 22.0 to 24.3 for java-dataloader 3.4.0+ compatibility
-             required by Spring Boot 3.5.x (DataLoaderOptions.newDefaultOptions()).
-             extended-scalars version must match graphql-java major version. -->
-        <version.com.graphql-java>24.3</version.com.graphql-java>
+        <!-- spring-graphql in Spring Boot 4.0.5 calls ExecutionInput.cancel(), added in graphql-java 25.
+             extended-scalars stays at 24.0 (no 25.x release on Maven Central yet; binary-compatible
+             for the scalars used here). -->
+        <version.com.graphql-java>25.0</version.com.graphql-java>
         <version.com.graphql-java-extended-scalars>24.0</version.com.graphql-java-extended-scalars>
 
         <!-- Explainability Toolkit version -->
