@@ -18,19 +18,18 @@
  */
 package $Package$;
 
-import java.util.List;
-
 import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import org.drools.ruleunits.api.DataSource;
@@ -38,23 +37,36 @@ import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.SingletonStore;
 
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+// Jackson 2 Spring configuration — remove together with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
 @SpringBootConfiguration
 public class RestObjectMapper {
 
+    public RestObjectMapper(ObjectMapper objectMapper) {
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(DataStream.class, new DataStreamDeserializer());
+        module.addDeserializer(DataStore.class, new DataStoreDeserializer());
+        module.addDeserializer(SingletonStore.class, new SingletonStoreDeserializer());
+        objectMapper.registerModule(module);
+    }
+
+    // Jackson 2 HTTP message converter — remove together with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizeObjectMapper() {
-        return new Jackson2ObjectMapperBuilderCustomizer() {
+    @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
+        return new MappingJackson2HttpMessageConverter(objectMapper) {
             @Override
-            public void customize(Jackson2ObjectMapperBuilder builder) {
-                //addDefaultDeserializers
-                builder.deserializerByType(DataStream.class, new DataStreamDeserializer());
-                builder.deserializerByType(DataStore.class, new DataStoreDeserializer());
-                builder.deserializerByType(SingletonStore.class, new SingletonStoreDeserializer());
+            public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+                // Refuse String so DMN controllers' pre-serialized JSON passes through StringHttpMessageConverter.
+                if (clazz == String.class) {
+                    return false;
+                }
+                return super.canWrite(clazz, mediaType);
             }
         };
     }
