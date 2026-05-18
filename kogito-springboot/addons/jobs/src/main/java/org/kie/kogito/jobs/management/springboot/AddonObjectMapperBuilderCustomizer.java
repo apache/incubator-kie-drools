@@ -19,15 +19,27 @@
 package org.kie.kogito.jobs.management.springboot;
 
 import org.kie.kogito.jobs.service.api.serialization.SerializationUtils;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+// Jackson 2 BeanPostProcessor (registers cloud-events descriptors on the autowired ObjectMapper). Remove
+// together with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
 @Configuration
 public class AddonObjectMapperBuilderCustomizer {
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizer() {
-        return builder -> builder.postConfigurer(SerializationUtils::registerDescriptors);
+    public static BeanPostProcessor addonObjectMapperPostProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) {
+                if (bean instanceof ObjectMapper) {
+                    SerializationUtils.registerDescriptors((ObjectMapper) bean);
+                }
+                return bean;
+            }
+        };
     }
 }

@@ -16,19 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.management.springboot;
+package org.springframework.boot.autoconfigure.cache;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-// Jackson 2 test fixture for the BeanPostProcessor above. Remove together with
-// https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
-class AddonObjectMapperBuilderCustomizerTest {
-    @Test
-    void postProcessor() {
-        BeanPostProcessor postProcessor = AddonObjectMapperBuilderCustomizer.addonObjectMapperPostProcessor();
-        assertThat(postProcessor).isNotNull();
-    }
+// Empty stub at the legacy FQN. infinispan-spring-boot3-starter-remote 15.2.6 declares
+// @AutoConfigureBefore(CacheAutoConfiguration.class) pointing here; the real class lives at
+// org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration. Drop when the Infinispan
+// starter targets that FQN.
+public class CacheAutoConfiguration {
 }

@@ -18,29 +18,24 @@
  */
 package org.kie.kogito.infinispan.health;
 
-import java.net.SocketAddress;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.Configuration;
-import org.infinispan.client.hotrod.event.impl.ClientListenerNotifier;
-import org.infinispan.client.hotrod.impl.operations.OperationsFactory;
-import org.infinispan.client.hotrod.impl.operations.PingOperation;
-import org.infinispan.client.hotrod.impl.operations.PingResponse;
-import org.infinispan.client.hotrod.impl.transport.netty.ChannelFactory;
 
 import jakarta.enterprise.inject.Instance;
 
 /**
  * This is a health check implementation for Infinispan Hot Rod Server, based on client and
- * {@link RemoteCacheManager}. Basically it executes a ping operation to all nodes and if all are down it responds as
- * Down, otherwise it responds as Up.
+ * {@link RemoteCacheManager}. Performs a remote roundtrip against the cluster: if it succeeds the
+ * server responds as Up, otherwise as Down.
  */
+// The "cluster reachable" probe uses RemoteCacheManager#getCacheNames() because Infinispan's
+// public hotrod API no longer exposes a per-server probe. Restore per-server probes if Infinispan
+// reintroduces them.
 public class InfinispanHealthCheck implements HealthCheck {
 
     private Optional<RemoteCacheManager> cacheManagerOptional;
@@ -54,49 +49,25 @@ public class InfinispanHealthCheck implements HealthCheck {
     @Override
     public HealthCheckResponse call() {
         return cacheManagerOptional.map(cacheManager -> {
-
-            final ChannelFactory channelFactory = cacheManager.getChannelFactory();
-            final Configuration configuration = cacheManager.getConfiguration();
-            final ClientListenerNotifier listenerNotifier = new ClientListenerNotifier(
-                    cacheManager.getMarshaller(),
-                    channelFactory,
-                    configuration);
-            final OperationsFactory operationsFactory = new OperationsFactory(channelFactory,
-                    listenerNotifier,
-                    configuration);
-
-            return Optional.of(channelFactory
-                    .getServers()
-                    .stream()
-                    .map(server -> invokePingOperation(channelFactory, operationsFactory, server)
-                            .thenApply(PingResponse::isSuccess)
-                            .exceptionally(ex -> false))
-                    .map(op -> {
-                        try {
-                            return op.get(500, TimeUnit.MILLISECONDS);
-                        } catch (Exception e) {
-                            return false;
-                        }
-                    })
-                    .allMatch(Boolean.FALSE::equals))
-                    .map(allDown -> buildResponse(channelFactory, !allDown))
-                    .orElse(buildResponse(channelFactory, false));
+            boolean up;
+            try {
+                cacheManager.getCacheNames();
+                up = true;
+            } catch (Exception ex) {
+                up = false;
+            }
+            return buildResponse(cacheManager, up);
         }).orElse(null);
     }
 
-    private HealthCheckResponse buildResponse(ChannelFactory channelFactory, boolean state) {
+    private HealthCheckResponse buildResponse(RemoteCacheManager cacheManager, boolean state) {
         return HealthCheckResponse.builder()
-                .withData("nodes", Optional.ofNullable(channelFactory.getServers())
-                        .orElse(Collections.emptyList())
-                        .stream()
-                        .map(String::valueOf)
+                .withData("nodes", Optional.ofNullable(cacheManager.getServers())
+                        .map(Stream::of)
+                        .orElseGet(Stream::empty)
                         .collect(Collectors.joining(",")))
                 .name(state ? "Infinispan is Up" : "Infinispan is Down")
                 .status(state)
                 .build();
-    }
-
-    private PingOperation invokePingOperation(ChannelFactory channelFactory, OperationsFactory operationsFactory, SocketAddress server) {
-        return channelFactory.fetchChannelAndInvoke(server, operationsFactory.newPingOperation(true));
     }
 }

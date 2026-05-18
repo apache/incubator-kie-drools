@@ -20,12 +20,22 @@ package org.kie.kogito.addons.springboot.k8s;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication(scanBasePackages = "org.kie.kogito.addons.springboot.k8s.**")
 public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
+    }
+
+    // Jackson 2 @Bean (test fixture; production apps get this from the codegen GlobalObjectMapper).
+    // Remove together with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
+    @Bean
+    ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
 }

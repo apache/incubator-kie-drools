@@ -75,7 +75,7 @@ public class $Type$Resource {
         ProcessInstance<$Type$> pi = processService.createProcessInstance(process,
                                                                           businessKey,
                                                                           Optional.ofNullable(resource).orElse(new $Type$Input()).toModel(),
-                                                                          httpHeaders,
+                                                                          httpHeaders.asMultiValueMap(),
                                                                           httpHeaders.getOrEmpty("X-KOGITO-StartFromNode").stream().findFirst().orElse(null),
                                                                           null,
                                                                           httpHeaders.getOrEmpty("X-KOGITO-ReferenceId").stream().findFirst().orElse(null),

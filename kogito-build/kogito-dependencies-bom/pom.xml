@@ -42,16 +42,16 @@
     <!-- this version property is used in plugins but also in dependencies too -->
     <version.io.quarkus>3.27.3</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
-    <version.org.springframework>6.2.18</version.org.springframework>
-    <version.org.springframework.boot>3.5.14</version.org.springframework.boot>
+    <version.org.springframework>7.0.6</version.org.springframework>
+    <version.org.springframework.boot>4.0.5</version.org.springframework.boot>
     <version.org.apache.kafka>4.1.2</version.org.apache.kafka>
 
     <version.org.bouncycastle.bc.jdk18on>1.84</version.org.bouncycastle.bc.jdk18on>
 
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
-    <version.com.fasterxml.jackson>2.21.1</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.21.1</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson>2.21.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.21.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.annotations>2.21</version.com.fasterxml.jackson.annotations>
     <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
     <version.com.ongres.scram>3.2</version.com.ongres.scram>
@@ -64,7 +64,7 @@
     <version.io.quarkiverse.embedded.postgresql>0.8.0</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
-    <version.com.fasterxml.jackson.datatype>2.21.1</version.com.fasterxml.jackson.datatype>
+    <version.com.fasterxml.jackson.datatype>2.21.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.37.0</version.com.github.victools>
     <version.org.wiremock>3.13.0</version.org.wiremock>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
@@ -75,11 +75,13 @@
     <version.com.sun.activation>2.0.2</version.com.sun.activation>
     <version.javax.inject>2.0.1</version.javax.inject>
     <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
-    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.32</version.ch.qos.logback>
     <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
     <version.jakarta.validation-api>3.1.1</version.jakarta.validation-api>
     <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
 
+    <!-- TODO move to per-runtime BOMs after the planned BOM split. Pinned 4.1.x for Quarkus/Vert.x;
+         SB modules need 4.2.x and override per-artifact in springboot/pom.xml. -->
     <version.io.netty>4.1.133.Final</version.io.netty>
 
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
@@ -89,10 +91,10 @@
     Kubernetes addons since they use a different version.
     -->
     <version.io.fabric8.kubernetes-client>7.3.1</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.14.12</version.io.micrometer>
+    <version.io.micrometer>1.16.4</version.io.micrometer>
     <version.org.flywaydb>11.14.1</version.org.flywaydb>
     <version.org.postgresql>42.7.11</version.org.postgresql>
-    <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
+    <version.com.h2>2.4.240</version.com.h2>
     <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
     <version.io.smallrye-config>3.13.4</version.io.smallrye-config>
     <version.org.awaitility>4.3.0</version.org.awaitility>
@@ -109,12 +111,12 @@
     <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
 
-    <version.org.apache.commons>3.18.0</version.org.apache.commons>
+    <version.org.apache.commons>3.19.0</version.org.apache.commons>
     <version.commons.io>2.20.0</version.commons.io>
 
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
 
-    <version.org.infinispan>15.0.21.Final</version.org.infinispan>
+    <version.org.infinispan>15.2.6.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
 
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
@@ -137,12 +139,16 @@
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
-    <version.org.hamcrest>2.2</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
-    <version.org.junit>4.13.2</version.org.junit>
-    <version.org.junit.jupiter>5.13.4</version.org.junit.jupiter>
-    <version.org.junit.platform>1.13.4</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
+    <version.org.hamcrest>3.0</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
+    <!-- JUnit 4 API for legacy test classes that still use org.junit.* annotations.
+         junit-vintage-engine (part of JUnit 6 below) runs them on the JUnit Platform. -->
+    <version.junit>4.13.2</version.junit>
+    <!-- JUnit 6: single pin for jupiter + platform + vintage via junit-bom. -->
+    <version.org.junit>6.0.3</version.org.junit>
     <version.org.mockito>5.18.0</version.org.mockito>
-    <version.org.testcontainers>2.0.3</version.org.testcontainers>
+    <version.org.testcontainers>2.0.4</version.org.testcontainers>
+    <!-- TODO move to the Spring-specific BOM after the planned BOM split. -->
+    <version.com.github.docker-java>3.7.1</version.com.github.docker-java><!-- align with testcontainers ABI; Quarkus BOM pins older docker-java missing ImageHistoryCmd -->
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
     <version.io.rest-assured>5.5.6</version.io.rest-assured>
 
@@ -168,9 +174,11 @@
     <version.com.google.guava>33.4.8-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
 
-    <version.tomcat.embed.core>10.1.54</version.tomcat.embed.core>
-    <version.org.hibernate>7.1.14.Final</version.org.hibernate>
-    <version.com.graphql-java>24.3</version.com.graphql-java>
+    <version.tomcat.embed.core>11.0.20</version.tomcat.embed.core>
+    <!-- TODO move to the Spring-specific BOM after the planned BOM split. Pinned 7.1.x because
+         Quarkus's quarkus-hibernate-orm uses org.hibernate.internal.CoreLogging, removed in 7.2.x. -->
+    <version.org.hibernate>7.1.18.Final</version.org.hibernate>
+    <version.com.graphql-java>25.0</version.com.graphql-java>
   </properties>
 
   <dependencyManagement>
@@ -839,7 +847,7 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -851,48 +859,48 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${version.org.junit}</version>
+        <version>${version.junit}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
-      <dependency> <!-- TODO move this dep into surefire-plugin when all modules are migrated to JUnit 5 -->
+      <dependency> <!-- move this dep into surefire-plugin when all modules are migrated to JUnit 5 -->
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-engine</artifactId>
-        <version>${version.org.junit.platform}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-commons</artifactId>
-        <version>${version.org.junit.platform}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-launcher</artifactId>
-        <version>${version.org.junit.platform}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
-        <version>${version.org.junit.jupiter}</version>
+        <version>${version.org.junit}</version>
         <scope>test</scope>
       </dependency>
 
@@ -938,6 +946,12 @@
       <dependency>
         <groupId>io.rest-assured</groupId>
         <artifactId>xml-path</artifactId>
+        <version>${version.io.rest-assured}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>json-schema-validator</artifactId>
         <version>${version.io.rest-assured}</version>
         <scope>test</scope>
       </dependency>
@@ -1306,6 +1320,18 @@
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-junit-jupiter</artifactId>
         <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <!-- TODO move to the Spring-specific BOM after the planned BOM split. -->
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-api</artifactId>
+        <version>${version.com.github.docker-java}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-transport-zerodep</artifactId>
+        <version>${version.com.github.docker-java}</version>
       </dependency>
 
       <dependency>

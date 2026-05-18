@@ -106,7 +106,7 @@ class SpringBootExplainableResourceTest {
         input.getModelIdentifier().setResourceId(unknownwResourceId);
         ResponseEntity responseEntity = resource.predict(singletonList(input));
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCode().value());
         assertEquals("An Exception occurred processing the predict request. Please see the logs for more details.", responseEntity.getBody());
     }
 
