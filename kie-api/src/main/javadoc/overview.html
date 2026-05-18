@@ -49,7 +49,7 @@
 <p>
   A typical example of loading and using knowledge resources (rules, processes and decisions) found on the classpath: By convention, the
   KIE API expects the file <code>META-INF/kmodule.xml</code>, which is a marker file that also enables additional configuration.
-  For very basic usage, the file can contain just <code><kmodule xmlns="http://www.drools.org/xsd/kmodule"/></code>:
+  For very basic usage, the file can contain just <code>&lt;kmodule xmlns="http://www.drools.org/xsd/kmodule"/&gt;</code>:
 <pre>
   KieServices kieServices = KieServices.Factory.get();
   KieContainer kieContainer = kieServices.getKieClasspathContainer();
@@ -69,10 +69,10 @@
 </p>
 <pre>
   MeasurementUnit measurementUnit = new MeasurementUnit();
-  RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
+  RuleUnitInstance&lt;MeasurementUnit&gt; instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
   try {
-    measurementUnit.getMeasurements().add(new Measurement("color", "red"));
-    List<Measurement> queryResult = instance.executeQuery("FindColor").stream().map(tuple -> (Measurement) tuple.get("$m")).collect(toList());
+    measurementUnit.getMeasurements().add(new Measurement(&quot;color&quot;, &quot;red&quot;));
+    List&lt;Measurement&gt; queryResult = instance.executeQuery(&quot;FindColor&quot;).stream().map(tuple -&gt; (Measurement) tuple.get(&quot;$m&quot;)).collect(toList());
   } finally {
     instance.dispose();
   }

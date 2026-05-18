@@ -31,7 +31,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
      * Sets an option value
      *
      * @param option the option class for the option being requested
-     * @param <C extends T>
+     * @param <C> the option type
      */
     <C extends T> void setOption( C option );
 
