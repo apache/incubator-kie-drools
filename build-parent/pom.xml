@@ -2039,6 +2039,12 @@
                 <head>API Note:</head>
               </tag>
             </tags>
+            <!-- Disable automatic module descriptor resolution to avoid issues with JARs containing invalid module names.
+                 This prevents the Javadoc plugin from trying to derive module descriptors from JAR filenames that contain
+                 invalid Java identifiers (e.g., "999-SNAPSHOT", "for", "private"). The plugin will still generate proper
+                 Javadoc but won't attempt to build a module path from dependencies. -->
+            <source>8</source>
+            <detectJavaApiLink>false</detectJavaApiLink>
           </configuration>
         </plugin>
         <plugin>
