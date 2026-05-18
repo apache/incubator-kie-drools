@@ -20,7 +20,7 @@
 package org.optaplanner.spring.boot.autoconfigure.multimodule;
 
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

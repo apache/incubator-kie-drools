@@ -42,7 +42,7 @@
     <version.org.drools>${project.version}</version.org.drools>
 
     <!-- Normal dependency versions -->
-    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.32</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.22.1</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk>
@@ -57,8 +57,8 @@
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
-    <version.org.springframework>6.2.18</version.org.springframework>
-    <version.org.springframework.boot>3.5.14</version.org.springframework.boot>
+    <version.org.springframework>7.0.6</version.org.springframework>
+    <version.org.springframework.boot>4.0.5</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
@@ -195,6 +195,13 @@
         <artifactId>jcl-over-slf4j</artifactId>
         <version>${version.org.slf4j}</version>
       </dependency>
+      <!-- Spring Boot persistence module: hosts @EntityScan, EntityScanPackages, EntityScanner -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-persistence</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -272,7 +279,8 @@
                   <bannedDependencies>
                     <excludes combine.children="append">
                       <!-- Ban forbidden logging deps (we only use SLF4J + Logback) -->
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                      <!-- EXCEPTION: Spring Framework depends on commons-logging directly -->
+                      <!-- In case of transitive dependency from non-Spring sources, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
                       <exclude>commons-logging:commons-log*</exclude>
                       <!-- In case of transitive dependency, exclude it and use 'org.apache.logging.log4j:log4j-to-slf4j' instead -->
                       <exclude>log4j:log4j</exclude>
@@ -281,6 +289,10 @@
                       <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
                       <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
                     </excludes>
+                    <includes>
+                      <!-- Allow commons-logging from Spring Framework (required dependency) -->
+                      <include>commons-logging:commons-logging:*:*:compile</include>
+                    </includes>
                   </bannedDependencies>
                 </rules>
                 <fail>true</fail>
