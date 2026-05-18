@@ -174,7 +174,7 @@
     <version.com.google.guava>33.4.8-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
 
-    <version.tomcat.embed.core>11.0.20</version.tomcat.embed.core>
+    <version.tomcat.embed.core>11.0.21</version.tomcat.embed.core>
     <!-- TODO move to the Spring-specific BOM after the planned BOM split. Pinned 7.1.x because
          Quarkus's quarkus-hibernate-orm uses org.hibernate.internal.CoreLogging, removed in 7.2.x. -->
     <version.org.hibernate>7.1.18.Final</version.org.hibernate>
