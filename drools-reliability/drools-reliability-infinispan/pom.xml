@@ -93,6 +93,16 @@
                         <ignoreClass>org.infinispan.*</ignoreClass>
                       </ignoreClasses>
                     </dependency>
+                    <dependency>
+                      <!-- Upstream packaging duplicates these SPI classes between commons and commons-spi at 15.2.6.Final; bytes are identical. -->
+                      <groupId>org.infinispan</groupId>
+                      <artifactId>infinispan-commons-spi</artifactId>
+                      <type>jar</type>
+                      <ignoreClasses>
+                        <ignoreClass>org.infinispan.commons.spi.OffHeapMemory</ignoreClass>
+                        <ignoreClass>org.infinispan.commons.spi.ThreadCreator</ignoreClass>
+                      </ignoreClasses>
+                    </dependency>
                   </dependencies>
                 </banDuplicateClasses>
               </rules>
