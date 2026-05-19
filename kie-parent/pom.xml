@@ -92,6 +92,7 @@
     <version.com.fasterxml.jackson.annotations>2.21</version.com.fasterxml.jackson.annotations>
     <version.com.fasterxml.jackson.databind>2.21.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.datatype>2.21.2</version.com.fasterxml.jackson.datatype>
+    <version.com.github.docker-java>3.7.1</version.com.github.docker-java><!-- align with testcontainers ABI; Quarkus BOM pins older docker-java missing ImageHistoryCmd -->
     <version.com.github.eirslett>1.15.1</version.com.github.eirslett>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
@@ -440,6 +441,16 @@
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-parameter-names</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-api</artifactId>
+        <version>${version.com.github.docker-java}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-transport-zerodep</artifactId>
+        <version>${version.com.github.docker-java}</version>
       </dependency>
       <dependency>
         <groupId>com.github.haifengl</groupId>
