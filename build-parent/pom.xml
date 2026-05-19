@@ -1915,6 +1915,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
+          <version>3.5.3</version>
         </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
