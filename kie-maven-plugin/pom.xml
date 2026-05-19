@@ -264,7 +264,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
