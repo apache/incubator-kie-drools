@@ -44,7 +44,7 @@ public class DataBaseInfo {
     }
 
     private String normalizeName(String name) {
-        final String NORMALIZATION_REGEX = "[^a-zA-Z0-9]+";
+        final String NORMALIZATION_REGEX = "/.*|[^a-zA-Z0-9]+";
         String[] fragments = name.split(NORMALIZATION_REGEX);
         return String.join("-", fragments).toLowerCase();
     }

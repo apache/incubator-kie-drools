@@ -79,7 +79,8 @@ public class KieFlywayDataBaseHelperTest {
     public static Stream<Arguments> getDataBaseData() {
         return Stream.of(Arguments.of("H2", "2.3.232", "h2"),
                 Arguments.of("PostgreSQL", "42.7.4", "postgresql"),
-                Arguments.of("My Custom DB Type.", "v1.0", "my-custom-db-type"));
+                Arguments.of("My Custom DB Type.", "v1.0", "my-custom-db-type"),
+                Arguments.of("MyCustomDB/CustomDBType", "v1.0", "mycustomdb"));
     }
 
 }
