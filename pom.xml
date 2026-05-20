@@ -147,6 +147,7 @@
           <forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>
           <logImpactedTo>${pom.build.directory}/incremental_build.log</logImpactedTo>
           <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
+          <untracked>false</untracked>
           <!-- ... -->
         </configuration>
       </plugin>
