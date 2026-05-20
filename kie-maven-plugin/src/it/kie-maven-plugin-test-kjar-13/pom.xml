@@ -68,7 +68,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
+      <artifactId>drools-mvel-compiler</artifactId>
       <version>@org.kie.version@</version>
     </dependency>
     <dependency>
