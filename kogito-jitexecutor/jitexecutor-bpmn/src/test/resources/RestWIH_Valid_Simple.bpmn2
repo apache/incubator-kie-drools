@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                   xmlns:drools="http://www.jboss.org/drools" 
+                   xmlns:tns="http://www.jboss.org/drools"
+                   id="_RestWIHValidSimpleTest" 
+                   targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:process id="RestWIHValidSimple" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="rest-wih-valid-simple" isExecutable="true" processType="Public">
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:task id="_2" name="REST Call" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[REST Call]]></drools:metaValue>
+        </drools:metaData>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script><![CDATA[kcontext.setVariable("AccessTokenAcquisitionStrategy", "propagated");
+kcontext.setVariable("Url", "https://api.example.com/data");]]></drools:script>
+        </drools:onEntry-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:endEvent id="_3" name="End">
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="RestWIHValidSimple">
+      <bpmndi:BPMNShape id="shape__1" bpmnElement="_1">
+        <dc:Bounds height="56" width="56" x="100" y="100"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__2" bpmnElement="_2">
+        <dc:Bounds height="102" width="154" x="236" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3" bpmnElement="_3">
+        <dc:Bounds height="56" width="56" x="470" y="100"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

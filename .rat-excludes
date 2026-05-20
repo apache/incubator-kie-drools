@@ -52,6 +52,11 @@ jitexecutor/jitexecutor-bpmn/src/test/resources/SingleProcess.bpmn2
 jitexecutor/jitexecutor-bpmn/src/test/resources/SingleUnparsableModel.bpmn2
 jitexecutor/jitexecutor-bpmn/src/test/resources/UnparsableModel.bpmn2
 jitexecutor/jitexecutor-bpmn/src/test/resources/ValidModel.bpmn
+jitexecutor/jitexecutor-bpmn/src/test/resources/RestWIH_AllValid_Scenarios.bpmn2
+jitexecutor/jitexecutor-bpmn/src/test/resources/RestWIH_Invalid.bpmn2
+jitexecutor/jitexecutor-bpmn/src/test/resources/RestWIH_Valid.bpmn2
+jitexecutor/jitexecutor-bpmn/src/test/resources/RestWIH_Valid_Proper.bpmn2
+jitexecutor/jitexecutor-bpmn/src/test/resources/RestWIH_Valid_Simple.bpmn2
 jitexecutor/jitexecutor-dmn/src/main/resources/META-INF/resources/bundle.js
 jobs/kogito-addons-springboot-embedded-jobs/src/test/resources/application.properties
 jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs/src/test/resources/application.properties

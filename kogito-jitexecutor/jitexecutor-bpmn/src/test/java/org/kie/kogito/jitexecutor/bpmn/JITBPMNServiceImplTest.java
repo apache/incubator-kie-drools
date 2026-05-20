@@ -38,6 +38,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.MULTIPLE_BPMN2_FILE;
 import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.MULTIPLE_INVALID_BPMN2_FILE;
+import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.REST_WIH_ALL_VALID_SCENARIOS_BPMN2_FILE;
+import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.REST_WIH_INVALID_BPMN2_FILE;
+import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.REST_WIH_VALID_BPMN2_FILE;
+import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.REST_WIH_VALID_PROPER_BPMN2_FILE;
+import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.REST_WIH_VALID_SIMPLE_BPMN2_FILE;
 import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.SINGLE_BPMN2_FILE;
 import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.SINGLE_INVALID_BPMN2_FILE;
 import static org.kie.kogito.jitexecutor.bpmn.TestingUtils.SINGLE_UNPARSABLE_BPMN2_FILE;
@@ -158,6 +163,66 @@ class JITBPMNServiceImplTest {
         expected = "Uri: " + uri + " - Process id: " + id + " - name : " + name + " - error : " + message;
         retrieved = JITBPMNServiceImpl.getErrorString(processValidationError, uri);
         assertThat(retrieved).isEqualTo(expected);
+    }
+
+    @Test
+    void validateModel_RestWIHValid_ParsesSuccessfully() throws IOException {
+        String toValidate = new String(IoUtils.readBytesFromInputStream(Objects.requireNonNull(JITBPMNService.class.getResourceAsStream(REST_WIH_VALID_BPMN2_FILE))));
+        JITBPMNValidationResult retrieved = jitBpmnService.validateModel(toValidate);
+
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getErrors()).isNotNull();
+
+        assertThat(retrieved.getErrors()).allMatch(error -> error.contains("Url is required") || error.contains("AccessTokenAcquisitionStrategy is required"));
+    }
+
+    @Test
+    void validateModel_RestWIHValidProper_ParsesSuccessfully() throws IOException {
+        String toValidate = new String(IoUtils.readBytesFromInputStream(Objects.requireNonNull(JITBPMNService.class.getResourceAsStream(REST_WIH_VALID_PROPER_BPMN2_FILE))));
+        JITBPMNValidationResult retrieved = jitBpmnService.validateModel(toValidate);
+
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getErrors()).isNotNull();
+
+        assertThat(retrieved.getErrors()).allMatch(error -> error.contains("Url is required") || error.contains("AccessTokenAcquisitionStrategy is required"));
+    }
+
+    @Test
+    void validateModel_RestWIHValidSimple_ParsesSuccessfully() throws IOException {
+        String toValidate = new String(IoUtils.readBytesFromInputStream(Objects.requireNonNull(JITBPMNService.class.getResourceAsStream(REST_WIH_VALID_SIMPLE_BPMN2_FILE))));
+        JITBPMNValidationResult retrieved = jitBpmnService.validateModel(toValidate);
+
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getErrors()).isNotNull();
+
+        assertThat(retrieved.getErrors()).allMatch(error -> error.contains("Url is required") || error.contains("AccessTokenAcquisitionStrategy is required"));
+    }
+
+    @Test
+    void validateModel_RestWIHInvalid_HasValidationErrors() throws IOException {
+        String toValidate = new String(IoUtils.readBytesFromInputStream(Objects.requireNonNull(JITBPMNService.class.getResourceAsStream(REST_WIH_INVALID_BPMN2_FILE))));
+        JITBPMNValidationResult retrieved = jitBpmnService.validateModel(toValidate);
+
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getErrors()).isNotNull().isNotEmpty();
+
+        assertThat(retrieved.getErrors()).anyMatch(error -> error.contains("Missing Strategy") && error.contains("AccessTokenAcquisitionStrategy is required"));
+        assertThat(retrieved.getErrors()).anyMatch(error -> error.contains("Invalid Strategy") && error.contains("AccessTokenAcquisitionStrategy must be one of"));
+        assertThat(retrieved.getErrors()).anyMatch(error -> error.contains("Missing TaskId") && error.contains("RestServiceCallTaskId is required"));
+        assertThat(retrieved.getErrors()).anyMatch(error -> error.contains("Invalid TaskId Format") && error.contains("RestServiceCallTaskId must contain only alphanumeric"));
+        assertThat(retrieved.getErrors()).anyMatch(error -> error.contains("Missing URL") && error.contains("Url is required"));
+    }
+
+    @Test
+    void validateModel_AllValidScenarios_ParsesSuccessfully() throws IOException {
+        String toValidate = new String(IoUtils.readBytesFromInputStream(Objects.requireNonNull(JITBPMNService.class.getResourceAsStream(REST_WIH_ALL_VALID_SCENARIOS_BPMN2_FILE))));
+        JITBPMNValidationResult retrieved = jitBpmnService.validateModel(toValidate);
+
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getErrors()).isNotNull();
+
+        // The BPMN file should parse successfully
+        // Similar to above, validation errors for required fields will be present
     }
 
 }

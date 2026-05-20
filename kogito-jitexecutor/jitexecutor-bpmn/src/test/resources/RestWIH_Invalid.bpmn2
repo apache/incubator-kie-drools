@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                   xmlns:drools="http://www.jboss.org/drools" 
+                   id="_RestWIHInvalidTest" 
+                   targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:process id="RestWIHInvalid" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="rest-wih-invalid-process" isExecutable="true" processType="Public">
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:task id="_2" name="Missing Strategy" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Missing Strategy]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_2_UrlInput" name="Url"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_2_UrlInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">https://api.example.com/data</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_2_UrlInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:task id="_3" name="Invalid Strategy" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Invalid Strategy]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_3_AccessTokenAcquisitionStrategyInput" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_3_UrlInput" name="Url"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_3_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3_UrlInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">invalid_strategy</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_3_AccessTokenAcquisitionStrategyInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">https://api.example.com/data</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_3_UrlInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:task id="_4" name="Missing TaskId" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Missing TaskId]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_3-_4</bpmn2:incoming>
+      <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_4_AccessTokenAcquisitionStrategyInput" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_4_UrlInput" name="Url"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_4_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_4_UrlInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_4_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">configured</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_4_AccessTokenAcquisitionStrategyInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_4_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">https://api.example.com/secure</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_4_UrlInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:task id="_5" name="Invalid TaskId Format" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Invalid TaskId Format]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_4-_5</bpmn2:incoming>
+      <bpmn2:outgoing>_5-_6</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_5_AccessTokenAcquisitionStrategyInput" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_5_RestServiceCallTaskIdInput" name="RestServiceCallTaskId"/>
+        <bpmn2:dataInput id="_5_UrlInput" name="Url"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_5_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_RestServiceCallTaskIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_UrlInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">configured</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_5_AccessTokenAcquisitionStrategyInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_RestServiceCallTaskIdInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">Invalid-Task-ID!</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_5_RestServiceCallTaskIdInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">https://api.example.com/secure</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_5_UrlInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:task id="_6" name="Missing URL" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Missing URL]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_5-_6</bpmn2:incoming>
+      <bpmn2:outgoing>_6-_7</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_6_AccessTokenAcquisitionStrategyInput" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_6_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_6_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression">none</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression">_6_AccessTokenAcquisitionStrategyInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:endEvent id="_7" name="End">
+      <bpmn2:incoming>_6-_7</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+    <bpmn2:sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5"/>
+    <bpmn2:sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6"/>
+    <bpmn2:sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="RestWIHInvalid">
+      <bpmndi:BPMNShape id="shape__1" bpmnElement="_1">
+        <dc:Bounds height="56" width="56" x="100" y="100"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__2" bpmnElement="_2">
+        <dc:Bounds height="102" width="154" x="236" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3" bpmnElement="_3">
+        <dc:Bounds height="102" width="154" x="470" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__4" bpmnElement="_4">
+        <dc:Bounds height="102" width="154" x="704" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__5" bpmnElement="_5">
+        <dc:Bounds height="102" width="154" x="938" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__6" bpmnElement="_6">
+        <dc:Bounds height="102" width="154" x="1172" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__7" bpmnElement="_7">
+        <dc:Bounds height="56" width="56" x="1406" y="100"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

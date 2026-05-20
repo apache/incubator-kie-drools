@@ -36,6 +36,16 @@ public class TestingUtils {
 
     public static final String UNPARSABLE_BPMN2_FILE = "/UnparsableModel.bpmn2";
 
+    public static final String REST_WIH_VALID_BPMN2_FILE = "/RestWIH_Valid.bpmn2";
+
+    public static final String REST_WIH_VALID_PROPER_BPMN2_FILE = "/RestWIH_Valid_Proper.bpmn2";
+
+    public static final String REST_WIH_VALID_SIMPLE_BPMN2_FILE = "/RestWIH_Valid_Simple.bpmn2";
+
+    public static final String REST_WIH_INVALID_BPMN2_FILE = "/RestWIH_Invalid.bpmn2";
+
+    public static final String REST_WIH_ALL_VALID_SCENARIOS_BPMN2_FILE = "/RestWIH_AllValid_Scenarios.bpmn2";
+
     public static String getFilePath(String fileName) {
         return "src/test/resources" + fileName;
     }
