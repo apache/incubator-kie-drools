@@ -21,6 +21,7 @@ package org.drools.model.codegen.execmodel;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.ResourceType;
@@ -30,6 +31,7 @@ import org.kie.internal.utils.KieHelper;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 class ParallelBuildAccumulateTest {
 
     private static final int BUILD_ATTEMPTS = 50;
