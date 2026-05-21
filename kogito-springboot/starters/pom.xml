@@ -23,10 +23,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>springboot</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-spring-boot-bom</artifactId>
     <version>999-SNAPSHOT</version>
+    <relativePath>../bom/pom.xml</relativePath>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>spring-boot-starters</artifactId>
@@ -41,18 +43,6 @@
     <module>kogito-spring-boot-starter</module>
     <module>kogito-processes-spring-boot-starter</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-spring-boot-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

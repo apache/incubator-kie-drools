@@ -24,8 +24,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>kie-addons-quarkus-source-files-parent</artifactId>
     <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-source-files-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
@@ -36,18 +36,6 @@
     <properties>
        <java.module.name>org.kie.kogito.quarkus.addon.source.files</java.module.name>
     </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <type>pom</type>
-        <version>${project.version}</version>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

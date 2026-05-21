@@ -34,18 +34,6 @@
     <java.module.name>integration.tests.springboot.decisions.it</java.module.name>
   </properties>
 
-    <dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-spring-boot-bom</artifactId>
-          <version>${project.version}</version>
-          <type>pom</type>
-          <scope>import</scope>
-        </dependency>
-      </dependencies>
-    </dependencyManagement>
-
     <dependencies>
       <dependency>
         <groupId>org.springframework.boot</groupId>

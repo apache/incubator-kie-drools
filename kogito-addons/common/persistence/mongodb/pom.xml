@@ -50,7 +50,6 @@
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-sync</artifactId>
-      <version>${version.org.mongo}</version><!-- Do not use managed version as SB and Quarkus use different versions -->
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -77,13 +76,11 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>${version.org.testcontainers}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers-junit-jupiter</artifactId>
-      <version>${version.org.testcontainers}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

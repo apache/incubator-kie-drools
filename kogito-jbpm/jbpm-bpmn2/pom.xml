@@ -39,18 +39,6 @@
     <java.module.name>org.kie.kogito.jbpm.bpmn2</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -79,11 +67,6 @@
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -145,7 +128,6 @@
                 <artifactItem>
                   <groupId>org.kie.kogito</groupId>
                   <artifactId>jbpm-xsd-resources</artifactId>
-                  <version>${project.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/classes/META-INF</outputDirectory>

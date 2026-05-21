@@ -32,18 +32,6 @@
   <artifactId>integration-tests-springboot-processes-infinispan</artifactId>
   <name>Kogito :: Integration Tests :: Spring Boot :: Processes :: Persistence :: Infinispan</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-bom</artifactId>
-        <version>${version.org.infinispan}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -68,12 +56,10 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-springboot-processes-persistence-common</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-springboot-processes-persistence-common</artifactId>
-      <version>${project.version}</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>

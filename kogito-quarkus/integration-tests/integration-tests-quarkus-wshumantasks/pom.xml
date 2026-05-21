@@ -33,18 +33,6 @@
         <java.module.name>org.jbpm.usertask.storage.jpa.quarkus.it</java.module.name>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>kogito-quarkus-bom</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -107,7 +95,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-quarkus-deployment</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>
             <exclusions>
@@ -120,7 +107,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-addons-quarkus-usertask-storage-jpa-deployment</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>
             <exclusions>

@@ -42,7 +42,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-process-instance-migration</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>

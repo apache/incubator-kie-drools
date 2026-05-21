@@ -48,12 +48,10 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-springboot-processes-persistence-common</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-springboot-processes-persistence-common</artifactId>
-      <version>${project.version}</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>

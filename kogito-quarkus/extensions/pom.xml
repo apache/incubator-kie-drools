@@ -26,26 +26,15 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>quarkus</artifactId>
+    <artifactId>kogito-quarkus-bom</artifactId>
     <version>999-SNAPSHOT</version>
+    <relativePath>../bom/pom.xml</relativePath>
   </parent>
 
   <artifactId>quarkus-extensions</artifactId>
   <name>Kogito :: Quarkus Extensions :: Parent</name>
 
   <packaging>pom</packaging>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <modules>
     <module>kogito-quarkus-extension-spi</module>

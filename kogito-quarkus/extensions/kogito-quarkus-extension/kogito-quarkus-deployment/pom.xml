@@ -63,21 +63,52 @@
           <name>!productized</name>
         </property>
       </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <dependencies>
+                <dependency>
+                  <groupId>org.commonjava.maven.enforcer</groupId>
+                  <artifactId>enforce-managed-deps-rule</artifactId>
+                  <version>${version.enforce-managed-deps-rule}</version>
+                </dependency>
+              </dependencies>
+              <executions>
+                <execution>
+                  <id>no-managed-deps</id>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                  <phase>initialize</phase>
+                  <configuration>
+                    <rules>
+                      <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                        <checkProfiles>false</checkProfiles>
+                        <failOnViolation>true</failOnViolation>
+                      </requireManagedDeps>
+                    </rules>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
       <dependencies>
         <dependency>
           <groupId>org.drools</groupId>
           <artifactId>drools-quarkus-rules-deployment</artifactId>
-          <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.drools</groupId>
           <artifactId>drools-quarkus-decisions-deployment</artifactId>
-          <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.kie</groupId>
           <artifactId>kie-quarkus-predictions-deployment</artifactId>
-          <version>${project.version}</version>
         </dependency>
       </dependencies>
     </profile>

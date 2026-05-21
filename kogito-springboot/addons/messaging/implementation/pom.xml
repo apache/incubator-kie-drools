@@ -40,8 +40,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-messaging</artifactId>
     </dependency>
-    <!-- spring-boot-kafka: hosts the Kafka auto-configure classes. TODO move version pin to the
-         Spring-specific BOM after the planned BOM split. -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-kafka</artifactId>

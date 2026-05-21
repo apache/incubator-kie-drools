@@ -57,12 +57,45 @@
           <name>!productized</name>
         </property>
       </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <dependencies>
+                <dependency>
+                  <groupId>org.commonjava.maven.enforcer</groupId>
+                  <artifactId>enforce-managed-deps-rule</artifactId>
+                  <version>${version.enforce-managed-deps-rule}</version>
+                </dependency>
+              </dependencies>
+              <executions>
+                <execution>
+                  <id>no-managed-deps</id>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                  <phase>initialize</phase>
+                  <configuration>
+                    <rules>
+                      <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                        <checkProfiles>false</checkProfiles>
+                        <failOnViolation>true</failOnViolation>
+                      </requireManagedDeps>
+                    </rules>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
       <dependencies>
         <!-- this is used implicitly by Maven parallel builds so let's make Maven aware of it -->
         <dependency>
           <groupId>org.jbpm</groupId>
           <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
-          <version>${project.version}</version>
           <type>pom</type>
           <scope>test</scope>
           <exclusions>

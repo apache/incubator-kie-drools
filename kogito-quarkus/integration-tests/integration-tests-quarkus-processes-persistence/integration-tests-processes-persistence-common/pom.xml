@@ -82,7 +82,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
-      <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>
       <exclusions>

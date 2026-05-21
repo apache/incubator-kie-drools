@@ -25,9 +25,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>springboot</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-spring-boot-bom</artifactId>
     <version>999-SNAPSHOT</version>
+    <relativePath>../bom/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-spring-boot-test-utils</artifactId>
@@ -39,18 +40,6 @@
     <java.module.name>org.kie.kogito.springboot.test.resources</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-spring-boot-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -23,8 +23,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>spring-boot-starters</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>spring-boot-starters</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -48,8 +48,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-actuator-autoconfigure</artifactId>
     </dependency>
-    <!-- spring-boot-health: hosts the actuator health SPI. TODO move version pin to the
-         Spring-specific BOM after the planned BOM split. -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-health</artifactId>

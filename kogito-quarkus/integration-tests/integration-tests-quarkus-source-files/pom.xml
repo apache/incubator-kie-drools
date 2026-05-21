@@ -30,25 +30,12 @@
   <artifactId>integration-tests-quarkus-source-files</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Source Files</name>
 
-
   <properties>
     <java.module.name>org.kie.kogito.test.quarkus.source.files</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
-    <dependency>
+   <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
@@ -89,7 +76,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-source-files-deployment</artifactId>
-      <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>
       <exclusions>

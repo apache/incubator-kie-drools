@@ -39,25 +39,6 @@
     <java.module.name>org.kie.kogito.kogito.pmml</java.module.name>
   </properties>
 
-  <dependencyManagement>
-   <dependencies>
-     <!-- PMML -->
-     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-pmml-dependencies</artifactId>
-       <type>pom</type>
-       <version>${project.version}</version>
-     </dependency>
-     <dependency>
-       <groupId>org.kie.kogito</groupId>
-       <artifactId>kogito-kie-bom</artifactId>
-       <type>pom</type>
-       <version>${project.version}</version>
-       <scope>import</scope>
-     </dependency>
-   </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

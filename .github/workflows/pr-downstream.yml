@@ -82,7 +82,7 @@ jobs:
           starting-project: apache/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
-        env: 
+        env:
           BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }}
           KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.env_KOGITO_EXAMPLES_SUBFOLDER_POM }}
       - name: Junit Report

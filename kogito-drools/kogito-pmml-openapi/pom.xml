@@ -33,22 +33,10 @@
 
   <name>Kogito :: Drools :: Kogito Predictive Model Markup Language :: OpenAPI</name>
   <description>Kogito OpenAPI generator for Kie Drools PMML open source engine</description>
-  
+
   <properties>
     <java.module.name>org.kie.kogito.kogito.pmml.openapi</java.module.name>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- PMML -->
@@ -73,7 +61,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-pmml</artifactId>
-      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

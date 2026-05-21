@@ -39,25 +39,12 @@
     <java.module.name>io.quarkus.it.kogito.devmode</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
 
     <!-- this is used implicitly by hot reload tests so let's make Maven aware of it -->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
-      <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>
       <exclusions>
@@ -98,13 +85,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-maven</artifactId>
-      <version>${version.io.quarkus.quarkus-test}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.github.stephenc.jcip</groupId>
       <artifactId>jcip-annotations</artifactId>
-      <version>${version.com.github.stephenc.jcip}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

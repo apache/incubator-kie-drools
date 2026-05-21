@@ -39,7 +39,7 @@
 
 
     <dependencies>
-        <dependency>
+       <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-quarkus</artifactId>
         </dependency>
@@ -67,7 +67,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-quarkus-deployment</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>
             <exclusions>

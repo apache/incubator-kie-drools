@@ -23,8 +23,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>quarkus</artifactId>
+    <artifactId>kogito-quarkus-bom</artifactId>
     <version>999-SNAPSHOT</version>
+    <relativePath>../bom/pom.xml</relativePath>
   </parent>
   <artifactId>kogito-quarkus-integration-tests</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus</name>

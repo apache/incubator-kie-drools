@@ -65,11 +65,9 @@
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-addons-kubernetes-service-catalog</artifactId>
-            <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

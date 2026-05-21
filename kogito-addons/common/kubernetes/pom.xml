@@ -88,6 +88,11 @@
       <artifactId>process-workitems</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-jakarta-servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 

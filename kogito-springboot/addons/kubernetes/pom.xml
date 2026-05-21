@@ -22,12 +22,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>kogito-addons-springboot-parent</artifactId>
     <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-springboot-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-addons-springboot-kubernetes</artifactId>
   <name>KIE :: Add-Ons :: Spring Boot :: Kubernetes</name>
@@ -35,7 +35,6 @@
   <properties>
       <java.module.name>org.kie.kogito.springboot.addons.springboot.k8s</java.module.name>
   </properties>
-
 
   <dependencies>
     <dependency>

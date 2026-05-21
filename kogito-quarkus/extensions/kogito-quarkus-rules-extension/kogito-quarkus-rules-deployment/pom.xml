@@ -23,8 +23,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>drools-quarkus-rules-extension</artifactId>
         <groupId>org.drools</groupId>
+        <artifactId>drools-quarkus-rules-extension</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -36,24 +36,10 @@
       <java.module.name>org.kie.kogito.quarkus.rules.deployment</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- Efesto -->
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-quarkus-common-deployment</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>

@@ -33,26 +33,7 @@
 
     <properties>
         <java.module.name>org.kie.kogito.codegen.decision</java.module.name>
-        <dependency-plugin.version>3.6.1</dependency-plugin.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>kogito-kie-bom</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-dmn-test-resources</artifactId>
-                <version>${project.version}</version>
-                <classifier>tests</classifier>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -150,7 +131,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>${dependency-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>unpack</id>
@@ -163,7 +143,6 @@
                                 <artifactItem>
                                     <groupId>org.kie</groupId>
                                     <artifactId>kie-dmn-test-resources</artifactId>
-                                    <version>${project.version}</version>
                                     <classifier>tests</classifier>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>

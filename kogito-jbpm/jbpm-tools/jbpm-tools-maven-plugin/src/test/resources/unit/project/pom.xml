@@ -38,6 +38,7 @@
             <plugin>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>jbpm-tools-maven-plugin</artifactId>
+                <version>${project.version}</version>
                 <configuration>
                     <project implementation="org.jbpm.tools.maven.ProcessCodegenMojoProjectStub"/>
                 </configuration>

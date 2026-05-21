@@ -39,18 +39,6 @@
         <java.module.name>org.kie.kogito.quarkus.processes.hotreload.tests</java.module.name>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>kogito-kie-bom</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -76,7 +64,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-quarkus-deployment</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>
             <exclusions>
@@ -110,7 +97,6 @@
         <dependency>
             <groupId>com.github.stephenc.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
-            <version>${version.com.github.stephenc.jcip}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

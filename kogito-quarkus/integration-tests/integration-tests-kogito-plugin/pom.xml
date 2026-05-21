@@ -32,58 +32,18 @@
        <java.module.name>org.kie.kogito.integration.tests.plugin</java.module.name>
     </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-maven-plugin</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency> <!-- make IT module to depend transitively on all deployments. -->
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-process-management-deployment</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-bom</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-bom</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-kie-bom</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -96,21 +56,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-core-bom</artifactId>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-bom</artifactId>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-bom</artifactId>
-      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

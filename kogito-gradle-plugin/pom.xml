@@ -40,67 +40,9 @@
   <name>Kogito :: Gradle :: Plugin</name>
   <description>Plugin to build applications using Gradle</description>
 
-  <!-- DO NOT ADD PARENT DECLARATION TO HAVE THAT PLUGIN DISCOVERABLE BY GRADLE -->
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.module.name>org.kie.kogito.gradle.plugin</java.module.name>
-    <gradle.version>8.11.1</gradle.version>
-    <groovy.version>4.0.29</groovy.version>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-dependencies-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>dev.gradleplugins</groupId>
-        <artifactId>gradle-api</artifactId>
-        <version>${gradle.version}</version>
-      </dependency>
-      <!-- Needed to avoid clashes in downstream projects -->
-      <dependency>
-        <groupId>org.apache.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.groovy</groupId>
-        <artifactId>groovy-json</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.groovy</groupId>
-        <artifactId>groovy-ant</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>dev.gradleplugins</groupId>
-        <artifactId>gradle-test-kit</artifactId>
-        <version>${gradle.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <!-- EXCLUSIONS NEEDED TO AVOID CLASHING WITH GRADLE STACK -->
   <dependencies>
