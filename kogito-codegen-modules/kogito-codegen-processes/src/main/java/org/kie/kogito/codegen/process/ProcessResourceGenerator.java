@@ -395,7 +395,7 @@ public class ProcessResourceGenerator {
             SwitchStmt switchExpr = taskModelFactoryMethod.getBody().map(b -> b.findFirst(SwitchStmt.class).orElseThrow(IllegalStateException::new)).orElseThrow(IllegalStateException::new);
 
             for (WorkItemModelMetaData workItem : workItems) {
-                String methodSuffix = sanitizeName(workItem.getName()) + "_" + index.getAndIncrement();
+                String methodSuffix = sanitizeJavaName(workItem.getName()) + "_" + index.getAndIncrement();
                 userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {
                     MethodDeclaration cloned = md.clone();
                     template.addMethod(cloned.getName() + "_" + methodSuffix, Keyword.PUBLIC)
