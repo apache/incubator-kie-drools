@@ -1,0 +1,1 @@
+drools-core/src/main/java/org/drools/core/WorkingMemory.java

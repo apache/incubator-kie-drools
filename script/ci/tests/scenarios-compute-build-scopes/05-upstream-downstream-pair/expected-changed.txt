@@ -1,0 +1,2 @@
+org.drools:drools-core
+org.drools:drools-kiesession

@@ -25,9 +25,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>drools-build-parent</artifactId>
+    <artifactId>kie-quarkus-build-parent</artifactId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../build-parent/pom.xml</relativePath>
+    <relativePath>../kie-quarkus-build-parent/pom.xml</relativePath>
   </parent>
 
   <name>Drools :: Quarkus Extension</name>
@@ -50,17 +50,5 @@
     <module>drools-quarkus-quickstart-test</module>
     <module>drools-quarkus-examples</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>

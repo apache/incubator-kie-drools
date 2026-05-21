@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.A1Test" tests="2" failures="1" errors="0" skipped="0" time="0.2">
+  <testcase name="testPasses" classname="com.example.A1Test" time="0.05"/>
+  <testcase name="testFails" classname="com.example.A1Test" time="0.15">
+    <failure type="java.lang.AssertionError" message="expected [true] but was [false]">at com.example.A1Test.testFails(A1Test.java:42)</failure>
+  </testcase>
+</testsuite>

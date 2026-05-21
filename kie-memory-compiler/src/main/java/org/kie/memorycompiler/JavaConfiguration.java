@@ -31,16 +31,16 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
  * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
- * drools.dialect.java.compiler.lnglevel = <1.5|...|21>
- * 
- * The default compiler is Eclipse and the default lngLevel is 17.
- * The lngLevel will attempt to autodiscover your system using the 
- * system property "java.version"
+ * drools.dialect.java.compiler.lnglevel = <17|18|19|20|21>
+ *
+ * This base class holds the validated values; defaults (Eclipse compiler,
+ * language level 17 with autodiscovery from the "java.version" system
+ * property) are applied by subclasses such as JavaDialectConfiguration#init.
  */
 public class JavaConfiguration {
 
     // This should be in alphabetic order to search with BinarySearch
-    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "9"};
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"17", "18", "19", "20", "21"};
 
     public static final String JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
@@ -98,11 +98,7 @@ public class JavaConfiguration {
     }
 
     private static String normalizeVersion(String version) {
-        String[] parts = version.split("\\.");
-        if ("1".equals(parts[0]) && parts.length > 1) {
-            return "1." + parts[1]; // Legacy format: 1.8.0_292 -> 1.8
-        }
-        return parts[0]; // Modern format: 21.0.2 -> 21
+        return version.split("\\.")[0]; // Modern format: 21.0.2 -> 21
     }
 
     public String getJavaLanguageLevel() {
@@ -110,7 +106,7 @@ public class JavaConfiguration {
     }
 
     /**
-     * You cannot set language level below 1.5, as we need static imports. 17 is now the default.
+     * Language level must be one of {@link #LANGUAGE_LEVELS}. 17 is the floor and the default.
      * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {

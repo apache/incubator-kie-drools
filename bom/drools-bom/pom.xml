@@ -1047,11 +1047,6 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>cdi-example</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
         <artifactId>multiple-kbases</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1094,18 +1089,6 @@
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-scorecards</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-scorecards</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
