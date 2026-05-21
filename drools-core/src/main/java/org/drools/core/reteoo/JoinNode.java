@@ -32,7 +32,7 @@ public class JoinNode extends BetaNode {
 
     public JoinNode(final int id,
                     final LeftTupleSource leftInput,
-                    final RightInputAdapterNode rightInput,
+                    final BetaRightInput rightInput,
                     final BetaConstraints binder,
                     final BuildContext context) {
         super( id,

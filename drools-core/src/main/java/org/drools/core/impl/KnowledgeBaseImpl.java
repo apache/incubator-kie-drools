@@ -76,8 +76,10 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.SegmentPrototypeRegistry;
 import org.drools.core.reteoo.SegmentPrototypeRegistryImpl;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.builder.BiLinearDetector;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
+import org.drools.core.reteoo.builder.RuleOrderOptimizer;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
@@ -1049,11 +1051,15 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> wms ) {
         List<TerminalNode> terminalNodes = new ArrayList<>(rules.size() * 2);
 
-        for (Rule r : rules) {
+        BiLinearDetector.BiLinearContext biLinearContext = BiLinearDetector.detectBiLinearOpportunities(rules, this.id);
+
+        Collection<? extends Rule> optimizedRuleOrder = RuleOrderOptimizer.reorderForBiLinear(rules, biLinearContext);
+
+        for (Rule r : optimizedRuleOrder) {
             RuleImpl rule = (RuleImpl) r;
             checkParallelEvaluation( rule );
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
-            terminalNodes.addAll(this.reteooBuilder.addRule(rule, wms));
+            terminalNodes.addAll(this.reteooBuilder.addRule(rule, wms, biLinearContext));
         }
 
         if (PhreakBuilder.isEagerSegmentCreation() && !hasSegmentPrototypes()) {
