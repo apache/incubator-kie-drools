@@ -311,7 +311,9 @@ public class RuleExecutor {
                 throw new IllegalStateException();
             }
         }
-        dormantMatches.remove(tuple);
+        if (tuple.getPrevious() != null || dormantMatches.getFirst() == tuple) {
+            dormantMatches.remove(tuple);
+        }
         if (DEBUG_DORMANT_TUPLE) {
             tuple.setDormant(false);
         }
