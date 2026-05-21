@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class SpringNotificationEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().startsWith("UserTaskInstanceDeadline")) {
+        if (event instanceof UserTaskInstanceDeadlineDataEvent) {
             logger.debug("About to publish event {} to Kafka topic {}", event, topic);
             try {
                 emitter.send(topic, event);

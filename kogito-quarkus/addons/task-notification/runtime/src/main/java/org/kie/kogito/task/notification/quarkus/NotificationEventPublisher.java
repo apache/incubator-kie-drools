@@ -24,6 +24,7 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class NotificationEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().startsWith("UserTaskInstanceDeadline")) {
+        if (event instanceof UserTaskInstanceDeadlineDataEvent) {
             logger.debug("About to publish event {} to topic {}", event, CHANNEL_NAME);
             try {
                 emitter.send(event);
