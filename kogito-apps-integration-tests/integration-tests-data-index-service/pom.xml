@@ -22,12 +22,12 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>apps-integration-tests</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>apps-integration-tests</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>integration-tests-data-index-service</artifactId>
   <name>Kogito Apps :: Integration Tests :: Data Index</name>
@@ -35,26 +35,13 @@
 
   <modules>
     <module>integration-tests-data-index-service-common</module>
-    <module>integration-tests-data-index-service-quarkus</module>
-    <module>integration-tests-data-index-service-springboot</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>integration-tests-data-index-service-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- ensure data-index-service module was built, but not added in the classpath -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-service-common</artifactId>
-      <version>${project.version}</version>
       <type>pom</type>
       <scope>provided</scope>
       <exclusions>

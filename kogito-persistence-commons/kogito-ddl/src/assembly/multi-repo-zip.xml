@@ -45,7 +45,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.root.dir}/persistence-commons/persistence-commons-postgresql/src/main/resources/kie-flyway/db/persistence-commons/postgresql</directory>
+            <directory>${current_dir}/../../kogito-apps-quarkus/persistence-commons-quarkus/persistence-commons-postgresql/src/main/resources/kie-flyway/db/persistence-commons/postgresql</directory>
             <outputDirectory>postgresql/persistence-commons</outputDirectory>
             <includes>
                 <include>*.sql</include>
@@ -102,7 +102,7 @@
     </fileSets>
     <files>
         <file>
-            <source>${project.root.dir}/persistence-commons/persistence-commons-postgresql/src/main/resources/cache_entity_create.sql</source>
+            <source>${current_dir}/../../kogito-apps-quarkus/persistence-commons-quarkus/persistence-commons-postgresql/src/main/resources/cache_entity_create.sql</source>
             <outputDirectory>postgresql/trusty</outputDirectory>
             <destName>trusty_service_create.sql</destName>
         </file>

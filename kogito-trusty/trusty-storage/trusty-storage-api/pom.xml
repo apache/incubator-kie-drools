@@ -22,18 +22,19 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>trusty-storage</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>trusty-storage</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>trusty-storage-api</artifactId>
   <name>Kogito Apps :: Trusty Storage API</name>
 
   <properties>
     <java.module.name>org.kie.kogito.trusty.storage.api</java.module.name>
+    <disable.quarkus.plugin>true</disable.quarkus.plugin>
   </properties>
 
   <dependencies>
@@ -65,7 +66,6 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
 </project>

@@ -24,8 +24,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>jitexecutor</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>jitexecutor</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
@@ -36,18 +36,6 @@
     <java.module.name>org.kie.kogito.jitexecutor.bpmn</java.module.name>
     <jitexecutor.log.level>INFO</jitexecutor.log.level>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -71,7 +59,6 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-quarkus</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -114,5 +101,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

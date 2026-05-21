@@ -22,18 +22,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>trusty-service</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>trusty-service</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>trusty-service-redis</artifactId>
   <name>Kogito Apps :: Trusty Service Redis</name>
 
   <properties>
     <java.module.name>org.kie.kogito.trusty.service.redis</java.module.name>
+    <disable.quarkus.plugin>false</disable.quarkus.plugin>
+    <disable.quarkus.jar.rename>true</disable.quarkus.jar.rename>
   </properties>
 
   <dependencies>
@@ -80,20 +82,6 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <configuration>
-          <skipOriginalJarRename>true</skipOriginalJarRename>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>

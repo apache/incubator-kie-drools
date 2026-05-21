@@ -22,23 +22,24 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>data-index-storage</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>data-index-storage-jpa</artifactId>
   <name>Kogito Apps :: Data Index Storage JPA compatible DBs</name>
 
   <properties>
-    <path.to.postgresql.storage>../data-index-storage-postgresql</path.to.postgresql.storage>
+    <path.to.postgresql.storage>${project.parent.parent.basedir}/../kogito-apps-quarkus/data-index-storage-quarkus/data-index-storage-postgresql</path.to.postgresql.storage>
     <path.to.flyway.location>kie-flyway/db/data-index/postgresql</path.to.flyway.location>
     <path.to.script.folder>src/main/resources/${path.to.flyway.location}</path.to.script.folder>
     <path.to.migration.scripts.source>${path.to.postgresql.storage}/${path.to.script.folder}</path.to.migration.scripts.source>
     <path.to.migration.scripts.target>target/classes/${path.to.flyway.location}</path.to.migration.scripts.target>
    <java.module.name>org.kie.kogito.index.jpa</java.module.name>
+    <project.build.outputTimestamp>2026-03-18T00:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -49,6 +50,25 @@
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kie-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

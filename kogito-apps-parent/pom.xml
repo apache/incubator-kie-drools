@@ -17,7 +17,8 @@
     specific language governing permissions and limitations
     under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
@@ -111,14 +112,15 @@
     <module>kogito-apps-bom</module>
     <module>kogito-apps-build-parent</module>
     <module>persistence-commons</module>
-    <module>jobs-service</module>
     <module>data-index</module>
     <module>data-audit</module>
-    <module>security-commons</module>
     <module>explainability</module>
     <module>trusty</module>
     <module>jitexecutor</module>
     <module>jobs</module>
+    <module>jobs-service</module>
+    <module>kogito-apps-quarkus</module>
+    <module>kogito-apps-springboot</module>
   </modules>
   <profiles>
     <profile>

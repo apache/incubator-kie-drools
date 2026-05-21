@@ -36,7 +36,6 @@
 
   <modules>
     <module>integration-tests-data-index-service</module>
-    <module>integration-tests-jobs</module>
     <module>integration-tests-jobs-service</module>
   </modules>
 

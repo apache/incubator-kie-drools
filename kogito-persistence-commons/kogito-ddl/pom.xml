@@ -36,13 +36,13 @@
   <properties>
     <java.module.name>org.kie.kogito.ddl</java.module.name>
     <db.scripts.descriptor>src/assembly/multi-repo-zip.xml</db.scripts.descriptor>
+    <current_dir>${project.basedir}</current_dir>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ddl-runtimes</artifactId>
-      <version>${project.version}</version>
       <classifier>db-scripts</classifier>
       <type>zip</type>
     </dependency>

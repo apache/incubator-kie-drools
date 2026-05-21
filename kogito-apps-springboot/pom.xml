@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-spring-boot-bom</artifactId>
+    <version>999-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+
+  <artifactId>kogito-apps-springboot</artifactId>
+  <packaging>pom</packaging>
+  <name>Kogito Apps :: Spring Boot</name>
+  <description>Kogito Apps :: Spring Boot</description>
+
+  <properties>
+    <java.module.name>org.kie.kogito.apps.springboot</java.module.name>
+    <!-- This is duplicated in kogito-apps-quarkus to allow independence of the two configurations -->
+    <failsafe.include>**/*IT.java</failsafe.include>
+    <failsafe.exclude>**/Native*IT.java</failsafe.exclude>
+
+    <version.rename.plugin>1.0.1</version.rename.plugin>
+    <version.frontend.plugin>1.12.1</version.frontend.plugin>
+    <version.node>v18.16.0</version.node>
+    <version.npm>6.10.3</version.npm>
+    <version.pnpm>v8.7.0</version.pnpm>
+
+    <!-- internal containers used for testing -->
+    <container.image.explainability-service-messaging>org.kie.kogito/explainability-service-messaging:${project.version}</container.image.explainability-service-messaging>
+    <container.image.jobs-service>org.kie.kogito/jobs-service-common:${project.version}</container.image.jobs-service>
+    <container.image.data-index-service-postgresql>org.kie.kogito/data-index-service-postgresql:${project.version}</container.image.data-index-service-postgresql>
+    <container.image.data-index-service-oracle>org.kie.kogito/data-index-service-oracle:${project.version}</container.image.data-index-service-oracle>
+    <container.image.data-index-service-infinispan>org.kie.kogito/data-index-service-infinispan:${project.version}</container.image.data-index-service-infinispan>
+    <container.image.data-index-service-mongodb>org.kie.kogito/data-index-service-mongodb:${project.version}</container.image.data-index-service-mongodb>
+    <container.image.data-index-service-inmemory>org.kie.kogito/data-index-service-inmemory:${project.version}</container.image.data-index-service-inmemory>
+    <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
+    <project.build.outputTimestamp>2026-03-18T00:00:00Z</project.build.outputTimestamp>
+  </properties>
+
+  <modules>
+    <module>kogito-apps-springboot-bom</module>
+    <module>data-audit-springboot</module>
+    <module>data-index-springboot</module>
+    <module>jobs-springboot</module>
+    <!-- Keep them as last modules to have them built after the others, in lack of other indication for the build order -->
+    <module>integration-tests-data-index-service-springboot</module>
+    <module>integration-tests-jobs-service-springboot</module>
+  </modules>
+
+  <!-- This is duplicated in kogito-apps-quarkus to allow independence of the two configurations -->
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.coderplus.maven.plugins</groupId>
+          <artifactId>copy-rename-maven-plugin</artifactId>
+          <version>${version.rename.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${version.frontend.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>${failsafe.include}</include>
+            </includes>
+            <excludes>
+              <exclude>${failsafe.exclude}</exclude>
+            </excludes>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+              <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+              <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+              <container.image.kafka>${container.image.kafka}</container.image.kafka>
+              <container.image.redis>${container.image.redis}</container.image.redis>
+              <container.image.data-index-service-postgresql>${container.image.data-index-service-postgresql}</container.image.data-index-service-postgresql>
+              <container.image.data-index-service-oracle>${container.image.data-index-service-oracle}</container.image.data-index-service-oracle>
+              <container.image.data-index-service-inmemory>${container.image.data-index-service-inmemory}</container.image.data-index-service-inmemory>
+              <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
+              <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
+              <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
+              <container.image.explainability-service-messaging>${container.image.explainability-service-messaging}</container.image.explainability-service-messaging>
+              <container.image.trusty-service-infinispan>${container.image.trusty-service-infinispan}</container.image.trusty-service-infinispan>
+            </systemPropertyVariables>
+            <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              <container.image.kafka>${container.image.kafka}</container.image.kafka>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-artifact-plugin</artifactId>
+          <configuration>
+            <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+            <!-- Generated images in zip format are not reproducible-->
+            <ignore>image-build.zip</ignore>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

@@ -41,9 +41,6 @@
         <module>data-audit-common</module>
         <module>data-audit-common-service</module>
         <module>kogito-addons-data-audit-jpa</module>
-        <module>kogito-addons-data-audit-quarkus</module>
-        <module>kogito-addons-data-audit-springboot</module>
-        <module>data-audit-quarkus-service</module>
     </modules>
 
 </project>

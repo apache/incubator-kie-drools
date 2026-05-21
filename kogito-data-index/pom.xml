@@ -22,13 +22,13 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-apps-build-parent</artifactId>
     <version>999-SNAPSHOT</version>
     <relativePath>../kogito-apps-build-parent/pom.xml</relativePath>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>data-index</artifactId>
   <packaging>pom</packaging>
@@ -37,14 +37,11 @@
   <modules>
     <module>data-index-storage</module>
     <module>data-index-common</module>
-    <module>data-index-test-utils</module>
     <module>data-index-graphql</module>
     <module>data-index-graphql-addons</module>
-    <module>data-index-service</module>
     <module>data-index-mutations</module>
     <module>data-index-common-addons</module>
-    <module>data-index-quarkus</module>
-    <module>data-index-springboot</module>
+    <module>data-index-test-utils</module>
   </modules>
 
 </project>

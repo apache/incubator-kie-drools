@@ -37,13 +37,18 @@
 
   <properties>
     <sonar.exclusions>**/it/*.java,**/test/resources/*.java,**/testcontainers/*.java</sonar.exclusions>
+    <project.build.outputTimestamp>2026-03-18T00:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
     <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
