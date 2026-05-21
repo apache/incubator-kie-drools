@@ -114,7 +114,12 @@
 
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <!-- This should be used by maven-artifact-plugin >= 3.5.2 to disable the outputTimestamp check during the reproducible build - an issue for incremental build -->
+    <diagnose>false</diagnose>
+    <version.maven.artifact.plugin>3.5.2</version.maven.artifact.plugin>
+    <!-- incremental build -->
+    <!--<gib.referenceBranch>refs/remotes/origin/main</gib.referenceBranch>-->
+    <gib.referenceBranch>refs/remotes/gitgabrio/test_incremental</gib.referenceBranch>
   </properties>
 
   <build>
@@ -130,6 +135,23 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <!-- incremental build -->
+        <groupId>io.github.gitflow-incremental-builder</groupId>
+        <artifactId>gitflow-incremental-builder</artifactId>
+        <version>4.6.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <buildAllIfNoChanges>false</buildAllIfNoChanges>
+          <forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>
+          <logImpactedTo>${pom.build.directory}/incremental_build.log</logImpactedTo>
+          <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
+          <untracked>false</untracked>
+          <!-- ... -->
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <modules>

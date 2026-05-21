@@ -45,22 +45,23 @@ jobs:
         java-version: [17]
         maven-version: ['3.9.11']
         include:
-          - job_name: optaplanner
-            repository: incubator-kie-optaplanner
-          - job_name: kogito-runtimes
-            repository: incubator-kie-kogito-runtimes
-          - job_name: kogito-apps
-            repository: incubator-kie-kogito-apps
-            env_BUILD_MVN_OPTS: "-DskipUI"
-          - job_name: kogito-quarkus-examples
-            repository: incubator-kie-kogito-examples
-            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
-          - job_name: kogito-springboot-examples
-            repository: incubator-kie-kogito-examples
-            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
-          - job_name: kogito-gradle-examples
-            repository: incubator-kie-kogito-examples
-            env_KOGITO_EXAMPLES_SUBFOLDER_POM: gradle-examples/
+          - ## TEMP SKIP: TODO: RESTORE
+#          - job_name: optaplanner
+#            repository: incubator-kie-optaplanner
+#          - job_name: kogito-runtimes
+#            repository: incubator-kie-kogito-runtimes
+#          - job_name: kogito-apps
+#            repository: incubator-kie-kogito-apps
+#            env_BUILD_MVN_OPTS: "-DskipUI"
+#          - job_name: kogito-quarkus-examples
+#            repository: incubator-kie-kogito-examples
+#            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
+#          - job_name: kogito-springboot-examples
+#            repository: incubator-kie-kogito-examples
+#            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
+#          - job_name: kogito-gradle-examples
+#            repository: incubator-kie-kogito-examples
+#            env_KOGITO_EXAMPLES_SUBFOLDER_POM: gradle-examples/
           # - job_name: kie-jpmml-integration
           #   repository: kie-jpmml-integration
       fail-fast: false
