@@ -323,7 +323,7 @@
     <version.tomcat.embed.core>11.0.22</version.tomcat.embed.core>
     <version.versions-maven-plugin>2.10.0</version.versions-maven-plugin>
     <version.wildfly-maven-plugin>1.2.0.Final</version.wildfly-maven-plugin>
-    <version.xerces>2.12.0.SP04</version.xerces>
+    <version.xerces>2.12.2</version.xerces>
     <version.xml-maven-plugin>1.0</version.xml-maven-plugin>
   </properties>
   <dependencyManagement>
