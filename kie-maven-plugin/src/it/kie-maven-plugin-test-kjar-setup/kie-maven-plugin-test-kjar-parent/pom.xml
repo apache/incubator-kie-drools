@@ -40,6 +40,7 @@
     <compiler.plugin.version>3.13.0</compiler.plugin.version>
     <surefire.plugin.version>3.2.5</surefire.plugin.version>
     <failsafe.plugin.version>3.2.5</failsafe.plugin.version>
+    <buildlog.directory>@path.to.buildlog.directory@</buildlog.directory>
   </properties>
 
   <dependencies>

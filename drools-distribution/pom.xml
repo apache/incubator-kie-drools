@@ -47,7 +47,7 @@
           <executions>
             <execution>
               <id>ban-duplicated-classes</id>
-              <phase>validate</phase>
+              <phase>${enforcer.ban-duplicated-classes.phase}</phase>
               <goals>
                 <goal>enforce</goal>
               </goals>

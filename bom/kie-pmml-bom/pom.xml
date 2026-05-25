@@ -579,6 +579,12 @@
         <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
+      <!-- dependencies -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-dependencies</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- EXTERNAL -->
       <dependency>
         <groupId>org.kie</groupId>
