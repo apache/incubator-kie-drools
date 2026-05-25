@@ -25,7 +25,7 @@
   <parent>
     <artifactId>drools-scenario-simulation</artifactId>
     <groupId>org.drools</groupId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -176,30 +176,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-efesto-compilation</artifactId>
-        <version>${project.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-efesto-runtime</artifactId>
-        <version>${project.version}</version>
-        <scope>compile</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <profiles>
     <profile>

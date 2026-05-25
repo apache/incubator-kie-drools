@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
   </parent>
 
   <artifactId>kie-dmn-feel</artifactId>
@@ -38,18 +38,7 @@
     <java.module.name>org.kie.dmn.feel</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
     <enforcer.skip>true</enforcer.skip>
-    <version.net.sf.saxon.Saxon-HE>12.7</version.net.sf.saxon.Saxon-HE>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>net.sf.saxon</groupId>
-        <artifactId>Saxon-HE</artifactId>
-        <version>${version.net.sf.saxon.Saxon-HE}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- Internal dependencies -->

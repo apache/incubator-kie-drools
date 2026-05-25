@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn</artifactId>
-        <version>999-SNAPSHOT</version>
+        <version>999-SNAPSHOT-2026-05-25</version>
     </parent>
 
     <artifactId>kie-dmn-efesto-runtime</artifactId>
@@ -36,26 +36,6 @@
     <properties>
         <java.module.name>org.kie.dmn.efesto.runtime</java.module.name>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-dmn-efesto-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-          <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>efesto-runtime-manager-api</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>efesto-runtime-manager-core</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- DMN -->

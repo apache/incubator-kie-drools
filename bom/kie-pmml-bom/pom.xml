@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-core-bom</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
     <relativePath>../kie-core-bom/pom.xml</relativePath>
   </parent>
 
@@ -578,6 +578,12 @@
         <artifactId>kie-pmml-models-clustering-evaluator</artifactId>
         <version>${project.version}</version>
         <classifier>tests</classifier>
+      </dependency>
+      <!-- dependencies -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-dependencies</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <!-- EXTERNAL -->
       <dependency>

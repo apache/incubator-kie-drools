@@ -23,24 +23,15 @@
     <parent>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn</artifactId>
-        <version>999-SNAPSHOT</version>
+        <version>999-SNAPSHOT-2026-05-25</version>
     </parent>
     <artifactId>kie-dmn-core-jsr223-jq</artifactId>
     <name>KIE :: Decision Model Notation :: JSR-223 JQ ScriptEngine</name>
     <description>An opinionated JSR-223 binding for jq, for use in Drools DMN Engine.</description>
     <properties>
         <java.module.name>org.kie.dmn.core.jsr223.jq</java.module.name>
-        <version.net.thisptr.jackson.jq>1.0.0-preview.20210928</version.net.thisptr.jackson.jq>
     </properties>
-    <dependencyManagement>
-        <dependencies>         
-          <dependency>
-            <groupId>net.thisptr</groupId>
-            <artifactId>jackson-jq</artifactId>
-            <version>${version.net.thisptr.jackson.jq}</version>
-          </dependency>
-        </dependencies>
-    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>net.thisptr</groupId>

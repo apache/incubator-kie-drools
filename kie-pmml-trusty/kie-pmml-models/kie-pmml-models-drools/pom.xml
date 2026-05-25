@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -38,23 +38,6 @@
     <module>kie-pmml-models-drools-tree</module>
     <module>kie-pmml-models-drools-scorecard</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-compilation-common</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-map-input-runtime</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>

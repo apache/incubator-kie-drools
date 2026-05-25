@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-quarkus-integration-test-multimodule</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
   </parent>
 
   <name>Drools :: Quarkus Extension :: Integration Test :: Multi Module :: Main</name>
@@ -35,16 +35,6 @@
   <properties>
     <java.module.name>org.drools.quarkus.integrationtest.multimodule.main</java.module.name>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-quarkus-integration-test-multimodule-dep</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

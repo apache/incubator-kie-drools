@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-build-parent</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -35,16 +35,6 @@
   <name>Drools :: API examples</name>
 
   <packaging>pom</packaging>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kiebase-inclusion</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <modules>
     <module>default-kiesession</module>

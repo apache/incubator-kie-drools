@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-build-parent</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -36,6 +36,7 @@
 
   <properties>
     <java.module.name>org.kie.ci</java.module.name>
+    <path.to.buildlog.directory>${project.basedir}/../${buildlogs.dir}</path.to.buildlog.directory>
   </properties>
 
   <dependencies>
@@ -217,6 +218,7 @@
             <pomInclude>kie-ci-test-jars/pom.xml</pomInclude>
           </pomIncludes>
           <projectsDirectory>${project.basedir}</projectsDirectory>
+          <logDirectory>${path.to.buildlog.directory}</logDirectory>
           <goals>clean install</goals>
           <properties>
             <kie.maven.settings.custom>${project.build.testOutputDirectory}/kie-ci-tests-custom-settings.xml</kie.maven.settings.custom>

@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-persistence</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-2026-05-25</version>
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
@@ -78,16 +78,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

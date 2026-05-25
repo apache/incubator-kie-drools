@@ -26,7 +26,7 @@
     <parent>
       <groupId>org.drools</groupId>
       <artifactId>drools-quarkus-extension</artifactId>
-      <version>999-SNAPSHOT</version>
+      <version>999-SNAPSHOT-2026-05-25</version>
     </parent>
 
   <name>Drools :: Quarkus Extension :: Deployment :: Ruleunits</name>
@@ -35,17 +35,6 @@
   <properties>
     <java.module.name>org.drools.quarkus.ruleunits.deployment</java.module.name>
   </properties>
-
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-map-input-runtime</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
 
