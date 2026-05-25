@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>efesto-compilation-manager</artifactId>
-    <version>999-SNAPSHOT-2026-05-25</version>
+    <version>999-SNAPSHOT</version>
   </parent>
 
   <artifactId>efesto-compilation-manager-core</artifactId>
