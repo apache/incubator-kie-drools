@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
@@ -154,7 +155,7 @@ public class PackageModel {
 
     private final List<MethodDeclaration> functions = new ArrayList<>();
 
-    private final List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
+    private final List<TypeDeclaration> generatedPOJOs = new CopyOnWriteArrayList<>();
     private final List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
     private final Set<Class<?>> domainClasses = new LinkedHashSet<>();

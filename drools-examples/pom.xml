@@ -61,16 +61,6 @@
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.miglayout</groupId>
-        <artifactId>miglayout</artifactId>
-        <version>${version.com.miglayout}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>

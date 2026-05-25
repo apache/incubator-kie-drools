@@ -102,26 +102,6 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>efesto-identifiers-api-application</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-identifiers-api-decisions</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-identifiers-api-predictions</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-identifiers-api-rules</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
         <artifactId>efesto-compilation-manager-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -145,43 +125,6 @@
         <groupId>org.kie</groupId>
         <artifactId>efesto-runtime-manager-core</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <!-- Quarkus Extension -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-quarkus</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-quarkus</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-quarkus</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-quarkus-deployment</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-quarkus-deployment</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-quarkus-deployment</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <!-- ENGINES -->
       <!-- External -->
