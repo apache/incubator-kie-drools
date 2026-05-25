@@ -31,7 +31,7 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>999-SNAPSHOT-2026-05-25</version>
+  <version>999-SNAPSHOT</version>
 
   <name>Drools :: Parent</name>
   <description>
@@ -119,9 +119,10 @@
     <version.maven.artifact.plugin>3.5.2</version.maven.artifact.plugin>
     <!-- incremental build -->
     <!--<gib.referenceBranch>refs/remotes/origin/main</gib.referenceBranch>-->
-<!--    <gib.referenceBranch>refs/remotes/gitgabrio/test_incremental</gib.referenceBranch>-->
+    <!-- This is remote -->
+    <gib.referenceBranch>refs/remotes/gitgabrio/test_incremental</gib.referenceBranch>
     <!-- This is local -->
-    <gib.referenceBranch>refs/heads/test_incremental</gib.referenceBranch>
+<!--    <gib.referenceBranch>refs/heads/test_incremental</gib.referenceBranch>-->
   </properties>
 
   <build>
