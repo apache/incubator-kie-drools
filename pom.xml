@@ -119,7 +119,9 @@
     <version.maven.artifact.plugin>3.5.2</version.maven.artifact.plugin>
     <!-- incremental build -->
     <!--<gib.referenceBranch>refs/remotes/origin/main</gib.referenceBranch>-->
-    <gib.referenceBranch>refs/remotes/gitgabrio/test_incremental</gib.referenceBranch>
+<!--    <gib.referenceBranch>refs/remotes/gitgabrio/test_incremental</gib.referenceBranch>-->
+    <!-- This is local -->
+    <gib.referenceBranch>refs/heads/test_incremental</gib.referenceBranch>
   </properties>
 
   <build>
@@ -145,7 +147,7 @@
         <configuration>
           <buildAllIfNoChanges>false</buildAllIfNoChanges>
           <forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>
-          <logImpactedTo>${pom.build.directory}/incremental_build.log</logImpactedTo>
+          <logImpactedTo>${project.build.directory}/incremental_build.log</logImpactedTo>
           <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
           <untracked>false</untracked>
           <!-- ... -->
