@@ -37,18 +37,8 @@
 
   <properties>
     <java.module.name>org.drools.testcoverage.testsuite</java.module.name>
+    <path.to.buildlog.directory>${project.parent.basedir}/../${buildlogs.dir}</path.to.buildlog.directory>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools.testcoverage</groupId>
-        <artifactId>drools-test-coverage-jars</artifactId>
-        <type>pom</type>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -249,6 +239,7 @@
                 <phase>generate-test-resources</phase>
                 <configuration>
                   <projectsDirectory>${basedir}/../drools-test-coverage-jars</projectsDirectory>
+                  <logDirectory>${path.to.buildlog.directory}</logDirectory>
                   <goals>
                     <goal>clean</goal>
                     <goal>install</goal>

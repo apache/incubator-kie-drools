@@ -37,18 +37,6 @@
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-bom</artifactId>
-        <version>${version.org.infinispan}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.infinispan</groupId>
@@ -91,6 +79,16 @@
                         <ignoreClass>com.github.benmanes.*</ignoreClass>
                         <ignoreClass>com.squareup.protoparser.*</ignoreClass>
                         <ignoreClass>org.infinispan.*</ignoreClass>
+                      </ignoreClasses>
+                    </dependency>
+                    <dependency>
+                      <!-- Upstream packaging duplicates these SPI classes between commons and commons-spi at 15.2.6.Final; bytes are identical. -->
+                      <groupId>org.infinispan</groupId>
+                      <artifactId>infinispan-commons-spi</artifactId>
+                      <type>jar</type>
+                      <ignoreClasses>
+                        <ignoreClass>org.infinispan.commons.spi.OffHeapMemory</ignoreClass>
+                        <ignoreClass>org.infinispan.commons.spi.ThreadCreator</ignoreClass>
                       </ignoreClasses>
                     </dependency>
                   </dependencies>

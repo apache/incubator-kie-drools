@@ -133,8 +133,13 @@
   </build>
 
   <modules>
+    <module>kie-no-dependency-management-enforcer-rule</module>
+    <module>kie-no-external-managed-dependency-enforcer-rule</module>
+    <module>kie-parent</module>
+    <module>kie-parent-drools</module>
     <module>bom</module>
     <module>build-parent</module>
+    <module>kie-quarkus-build-parent</module>
     <module>kie-api</module>
     <module>kie-internal</module>
     <module>kie-util</module>

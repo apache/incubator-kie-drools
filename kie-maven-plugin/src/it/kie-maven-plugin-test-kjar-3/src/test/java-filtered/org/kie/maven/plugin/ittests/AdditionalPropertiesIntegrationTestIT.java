@@ -29,13 +29,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdditionalPropertiesIntegrationTestIT {
 
+    private final String buildLogsDir = "${buildlog.directory}";
     @Test
     public void testAdditionalPropertiesCorrectlySet() throws Exception {
         // additional properties are logged during debug (-X) build
         // following string is created directly inside the KIE Maven plugin execution (the property names and values
         // are logged multiple by maven itself as well, so we should check directly against that string)
         final URL targetLocation = AdditionalPropertiesIntegrationTestIT.class.getProtectionDomain().getCodeSource().getLocation();
-        final File basedir = new File(targetLocation.getFile().replace("/target/test-classes/", ""));
+        final File basedir = new File(buildLogsDir, "kie-maven-plugin-test-kjar-3");
         final File buildLog = new File(basedir, "build.log");
         final String expected = "Additional system properties: {drools.dialect.java.compiler.lnglevel=1.8, my.property=some-value}";
         assertThat(Files.lines(buildLog.toPath(), StandardCharsets.UTF_8)

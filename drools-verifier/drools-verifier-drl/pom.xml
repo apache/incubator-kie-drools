@@ -36,22 +36,8 @@
 
   <properties>
     <java.module.name>org.drools.verifier</java.module.name>
+    <path.to.buildlog.directory>${project.parent.basedir}/../${buildlogs.dir}</path.to.buildlog.directory>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.pdfbox</groupId>
-        <artifactId>pdfbox</artifactId>
-        <version>${version.org.apache.pdfbox}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-verifier-test-jar</artifactId>
-        <version>1.0.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -167,6 +153,7 @@
                 <phase>generate-test-resources</phase>
                 <configuration>
                   <projectsDirectory>${basedir}/../drools-verifier-test-jar</projectsDirectory>
+                  <logDirectory>${path.to.buildlog.directory}</logDirectory>
                   <goals>
                     <goal>clean</goal>
                     <goal>install</goal>
