@@ -147,7 +147,7 @@
         <extensions>true</extensions>
         <configuration>
           <buildAllIfNoChanges>false</buildAllIfNoChanges>
-          <forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>
+          <!--<forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>-->
           <logImpactedTo>${project.build.directory}/incremental_build.log</logImpactedTo>
           <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
           <untracked>false</untracked>
