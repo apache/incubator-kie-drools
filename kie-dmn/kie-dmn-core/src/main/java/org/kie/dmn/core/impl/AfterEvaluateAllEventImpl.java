@@ -55,6 +55,7 @@ public class AfterEvaluateAllEventImpl implements AfterEvaluateAllEvent {
     @Override
     public String toString() {
         logger.warn("toString() not implemented for " + this.getClass().getName() + ", returning a placeholder string instead.");
+        logger.warn("This is useless...");
         return "AfterEvaluateAllEventImpl{ modelNamespace=" + modelNamespace + ", modelName=" + modelName + "}";
     }
 
