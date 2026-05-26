@@ -149,7 +149,7 @@
           <buildAllIfNoChanges>false</buildAllIfNoChanges>
           <!-- This one requires the artifactId -->
           <!--<forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>-->
-          <forceBuildModules>drools-build-parent</forceBuildModules>
+          <forceBuildModules>drools-parent</forceBuildModules>
           <logImpactedTo>${project.build.directory}/incremental_build.log</logImpactedTo>
           <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
           <untracked>false</untracked>
