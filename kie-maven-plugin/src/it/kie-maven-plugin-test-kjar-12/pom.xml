@@ -48,6 +48,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
+      <type>pom</type>
       <version>@org.kie.version@</version>
       <scope>provided</scope>
     </dependency>
