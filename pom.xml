@@ -148,8 +148,8 @@
         <configuration>
           <buildAllIfNoChanges>false</buildAllIfNoChanges>
           <!-- This one requires the artifactId -->
-          <!--<forceBuildModules>drools-verifier-test-jar,drools-verifier-drl</forceBuildModules>-->
-          <forceBuildModules>drools-verifier-test-jar</forceBuildModules>
+          <!-- temporary add enforcer rules because for some reason those are not published on maven central -->
+          <forceBuildModules>kie-no-dependency-management-enforcer-rule,kie-no-external-managed-dependency-enforcer-rule,drools-verifier-test-jar</forceBuildModules>
           <logImpactedTo>${project.build.directory}/incremental_build.log</logImpactedTo>
           <skipTestsForUpstreamModules>true</skipTestsForUpstreamModules>
           <untracked>false</untracked>
