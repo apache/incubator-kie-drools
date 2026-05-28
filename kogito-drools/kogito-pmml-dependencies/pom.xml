@@ -46,6 +46,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
+      <type>pom</type>
       <exclusions>
         <!-- Drools models -->
         <!-- Tree -->
