@@ -3117,22 +3117,7 @@
               </execution>
             </executions>
           </plugin>-->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <source>${maven.compiler.release}</source>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
+       </plugins>
       </build>
     </profile>
     <!--
