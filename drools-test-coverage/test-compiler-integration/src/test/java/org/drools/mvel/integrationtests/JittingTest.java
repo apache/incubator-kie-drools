@@ -491,4 +491,36 @@ public class JittingTest {
         ksession.insert(person);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    void jitStrOperatorWithVariable(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // incubator-kie-drools#6711
+        // The 'str' operator with a variable binding creates an MVELConstraint with
+        // non-empty EvaluatorWrapper[] on a typesafe POJO (isDynamic=false).
+        // With jit threshold 0, the ASM jitter generates bytecode calling
+        // EvaluatorHelper.initOperators with Tuple.class instead of BaseTuple.class.
+
+        String drl =
+                "declare Item\n" +
+                "    name : String\n" +
+                "end\n" +
+                "rule Init when then insert(new Item(\"hello\")); end\n" +
+                "rule R when\n" +
+                "    $prefix : String()\n" +
+                "    Item( name str[startsWith] $prefix )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(
+                kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession ksession = kieBase.newKieSession();
+        try {
+            ksession.insert("hel");
+            assertThat(ksession.fireAllRules()).isEqualTo(2);
+        } finally {
+            ksession.dispose();
+        }
+    }
 }

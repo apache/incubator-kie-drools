@@ -240,7 +240,7 @@ public class ASMConditionEvaluatorJitter {
             mv.visitVarInsn(ALOAD, 1); // InternalFactHandle
             mv.visitVarInsn(ALOAD, 3); // Tuple
             getFieldFromThis("operators", EvaluatorWrapper[].class);
-            invokeStatic(EvaluatorHelper.class, "initOperators", void.class, FactHandle.class, Tuple.class, EvaluatorWrapper[].class);
+            invokeStatic(EvaluatorHelper.class, "initOperators", void.class, FactHandle.class, BaseTuple.class, EvaluatorWrapper[].class);
         }
 
         private void jitCondition(Condition condition) {
