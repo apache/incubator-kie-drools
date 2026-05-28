@@ -39,7 +39,6 @@ import org.drools.ruleunits.api.SingletonStore;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.http.MediaType;
 
 // Jackson 2 Spring configuration — revisit with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration).
 @SpringBootConfiguration
