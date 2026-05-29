@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.examples;
+package org.kie.kogito.codegen.manager.exceptions;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+public class KogitoCodegenException extends RuntimeException {
+    public KogitoCodegenException(String message) {
+        super(message);
+    }
 
-@SpringBootApplication(scanBasePackages = { "org.kie.dmn.kogito.**", "org.kie.kogito.**", "com.company.**" })
-public class KogitoSpringbootApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(KogitoSpringbootApplication.class, args);
+    public KogitoCodegenException(String message, Throwable ex) {
+        super(message, ex);
     }
 }

@@ -24,17 +24,18 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.junit5.InjectMojo;
 import org.apache.maven.plugin.testing.junit5.MojoTest;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.manager.BuilderManager;
 import org.kie.kogito.codegen.manager.CompilerHelper;
 import org.kie.kogito.codegen.manager.GenerateModelHelper;
 import org.kie.kogito.codegen.manager.processes.PersistenceGenerationHelper;
 import org.kie.kogito.codegen.manager.util.CodeGenManagerUtil;
 import org.mockito.MockedStatic;
+import org.mockito.invocation.InvocationOnMock;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @MojoTest
 class GenerateModelMojoTest {
@@ -47,16 +48,18 @@ class GenerateModelMojoTest {
     }
 
     private void commonGenerateModel(GenerateModelMojo mojo) {
-        try (MockedStatic<BuilderManager> builderManagerMockedStatic = mockStatic(BuilderManager.class);
+        try (MockedStatic<BuilderManager> builderManagerMockedStatic = mockStatic(BuilderManager.class, withSettings().defaultAnswer(InvocationOnMock::callRealMethod));
                 MockedStatic<CodeGenManagerUtil> codeGenManagerUtilMockedStatic = mockStatic(CodeGenManagerUtil.class);
                 MockedStatic<GenerateModelHelper> generateModelHelperMockedStatic = mockStatic(GenerateModelHelper.class);
                 MockedStatic<CompilerHelper> compilerHelperMockedStatic = mockStatic(CompilerHelper.class);
                 MockedStatic<PersistenceGenerationHelper> persistenceGenerationHelperMockedStatic = mockStatic(PersistenceGenerationHelper.class)) {
             builderManagerMockedStatic.when(() -> BuilderManager.build(any(BuilderManager.BuildInfo.class))).thenCallRealMethod();
             generateModelHelperMockedStatic.when(() -> GenerateModelHelper.generateModel(any(GenerateModelHelper.GenerateModelInfo.class))).thenCallRealMethod();
+            codeGenManagerUtilMockedStatic.when(() -> CodeGenManagerUtil.discoverKogitoRuntimeContext(any(), any(), any(), any(), any())).thenReturn(JavaKogitoBuildContext.builder().build());
             mojo.execute();
             builderManagerMockedStatic.verify(() -> BuilderManager.build(any(BuilderManager.BuildInfo.class)), times(1));
             codeGenManagerUtilMockedStatic.verify(() -> CodeGenManagerUtil.setSystemProperties(any()), times(1));
+            codeGenManagerUtilMockedStatic.verify(() -> CodeGenManagerUtil.discoverKogitoRuntimeContext(any(), any(), any(), any(), any()), times(1));
             generateModelHelperMockedStatic.verify(() -> GenerateModelHelper.generateModel(any(GenerateModelHelper.GenerateModelInfo.class)), times(1));
             generateModelHelperMockedStatic.verify(() -> GenerateModelHelper.generateModelFiles(any(GenerateModelHelper.GenerateModelFilesInfo.class)), times(1));
             compilerHelperMockedStatic.verify(() -> CompilerHelper.compileAndDump(any(CompilerHelper.CompileInfo.class)), times(2));

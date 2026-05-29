@@ -607,6 +607,12 @@
         <artifactId>spring-boot-starter-web</artifactId>
         <version>${version.org.springframework.boot}</version>
       </dependency>
+      <!-- Jackson 2 Spring configuration — remove together with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration) -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-jackson2</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -632,7 +638,11 @@
       <artifactId>jcl-over-slf4j</artifactId>
       <scope>runtime</scope>
     </dependency>
-
+    <!-- Jackson 2 Spring configuration — remove together with https://github.com/apache/incubator-kie-drools/issues/6702 (Jackson 3 migration) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jackson2</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>

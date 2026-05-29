@@ -16,15 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.examples;
+package org.kie.kogito.codegen.manager.springboot;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.ResourceUtils;
 
-@SpringBootApplication(scanBasePackages = { "org.kie.dmn.kogito.**", "org.kie.kogito.**", "com.company.**" })
-public class KogitoSpringbootApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(KogitoSpringbootApplication.class, args);
-    }
+/**
+ * SpringBootConfiguration to load default configurations for KIE modules.
+ */
+@SpringBootConfiguration
+@PropertySource(ResourceUtils.CLASSPATH_URL_PREFIX + "/kie-spring-boot-config.properties")
+public class SpringBootKieConfiguration {
 }

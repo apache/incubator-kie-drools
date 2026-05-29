@@ -26,9 +26,11 @@ import java.util.Map;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 import org.kie.kogito.codegen.manager.processes.PersistenceGenerationHelper;
+import org.kie.kogito.codegen.manager.springboot.SpringBootKieConfigurationHelper;
 
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
@@ -114,6 +116,22 @@ public class GenerateModelHelper {
 
         /* 6. Compile and persist compiled files in target (maven) or gradle (build) */
         CompilerHelper.compileAndDump(compileInfo);
+
+        if (SpringBootKogitoBuildContext.CONTEXT_NAME.equals(generateModelInfo.kogitoBuildContext().name())) {
+            /* 7. Conditionally add Default KIE Configuration for SpringBoot */
+            Map<String, Collection<GeneratedFile>> generatedSpringBootConfigFiles = SpringBootKieConfigurationHelper.generateKieSpringBootConfiguration(generateModelInfo.kogitoBuildContext);
+
+            compileInfo =
+                    new CompilerHelper.CompileInfo(generatedSpringBootConfigFiles.get(SOURCES),
+                            generatedSpringBootConfigFiles.get(RESOURCES), generateModelInfo);
+
+            /* 8. Persist the Spring Boot KIE configuration code-generated source and resources files in target (maven) or gradle (build) */
+            GeneratedFileManager.dumpGeneratedFiles(generatedSpringBootConfigFiles.get(SOURCES), compileInfo.baseDir().toPath());
+            GeneratedFileManager.dumpGeneratedFiles(generatedSpringBootConfigFiles.get(RESOURCES), compileInfo.baseDir().toPath());
+
+            /* 9. Compile and persist compiled files in target (maven) or gradle (build) */
+            CompilerHelper.compileAndDump(compileInfo);
+        }
 
         if (!generateModelInfo.keepSources()) {
             GeneratedFileManager.deleteFilesByExtension(generateModelInfo.outputDirectory().toPath(), "drl");
