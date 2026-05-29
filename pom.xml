@@ -117,6 +117,7 @@
     <!-- This should be used by maven-artifact-plugin >= 3.5.2 to disable the outputTimestamp check during the reproducible build - an issue for incremental build -->
     <diagnose>false</diagnose>
     <version.maven.artifact.plugin>3.6.1</version.maven.artifact.plugin>
+    <version.maven.remote.resources.plugin>3.3.0</version.maven.remote.resources.plugin>
     <!-- incremental build -->
     <!--<gib.referenceBranch>refs/remotes/origin/main</gib.referenceBranch>-->
     <!-- This is remote -->
@@ -135,6 +136,11 @@
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${version.maven.remote.resources.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
