@@ -18,8 +18,10 @@
  */
 package org.drools.ruleunits.impl.datasources;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -38,19 +40,22 @@ import org.kie.api.runtime.rule.RuleContext;
 public class ListDataStore<T> extends AbstractDataSource<T> implements  Iterable<T>, DataStore<T>, InternalStoreCallback {
 
     private final Map<T, DataHandle> store = new IdentityHashMap<>();
+    private final List<DataHandle> insertionOrder = new ArrayList<>();
 
     protected ListDataStore() {
 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Iterator<T> iterator() {
-        return store.keySet().iterator();
+        return insertionOrder.stream().map(dh -> (T) dh.getObject()).iterator();
     }
 
     public DataHandle add(T t) {
         DataHandle dh = createDataHandle(t);
         store.put(t, dh);
+        insertionOrder.add(dh);
         forEachSubscriber(s -> internalInsert(dh, s));
         return dh;
     }
@@ -89,12 +94,13 @@ public class ListDataStore<T> extends AbstractDataSource<T> implements  Iterable
     public void remove(DataHandle handle) {
         forEachSubscriber(s -> s.delete(handle));
         store.remove(handle.getObject());
+        insertionOrder.remove(handle);
     }
 
     @Override
     public void subscribe(DataProcessor processor) {
         super.subscribe(processor);
-        store.values().forEach(dh -> internalInsert(dh, processor));
+        insertionOrder.forEach(dh -> internalInsert(dh, processor));
     }
 
     @Override
@@ -129,6 +135,7 @@ public class ListDataStore<T> extends AbstractDataSource<T> implements  Iterable
         entryPointSubscribers.forEach(s -> s.delete(dh, rule, terminalNode, fhState));
         subscribers.forEach(s -> s.delete(dh));
         store.remove(fh.getObject());
+        insertionOrder.remove(dh);
     }
 
     private void internalInsert(DataHandle dh, DataProcessor s) {
