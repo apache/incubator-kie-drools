@@ -75,7 +75,8 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
 
         this.buildConstructors( cw,
-                                edef );
+                                edef,
+                                classLoader );
 
         this.buildGettersAndSetters( cw,
                                      edef );
@@ -140,7 +141,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
     }
 
 
-    protected void buildConstructors(ClassWriter cw, EnumClassDefinition classDef) {
+    protected void buildConstructors(ClassWriter cw, EnumClassDefinition classDef, ClassLoader classLoader) {
         MethodVisitor mv;
         final StringBuilder argTypesBuilder = new StringBuilder();
         int size = 0;
@@ -205,8 +206,13 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
                 List<String> args = lit.getConstructorArgs();
                 for ( int k = 0; k < args.size(); k++ ) {
                     String argType = classDef.getField( k ).getTypeName();
+                    String argValue = args.get( k );
 
-                    mv.visitLdcInsn( args.get( k ) );
+                    if ( EnumLiteralEmitter.tryEmit( mv, argValue, argType, classLoader ) ) {
+                        continue;
+                    }
+
+                    mv.visitLdcInsn( argValue );
                     mv.visitMethodInsn( INVOKESTATIC,
                                         "org/mvel2/MVEL",
                                         "eval",
