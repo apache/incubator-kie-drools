@@ -25,15 +25,16 @@ import org.kie.dmn.model.api.Artifact;
 import org.kie.dmn.model.api.BusinessContextElement;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.ElementCollection;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.dmn.model.v1_2.TDecision;
-import org.kie.dmn.model.v1_2.TDecisionService;
-import org.kie.dmn.model.v1_2.TDefinitions;
-import org.kie.dmn.model.v1_2.TImport;
-import org.kie.dmn.model.v1_2.TItemDefinition;
-import org.kie.dmn.model.v1_2.TTextAnnotation;
+import org.kie.dmn.model.v1_6.TDecision;
+import org.kie.dmn.model.v1_6.TDecisionService;
+import org.kie.dmn.model.v1_6.TDefinitions;
+import org.kie.dmn.model.v1_6.TImport;
+import org.kie.dmn.model.v1_6.TItemDefinition;
+import org.kie.dmn.model.v1_6.TTextAnnotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +42,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getImportInitializesListWhenNull() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<Import> imports = definitions.getImport();
         
@@ -51,9 +52,9 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getImportAllowsAddingElements() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
-        TImport import1 = new TImport();
+        Import import1 = new TImport();
         import1.setNamespace("http://example.com/ns1");
         definitions.getImport().add(import1);
         
@@ -63,7 +64,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getItemDefinitionInitializesListWhenNull() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<ItemDefinition> itemDefinitions = definitions.getItemDefinition();
         
@@ -73,9 +74,9 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getItemDefinitionAllowsAddingElements() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
-        TItemDefinition item = new TItemDefinition();
+        ItemDefinition item = new TItemDefinition();
         item.setName("CustomType");
         definitions.getItemDefinition().add(item);
         
@@ -85,7 +86,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getDrgElementInitializesListWhenNull() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<DRGElement> drgElements = definitions.getDrgElement();
         
@@ -95,9 +96,9 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getDrgElementAllowsAddingElements() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
-        TDecision decision = new TDecision();
+        DRGElement decision = new TDecision();
         decision.setName("Decision1");
         definitions.getDrgElement().add(decision);
         
@@ -107,7 +108,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getArtifactInitializesListWhenNull() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<Artifact> artifacts = definitions.getArtifact();
         
@@ -117,7 +118,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getArtifactAllowsAddingElements() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         TTextAnnotation annotation = new TTextAnnotation();
         annotation.setText("Test annotation");
@@ -129,7 +130,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getElementCollectionInitializesListWhenNull() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<ElementCollection> collections = definitions.getElementCollection();
         
@@ -139,7 +140,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getBusinessContextElementInitializesListWhenNull() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<BusinessContextElement> elements = definitions.getBusinessContextElement();
         
@@ -149,7 +150,7 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getDecisionServiceWithNullDrgElement() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
         List<DecisionService> decisionServices = definitions.getDecisionService();
         
@@ -159,14 +160,13 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getDecisionServiceWithDecisionServices() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
-        // Add a DecisionService to drgElement
-        TDecisionService decisionService1 = new TDecisionService();
+        DecisionService decisionService1 = new TDecisionService();
         decisionService1.setName("Service1");
         definitions.getDrgElement().add(decisionService1);
         
-        TDecisionService decisionService2 = new TDecisionService();
+        DecisionService decisionService2 = new TDecisionService();
         decisionService2.setName("Service2");
         definitions.getDrgElement().add(decisionService2);
         
@@ -179,20 +179,18 @@ class AbstractTDefinitionsTest {
 
     @Test
     void getDecisionServiceWithMixedDrgElements() {
-        TDefinitions definitions = new TDefinitions();
+        Definitions definitions = new TDefinitions();
         
-        // Add a DecisionService
-        TDecisionService decisionService = new TDecisionService();
+        DecisionService decisionService = new TDecisionService();
         decisionService.setName("Service1");
         definitions.getDrgElement().add(decisionService);
         
         // Add other DRGElement types (TDecision is not a DecisionService)
-        TDecision decision = new TDecision();
+        DRGElement decision = new TDecision();
         decision.setName("Decision1");
         definitions.getDrgElement().add(decision);
         
-        // Add another DecisionService
-        TDecisionService decisionService2 = new TDecisionService();
+        DecisionService decisionService2 = new TDecisionService();
         decisionService2.setName("Service2");
         definitions.getDrgElement().add(decisionService2);
         
