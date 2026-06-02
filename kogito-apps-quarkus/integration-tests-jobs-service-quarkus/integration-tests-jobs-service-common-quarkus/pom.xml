@@ -84,7 +84,7 @@
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock</artifactId>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
