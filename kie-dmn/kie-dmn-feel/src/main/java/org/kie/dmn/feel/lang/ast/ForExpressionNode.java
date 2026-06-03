@@ -114,8 +114,8 @@ public class ForExpressionNode
             } else if (k < iterationContexts.size() - 1) {
                 populateToReturn(k + 1, ctx, toPopulate);
             }
+            ctx.exitFrame();
         }
-        ctx.exitFrame();
     }
 
     static void setValueIntoContext(EvaluationContext ctx, String name, Object value) {
