@@ -149,6 +149,6 @@ public abstract class AbstractTDefinitions extends AbstractTNamedElement impleme
      */
     @Override
     public List<DecisionService> getDecisionService() {
-        return drgElement.stream().filter(DecisionService.class::isInstance).map(DecisionService.class::cast).collect(Collectors.toList());
+        return getDrgElement().stream().filter(DecisionService.class::isInstance).map(DecisionService.class::cast).collect(Collectors.toList());
     }
 }
