@@ -928,6 +928,7 @@
         <artifactId>netty-transport-udt</artifactId>
         <version>${version.io.netty}</version>
       </dependency>
+      <!-- Version overrides to fix vulnerabilities. -->
       <!-- Quarkus 3.27.3 transitively imports io.opentelemetry:opentelemetry-api:1.44.1 -->
       <!-- CVE: https://github.com/open-telemetry/opentelemetry-java/security/advisories/GHSA-rcgg-9c38-7xpx -->
       <dependency>
