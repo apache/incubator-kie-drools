@@ -928,12 +928,6 @@
         <artifactId>netty-transport-udt</artifactId>
         <version>${version.io.netty}</version>
       </dependency>
-      <!-- Override to fix vulnerability: https://github.com/open-telemetry/opentelemetry-java/security/advisories/GHSA-rcgg-9c38-7xpx -->
-      <dependency>
-        <groupId>io.opentelemetry</groupId>
-        <artifactId>opentelemetry-api</artifactId>
-        <version>${version.io.opentelemetry-api}</version>
-      </dependency>
       <dependency>
         <groupId>io.opentelemetry.proto</groupId>
         <artifactId>opentelemetry-proto</artifactId>
@@ -1101,6 +1095,13 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web-client</artifactId>
         <version>${version.io.vertx}</version>
+      </dependency>
+      <!-- Quarkus 3.27.3 transitively imports io.opentelemetry:opentelemetry-api:1.44.1 -->
+      <!-- CVE: https://github.com/open-telemetry/opentelemetry-java/security/advisories/GHSA-rcgg-9c38-7xpx -->
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-api</artifactId>
+        <version>${version.io.opentelemetry-api}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
       <dependency>
