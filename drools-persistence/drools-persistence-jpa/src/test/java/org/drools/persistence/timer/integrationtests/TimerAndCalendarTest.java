@@ -67,20 +67,23 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironmen
 import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
 
 public class TimerAndCalendarTest {
-    
+
     private Map<String, Object> context;
+    private final org.drools.persistence.DeserializationFilterTestSupport filterSupport = new org.drools.persistence.DeserializationFilterTestSupport();
 
     public static Stream<String> parameters() {
     	return Stream.of(OPTIMISTIC_LOCKING, PESSIMISTIC_LOCKING);
     };
-    
+
     @BeforeEach
     public void before() throws Exception {
+        filterSupport.setUp("org.drools.test.TestEvent");
         context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
     }
 
     @AfterEach
     public void after() throws Exception {
+        filterSupport.tearDown();
         cleanUp(context);
     }
 

@@ -74,25 +74,28 @@ public class JpaPersistentStatefulSessionTest {
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
     private Map<String, Object> context;
     private Environment env;
-    
+    private final org.drools.persistence.DeserializationFilterTestSupport filterSupport = new org.drools.persistence.DeserializationFilterTestSupport();
+
     public static Stream<String> parameters() {
     	return Stream.of(OPTIMISTIC_LOCKING, PESSIMISTIC_LOCKING);
-    };
-    
+    }
+
     @BeforeEach
     public void setUp() throws Exception {
+        filterSupport.setUp("org.drools.mvel.compiler.Person");
         context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
     }
-    
+
     private void setUpLocking(String locking) {
-        if(PESSIMISTIC_LOCKING.equals(locking)) { 
+        if(PESSIMISTIC_LOCKING.equals(locking)) {
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
         }
     }
-        
+
     @AfterEach
     public void tearDown() throws Exception {
+        filterSupport.tearDown();
         DroolsPersistenceUtil.cleanUp(context);
     }
 
@@ -360,6 +363,8 @@ public class JpaPersistentStatefulSessionTest {
     public void testSharedReferences(String locking) {
     	setUpLocking(locking);
         KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ks.newKieBuilder(kfs).buildAll();
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
         KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
 

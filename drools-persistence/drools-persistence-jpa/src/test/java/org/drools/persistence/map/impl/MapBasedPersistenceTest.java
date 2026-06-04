@@ -39,16 +39,23 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
 public class MapBasedPersistenceTest extends MapPersistenceTest{
-    
+
     private SimpleKnowledgeSessionStorage storage;
-    
+    private final org.drools.persistence.DeserializationFilterTestSupport filterSupport = new org.drools.persistence.DeserializationFilterTestSupport();
+
     public static Stream<String> parameters() {
         return Stream.of("not relevant");
     };
 
     @BeforeEach
     public void createStorage(){
+        filterSupport.setUp("org.drools.persistence.map.impl.Buddy");
         storage = new SimpleKnowledgeSessionStorage();
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        filterSupport.tearDown();
     }
     
     @Override

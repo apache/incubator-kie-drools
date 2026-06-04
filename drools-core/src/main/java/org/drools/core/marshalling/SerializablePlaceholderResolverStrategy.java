@@ -24,6 +24,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.util.DeserializationFilterHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
@@ -92,6 +93,9 @@ public class SerializablePlaceholderResolverStrategy
         @SuppressWarnings("unchecked")
         public void read(ObjectInputStream ois) throws IOException,
                                                ClassNotFoundException {
+            if (DeserializationFilterHelper.isDeserializationFilterEnabled()) {
+                ois.setObjectInputFilter(DeserializationFilterHelper.createDeserializationFilter());
+            }
             this.data = (List<Object>) ois.readObject();
         }
 

@@ -88,6 +88,27 @@ import static org.kie.api.runtime.rule.Variable.v;
 
 public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.compiler.integrationtests.BackwardChainingTest$Man;" +
+                "org.drools.compiler.integrationtests.BackwardChainingTest$Woman;" +
+                "org.drools.compiler.integrationtests.BackwardChainingTest$Parent;" +
+                "org.drools.compiler.test.Door;" +
+                "org.drools.compiler.test.Edible;" +
+                "org.drools.compiler.test.Here;" +
+                "org.drools.compiler.test.Location;" +
+                "org.drools.compiler.test.Room;" +
+                "org.drools.compiler.test.TastesYucky;" +
+                "org.drools.testcoverage.common.model.Person;" +
+                "org.drools.testcoverage.common.model.Address");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
+    }
+
     public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }

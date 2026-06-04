@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 
+import org.drools.core.util.DeserializationFilterHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
@@ -72,9 +73,12 @@ public class JavaSerializableResolverStrategy
             is = new ObjectInputStream(bs) {
                 @Override
                 protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException {
-                    return Class.forName(desc.getName(), true, classloader);
+                    return Class.forName(desc.getName(), false, classloader);
                 }
             };
+            if (DeserializationFilterHelper.isDeserializationFilterEnabled()) {
+                is.setObjectInputFilter(DeserializationFilterHelper.createDeserializationFilter());
+            }
             return read(is);
         } catch (Exception e) {
             throw new RuntimeException(e);

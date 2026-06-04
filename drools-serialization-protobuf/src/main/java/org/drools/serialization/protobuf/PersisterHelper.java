@@ -38,6 +38,8 @@ import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.base.common.DroolsObjectInputStream;
 import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.util.DeserializationFilterHelper;
+import org.drools.core.util.KeyStoreConstants;
 import org.drools.base.factmodel.traits.TraitFactory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
@@ -169,7 +171,8 @@ public class PersisterHelper extends MarshallingHelper {
         }
 
         byte[] buff = payload.toByteArray();
-        sign( _header, buff );
+        byte[] headerFieldsBytes = _header.build().toByteArray();
+        sign( _header, buildSignedData( buff, headerFieldsBytes ) );
         _header.setPayload( ByteString.copyFrom( buff ) );
 
         context.write( _header.build().toByteArray() );
@@ -233,13 +236,15 @@ public class PersisterHelper extends MarshallingHelper {
     }
     
     private static ProtobufMessages.Header loadStrategiesCheckSignature( MarshallerReaderContext context, ProtobufMessages.Header _header) throws ClassNotFoundException, IOException {
+        byte[] sessionbuff = _header.getPayload().toByteArray();
+        ProtobufMessages.Header headerFields = _header.toBuilder()
+                .clearSignature()
+                .clearPayload()
+                .build();
+        checkSignature( _header, buildSignedData( sessionbuff, headerFields.toByteArray() ) );
+
         loadStrategiesIndex( context, _header );
 
-        byte[] sessionbuff = _header.getPayload().toByteArray();
-
-        // should we check version as well here?
-        checkSignature( _header, sessionbuff );
-        
         return _header;
     }
 
@@ -284,7 +289,7 @@ public class PersisterHelper extends MarshallingHelper {
                     classLoader = context.getKnowledgeBase().getRootClassLoader();
                 }
                 if ( classLoader instanceof ProjectClassLoader ) {
-                   readRuntimeDefinedClasses( _header, (ProjectClassLoader) classLoader );
+                   readRuntimeDefinedClasses( _header, (ProjectClassLoader) classLoader, context.getKnowledgeBase() );
                 }
                 ctx.read( new DroolsObjectInputStream( _entry.getData().newInput(), classLoader) );
             }
@@ -292,10 +297,22 @@ public class PersisterHelper extends MarshallingHelper {
     }
 
     public static void readRuntimeDefinedClasses( Header _header,
-                                                  ProjectClassLoader pcl ) throws IOException, ClassNotFoundException {
+                                                  ProjectClassLoader pcl,
+                                                  InternalRuleBase kBase ) throws IOException, ClassNotFoundException {
         if ( _header.getRuntimeClassDefinitionsCount() > 0 ) {
+            TraitFactory traitFactory = kBase != null ? RuntimeComponentFactory.get().getTraitFactory(kBase) : null;
+            if ( traitFactory == null ) {
+                throw new RuntimeException( "RuntimeClassDef entries found but no TraitFactory is available. Deserialization aborted." );
+            }
             for ( ProtobufMessages.RuntimeClassDef def : _header.getRuntimeClassDefinitionsList() ) {
                 String resourceName = def.getClassFqName();
+                String className = resourceName.replace('/', '.').replace(".class", "");
+                if ( !DeserializationFilterHelper.isClassAllowed( className ) ) {
+                    throw new RuntimeException( "RuntimeClassDef '" + resourceName
+                            + "' is not in the deserialization allowlist. "
+                            + "If this is a legitimate trait class, add it via -D"
+                            + KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS + "=<pattern>" );
+                }
                 byte[] byteCode = def.getClassDef().toByteArray();
                 if ( ! pcl.getStore().containsKey( resourceName ) ) {
                     pcl.getStore().put(resourceName, byteCode);
@@ -340,6 +357,13 @@ public class PersisterHelper extends MarshallingHelper {
         }
     }
     
+    private static byte[] buildSignedData(byte[] payloadBytes, byte[] headerFieldsBytes) {
+        byte[] result = new byte[payloadBytes.length + headerFieldsBytes.length];
+        System.arraycopy(payloadBytes, 0, result, 0, payloadBytes.length);
+        System.arraycopy(headerFieldsBytes, 0, result, payloadBytes.length, headerFieldsBytes.length);
+        return result;
+    }
+
     public static ExtensionRegistry buildRegistry( MarshallerReaderContext context, ProcessMarshaller processMarshaller ) {
         ExtensionRegistry registry = ExtensionRegistry.newInstance();
         if( processMarshaller != null ) {
