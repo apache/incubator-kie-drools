@@ -50,6 +50,18 @@ public class LogicalInsertionsSerializationTest extends KieSessionTest {
     @TempDir
     public File name;
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.testcoverage.regression.Person;" +
+                "org.drools.testcoverage.regression.Employee");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
+    }
+
     public static Stream<Arguments> parameters() {
         return TestParametersUtil2.getKieBaseAndStatefulKieSessionConfigurations().stream();
     }

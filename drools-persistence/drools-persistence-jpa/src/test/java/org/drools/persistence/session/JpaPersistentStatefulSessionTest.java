@@ -72,6 +72,7 @@ public class JpaPersistentStatefulSessionTest {
 
     private Map<String, Object> context;
     private Environment env;
+    private final org.drools.persistence.DeserializationFilterTestSupport filterSupport = new org.drools.persistence.DeserializationFilterTestSupport();
 
     public static Stream<String> parameters() {
     	return Stream.of(OPTIMISTIC_LOCKING, PESSIMISTIC_LOCKING);
@@ -79,6 +80,7 @@ public class JpaPersistentStatefulSessionTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        filterSupport.setUp("org.drools.mvel.compiler.Person");
         context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
     }
@@ -92,6 +94,7 @@ public class JpaPersistentStatefulSessionTest {
     
     @AfterEach
     public void tearDown() throws Exception {
+        filterSupport.tearDown();
         DroolsPersistenceUtil.cleanUp(context);
     }
 

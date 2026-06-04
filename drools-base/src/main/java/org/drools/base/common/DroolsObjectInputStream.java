@@ -82,7 +82,7 @@ public class DroolsObjectInputStream extends ObjectInputStream
     }
 
     protected Class resolveClass(String className) throws ClassNotFoundException {
-        return ClassUtils.getClassFromName( className, true, this.classLoader );
+        return ClassUtils.getClassFromName( className, false, this.classLoader );
     }
 
     protected Class< ? > resolveClass(ObjectStreamClass desc) throws IOException,

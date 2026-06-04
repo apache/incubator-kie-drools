@@ -46,4 +46,9 @@ public class KeyStoreConstants {
 
     // true if you allow verifying with old sign algorithm "MD5withRSA"
     public static final String PROP_VERIFY_OLD_SIGN = "drools.serialization.verify.old.sign";
+
+    // true (default) to enable ObjectInputFilter on deserialization
+    public static final String PROP_ENABLE_DESER_FILTER = "drools.serialization.enableDeserializationFilter";
+    // semicolon-separated package patterns to allow during deserialization (e.g. "com.mycompany.*;org.example.*")
+    public static final String PROP_ALLOWED_DESER_CLASS_PATTERNS = "drools.serialization.allowedDeserializationClassPatterns";
 }

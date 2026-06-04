@@ -44,6 +44,18 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class UnmarshallingTest {
 
+    private final DeserializationFilterTestSupport filterSupport = new DeserializationFilterTestSupport();
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        filterSupport.setUp("org.drools.serialization.protobuf.UnmarshallingTest$Ben");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        filterSupport.tearDown();
+    }
+
     @Test
     public void testMarshallWithNot() throws Exception {
         String whenBenNotVilgaxRule =

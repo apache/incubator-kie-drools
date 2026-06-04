@@ -93,4 +93,25 @@ public class SerializationHelper {
 
         return readSessionResult;
     }
+
+    public static byte[] serializeStatefulKnowledgeSession(final KieSession ksession) throws Exception {
+        final KieBase kbase = ksession.getKieBase();
+        final ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller(kbase,
+                (ObjectMarshallingStrategy[]) ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+        ksession.getEnvironment().set(EnvironmentName.GLOBALS, ksession.getGlobals());
+
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            marshaller.marshall(bos, ksession, ksession.getSessionClock().getCurrentTime());
+            return bos.toByteArray();
+        }
+    }
+
+    public static StatefulKnowledgeSession deserializeStatefulKnowledgeSession(final byte[] serializedSession,
+                                                                               final KieBase kbase) throws Exception {
+        final ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller(kbase);
+
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(serializedSession)) {
+            return marshaller.unmarshall(bais, null, null);
+        }
+    }
 }

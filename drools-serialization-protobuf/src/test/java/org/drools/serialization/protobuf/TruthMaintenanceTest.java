@@ -57,6 +57,22 @@ import static org.drools.serialization.protobuf.SerializationHelper.getSerialise
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
 
+    private final DeserializationFilterTestSupport filterSupport = new DeserializationFilterTestSupport();
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        filterSupport.setUp("org.drools.mvel.compiler.Address",
+                "org.drools.mvel.compiler.Alarm",
+                "org.drools.mvel.compiler.Cheese",
+                "org.drools.mvel.compiler.Person",
+                "org.drools.mvel.compiler.Sensor");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        filterSupport.tearDown();
+    }
+
     @Test
     public void testLogicalInsertionsDynamicRule() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
