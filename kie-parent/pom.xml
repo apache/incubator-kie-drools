@@ -1105,6 +1105,7 @@
         <artifactId>vertx-web-client</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
+      <!-- Version overrides to fix vulnerabilities - end -->
       <dependency>
         <groupId>it.unimi.dsi</groupId>
         <artifactId>fastutil</artifactId>
