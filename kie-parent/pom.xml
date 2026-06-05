@@ -68,7 +68,6 @@
     <!-- Set to "true" on every project that has no violations. -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <surefire.forkCount>1</surefire.forkCount>
-
     <!--
      CONVENTIONS:
      - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
