@@ -55,7 +55,7 @@ public abstract class AbstractKieTask extends DefaultTask {
     @Internal
     protected String gradleCompilerJavaVersion;
 
-    @Internal
+    @OutputDirectory
     protected Property<File> projectBuildOutputDirectory;
 
     @Internal
