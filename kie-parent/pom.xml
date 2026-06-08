@@ -329,7 +329,6 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- Import Jetty BOM to ensure consistent Jetty 12.0.33 versions -->
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-bom</artifactId>
@@ -1599,7 +1598,7 @@
         <artifactId>ecj</artifactId>
         <version>${version.org.eclipse.jdt}</version>
       </dependency>
-      <!-- Explicit Jetty 12.0.33 dependency management to prevent version conflicts -->
+      <!-- Explicit set to Jetty 12.0.33 version, overriding version transitively imported by wiremock-jetty12 3.12.2  -->
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-http</artifactId>
