@@ -36,7 +36,7 @@
     <allowedPomsList>org.kie.kogito:kogito-spring-boot-bom</allowedPomsList>
     <!-- Aligned with Spring Boot Cloud (spring-cloud-kubernetes-fabric8 5.0.1 declares fabric8 7.4.0) -->
     <version.io.fabric8>7.4.0</version.io.fabric8>
-    <version.io.netty>4.2.13.Final</version.io.netty>
+    <version.io.netty>4.2.15.Final</version.io.netty>
     <version.jakarta.servlet>6.0.0</version.jakarta.servlet>
     <!-- This is needed to override the default version inherited from kie-parent-drools -->
     <version.mongodb-driver-sync>5.6.4</version.mongodb-driver-sync>
