@@ -89,7 +89,12 @@ public class PhreakSubnetworkNotExistsNode {
 
                 TupleImpl leftTuple = node.getStartTuple(rightTuple);
                 // don't use matches here, as it may be null, if the LT was also being removed.
-                rightTuple.getMemory().remove(rightTuple);
+                // memory can likewise be null: the right tuple may have been staged then unstaged in
+                // the same cycle, never actually added to a memory list.
+                TupleList rightMemory = rightTuple.getMemory();
+                if (rightMemory != null) {
+                    rightMemory.remove(rightTuple);
+                }
 
                 TupleList matches = (TupleList) leftTuple.getContextObject();
                 if (matches != null && matches.isEmpty()) { // matches is null, if LT was deleted too
