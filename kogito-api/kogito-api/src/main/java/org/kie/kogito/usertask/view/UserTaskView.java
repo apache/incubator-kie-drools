@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserTaskView {
 
+    public static final String SUMMARY_FORMAT = "short";
+
     private String id;
 
     private String userTaskId;
@@ -51,6 +53,19 @@ public class UserTaskView {
     private Map<String, Object> outputs;
 
     private Map<String, Object> metadata;
+
+    public static UserTaskView summaryOf(UserTaskView task) {
+        UserTaskView summary = new UserTaskView();
+        summary.setId(task.getId());
+        summary.setUserTaskId(task.getUserTaskId());
+        summary.setStatus(task.getStatus());
+        summary.setProcessInfo(task.getProcessInfo());
+        summary.setTaskName(task.getTaskName());
+        summary.setTaskDescription(task.getTaskDescription());
+        summary.setTaskPriority(task.getTaskPriority());
+        summary.setActualOwner(task.getActualOwner());
+        return summary;
+    }
 
     public String getId() {
         return id;

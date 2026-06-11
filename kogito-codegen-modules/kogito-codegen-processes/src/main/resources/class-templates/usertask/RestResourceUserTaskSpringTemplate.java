@@ -23,16 +23,13 @@ import java.util.Map;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.auth.IdentityProviderFactory;
-import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.SignalFactory;
-import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.usertask.UserTaskFilter;
 import org.kie.kogito.usertask.UserTaskService;
 import org.kie.kogito.usertask.impl.json.SimpleDeserializationProblemHandler;
 import org.kie.kogito.usertask.impl.json.SimplePolymorphicTypeValidator;
+import org.kie.kogito.usertask.view.UserTaskInputsView;
+import org.kie.kogito.usertask.view.UserTaskOutputsView;
 import org.kie.kogito.usertask.view.UserTaskTransitionView;
 import org.kie.kogito.usertask.view.UserTaskView;
 import org.springframework.http.HttpStatus;
@@ -51,16 +48,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator.Validity;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,14 +83,38 @@ public class UserTasksResource {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<UserTaskView> list(
-            @RequestParam(value = "user", required = false) String user, 
-            @RequestParam(value = "group", required = false) List<String> groups) {
-        return userTaskService.list(identityProviderFactory.getOrImpersonateIdentity(user, groups));
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
+            @RequestParam(value = "format", required = false) String format,
+            @RequestParam(value = "processId", required = false) String processId,
+            @RequestParam(value = "processInstanceId", required = false) String processInstanceId,
+            @RequestParam(value = "status", required = false) List<String> status,
+            @RequestParam(value = "taskName", required = false) String taskName) {
+
+        UserTaskFilter filter = UserTaskFilter.builder()
+                .processId(processId)
+                .processInstanceId(processInstanceId)
+                .taskName(taskName)
+                .statuses(status)
+                .build();
+
+        List<UserTaskView> tasks = userTaskService.listTasks(
+            identityProviderFactory.getOrImpersonateIdentity(user, groups),
+            filter
+        );
+
+        if (UserTaskView.SUMMARY_FORMAT.equalsIgnoreCase(format)) {
+            return tasks.stream()
+                    .map(UserTaskView::summaryOf)
+                    .toList();
+        }
+
+        return tasks;
     }
 
     @GetMapping(value = "/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public UserTaskView find(
-            @PathVariable("taskId") String taskId, 
+            @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.getUserTaskInstance(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -125,7 +139,7 @@ public class UserTasksResource {
     }
 
     @PutMapping("/{taskId}/outputs")
-    public UserTaskView setOutput(
+    public UserTaskOutputsView setOutput(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
@@ -135,7 +149,7 @@ public class UserTasksResource {
     }
 
     @PutMapping("/{taskId}/inputs")
-    public UserTaskView setInputs(
+    public UserTaskInputsView setInputs(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
@@ -194,7 +208,7 @@ public class UserTasksResource {
         return userTaskService.removeComment(taskId, commentId, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping(value = "/{taskId}/attachments",consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/{taskId}/attachments", consumes = MediaType.ALL_VALUE)
     public Collection<Attachment> getAttachments(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,

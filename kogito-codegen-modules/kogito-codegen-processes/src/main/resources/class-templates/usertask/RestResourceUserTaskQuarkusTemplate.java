@@ -20,6 +20,7 @@ package com.myspace.demo;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Optional;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -41,25 +42,21 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.Consumes;
 
 import org.kie.kogito.auth.IdentityProviderFactory;
+import org.kie.kogito.usertask.UserTaskFilter;
 import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
 import org.kie.kogito.usertask.UserTaskService;
 import org.kie.kogito.usertask.impl.json.SimpleDeserializationProblemHandler;
 import org.kie.kogito.usertask.impl.json.SimplePolymorphicTypeValidator;
+import org.kie.kogito.usertask.view.UserTaskInputsView;
+import org.kie.kogito.usertask.view.UserTaskOutputsView;
 import org.kie.kogito.usertask.view.UserTaskView;
 import org.kie.kogito.usertask.view.UserTaskTransitionView;
 
 import org.kie.kogito.usertask.model.*;
 
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator.Validity;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Path("/usertasks/instance")
@@ -87,8 +84,34 @@ public class UserTasksResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserTaskView> list(@QueryParam("user") String user, @QueryParam("group") List<String> groups) {
-        return userTaskService.list(identityProviderFactory.getOrImpersonateIdentity(user, groups));
+    public List<UserTaskView> list(
+            @QueryParam("user") String user,
+            @QueryParam("group") List<String> groups,
+            @QueryParam("format") String format,
+            @QueryParam("processId") String processId,
+            @QueryParam("processInstanceId") String processInstanceId,
+            @QueryParam("status") List<String> status,
+            @QueryParam("taskName") String taskName) {
+
+        UserTaskFilter filter = UserTaskFilter.builder()
+                .processId(processId)
+                .processInstanceId(processInstanceId)
+                .taskName(taskName)
+                .statuses(status)
+                .build();
+
+        List<UserTaskView> tasks = userTaskService.listTasks(
+            identityProviderFactory.getOrImpersonateIdentity(user, groups),
+            filter
+        );
+
+        if (UserTaskView.SUMMARY_FORMAT.equalsIgnoreCase(format)) {
+            return tasks.stream()
+                    .map(UserTaskView::summaryOf)
+                    .toList();
+        }
+
+        return tasks;
     }
 
     @GET
@@ -123,7 +146,8 @@ public class UserTasksResource {
     @PUT
     @Path("/{taskId}/outputs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public UserTaskView setOutput(
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserTaskOutputsView setOutput(
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
@@ -135,7 +159,8 @@ public class UserTasksResource {
     @PUT
     @Path("/{taskId}/inputs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public UserTaskView setInputs(
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserTaskInputsView setInputs(
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
@@ -272,5 +297,6 @@ public class UserTasksResource {
         return userTaskService.getAttachment(taskId, attachmentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(() -> new UserTaskInstanceNotFoundException("Attachment " + attachmentId + " not found"));
     }
+
 
 }

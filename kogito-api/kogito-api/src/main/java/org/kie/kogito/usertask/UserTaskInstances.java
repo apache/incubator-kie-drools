@@ -32,6 +32,8 @@ public interface UserTaskInstances {
 
     List<UserTaskInstance> findByIdentity(IdentityProvider identityProvider);
 
+    List<UserTaskInstance> findByIdentity(IdentityProvider identityProvider, UserTaskFilter filter);
+
     Optional<UserTaskInstance> findById(String userTaskInstanceId);
 
     boolean exists(String userTaskInstanceId);

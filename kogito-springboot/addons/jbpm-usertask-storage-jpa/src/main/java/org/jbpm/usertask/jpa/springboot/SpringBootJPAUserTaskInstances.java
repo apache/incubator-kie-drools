@@ -26,6 +26,7 @@ import org.jbpm.usertask.jpa.JPAUserTaskInstances;
 import org.jbpm.usertask.jpa.mapper.UserTaskInstanceEntityMapper;
 import org.jbpm.usertask.jpa.repository.UserTaskInstanceRepository;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.usertask.UserTaskFilter;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,11 @@ public class SpringBootJPAUserTaskInstances extends JPAUserTaskInstances {
     @Override
     public List<UserTaskInstance> findByIdentity(IdentityProvider identityProvider) {
         return super.findByIdentity(identityProvider);
+    }
+
+    @Override
+    public List<UserTaskInstance> findByIdentity(IdentityProvider identityProvider, UserTaskFilter filter) {
+        return super.findByIdentity(identityProvider, filter);
     }
 
     @Override

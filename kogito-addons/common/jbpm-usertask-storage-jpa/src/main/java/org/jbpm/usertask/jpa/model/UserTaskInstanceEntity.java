@@ -29,24 +29,29 @@ import java.util.Set;
 import jakarta.persistence.*;
 
 @Entity
-@NamedQuery(name = UserTaskInstanceEntity.GET_INSTANCES_BY_IDENTITY,
-        query = "select userTask from UserTaskInstanceEntity userTask " +
-                "left join userTask.adminGroups adminGroup " +
-                "left join userTask.potentialGroups potentialGroup " +
-                "where :userId member of userTask.adminUsers " +
-                "or adminGroup in (:roles) " +
-                "or userTask.actualOwner = :userId " +
-                "or (userTask.actualOwner is null " + // checking if task is not reserved, we cannot check by status since lifecycle can be customized
-                "and :userId not member of userTask.excludedUsers " +
-                "and (:userId member of userTask.potentialUsers or potentialGroup in (:roles)" +
-                "))")
 @NamedNativeQuery(
         name = UserTaskInstanceEntity.DELETE_BY_ID,
         query = "delete from jbpm_user_tasks where id = :taskId")
 @Table(name = "jbpm_user_tasks")
 public class UserTaskInstanceEntity {
-    public static final String GET_INSTANCES_BY_IDENTITY = "UserTaskInstanceEntity.GetInstanceByIdentity";
     public static final String DELETE_BY_ID = "UserTaskInstanceEntity.DeleteById";
+
+    // Base query for finding instances by identity
+    public static final String BASE_IDENTITY_QUERY =
+            "select userTask from UserTaskInstanceEntity userTask " +
+                    "left join userTask.adminGroups adminGroup " +
+                    "left join userTask.potentialGroups potentialGroup " +
+                    "where (:userId member of userTask.adminUsers " +
+                    "or adminGroup in (:roles) " +
+                    "or userTask.actualOwner = :userId " +
+                    "or (userTask.actualOwner is null " + // checking if task is not reserved, we cannot check by status since lifecycle can be customized
+                    "and :userId not member of userTask.excludedUsers " +
+                    "and (:userId member of userTask.potentialUsers or potentialGroup in (:roles))))";
+
+    public static final String PROCESS_ID_FILTER_CLAUSE = " and userTask.processInfo.processId = :processId";
+    public static final String PROCESS_INSTANCE_ID_FILTER_CLAUSE = " and userTask.processInfo.processInstanceId = :processInstanceId";
+    public static final String TASKNAME_FILTER_CLAUSE = " and userTask.taskName = :taskName";
+    public static final String STATUS_FILTER_CLAUSE = " and userTask.status in (:statusFilter)";
 
     @Id
     private String id;

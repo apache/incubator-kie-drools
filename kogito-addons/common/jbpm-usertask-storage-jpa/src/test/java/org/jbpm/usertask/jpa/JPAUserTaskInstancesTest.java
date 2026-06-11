@@ -131,7 +131,7 @@ public class JPAUserTaskInstancesTest {
     public void testSuccessfulFindByIdentity() {
         List<UserTaskInstanceEntity> result = List.of(TestUtils.createUserTaskInstanceEntity(), TestUtils.createUserTaskInstanceEntity());
 
-        when(userTaskInstanceRepository.findByIdentity(any())).thenReturn(result);
+        when(userTaskInstanceRepository.findByIdentity(any(), any())).thenReturn(result);
 
         List<UserTaskInstance> instances = jpaUserTaskInstances.findByIdentity(IdentityProviders.of("user", "group"));
 
@@ -145,7 +145,7 @@ public class JPAUserTaskInstancesTest {
 
     @Test
     public void testUnSuccessfulFindByIdentity() {
-        when(userTaskInstanceRepository.findByIdentity(any())).thenReturn(List.of());
+        when(userTaskInstanceRepository.findByIdentity(any(), any())).thenReturn(List.of());
 
         List<UserTaskInstance> instances = jpaUserTaskInstances.findByIdentity(IdentityProviders.of("user", "group"));
 

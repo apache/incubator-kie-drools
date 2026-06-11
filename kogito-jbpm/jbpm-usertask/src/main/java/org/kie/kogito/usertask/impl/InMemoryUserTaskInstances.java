@@ -30,8 +30,10 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.usertask.UserTaskFilter;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstances;
+import org.kie.kogito.usertask.model.ProcessInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +100,68 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
             LOG.error("during find by Identity {}", identity.getName(), e);
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public List<UserTaskInstance> findByIdentity(IdentityProvider identity, UserTaskFilter filter) {
+        try {
+            // Start with identity-based filtering
+            List<UserTaskInstance> tasks = findByIdentity(identity);
+
+            // If no filter provided, return all tasks for this identity
+            if (filter == null) {
+                return tasks;
+            }
+
+            // Apply business logic filters
+            List<UserTaskInstance> filteredTasks = new ArrayList<>();
+            for (UserTaskInstance task : tasks) {
+                if (matchesFilter(task, filter)) {
+                    filteredTasks.add(task);
+                }
+            }
+            return filteredTasks;
+        } catch (Exception e) {
+            LOG.error("during find by Identity and Filter {}", identity.getName(), e);
+            return Collections.emptyList();
+        }
+    }
+
+    private boolean matchesFilter(UserTaskInstance task, UserTaskFilter filter) {
+        // Process ID filter (exact match)
+        if (filter.processId() != null) {
+            ProcessInfo info = task.getProcessInfo();
+            if (info == null || !filter.processId().equals(info.getProcessId())) {
+                return false;
+            }
+        }
+
+        // Process Instance ID filter (exact match)
+        if (filter.processInstanceId() != null) {
+            ProcessInfo info = task.getProcessInfo();
+            if (info == null || !filter.processInstanceId().equals(info.getProcessInstanceId())) {
+                return false;
+            }
+        }
+
+        // Status filter (exact match against persisted state name)
+        if (filter.statuses() != null && !filter.statuses().isEmpty()) {
+            boolean statusMatches = filter.statuses().stream()
+                    .anyMatch(status -> status.equals(task.getStatus().getName()));
+            if (!statusMatches) {
+                return false;
+            }
+        }
+
+        // Task name filter (exact match)
+        if (filter.taskName() != null) {
+            String taskName = task.getTaskName();
+            if (taskName == null || !taskName.equals(filter.taskName())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean checkVisibility(UserTaskInstance userTaskInstance, String user, Collection<String> roles) {

@@ -19,15 +19,21 @@
 
 package org.jbpm.usertask.jpa.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.usertask.UserTaskFilter;
 
 import jakarta.persistence.TypedQuery;
 
+import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.BASE_IDENTITY_QUERY;
 import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.DELETE_BY_ID;
-import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.GET_INSTANCES_BY_IDENTITY;
+import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.PROCESS_ID_FILTER_CLAUSE;
+import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.PROCESS_INSTANCE_ID_FILTER_CLAUSE;
+import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.STATUS_FILTER_CLAUSE;
+import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.TASKNAME_FILTER_CLAUSE;
 
 public class UserTaskInstanceRepository extends BaseRepository<UserTaskInstanceEntity, String> {
 
@@ -36,9 +42,68 @@ public class UserTaskInstanceRepository extends BaseRepository<UserTaskInstanceE
     }
 
     public List<UserTaskInstanceEntity> findByIdentity(IdentityProvider identityProvider) {
-        TypedQuery<UserTaskInstanceEntity> query = getEntityManager().createNamedQuery(GET_INSTANCES_BY_IDENTITY, UserTaskInstanceEntity.class);
-        query.setParameter("userId", identityProvider.getName());
-        query.setParameter("roles", identityProvider.getRoles());
+        return findByIdentity(identityProvider, null);
+    }
+
+    public List<UserTaskInstanceEntity> findByIdentity(IdentityProvider identityProvider, UserTaskFilter filter) {
+        String userId = identityProvider.getName();
+        Collection<String> roles = identityProvider.getRoles();
+
+        String jpql = BASE_IDENTITY_QUERY;
+
+        boolean hasProcessIdFilter = filter != null
+                && filter.processId() != null
+                && !filter.processId().isEmpty();
+
+        boolean hasProcessInstanceIdFilter = filter != null
+                && filter.processInstanceId() != null
+                && !filter.processInstanceId().isEmpty();
+
+        boolean hasTaskNameFilter = filter != null
+                && filter.taskName() != null
+                && !filter.taskName().isEmpty();
+
+        boolean hasStatusFilter = filter != null
+                && filter.statuses() != null
+                && !filter.statuses().isEmpty();
+
+        if (hasProcessIdFilter) {
+            jpql = jpql.concat(PROCESS_ID_FILTER_CLAUSE);
+        }
+
+        if (hasProcessInstanceIdFilter) {
+            jpql = jpql.concat(PROCESS_INSTANCE_ID_FILTER_CLAUSE);
+        }
+
+        if (hasTaskNameFilter) {
+            jpql = jpql.concat(TASKNAME_FILTER_CLAUSE);
+        }
+
+        if (hasStatusFilter) {
+            jpql = jpql.concat(STATUS_FILTER_CLAUSE);
+        }
+
+        TypedQuery<UserTaskInstanceEntity> query = getEntityManager()
+                .createQuery(jpql, UserTaskInstanceEntity.class)
+                .setParameter("userId", userId)
+                .setParameter("roles", roles);
+
+        if (hasProcessIdFilter) {
+            query.setParameter("processId", filter.processId());
+        }
+
+        if (hasProcessInstanceIdFilter) {
+            query.setParameter("processInstanceId", filter.processInstanceId());
+        }
+
+        if (hasTaskNameFilter) {
+            query.setParameter("taskName", filter.taskName());
+        }
+
+        if (hasStatusFilter) {
+            query.setParameter("statusFilter", filter.statuses());
+        }
+
         return query.getResultList();
     }
 
