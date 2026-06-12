@@ -612,6 +612,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     private <R> R executeInWorkflowProcessInstance(Function<WorkflowProcessInstanceImpl, R> execution) {
+        // Check if this is a reentrant call before entering the lock
+        boolean isReentrant = processInstanceLockStrategy.isLockedByCurrentThread(id);
+
         return processInstanceLockStrategy.executeOperation(id, () -> {
             WorkflowProcessInstanceImpl workflowProcessInstance = internalLoadProcessInstanceState();
             if (isProcessInstanceConnected()) {
@@ -621,7 +624,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             try {
                 outcome = execution.apply(workflowProcessInstance);
             } catch (Throwable th) {
-                // clean up after non expected error
+                // clean up after non-expected error
                 if (isProcessInstanceConnected()) {
                     getProcessRuntime().getProcessInstanceManager().removeProcessInstance(workflowProcessInstance);
                 }
@@ -636,7 +639,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 syncPersistence(workflowProcessInstance);
                 getProcessRuntime().getProcessInstanceManager().removeProcessInstance(workflowProcessInstance);
             }
-            internalUnloadProcessInstanceState();
+
+            // Only unload state if this is not a reentrant call, this prevents nested calls from unloading the parent's state
+            if (!isReentrant) {
+                internalUnloadProcessInstanceState();
+            }
+
             return outcome;
         });
     }

@@ -84,8 +84,7 @@ public class ProcessInstanceAtomicLockStrategy implements ProcessInstanceLockStr
             return newHolder;
         });
 
-        // at this points this is a safe ask as if we invoked prior to this point the hold it will always return
-        // properly
+        // At this point this is a safe ask as if we invoked prior to this point the hold it will always return properly
         boolean alreadyAcquired = processInstanceLockHolder.isHeldByCurrentThread();
         try {
             if (!alreadyAcquired) {
@@ -114,6 +113,12 @@ public class ProcessInstanceAtomicLockStrategy implements ProcessInstanceLockStr
             });
         }
 
+    }
+
+    @Override
+    public boolean isLockedByCurrentThread(String processInstanceId) {
+        ProcessInstanceLockHolder holder = locks.get(processInstanceId);
+        return holder != null && holder.isHeldByCurrentThread();
     }
 
     public static synchronized ProcessInstanceLockStrategy instance() {

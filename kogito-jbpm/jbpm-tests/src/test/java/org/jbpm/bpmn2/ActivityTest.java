@@ -1804,6 +1804,53 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testRetriggerCallActivityNodeInstance() {
+        final String flow1NodeUniqueId = "_B45422B2-F0D4-40D2-A2BF-72BE1F23EC81";
+
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new DefaultKogitoWorkItemHandler());
+        org.kie.kogito.process.Process<FlowMainModel> main = FlowMainProcess.newProcess(app);
+        org.kie.kogito.process.Process<FlowChild1Model> child1 = FlowChild1Process.newProcess(app);
+        FlowChild2Process.newProcess(app);
+        FlowChild3Process.newProcess(app);
+
+        org.kie.kogito.process.ProcessInstance<FlowMainModel> instance = main.createInstance(main.createModel());
+        instance.start();
+
+        assertThat(child1.instances().stream().count()).isEqualTo(1);
+
+        Collection<KogitoNodeInstance> childNodeInstances = instance.findNodes(kogitoNodeInstance -> kogitoNodeInstance.getNodeDefinitionId().equals(flow1NodeUniqueId));
+
+        assertThat(childNodeInstances).hasSize(1);
+
+        KogitoNodeInstance flow1NodeInstance = childNodeInstances.iterator().next();
+
+        assertThat(flow1NodeInstance)
+                .isNotNull()
+                .hasFieldOrProperty("id")
+                .hasFieldOrPropertyWithValue("isRetrigger", false);
+
+        instance.retriggerNodeInstance(flow1NodeInstance.getId());
+
+        Collection<KogitoNodeInstance> childNodeInstancesAfterRetrigger = instance.findNodes(kogitoNodeInstance -> kogitoNodeInstance.getNodeDefinitionId().equals(flow1NodeUniqueId));
+
+        assertThat(childNodeInstancesAfterRetrigger).hasSize(1);
+
+        KogitoNodeInstance retriggeredFlow1NodeInstance = childNodeInstancesAfterRetrigger
+                .iterator()
+                .next();
+
+        assertThat(retriggeredFlow1NodeInstance)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("isRetrigger", true)
+                .hasFieldOrProperty("id")
+                .extracting("id")
+                .isNotEqualTo(flow1NodeInstance.getId());
+
+        instance.abort();
+    }
+
+    @Test
     public void testAbortChildProcessUponCompletion() {
         Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();

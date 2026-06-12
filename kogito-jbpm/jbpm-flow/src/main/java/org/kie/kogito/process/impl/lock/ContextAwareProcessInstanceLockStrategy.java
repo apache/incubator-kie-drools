@@ -66,4 +66,9 @@ public class ContextAwareProcessInstanceLockStrategy implements ProcessInstanceL
             }
         });
     }
+
+    @Override
+    public boolean isLockedByCurrentThread(String processInstanceId) {
+        return delegate.isLockedByCurrentThread(processInstanceId);
+    }
 }
