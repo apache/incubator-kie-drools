@@ -20,6 +20,7 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the accumulate function configuration.
@@ -31,6 +32,7 @@ public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
     /**
      * The prefix for the property name for accumulate functions
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.accumulate.function.";
 
     public static OptionKey<AccumulateFunctionOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

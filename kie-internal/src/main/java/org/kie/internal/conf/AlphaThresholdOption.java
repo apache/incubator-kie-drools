@@ -20,6 +20,7 @@ package org.kie.internal.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the alpha node hashing threshold configuration.
@@ -31,6 +32,7 @@ public class AlphaThresholdOption implements SingleValueRuleBaseOption {
     /**
      * The property name for the default DIALECT
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.alphaNodeHashingThreshold";
 
     public static OptionKey<AlphaThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

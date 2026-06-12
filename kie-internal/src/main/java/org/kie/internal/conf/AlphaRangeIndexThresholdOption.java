@@ -20,6 +20,7 @@ package org.kie.internal.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the alpha node range index threshold configuration.
@@ -30,6 +31,7 @@ public class AlphaRangeIndexThresholdOption implements SingleValueRuleBaseOption
     /**
      * The property name
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.alphaNodeRangeIndexThreshold";
 
     public static OptionKey<AlphaRangeIndexThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

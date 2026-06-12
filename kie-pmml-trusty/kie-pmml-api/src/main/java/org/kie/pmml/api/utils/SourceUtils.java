@@ -28,20 +28,24 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.api.annotations.KieProperty;
 
 public class SourceUtils {
 
     /**
      * System property to dump generated PMML sources <b>yes</b>
      */
+    @KieProperty
     public static final String DUMP_KIE_PMML_SOURCES = "dumpKiePmmlSources";
     /**
      * System property to override default output directory for generated PMML sources (inside <b>target</b>)
      */
+    @KieProperty
     public static final String DUMP_KIE_PMML_DIRECTORY = "dumpKiePmmlDirectory";
     /**
      * Default output directory for generated PMML sources (<b>target/generated-pmml-sources</b>)
      */
+    @KieProperty
     public static final String DEFAULT_DUMP_KIE_PMML_DIRECTORY = "generated-pmml-sources";
 
     private SourceUtils() {

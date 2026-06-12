@@ -20,6 +20,7 @@ package org.kie.internal.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the max threads configuration.
@@ -31,6 +32,7 @@ public class MaxThreadsOption implements SingleValueRuleBaseOption {
     /**
      * The property name for the max threads
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.maxThreads";
 
     public static OptionKey<MaxThreadsOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

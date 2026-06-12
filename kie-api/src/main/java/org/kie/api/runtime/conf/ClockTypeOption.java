@@ -19,6 +19,7 @@
 package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the session clock configuration.
@@ -33,6 +34,7 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
     /**
      * The property name for the clock type configuration
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.clockType";
 
     public static OptionKey<ClockTypeOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

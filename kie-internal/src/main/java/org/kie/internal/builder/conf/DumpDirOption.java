@@ -21,6 +21,7 @@ package org.kie.internal.builder.conf;
 import java.io.File;
 
 import org.kie.api.conf.OptionKey;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the dump directory configuration. I.e., for the directory
@@ -34,6 +35,7 @@ public class DumpDirOption implements SingleValueKieBuilderOption {
     /**
      * The property name for the drools dump directory configuration
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.dump.dir";
 
     public static OptionKey<DumpDirOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

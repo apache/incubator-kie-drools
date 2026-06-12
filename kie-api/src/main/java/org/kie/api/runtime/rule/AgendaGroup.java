@@ -17,12 +17,15 @@
  * under the License.
  */
 package org.kie.api.runtime.rule;
+import org.kie.api.annotations.KieProperty;
+
 
 public interface AgendaGroup {
 
     /**
      * Static reference to determine the default <code>AgendaGroup</code> name.
      */
+    @KieProperty
     String MAIN = "MAIN";
 
     /**

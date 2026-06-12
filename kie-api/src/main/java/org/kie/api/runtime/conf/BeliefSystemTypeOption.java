@@ -19,6 +19,7 @@
 package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the belief system configuration.
@@ -30,6 +31,7 @@ public class BeliefSystemTypeOption implements SingleValueRuleRuntimeOption {
     /**
      * The property name for the belief system configuration
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.beliefSystem";
 
     public static OptionKey<BeliefSystemTypeOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

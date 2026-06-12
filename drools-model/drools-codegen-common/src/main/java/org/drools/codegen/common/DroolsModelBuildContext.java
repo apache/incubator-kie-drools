@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 
 import org.drools.codegen.common.di.DependencyInjectionAnnotator;
 import org.drools.codegen.common.rest.RestAnnotator;
+import org.kie.api.annotations.KieProperty;
 
 public interface DroolsModelBuildContext {
 
@@ -39,10 +40,12 @@ public interface DroolsModelBuildContext {
      * kogito.generate.rest.(engine_name) -> (boolean) enable/disable engine rest endpoint generation (default true)
      *
      */
+    @KieProperty
     String KOGITO_GENERATE_REST = "kogito.generate.rest";
     /**
      * (boolean) dependency injection is available and enabled (default true)
      */
+    @KieProperty
     String KOGITO_GENERATE_DI = "kogito.generate.di";
 
     Optional<String> getApplicationProperty(String property);
