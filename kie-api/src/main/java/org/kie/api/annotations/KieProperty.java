@@ -22,7 +22,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.kie.api.annotations.KieProperty;
 
 /**
  * Annotation used to mark <code>String</code>s that are used as <b>configurable properties</b> in running applications, e.g. inside <i>application.properties</i> files.
