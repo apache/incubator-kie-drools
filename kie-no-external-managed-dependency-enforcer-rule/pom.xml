@@ -41,6 +41,8 @@
     <version.enforcer.api>3.6.2</version.enforcer.api>
     <version.org.apache.maven>3.9.11</version.org.apache.maven>
     <version.sisu.maven.plugin>1.0.0</version.sisu.maven.plugin>
+    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+    <project.build.outputTimestamp>2026-05-29T00:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>

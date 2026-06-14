@@ -1,0 +1,95 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: 'CI :: CI Tests'
+
+# Snapshot tests for the CI scripts themselves.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-compute-build-scopes:
+    if: github.event.action != 'closed'
+    name: 'CiComputeBuildScopesTest'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Temporary disabled'
+      - run: echo "CI-Test temporarily disabled"
+
+#      - name: "SETUP :: Checkout to load local actions"
+#        uses: actions/checkout@v6
+#
+#      - name: "SETUP :: Checkout @ Simulated squashed-merge if PR, else checkout current commit"
+#        id: checkout_pr
+#        uses: ./.github/actions/checkout-pr
+#        with:
+#          ref: ${{ github.base_ref }}
+#
+#      - uses: actions/setup-java@v5
+#        name: 'SETUP :: Java 21'
+#        with:
+#          java-version: 21
+#          distribution: temurin
+#          cache: maven
+#
+#      # Temporary workaround while jbangdev/setup-jbang action doesn't include checksum verification.
+#      # See https://github.com/apache/infrastructure-actions/pull/806
+#      - name: 'SETUP :: Install JBang'
+#        shell: bash
+#        run: |
+#          curl -sL https://github.com/jbangdev/jbang/releases/download/v0.138.0/jbang-0.138.0.zip -o jbang.zip
+#          echo "3c9fb9ac5823ae5ab9d136dec08b896e2a0f6f6b313689b21f43c511b7c34b85  jbang.zip" | sha256sum -c -
+#          unzip -q jbang.zip
+#          echo "${{ github.workspace }}/jbang-0.138.0/bin" >> $GITHUB_PATH
+#
+#      - name: 'SETUP :: Block apache.snapshots Maven repository'
+#        shell: bash
+#        run: |
+#          mkdir -p "$HOME/.m2"
+#          cat > "$HOME/.m2/settings.xml" <<'EOF'
+#          <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+#                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+#                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+#            <mirrors>
+#              <mirror>
+#                <id>block-apache-snapshots</id>
+#                <mirrorOf>apache.snapshots,apache-snapshot-repository</mirrorOf>
+#                <url>https://repository.apache.org/snapshots/</url>
+#                <blocked>true</blocked>
+#              </mirror>
+#            </mirrors>
+#          </settings>
+#          EOF
+#
+#      - name: 'TEST :: Run CiComputeBuildScopesTest'
+#        shell: bash
+#        run: jbang script/ci/tests/CiComputeBuildScopesTest.java
+#
+#      - name: 'TEST :: Run CiSummaryTest'
+#        shell: bash
+#        run: jbang script/ci/tests/CiSummaryTest.java

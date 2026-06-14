@@ -43,6 +43,8 @@
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.mockito>5.18.0</version.org.mockito>
     <version.sisu.maven.plugin>1.0.0</version.sisu.maven.plugin>
+    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+    <project.build.outputTimestamp>2026-05-29T00:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>

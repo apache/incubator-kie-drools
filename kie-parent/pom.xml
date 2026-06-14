@@ -192,6 +192,7 @@
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.maven.enforcer>3.3.0</version.maven.enforcer>
     <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
+    <version.maven-shade-plugin>3.5.3</version.maven-shade-plugin>
     <!-- Note: following ones are two different plugins -->
     <version.maven.invoker>3.2.0</version.maven.invoker>
     <version.maven-invoker-plugin>3.6.1</version.maven-invoker-plugin>
@@ -2862,6 +2863,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
+          <version>${version.maven-shade-plugin}</version>
         </plugin>
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
              It has no influence on the Maven build itself. -->

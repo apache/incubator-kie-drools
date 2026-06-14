@@ -39,7 +39,8 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+#        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.11']
       fail-fast: false
@@ -47,6 +48,10 @@ jobs:
     name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     env:
       DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
+      MAVEN_OPTS: "-Dfile.encoding=UTF-8"
+      BUILD_MVN_OPTS: '-Dfull -Dreproducible -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3'
+#      MVN_CMD: `bash -c "if [ '${{ env.ENABLE_DEPLOY }}' = 'true' ]; then printf 'deploy ${{ env.DEPLOY_MVN_OPTS }} ${{ env.DROOLS_DEPLOY_MVN_OPTS }}'; else printf 'install'; fi"`
+
     steps:
       - name: Clean Disk Space
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -60,26 +65,81 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Build Chain
-        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
-        env:
-          BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
-          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-        with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
-          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Show git refs
+        run: git show-ref
+
+      - name: Show git config
+        run: echo " "${{ github.event.pull_request.head.repo.name }}
+
+      - name: Show git config
+        run: echo " "${{ github.head_ref }}
+
+      - name: Show git config
+        run: echo " "${{ github.event.pull_request.head.label }}
+
+      - name: Show git config
+        run: echo " "${{ github.event.pull_request.user.login }}
+
+
+## THOSE are hardcoded to verify incremental build - to be removed
+      - name: Add git gitgabrio remote
+        run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
+
+      - name: Fetch gitgabrio
+        run: git fetch gitgabrio test_incremental
+
+## END
+
+      - name: Fetch origin
+        run: git fetch origin main
+
+      - name: Checkout main
+        run: git switch -c main origin/main
+
+      - name: Add remote PR branch
+        run: git remote add current_user_remote https://github.com/${{ github.event.pull_request.user.login }}/${{ github.event.pull_request.head.repo.name }}.git
+
+      - name: Fetch remote PR branch
+        run: git fetch current_user_remote ${{ github.head_ref }}
+
+      - name: Set current user name
+        run: git config user.name "${{ github.event.pull_request.user.login }}"
+
+      - name: Set current user email
+        run: git config user.email "${{ github.event.pull_request.user.email }}"
+
+      - name: Merge PR
+        run: git merge current_user_remote/${{ github.head_ref }}
+
+      - name: Show remotes
+        run: git remote -v
+
+      - name: Show branches
+        run: git branch --all
+
+      - name: Show diff
+        run: git diff main gitgabrio/test_incremental
+
+      - name: Incremental Build Chain
+        #run: mvn clean test verify -Dfull -Dreproducible -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3
+        run: mvn clean install -Dfull -Dreproducible -nsu -ntp -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3
+
       - name: Surefire Report
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
-      - name: Upload Dependency Trees
-        uses: actions/upload-artifact@v7
-        if: ${{ always() }}
-        with:
-          name: dependency-trees-logs_drools_${{ matrix.os }}
-          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
+          ## TEMP DISABLED: TODO RESTORE
+#      - name: Upload Dependency Trees
+#        uses: actions/upload-artifact@v7
+#        if: ${{ always() }}
+#        with:
+#          name: dependency-trees-logs_drools_${{ matrix.os }}
+#          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
       - name: Upload Build logs
         uses: actions/upload-artifact@v7
         if: ${{ always() }}
@@ -93,4 +153,10 @@ jobs:
           name: build-compare_${{ matrix.job_name }}_${{ matrix.os }}
           path: |
             **/*.buildcompare
-            **/*.buildinfo    
+            **/*.buildinfo
+      - name: Upload Incremental Build
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: incremental-build_${{ matrix.job_name }}_${{ matrix.os }}
+          path: '**/incremental_build.log'

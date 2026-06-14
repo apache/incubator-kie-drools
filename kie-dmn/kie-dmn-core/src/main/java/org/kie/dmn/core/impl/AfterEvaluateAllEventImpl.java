@@ -20,8 +20,12 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AfterEvaluateAllEventImpl implements AfterEvaluateAllEvent {
+
+    private static final Logger logger = LoggerFactory.getLogger(AfterEvaluateAllEventImpl.class);
 
     private String modelNamespace;
     private String modelName;
@@ -50,6 +54,7 @@ public class AfterEvaluateAllEventImpl implements AfterEvaluateAllEvent {
 
     @Override
     public String toString() {
+        logger.warn("toString() not implemented for " + this.getClass().getName() + ", returning a placeholder string instead.");
         return "AfterEvaluateAllEventImpl{ modelNamespace=" + modelNamespace + ", modelName=" + modelName + "}";
     }
 
