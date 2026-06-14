@@ -516,6 +516,67 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnumWithMisspelledConstantFailsAtCompileTime(RUN_TYPE runType) {
+        // Diagnostic experience: a typo in a cross-enum reference must fail at
+        // compile time (with KieBuilder error messages), not at runtime via a
+        // mysterious ExceptionInInitializerError on first enum access.
+        String str =
+                "package org.example;\n" +
+                "declare enum Color\n" +
+                "    RED, GREEN, BLUE;\n" +
+                "end\n" +
+                "declare enum Light\n" +
+                "    STOP( Color.RED ),\n" +
+                "    GO(   Color.GRENE );\n" +  // typo
+                "    color: Color\n" +
+                "end\n";
+
+        Results results = createKieBuilder(runType, str).getResults();
+        List<Message> errors = results.getMessages(Message.Level.ERROR);
+        assertThat(errors).as("expected a compile error naming the bad constant").isNotEmpty();
+        assertThat(errors.toString()).contains("GRENE");
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnumWithDeclaredEnumField(RUN_TYPE runType) {
+        String str =
+                "package org.example;\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "declare enum Category\n" +
+                "    TARGET(\"target\"),\n" +
+                "    NON_TARGET(\"non-target\"),\n" +
+                "    NEW_LESION(\"new\");\n" +
+                "\n" +
+                "    code: String\n" +
+                "end\n" +
+                "\n" +
+                "declare enum LesionState\n" +
+                "    TARGET_PRESENT(    org.example.Category.TARGET, \"present\" ),\n" +    // fully-qualified
+                "    NON_TARGET_ABSENT( Category.NON_TARGET,          \"absent\"  ),\n" +   // simple (same package)
+                "    NEW_PRESENT(       Category.NEW_LESION,          \"present\" );\n" +   // simple (same package)
+                "\n" +
+                "    category: org.example.Category\n" +
+                "    nominal: String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"emit\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        insert(new Result(LesionState.TARGET_PRESENT.getCategory().getCode()));\n" +
+                "        insert(new Result(LesionState.NON_TARGET_ABSENT.getCategory() == Category.NON_TARGET));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).extracting(Result::getValue).contains("target", true);
+    }
+
+    @ParameterizedTest
 	@MethodSource("parameters")
     public void testDeclaredSlidingWindowOnEventInTypeDeclaration(RUN_TYPE runType) throws Exception {
         String str =
