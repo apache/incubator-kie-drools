@@ -110,6 +110,8 @@ public class BuildContext implements RuleBuildContext {
     private boolean                          terminated;
 
     private String                           consequenceName;
+    
+    private BiLinearDetector.BiLinearContext biLinearContext;
 
     private final Collection<InternalWorkingMemory> workingMemories;
 
@@ -448,6 +450,14 @@ public class BuildContext implements RuleBuildContext {
 
     public void setSubRuleIndex(int subRuleIndex) {
         this.subRuleIndex = subRuleIndex;
+    }
+
+    public void setBiLinearContext(BiLinearDetector.BiLinearContext biLinearContext) {
+        this.biLinearContext = biLinearContext;
+    }
+
+    public BiLinearDetector.BiLinearContext getBiLinearContext() {
+        return biLinearContext;
     }
 
 }

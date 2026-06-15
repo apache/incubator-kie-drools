@@ -76,6 +76,8 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
 
     private BitMask positiveWatchMask;
     private BitMask negativeWatchMask;
+    private String tailHash;
+    private String currentHash;
 
     public Pattern() {
         this(0, null);
@@ -134,6 +136,8 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         passive = in.readBoolean();
         hasNegativeConstraint = in.readBoolean();
         xPath = (XpathConstraint) in.readObject();
+        tailHash = (String) in.readObject();
+        currentHash = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -151,6 +155,8 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         out.writeBoolean( passive );
         out.writeBoolean(hasNegativeConstraint);
         out.writeObject(xPath);
+        out.writeObject(tailHash);
+        out.writeObject(currentHash);
     }
     
     public void setClassObjectType(ClassObjectType objectType) {
@@ -174,6 +180,8 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
                                            identifier,
                                            this.declaration != null && this.declaration.isInternalFact());
         clone.listenedProperties = listenedProperties;
+        clone.tailHash = this.tailHash;
+        clone.currentHash = this.currentHash;
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
             if ( source instanceof From ) {
@@ -563,5 +571,21 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
 
     private static boolean isIterable(Class<?> clazz) {
         return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
+    }
+
+    public void setTailHash(String tailHash) {
+        this.tailHash = tailHash;
+    }
+
+    public String getTailHash() {
+        return tailHash;
+    }
+
+    public void setCurrentHash(String currentHash) {
+        this.currentHash = currentHash;
+    }
+
+    public String getCurrentHash() {
+        return currentHash;
     }
 }

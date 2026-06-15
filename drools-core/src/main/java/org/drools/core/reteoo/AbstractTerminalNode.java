@@ -96,7 +96,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         initDeclaredMask(context);
         initInferredMask();
 
-        Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
+        Map<String, Declaration> decls = getDeclarationsForInit();
         this.allDeclarations = decls.values().toArray( new Declaration[decls.size()] );
         initDeclarations(decls, context);
 
@@ -105,6 +105,10 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             current = current.getLeftTupleSource();
         }
         startTupleSource = current;
+    }
+
+    protected Map<String, Declaration> getDeclarationsForInit() {
+        return this.subrule.getOuterDeclarations();
     }
 
     abstract void initDeclarations(Map<String, Declaration> decls, BuildContext context);
