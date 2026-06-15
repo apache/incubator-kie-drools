@@ -22,9 +22,9 @@ import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.Tag;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@Tag("TurtleTests")
 public class ConstraintConcurrencyTest extends BaseConcurrencyTest {
 	
     public static Stream<KieBaseTestConfiguration> parameters() {
