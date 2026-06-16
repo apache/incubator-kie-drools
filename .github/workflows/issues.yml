@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Send a stream message
-      uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5
+      uses: zulip/github-actions-zulip/send-message@bd8ec52de371d139ae8313661b7d8318c19266aa
       env:
         CONTENT: "I have detected a new issue on ${{ github.event.repo.name }}.\nLink: ${{ github.event.issue.html_url }}\nThis is an automatically relayed message. Don't reply to me directly.\n-- Issue description:\n${{ github.event.issue.body }}"
       with:
