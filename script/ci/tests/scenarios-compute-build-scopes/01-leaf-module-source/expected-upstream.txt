@@ -24,6 +24,10 @@ org.kie:kie-dmn-bom
 org.kie:kie-efesto-bom
 org.kie:kie-internal
 org.kie:kie-memory-compiler
+org.kie:kie-no-dependency-management-enforcer-rule
+org.kie:kie-no-external-managed-dependency-enforcer-rule
+org.kie:kie-parent
+org.kie:kie-parent-drools
 org.kie:kie-pmml-bom
 org.kie:kie-test-util
 org.kie:kie-util

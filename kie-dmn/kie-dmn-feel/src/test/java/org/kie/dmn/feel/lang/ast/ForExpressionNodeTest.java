@@ -20,6 +20,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -27,6 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.ExecutionFrame;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
@@ -80,5 +85,70 @@ class ForExpressionNodeTest {
         Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
         assertThat(retrieved).isInstanceOf(List.class).asList().containsExactly(LocalDate.of(1980, 1, 1),
                 LocalDate.of(1980, 1, 2), LocalDate.of(1980, 1, 3));
+    }
+
+    @Test
+    void populateToReturnFromRange() {
+        String iterationName = "x";
+        IterationContextNode iterationContextNode = getIterationContextNode(iterationName, getLocalDateRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), iterationName + " in [1980-01-01 .. 1980-01-03]");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(iterationContextNode), getNameRefNode(BuiltInType.DATE, iterationName), "for " + iterationName + " in [1980-01-01 .. 1980-01-03] return " + iterationName);
+        List<Object> toPopulate = new ArrayList<>();
+        EvaluationContextImpl ctx = (EvaluationContextImpl) EvaluationContextTestUtil.newEmptyEvaluationContext();
+        ExecutionFrame peeked = ctx.peek();
+        forExpressionNode.populateToReturn(0, ctx, toPopulate);
+        assertThat(toPopulate).containsExactly(LocalDate.of(1980, 1, 1),
+                                               LocalDate.of(1980, 1, 2),
+                                               LocalDate.of(1980, 1, 3));
+        assertThat(ctx.getAllValues()).doesNotContainKeys(iterationName);
+        assertThat(ctx.peek()).isEqualTo(peeked);
+    }
+
+    @Test
+    void populateToReturnFromArray() {
+        String iterationName = "x";
+        IterationContextNode iterationContextNode = getIterationContextNode("x", getListNode("[ 1, 2, 3, 4 ]", Arrays.asList("1", "2", "3", "4")), "x in [ 1, 2, 3, 4 ]");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(iterationContextNode), getNameRefNode(BuiltInType.UNKNOWN, iterationName), "for " + iterationName + " in [ 1, 2, 3, 4 ] return " + iterationName);
+        List<Object> toPopulate = new ArrayList<>();
+        EvaluationContextImpl ctx = (EvaluationContextImpl) EvaluationContextTestUtil.newEmptyEvaluationContext();
+        ExecutionFrame peeked = ctx.peek();
+        forExpressionNode.populateToReturn(0, ctx, toPopulate);
+        assertThat(toPopulate).containsExactly(BigDecimal.ONE,
+                                               BigDecimal.valueOf(2),
+                                               BigDecimal.valueOf(3),
+                                               BigDecimal.valueOf(4));
+        assertThat(ctx.getAllValues()).doesNotContainKeys(iterationName);
+        assertThat(ctx.peek()).isEqualTo(peeked);
+    }
+
+    @Test
+    void populateToReturnOutsideBoundaries() {
+        IterationContextNode x = getIterationContextNode("x", getLocalDateRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1980-01-01 .. 1980-01-03]");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(x), getNameRefNode(BuiltInType.DATE, "x"), "for x in [1980-01-01 .. 1980-01-03] return x");
+        List<Object> toPopulate = new ArrayList<>();
+        EvaluationContext ctx = EvaluationContextTestUtil.newEmptyEvaluationContext();
+        forExpressionNode.populateToReturn(1, ctx, toPopulate);
+        assertThat(toPopulate).isEmpty();
+    }
+
+    @Test
+    void createForIterationFromRange() {
+        String iterationName = "x";
+        IterationContextNode iterationContextNode = getIterationContextNode(iterationName, getLocalDateRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1980-01-01 .. 1980-01-03]");
+        ForIteration retrieved = ForExpressionNode.createForIteration(EvaluationContextTestUtil.newEmptyEvaluationContext(), iterationContextNode);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(iterationName);
+        assertThat(retrieved.hasNextValue()).isTrue();
+        assertThat(retrieved.getNextValue()).isEqualTo(LocalDate.of(1980, 1, 1));
+    }
+
+    @Test
+    void createForIterationFromArray() {
+        String iterationName = "x";
+        IterationContextNode iterationContextNode = getIterationContextNode("x", getListNode("[ 1, 2, 3, 4 ]", Arrays.asList("1", "2", "3", "4")), "x in [ 1, 2, 3, 4 ]");
+        ForIteration retrieved = ForExpressionNode.createForIteration(EvaluationContextTestUtil.newEmptyEvaluationContext(), iterationContextNode);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(iterationName);
+        assertThat(retrieved.hasNextValue()).isTrue();
+        assertThat(retrieved.getNextValue()).isEqualTo(BigDecimal.ONE);
     }
 }
