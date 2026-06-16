@@ -16,7 +16,7 @@
 # under the License.
 
 github:
-  description: Kogito Runtimes is a cloud-native business automation technology for building cloud-ready business applications 
+  description: Kogito Runtimes is a cloud-native business automation technology for building cloud-ready business applications
   homepage: https://kie.apache.org
   labels:
     - apache
@@ -35,3 +35,16 @@ github:
     - pmml
   features:
     issues: true
+  rulesets:
+    - name: "Default Branch Protection"
+      type: branch
+      branches:
+        includes:
+          - "~DEFAULT_BRANCH"
+          - "release/*"
+          - "rel/*"
+        excludes: []
+      bypass_teams:
+        - root
+      restrict_deletion: true
+      restrict_force_push: true
