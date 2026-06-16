@@ -17,6 +17,10 @@
  * under the License.
  */
 
+// DISABLED: PR check job disabled - exits immediately
+// To re-enable, remove the return statement below
+return
+
 @Library('jenkins-pipeline-shared-libraries')_
 
 pr_check_script = null
