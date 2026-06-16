@@ -221,7 +221,8 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
 }
 
 // PR checks
-Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile")
+// DISABLED: PR check job has been disabled
+// Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile")
 
 // Init branch
 createSetupBranchJob()

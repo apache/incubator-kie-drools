@@ -17,10 +17,6 @@
  * under the License.
  */
 
-// DISABLED: Jenkins PR check job
-// This job has been disabled. Uncomment the code below to re-enable it.
-
-/*
 @Library('jenkins-pipeline-shared-libraries')_
 
 pr_check_script = null
@@ -71,4 +67,3 @@ pipeline {
         }
     }
 }
-*/
