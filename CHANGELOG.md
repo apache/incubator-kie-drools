@@ -26,17 +26,25 @@ All notable changes to the Apache KIE Drools project will be documented in this 
 ### Added
 - YAML property retrieval support (PR #6662)
 
-### Fixed
-- PseudoClockScheduler may retain 1000 canceled jobs at most (PR #6660)
-
 ### Changed
+- Upgraded Quarkus to 3.27.4 (PR #6747)
+- Upgraded Netty to 4.1.135 (PR #6755)
+- Upgraded Netty to 4.1.133.Final (PR #6747)
+- Upgraded Vert.x to 4.5.27 (PR #6747)
+- Upgraded Jetty to 12.0.33 (PR #6748)
+- Upgraded Wiremock to 3.13.2 (PR #6741)
+- Upgraded logback-core to 1.5.34 (PR #6743)
 - Upgraded Quarkus to 3.27.3 (PR #6673)
 - Upgraded kafka-clients to 4.1.2 (PR #6671)
+- Provide correct Jackson 2 integration for all Spring Boot based KIE modules (PR #6735)
 
 ### Removed
 - YaRD and Serverless Workflow support (PR #6663)
 
 ### Security
+- Fixed CVE-2024-6763, CVE-2025-11143, CVE-2026-2332, CVE-2025-5115: Upgraded Jetty to 12.0.33 (PR #6748)
+- Fixed CVE-2026-45292: Upgraded opentelemetry-api to 1.44.1 (PR #6744)
+- Fixed CVEs: Upgraded logback-core to 1.5.34 (PR #6743)
 - Fixed CVE-2026-33870, CVE-2026-33871: Upgraded netty-codec-http to 4.1.131.Final (PR #6673)
 - Fixed CVE-2025-67030: Upgraded plexus-utils to 3.6.1 (PR #6670)
 - Fixed CVE-2025-67721: Upgraded Jackson core to 2.21.1 (PR #6672)
@@ -44,6 +52,13 @@ All notable changes to the Apache KIE Drools project will be documented in this 
 - Fixed CVE-2022-41853: Upgraded HSQLDB to 2.7.1 (PR #6563)
 
 ### Fixed
+- Guard subnetwork-not right-delete against null memory (PR #6756)
+- Fix broken behavior involving ForIterationNode (PR #6746)
+- Fix CiComputeBuildScopesTest.java (PR #6745)
+- Fix getDecisionService method NPE (PR #6740)
+- Fix NPE in RuleExecutor.removeDormantTuple (PR #6707)
+- Preserve insertion order in ListDataStore (PR #6734)
+- PseudoClockScheduler may retain 1000 canceled jobs at most (PR #6660)
 - Flaky PersistenceTest by disabling parallel execution (PR #6675)
 
 ## [10.2.0] - 2026-03-28
