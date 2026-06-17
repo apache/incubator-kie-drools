@@ -373,7 +373,7 @@ public interface KieServices extends KieService {
          * The INSTANCE is not initialized until the LazyHolder class is referenced.
          */
         private static class LazyHolder {
-            private static KieServices INSTANCE = KieService.load(KieServices.class);
+            private static final KieServices INSTANCE = KieService.load(KieServices.class);
         }
 
         /**
