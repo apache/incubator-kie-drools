@@ -148,6 +148,14 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setEventUser(event.getData().getEventUser());
 
         log.setWorkItemId(event.getData().getWorkItemId());
+
+        if (event.getData().getInputParameters() != null) {
+            log.setInputArgs(toJsonString(event.getData().getInputParameters()));
+        }
+        if (event.getData().getOutputParameters() != null) {
+            log.setOutputArgs(toJsonString(event.getData().getOutputParameters()));
+        }
+
         EntityManager entityManager = context.getContext();
         entityManager.persist(log);
     }

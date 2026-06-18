@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito;
+package com.example;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
 
-@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**", "org.acme.travels.**", "com.example.**" })
-public class KogitoApplication {
+@Component
+public class GreetingService {
 
-    public static void main(String[] args) {
-        SpringApplication.run(KogitoApplication.class, args);
+    public String greet(String name) {
+        return "Hello " + name;
     }
 }

@@ -16,15 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito;
+package org.kie.kogito.index.inmemory;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.kie.kogito.index.AbstractRecordInputOutputIT;
+import org.kie.kogito.index.quarkus.InMemoryTestProfile;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
-@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**", "org.acme.travels.**", "com.example.**" })
-public class KogitoApplication {
+import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.quarkus.test.junit.TestProfile;
 
-    public static void main(String[] args) {
-        SpringApplication.run(KogitoApplication.class, args);
+import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
+
+@QuarkusIntegrationTest
+@TestProfile(InMemoryTestProfile.class)
+public class RecordInputOutputIT extends AbstractRecordInputOutputIT {
+
+    @QuarkusTestProperty(name = KOGITO_DATA_INDEX_SERVICE_URL)
+    String dataIndex;
+
+    @Override
+    public String getDataIndexURL() {
+        return dataIndex;
     }
+
 }

@@ -89,6 +89,12 @@ public class ProcessInstanceNodeLog extends AbstractProcessInstanceLog {
     @Column(name = "event_data")
     private String eventData;
 
+    @Column(name = "input_args")
+    private String inputArgs;
+
+    @Column(name = "output_args")
+    private String outputArgs;
+
     public long getId() {
         return id;
     }
@@ -167,6 +173,22 @@ public class ProcessInstanceNodeLog extends AbstractProcessInstanceLog {
 
     public void setEventData(String eventData) {
         this.eventData = eventData;
+    }
+
+    public String getInputArgs() {
+        return inputArgs;
+    }
+
+    public void setInputArgs(String inputArgs) {
+        this.inputArgs = inputArgs;
+    }
+
+    public String getOutputArgs() {
+        return outputArgs;
+    }
+
+    public void setOutputArgs(String outputArgs) {
+        this.outputArgs = outputArgs;
     }
 
 }

@@ -482,7 +482,9 @@
                log.work_item_id,
                log.sla_due_date,
                log.event_data,
-               log.event_user as eventUser
+               log.event_user as eventUser,
+               log.input_args,
+               log.output_args
           FROM Process_Instance_Node_Log log
      LEFT JOIN Process_Instance_Node_Log log_newer ON log.event_date &lt; log_newer.event_date AND log.process_instance_id = log_newer.process_instance_id AND log.node_instance_id = log_newer.node_instance_id 
          WHERE log_newer.event_id IS NULL AND log.process_instance_id = :processInstanceId

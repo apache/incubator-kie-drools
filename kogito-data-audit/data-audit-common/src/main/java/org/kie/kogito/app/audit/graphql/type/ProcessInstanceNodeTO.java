@@ -61,10 +61,15 @@ public class ProcessInstanceNodeTO {
 
     private String eventUser;
 
+    private Object inputArgs;
+
+    private Object outputArgs;
+
     public ProcessInstanceNodeTO(String eventId, Date eventDate, String processType, String processId,
             String processVersion, String parentProcessInstanceId, String rootProcessId, String rootProcessInstanceId, String processInstanceId,
             String businessKey, String eventType, String nodeType,
-            String nodeName, String nodeInstanceId, String connection, String workItemId, Date slaDueDate, String eventData, String eventUser) {
+            String nodeName, String nodeInstanceId, String connection, String workItemId, Date slaDueDate, String eventData, String eventUser,
+            String inputArgs, String outputArgs) {
         this.eventId = eventId;
         this.eventDate = OffsetDateTime.ofInstant(eventDate.toInstant(), ZoneId.of("UTC"));
         this.processType = processType;
@@ -86,6 +91,8 @@ public class ProcessInstanceNodeTO {
         }
         this.eventData = JsonUtil.toJsonNode(eventData);
         this.eventUser = eventUser;
+        this.inputArgs = JsonUtil.toJsonNode(inputArgs);
+        this.outputArgs = JsonUtil.toJsonNode(outputArgs);
     }
 
     public String getEventId() {
@@ -238,5 +245,21 @@ public class ProcessInstanceNodeTO {
 
     public void setEventUser(String eventUser) {
         this.eventUser = eventUser;
+    }
+
+    public Object getInputArgs() {
+        return inputArgs;
+    }
+
+    public void setInputArgs(Object inputArgs) {
+        this.inputArgs = inputArgs;
+    }
+
+    public Object getOutputArgs() {
+        return outputArgs;
+    }
+
+    public void setOutputArgs(Object outputArgs) {
+        this.outputArgs = outputArgs;
     }
 }

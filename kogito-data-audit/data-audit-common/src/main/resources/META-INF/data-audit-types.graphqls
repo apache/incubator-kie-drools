@@ -60,6 +60,8 @@ type ProcessInstanceNodeLog {
     workItemId : String
     slaDueDate : DateTime
     eventData : JSON
+    inputArgs : JSON
+    outputArgs : JSON
 }
 
 type ProcessInstanceErrorLog {

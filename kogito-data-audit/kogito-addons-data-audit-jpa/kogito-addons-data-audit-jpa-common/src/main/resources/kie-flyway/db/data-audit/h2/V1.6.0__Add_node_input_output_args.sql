@@ -16,15 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**", "org.acme.travels.**", "com.example.**" })
-public class KogitoApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(KogitoApplication.class, args);
-    }
-}
+-- Add input_args and output_args columns to Process_Instance_Node_Log table
+ALTER TABLE Process_Instance_Node_Log ADD COLUMN input_args VARCHAR(MAX);
+ALTER TABLE Process_Instance_Node_Log ADD COLUMN output_args VARCHAR(MAX);
