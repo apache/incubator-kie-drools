@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - Licensed to the Apache Software Foundation (ASF) under one
+  - or more contributor license agreements.  See the NOTICE file
+  - distributed with this work for additional information
+  - regarding copyright ownership.  The ASF licenses this file
+  - to you under the Apache License, Version 2.0 (the
+  - "License"); you may not use this file except in compliance
+  - with the License.  You may obtain a copy of the License at
+  -
+  -   http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing,
+  - software distributed under the License is distributed on an
+  - "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  - KIND, either express or implied.  See the License for the
+  - specific language governing permissions and limitations
+  - under the License.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.3.1 r9886"
+   width="52"
+   height="38"
+   sodipodi:docname="queenImage.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="queenImage.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   version="1.1">
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>www.optaplanner.org</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:title />
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>www.optaplanner.org</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:language>en</dc:language>
+        <cc:license
+            rdf:resource="https://www.optaplanner.org/code/license.html" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     inkscape:window-height="938"
+     inkscape:window-width="1280"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="6.1322314"
+     inkscape:cx="56.302911"
+     inkscape:cy="34.604852"
+     inkscape:window-x="49"
+     inkscape:window-y="29"
+     inkscape:current-layer="svg2"
+     inkscape:grid-points="true"
+     inkscape:object-nodes="true"
+     inkscape:guide-points="true"
+     inkscape:object-points="true"
+     inkscape:object-bbox="true"
+     showgrid="true"
+     inkscape:window-maximized="0" />
+  <path
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.99999982;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     d="m 25.096776,31.982717 -9.32874,-24.9826996 -0.50997,25.4801996 4.78658,1.0843 5.05213,-1.5818 z"
+     id="path2404"
+     sodipodi:nodetypes="ccccc"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.99999982;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     d="m 27.064516,31.982717 9.32873,-24.9826996 0.50998,25.4801996 -4.78658,1.0843 -5.05213,-1.5818 z"
+     id="path2406"
+     sodipodi:nodetypes="ccccc"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.99999982;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     d="m 19.193546,31.948317 -13.7741901,-21.9967 3.6282,22.5051 4.9360801,1.1078 5.20991,-1.6162 z"
+     id="path2408"
+     sodipodi:nodetypes="ccccc"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.99999982;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     d="m 32.967736,31.948317 13.7742,-21.9967 -3.62821,22.5051 -4.93607,1.1078 -5.20992,-1.6162 z"
+     id="path2410"
+     sodipodi:nodetypes="ccccc"
+     inkscape:connector-curvature="0" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.87867785;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path2412"
+     sodipodi:cx="31.698114"
+     sodipodi:cy="874.30286"
+     sodipodi:rx="6.1455526"
+     sodipodi:ry="8.8948793"
+     d="m 37.843667,874.30286 a 6.1455526,8.8948793 0 1 1 -12.291105,0 6.1455526,8.8948793 0 1 1 12.291105,0 z"
+     transform="matrix(0.6403792,0,0,0.4424438,-5.0407491,-380.81376)" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.87867785;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path2414"
+     sodipodi:cx="31.698114"
+     sodipodi:cy="874.30286"
+     sodipodi:rx="6.1455526"
+     sodipodi:ry="8.8948793"
+     d="m 37.843667,874.30286 a 6.1455526,8.8948793 0 1 1 -12.291105,0 6.1455526,8.8948793 0 1 1 12.291105,0 z"
+     transform="matrix(0.6403792,0,0,0.4424438,16.604416,-380.81376)" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.87867785;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path2416"
+     sodipodi:cx="31.698114"
+     sodipodi:cy="874.30286"
+     sodipodi:rx="6.1455526"
+     sodipodi:ry="8.8948793"
+     d="m 37.843667,874.30286 a 6.1455526,8.8948793 0 1 1 -12.291105,0 6.1455526,8.8948793 0 1 1 12.291105,0 z"
+     transform="matrix(0.6403792,0,0,0.4424438,-15.863329,-376.87828)" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.87867785;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path2418"
+     sodipodi:cx="31.698114"
+     sodipodi:cy="874.30286"
+     sodipodi:rx="6.1455526"
+     sodipodi:ry="8.8948793"
+     d="m 37.843667,874.30286 a 6.1455526,8.8948793 0 1 1 -12.291105,0 6.1455526,8.8948793 0 1 1 12.291105,0 z"
+     transform="matrix(0.6403792,0,0,0.4424438,27.426996,-376.87828)" />
+  <path
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     d="m 31.000006,32.056217 -4.90579,-26.0399996 -4.93292,25.5756996 4.66076,1.9726 5.17795,-1.5083 z"
+     id="path2420"
+     sodipodi:nodetypes="ccccc"
+     inkscape:connector-curvature="0" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.87867785;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path2422"
+     sodipodi:cx="31.698114"
+     sodipodi:cy="874.30286"
+     sodipodi:rx="6.1455526"
+     sodipodi:ry="8.8948793"
+     d="m 37.843667,874.30286 a 6.1455526,8.8948793 0 1 1 -12.291105,0 6.1455526,8.8948793 0 1 1 12.291105,0 z"
+     transform="matrix(0.6403792,0,0,0.4424438,5.7818359,-382.7815)" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#fce94f;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.47475433;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path2424"
+     sodipodi:cx="49.654312"
+     sodipodi:cy="907.57715"
+     sodipodi:rx="10.047844"
+     sodipodi:ry="1.6502695"
+     d="m 59.702156,907.57715 a 10.047844,1.6502695 0 1 1 -20.095688,0 10.047844,1.6502695 0 1 1 20.095688,0 z"
+     transform="matrix(1.8604537,0,0,2.3847523,-66.298906,-2130.7822)" />
+</svg>

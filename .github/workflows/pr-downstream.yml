@@ -40,13 +40,11 @@ jobs:
     strategy:
       max-parallel: 20
       matrix:
-        job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, kogito-gradle-examples  ]
+        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, kogito-gradle-examples  ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.11']
         include:
-          - job_name: optaplanner
-            repository: incubator-kie-optaplanner
           - job_name: kogito-runtimes
             repository: incubator-kie-kogito-runtimes
           - job_name: kogito-apps

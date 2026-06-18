@@ -1,0 +1,25 @@
+Name: Toy01
+Courses: 3
+Rooms: 2
+Days: 1
+Periods_per_day: 3
+Curricula: 2
+Constraints: 1
+
+COURSES:
+math t1 2 1 100
+science t1 1 1 80
+french t2 1 1 20
+
+ROOMS:
+A	90
+B	110
+
+CURRICULA:
+mafr  2 math french
+masc  2 math science
+
+UNAVAILABILITY_CONSTRAINTS:
+science 0 1
+
+END.

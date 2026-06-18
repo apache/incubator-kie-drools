@@ -1,0 +1,117 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+////
+
+= Release Procedure
+
+== Projects and Artifacts
+Following sections describe what projects are part of the OptaPlanner release procedure and their resulting
+release artifacts.
+
+=== OptaPlanner
+
+* JAR files hosted on Maven Central
+* https://download.jboss.org/optaplanner/release/latestFinal[Distribution Zip]
+available via a link on the optaplanner-website
+* https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html[Documentation]
+available via a link on the optaplanner-website
+* XML Schema Definition files for both the https://www.optaplanner.org/xsd/solver/[Solver]
+and the https://www.optaplanner.org/xsd/benchmark/[Benchmark] available on the optaplanner-website
+
+=== OptaPlanner Quickstarts
+
+No build artifacts are required; as a result of the release, the `development` branch must be rebased onto
+the `stable` branch and must point to the released final version of OptaPlanner.
+
+=== OptaPlanner Website
+The website contains https://github.com/kiegroup/optaplanner-website/blob/main/_config/pom.yml[links]
+to the Distribution Zip files and documentation (see above). To update the documentation, and the Distribution Zip,
+upload them to the `filemgmt.jboss.org` and then, open a PR changing the links.
+
+For the OptaPlanner project, there is a https://github.com/kiegroup/optaplanner/blob/main/build/release/upload_distribution.sh[script]
+uploading the documentation and the Distribution Zip. The release pipeline calls the script and updates also
+the links on the website.
+
+== Versioning
+
+=== Project Version
+
+The project uses https://semver.org/[semantic versioning] with a `.Final` suffix  for stable releases.
+After a feature release MAJOR.MINOR.0.Final, the version on the `main` branch upgrades to MAJOR.MINOR+1.0-SNAPSHOT.
+The next feature release is MAJOR.MINOR+1.0.Final.
+
+As an example, the first version released by this procedure is going to be 8.0.0.Final. After the release,
+the `main` branch upgrades to 8.1.0-SNAPSHOT. The next release is 8.1.0.Final.
+
+=== Release Branches
+
+Release branches are created for every feature release and named based on the released version by using the following convention:
+Version MAJOR.MINOR.0.Final releases from a branch MAJOR.MINOR.x. After the release, this branch upgrades to MAJOR.MINOR.1-SNAPSHOT.
+
+For example, the version 8.0.0.Final is released from a release branch 8.0.x, which is then upgraded to 8.0.1-SNAPSHOT version of the OptaPlanner.
+
+At that moment, the branch is prepared for a patch release, if needed.
+
+== Release Steps
+
+This chapter describes steps required to release artifacts enlisted above, as well as other preliminary and
+postliminary actions.
+
+=== 1. Release the version in Jira
+
+Navigate to the https://issues.redhat.com/projects/PLANNER?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page[Releases page in JIRA],
+find the version to be released and pick “Release” from the Actions. Create a next version for OptaPlanner and release the current version but WITHOUT
+release date.
+
+=== 2. Create a new branch for OptaPlanner release
+
+Run on Jenkins https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/0-prepare-release-branch[0-prepare-release-branch]
+to create a new branch where to release from. +
+Most links in this document take the 8.27.x branch as an example!
+
+=== 3. Update Drools
+
+Run
+https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner]. +
+IMPORTANT: this job should be triggered only if the artifacts of Drools version (as an example `drools-bom`) are already on https://repo1.maven.org/maven2/org/drools/drools-bom[Maven Central].
+Also, the Drools version has to be updated on the OptaPlanner main branch by running
+https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/main/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner] on main branch.
+
+=== 4. Release OptaPlanner
+
+The OptaPlanner release pipeline can now be triggered using the branch created in step 2.
+Run https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-release[optaplanner-release].
+The OptaPlanner release pipeline runs the https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-deploy[optaplanner-deploy] job
+which updates the project versions of OptaPlanner and Quickstarts, builds these projects and deploys their artifacts to Nexus.
+After this deployment step it promotes the projects. In this promote step PRs to upgrade the projects will be raised and merged as well as the tag created and pushed.
+
+=== 5. OptaPlanner post release steps
+Once OptaPlanner has been released and its artifacts are on Maven Central the release procedure can proceed
+with https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-post-release[optaplanner-post-release]. +
+This job +
+
+* resets https://github.com/kiegroup/optaplanner-quickstarts[Quickstarts] to stable branch
+* uploads OptaPlanner distribution from https://github.com/kiegroup/optaplanner-quickstarts[Quickstarts]
+* updates the https://github.com/kiegroup/optaplanner-website[OptaPlanner website]
+* updates OptaPlanner version in https://github.com/kiegroup/kie-benchmarks/blob/main/optaplanner-benchmarks/pom.xml#L21[kie-benchmarks]
+
+=== 6. Set release date for OptaPlanner release into JIRA
+
+Navigate to the https://issues.redhat.com/projects/PLANNER?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page[Releases page in JIRA],
+find the already released and current version and edit it. Add the release date.
+

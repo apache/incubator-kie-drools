@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+  <benchmarkDirectory>local/data/taskassigning</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.Employee</entityClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+      <constructionHeuristic/>
+      <localSearch/>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.TaskAssigningSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/500tasks-20employees.xml</inputSolutionFile>
+    </problemBenchmarks>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>ConstraintStreams (Drools)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.taskassigning.score.TaskAssigningConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>
