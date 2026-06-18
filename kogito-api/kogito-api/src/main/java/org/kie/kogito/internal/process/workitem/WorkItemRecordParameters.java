@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.Process;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class WorkItemRecordParameters {
@@ -76,7 +79,45 @@ public class WorkItemRecordParameters {
     }
 
     private static boolean shouldRecordParameters(Node node) {
-        return node != null && shouldRecordParameters(node.getMetaData().getOrDefault(RECORD_ARGS, false));
+        if (node == null) {
+            return false;
+        }
+
+        // Check node-level metadata (highest priority)
+        Object nodeValue = node.getMetaData().get(RECORD_ARGS);
+        if (nodeValue != null) {
+            return shouldRecordParameters(nodeValue);
+        }
+
+        // Check process-level metadata by traversing up the container hierarchy
+        if (node instanceof KogitoNode kogitoNode) {
+            Process process = findProcess(kogitoNode);
+            if (process != null) {
+                Object processValue = process.getMetaData().get(RECORD_ARGS);
+                if (processValue != null) {
+                    return shouldRecordParameters(processValue);
+                }
+            }
+        }
+
+        // Default to false
+        return false;
+    }
+
+    private static Process findProcess(KogitoNode node) {
+        NodeContainer container = node.getParentContainer();
+        while (container != null) {
+            if (container instanceof Process process) {
+                return process;
+            }
+            // Traverse up if the container is also a KogitoNode (e.g., subprocess)
+            if (container instanceof KogitoNode kogitoContainerNode) {
+                container = kogitoContainerNode.getParentContainer();
+            } else {
+                break;
+            }
+        }
+        return null;
     }
 
     private static boolean shouldRecordParameters(Object value) {

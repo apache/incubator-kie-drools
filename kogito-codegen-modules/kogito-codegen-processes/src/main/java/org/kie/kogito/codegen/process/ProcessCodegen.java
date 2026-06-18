@@ -118,6 +118,7 @@ public class ProcessCodegen extends AbstractGenerator {
     public static final String SOURCE_FILE_PROVIDER_PRODUCER = "SourceFilesProviderProducer";
 
     private static final String IS_BUSINESS_CALENDAR_PRESENT = "isBusinessCalendarPresent";
+    private static final String RECORD_NODES_IO_GLOBAL_PROPERTY = "kogito.processes.nodes.record-io";
 
     static {
         ProcessValidatorRegistry.getInstance().registerAdditonalValidator(JavaRuleFlowProcessValidator.getInstance());
@@ -185,6 +186,28 @@ public class ProcessCodegen extends AbstractGenerator {
     private static void notifySourceFileCodegenBindListeners(KogitoBuildContext context, Resource resource, Collection<Process> processes) {
         context.getSourceFileCodegenBindNotifier()
                 .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileCodegenBindEvent(p.getId(), resource.getSourcePath()))));
+    }
+
+    /**
+     * Injects recordArgs metadata into a process if the global property is enabled.
+     * This allows the global property defined by RECORD_NODES_IO_GLOBAL_PROPERTY to control
+     * input/output argument recording for all nodes in the process.
+     */
+    private void injectRecordArgsMetadataIfNeeded(WorkflowProcess process) {
+        final String recordArgs = "recordArgs";
+
+        boolean globalRecordArgs = context().getApplicationProperty(RECORD_NODES_IO_GLOBAL_PROPERTY, Boolean.class)
+                .orElse(false);
+
+        if (!globalRecordArgs) {
+            return;
+        }
+
+        // Only inject if process doesn't already have recordArgs metadata
+        if (process.getMetaData().get(recordArgs) == null) {
+            ((WorkflowProcessImpl) process).setMetaData(recordArgs, true);
+            LOGGER.debug("Injected recordArgs=true metadata into process: {}", process.getId());
+        }
     }
 
     private static void handleValidation(KogitoBuildContext context, Map<String, Throwable> processesErrors) {
@@ -313,6 +336,9 @@ public class ProcessCodegen extends AbstractGenerator {
             if (isTransactionEnabled(this, context(), defaultTransactionEnabled)) {
                 ((WorkflowProcessImpl) workFlowProcess).setMetaData(WorkflowProcessParameters.WORKFLOW_PARAM_TRANSACTIONS.getName(), "true");
             }
+
+            // Inject recordArgs metadata if global property is enabled
+            injectRecordArgsMetadataIfNeeded(workFlowProcess);
 
             if (!skipModelGeneration(workFlowProcess)) {
                 ModelClassGenerator mcg = new ModelClassGenerator(context(), workFlowProcess);
