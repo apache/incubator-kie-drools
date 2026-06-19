@@ -31,9 +31,9 @@ import jakarta.transaction.UserTransaction;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionSynchronization;
 import org.drools.persistence.api.TransactionSynchronizationRegistryHelper;
+import org.kie.api.annotations.KieInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.kie.api.annotations.KieProperty;
 
 public class JtaTransactionManager
     implements
@@ -49,7 +49,7 @@ public class JtaTransactionManager
      * Standard Java EE 5 JNDI location for the JTA TransactionSynchronizationRegistry.
      * Autodetected when available.
      */
-    @KieProperty
+    @KieInternal
     public static final String           DEFAULT_TRANSACTION_SYNCHRONIZATION_REGISTRY_NAME = "java:comp/TransactionSynchronizationRegistry";
 
     private static final String          TRANSACTION_SYNCHRONIZATION_REGISTRY_CLASS_NAME   = "jakarta.transaction.TransactionSynchronizationRegistry";
