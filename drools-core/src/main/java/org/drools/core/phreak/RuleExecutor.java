@@ -33,6 +33,7 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple.MatchState;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -48,8 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleExecutor {
-
-    private static final boolean DEBUG_DORMANT_TUPLE = false;
 
     protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
@@ -294,41 +293,13 @@ public class RuleExecutor {
     }
 
     public void addDormantTuple(RuleTerminalNodeLeftTuple tuple) {
-        if (DEBUG_DORMANT_TUPLE) {
-            if (tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
-        }
+        tuple.setMatchState(MatchState.DORMANT);
         dormantMatches.add(tuple);
-        if (DEBUG_DORMANT_TUPLE) {
-            tuple.setDormant(true);
-        }
     }
-
-    public void removeDormantTuple(RuleTerminalNodeLeftTuple tuple) {
-        if (DEBUG_DORMANT_TUPLE) {
-            if (!tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
-        }
-        if (tuple.getPrevious() != null || dormantMatches.getFirst() == tuple) {
-            dormantMatches.remove(tuple);
-        } else {
-            log.debug("Skipping removeDormantTuple for orphan tuple {} on rule \"{}\" — tuple is not present in dormantMatches",
-                      tuple, ruleAgendaItem.getRule().getName());
-        }
-        if (DEBUG_DORMANT_TUPLE) {
-            tuple.setDormant(false);
-        }
-   }
 
     public void addActiveTuple(RuleTerminalNodeLeftTuple tuple) {
         tuple.setQueued(true);
-        if (DEBUG_DORMANT_TUPLE) {
-            if (tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
-        }
+        tuple.setMatchState(MatchState.ACTIVE);
         this.activeMatches.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
@@ -336,7 +307,9 @@ public class RuleExecutor {
     }
 
     public void modifyActiveTuple(RuleTerminalNodeLeftTuple tuple) {
-        removeDormantTuple(tuple);
+        if (tuple.getMatchState() == MatchState.DORMANT) {
+            dormantMatches.remove(tuple);
+        }
         addActiveTuple(tuple);
     }
 
@@ -345,10 +318,19 @@ public class RuleExecutor {
         activeMatches.remove(tuple);
         if (tuple.getStagedType() != Tuple.DELETE) {
             addDormantTuple(tuple);
+        } else {
+            tuple.setMatchState(MatchState.REMOVED);
         }
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
         }
+    }
+
+    public void removeTuple(RuleTerminalNodeLeftTuple tuple) {
+        if (tuple.getMatchState() == MatchState.DORMANT) {
+            dormantMatches.remove(tuple);
+        }
+        tuple.setMatchState(MatchState.REMOVED);
     }
 
     public void addQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {
@@ -379,6 +361,7 @@ public class RuleExecutor {
     public void cancel(ReteEvaluator reteEvaluator, EventSupport es) {
         while (!activeMatches.isEmpty()) {
             RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) activeMatches.removeFirst();
+            rtnLt.setMatchState(MatchState.REMOVED);
             if (queue != null) {
                 queue.dequeue(rtnLt);
             }

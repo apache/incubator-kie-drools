@@ -33,6 +33,7 @@ import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple.MatchState;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
@@ -142,7 +143,7 @@ public class PhreakBranchNode {
             if (oldRtn != null) {
                 if (newRtn == null) {
                     // old exits, new does not, so delete
-                    if ( branchTuples.rtnLeftTuple.getMemory() != null ) {
+                    if ( branchTuples.rtnLeftTuple.getMatchState() == MatchState.ACTIVE ) {
                         executor.removeActiveTuple(branchTuples.rtnLeftTuple);
                     }
                     PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);
@@ -153,7 +154,7 @@ public class PhreakBranchNode {
 
                 } else {
                     // old and new on different branches, delete one and insert the other
-                    if ( branchTuples.rtnLeftTuple.getMemory() != null ) {
+                    if ( branchTuples.rtnLeftTuple.getMatchState() == MatchState.ACTIVE ) {
                         executor.removeActiveTuple(branchTuples.rtnLeftTuple);
                     }
                     PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);
@@ -205,7 +206,7 @@ public class PhreakBranchNode {
             BranchTuples branchTuples = getBranchTuples(sink, leftTuple);
 
             if (branchTuples.rtnLeftTuple != null) {
-                if ( branchTuples.rtnLeftTuple.getMemory() != null ) {
+                if ( branchTuples.rtnLeftTuple.getMatchState() == MatchState.ACTIVE ) {
                     executor.removeActiveTuple(branchTuples.rtnLeftTuple);
                 }
                 PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);

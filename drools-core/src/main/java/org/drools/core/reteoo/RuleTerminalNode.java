@@ -133,15 +133,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void cancelMatch(InternalMatch match) {
         if ( match.isQueued() ) {
-            TupleImpl leftTuple = match.getTuple();
-            if ( match.getRuleAgendaItem() != null ) {
-                // phreak must also remove the LT from the rule network evaluator
-                if ( leftTuple.getMemory() != null ) {
-                    leftTuple.getMemory().remove( leftTuple );
-                }
-            }
-            RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
-            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( ), ruleExecutor, (RuleTerminalNodeLeftTuple) leftTuple);
+            RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) match.getTuple();
+            RuleExecutor ruleExecutor = leftTuple.getRuleAgendaItem().getRuleExecutor();
+            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( ), ruleExecutor, leftTuple);
         }
     }
 
