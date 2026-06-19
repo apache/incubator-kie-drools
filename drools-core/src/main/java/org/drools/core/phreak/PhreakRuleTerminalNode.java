@@ -106,7 +106,7 @@ public class PhreakRuleTerminalNode {
                                          RuleAgendaItem ruleAgendaItem,
                                          RuleTerminalNodeLeftTuple leftTuple) {
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
-            executor.addActiveTuple(leftTuple);
+            executor.transitionToActive(leftTuple);
             return;
         }
 
@@ -133,11 +133,11 @@ public class PhreakRuleTerminalNode {
 
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( leftTuple )) {
             // only relevant for serialization, to not refire Matches already fired
-            executor.addDormantTuple(leftTuple );
+            executor.transitionToDormant(leftTuple );
             return;
         }
 
-        executor.addActiveTuple(leftTuple );
+        executor.transitionToActive(leftTuple );
 
         activationsManager.addItemToActivationGroup( leftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
@@ -186,7 +186,7 @@ public class PhreakRuleTerminalNode {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {
-                executor.modifyActiveTuple(leftTuple );
+                executor.transitionToActive(leftTuple );
                 reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
             }
             return;
@@ -212,7 +212,7 @@ public class PhreakRuleTerminalNode {
         
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( leftTuple)) {
             // only relevant for serialization, to not re-fire Matches already fired
-            executor.addDormantTuple(leftTuple);
+            executor.transitionToDormant(leftTuple);
             return;
         }
         
@@ -231,7 +231,7 @@ public class PhreakRuleTerminalNode {
                     activationsManager.getAgendaEventSupport().fireActivationCreated( leftTuple, reteEvaluator );
 
                     leftTuple.update( salienceInt, pctx );
-                    executor.modifyActiveTuple(leftTuple );
+                    executor.transitionToActive(leftTuple );
                     activationsManager.addItemToActivationGroup( leftTuple );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
                 }
@@ -274,12 +274,7 @@ public class PhreakRuleTerminalNode {
 
         leftTuple.cancelActivation( activationsManager );
 
-        if ( leftTuple.getMemory() != null ) {
-            // Expiration propagations should not be removed from the list, as they still need to fire
-            executor.removeActiveTuple( leftTuple );
-        } else if ( leftTuple.getStagedType() == Tuple.DELETE && !leftTuple.isQueued() ) {
-            executor.removeDormantTuple( leftTuple );
-        }
+        executor.deactivateTuple( leftTuple );
 
         leftTuple.setContextObject( null );
     }

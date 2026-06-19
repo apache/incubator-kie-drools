@@ -93,7 +93,7 @@ public interface ActivationsManager {
         if (!ruleAgendaItem.isQueued()) {
             ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem();
         }
-        ruleAgendaItem.getRuleExecutor().modifyActiveTuple((RuleTerminalNodeLeftTuple) justified.getTuple() );
+        ruleAgendaItem.getRuleExecutor().transitionToActive((RuleTerminalNodeLeftTuple) justified.getTuple() );
     }
 
     default ActivationsManager getPartitionedAgenda(int partitionNr) {

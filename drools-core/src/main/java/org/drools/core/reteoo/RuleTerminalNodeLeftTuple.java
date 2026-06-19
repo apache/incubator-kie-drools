@@ -39,6 +39,9 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;
+
+    public enum MatchState { NONE, ACTIVE, DORMANT, REMOVED }
+
     /**
      * The salience
      */
@@ -65,8 +68,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     private RuleImpl rule;
     private Consequence consequence;
 
-    // left here for debugging purposes: switch RuleExecutor.DEBUG_DORMANT_TUPLE to true to enable this debugging
-    // private boolean dormant;
+    private MatchState matchState = MatchState.NONE;
 
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -224,7 +226,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public void dequeue() {
-        ruleAgendaItem.getRuleExecutor().removeActiveTuple(this);
+        ruleAgendaItem.getRuleExecutor().deactivateTuple(this);
     }
 
     public void remove() {
@@ -352,13 +354,11 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
         return true;
     }
 
-    public boolean isDormant() {
-        throw new IllegalStateException("This method can be called only for debugging purposes. Uncomment dormant boolean to enable debugging.");
-        // return dormant;
+    public MatchState getMatchState() {
+        return matchState;
     }
 
-    public void setDormant(boolean dormant) {
-        throw new IllegalStateException("This method can be called only for debugging purposes. Uncomment dormant boolean to enable debugging.");
-        // this.dormant = dormant;
+    public void setMatchState(MatchState matchState) {
+        this.matchState = matchState;
     }
 }

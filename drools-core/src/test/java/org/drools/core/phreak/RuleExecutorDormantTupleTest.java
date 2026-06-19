@@ -21,115 +21,176 @@ package org.drools.core.phreak;
 import org.drools.base.base.SalienceInteger;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple.MatchState;
 import org.drools.core.reteoo.Tuple;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Targeted regression test for the guard in {@link RuleExecutor#removeDormantTuple} added for
- * issue 6422. A tuple passed to {@code removeDormantTuple} may already have been unlinked from
- * {@code dormantMatches} by another path (e.g. {@code modifyActiveTuple}), in which case its
- * {@code previous} pointer is null and the unguarded {@code LinkedList.remove()} dereferences it.
- */
 public class RuleExecutorDormantTupleTest {
 
     @Test
-    public void removeDormantTuple_whenTupleAlreadyUnlinkedFromList_doesNotNPE() {
-        final RuleExecutor executor = newRuleExecutor();
-        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
-        final RuleTerminalNodeLeftTuple t2 = new RuleTerminalNodeLeftTuple();
-
-        executor.addDormantTuple(t1);
-        executor.addDormantTuple(t2);
-
-        // First remove takes t1 out cleanly via the firstNode path. After this,
-        // t1.previous is null and dormantMatches.getFirst() is t2 — the exact state
-        // the bug fix guards against.
-        executor.removeDormantTuple(t1);
-        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
-        assertThat(t1.getPrevious()).isNull();
-        assertThat(executor.getDormantMatches().getFirst()).isNotSameAs(t1);
-
-        // Without the guard, LinkedList.remove() would fall into the middle-node
-        // branch and NPE on t1.getPrevious().setNext(...).
-        assertThatNoException().isThrownBy(() -> executor.removeDormantTuple(t1));
-
-        // The list is unchanged: t2 is still the sole dormant tuple.
-        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
-        assertThat(executor.getDormantMatches().getFirst()).isSameAs(t2);
-    }
-
-    @Test
-    public void removeDormantTuple_whenTupleIsInList_unlinksIt() {
+    public void transitionToActive_fromNone() {
         final RuleExecutor executor = newRuleExecutor();
         final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
 
-        executor.addDormantTuple(t1);
-        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
-
-        executor.removeDormantTuple(t1);
-        assertThat(executor.getDormantMatches().size()).isZero();
-    }
-
-    /**
-     * {@link RuleExecutor#modifyActiveTuple} routes through {@code removeDormantTuple}, so the
-     * same NPE could surface from this second entry point. Pins the guard from both call sites.
-     */
-    @Test
-    public void modifyActiveTuple_whenTupleAlreadyUnlinkedFromDormantList_doesNotNPE() {
-        final RuleExecutor executor = newRuleExecutor();
-        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
-        final RuleTerminalNodeLeftTuple t2 = new RuleTerminalNodeLeftTuple();
-
-        executor.addDormantTuple(t1);
-        executor.addDormantTuple(t2);
-        executor.removeDormantTuple(t1);
-
-        assertThatNoException().isThrownBy(() -> executor.modifyActiveTuple(t1));
+        executor.transitionToActive(t1);
 
         assertThat(executor.getActiveMatches().size()).isEqualTo(1);
-        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
-        assertThat(executor.getDormantMatches().getFirst()).isSameAs(t2);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.ACTIVE);
         assertThat(t1.isQueued()).isTrue();
     }
 
-    /**
-     * Pins the upstream half of the bug: {@link RuleExecutor#removeActiveTuple} must skip
-     * {@code addDormantTuple} when the staged type is DELETE. This is the precondition that
-     * leaves a tuple unlinked from {@code dormantMatches} while later paths still try to
-     * remove it.
-     */
     @Test
-    public void removeActiveTuple_whenStagedForDelete_skipsDormantTransition() {
+    public void transitionToActive_fromDormant() {
         final RuleExecutor executor = newRuleExecutor();
         final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
 
-        executor.addActiveTuple(t1);
-        t1.setStagedType(Tuple.DELETE);
+        executor.transitionToDormant(t1);
+        executor.transitionToActive(t1);
 
-        executor.removeActiveTuple(t1);
-
-        assertThat(executor.getActiveMatches().size()).isZero();
+        assertThat(executor.getActiveMatches().size()).isEqualTo(1);
         assertThat(executor.getDormantMatches().size()).isZero();
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.ACTIVE);
+        assertThat(t1.isQueued()).isTrue();
     }
 
     @Test
-    public void removeActiveTuple_whenNotStagedForDelete_transitionsToDormant() {
+    public void transitionToActive_fromActive_throws() {
         final RuleExecutor executor = newRuleExecutor();
         final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
 
-        executor.addActiveTuple(t1);
-        // Default stagedType is NONE (0); leave it as-is.
+        executor.transitionToActive(t1);
 
-        executor.removeActiveTuple(t1);
+        assertThatIllegalStateException().isThrownBy(() -> executor.transitionToActive(t1));
+    }
+
+    @Test
+    public void transitionToActive_fromRemoved() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.deactivateTuple(t1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.REMOVED);
+
+        executor.transitionToActive(t1);
+        assertThat(executor.getActiveMatches().size()).isEqualTo(1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.ACTIVE);
+    }
+
+    @Test
+    public void transitionToDormant_fromNone() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.transitionToDormant(t1);
+
+        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.DORMANT);
+    }
+
+    @Test
+    public void transitionToDormant_fromActive() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.transitionToActive(t1);
+        executor.transitionToDormant(t1);
+
+        assertThat(executor.getActiveMatches().size()).isZero();
+        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.DORMANT);
+        assertThat(t1.isQueued()).isFalse();
+    }
+
+    @Test
+    public void transitionToDormant_fromDormant_throws() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.transitionToDormant(t1);
+
+        assertThatIllegalStateException().isThrownBy(() -> executor.transitionToDormant(t1));
+    }
+
+    @Test
+    public void transitionToDormant_fromRemoved() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.deactivateTuple(t1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.REMOVED);
+
+        executor.transitionToDormant(t1);
+        assertThat(executor.getDormantMatches().size()).isEqualTo(1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.DORMANT);
+    }
+
+    @Test
+    public void deactivateTuple_whenActiveAndStagedForDelete_setsRemoved() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.transitionToActive(t1);
+        t1.setStagedType(Tuple.DELETE);
+
+        executor.deactivateTuple(t1);
+
+        assertThat(executor.getActiveMatches().size()).isZero();
+        assertThat(executor.getDormantMatches().size()).isZero();
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.REMOVED);
+    }
+
+    @Test
+    public void deactivateTuple_whenActiveAndNotStagedForDelete_transitionsToDormant() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.transitionToActive(t1);
+
+        executor.deactivateTuple(t1);
 
         assertThat(executor.getActiveMatches().size()).isZero();
         assertThat(executor.getDormantMatches().size()).isEqualTo(1);
         assertThat(executor.getDormantMatches().getFirst()).isSameAs(t1);
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.DORMANT);
+    }
+
+    @Test
+    public void deactivateTuple_whenDormant_setsRemoved() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.transitionToDormant(t1);
+
+        executor.deactivateTuple(t1);
+
+        assertThat(executor.getDormantMatches().size()).isZero();
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.REMOVED);
+    }
+
+    @Test
+    public void deactivateTuple_whenNone_setsRemovedWithoutNPE() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        assertThatNoException().isThrownBy(() -> executor.deactivateTuple(t1));
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.REMOVED);
+    }
+
+    @Test
+    public void deactivateTuple_whenRemoved_isIdempotent() {
+        final RuleExecutor executor = newRuleExecutor();
+        final RuleTerminalNodeLeftTuple t1 = new RuleTerminalNodeLeftTuple();
+
+        executor.deactivateTuple(t1);
+
+        assertThatNoException().isThrownBy(() -> executor.deactivateTuple(t1));
+        assertThat(t1.getMatchState()).isEqualTo(MatchState.REMOVED);
     }
 
     private static RuleExecutor newRuleExecutor() {

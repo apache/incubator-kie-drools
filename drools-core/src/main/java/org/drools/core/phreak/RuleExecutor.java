@@ -33,6 +33,7 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple.MatchState;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -48,8 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleExecutor {
-
-    private static final boolean DEBUG_DORMANT_TUPLE = false;
 
     protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
@@ -101,7 +100,7 @@ public class RuleExecutor {
             } else {
                 fireActivationEvent(reteEvaluator, activationsManager, tuple, tuple.getConsequence());
             }
-            removeActiveTuple(tuple );
+            deactivateTuple(tuple);
         }
         ruleAgendaItem.remove();
         return directFirings;
@@ -186,20 +185,21 @@ public class RuleExecutor {
         return localFireCount;
     }
 
+    // Does not use transitionToDormant() because the fire loop handles salience re-sorting separately and queue.dequeue() must select by priority, not by reference.
     private TupleImpl getNextTuple() {
         if (activeMatches.isEmpty()) {
             return null;
         }
-        TupleImpl leftTuple;
+        RuleTerminalNodeLeftTuple leftTuple;
         if (queue != null) {
-            leftTuple = (TupleImpl) queue.dequeue();
+            leftTuple = (RuleTerminalNodeLeftTuple) queue.dequeue();
             activeMatches.remove(leftTuple);
         } else {
-            leftTuple = activeMatches.removeFirst();
-            ((InternalMatch) leftTuple).setQueued(false);
+            leftTuple = (RuleTerminalNodeLeftTuple) activeMatches.removeFirst();
+            leftTuple.setQueued(false);
         }
-
-        addDormantTuple((RuleTerminalNodeLeftTuple) leftTuple);
+        leftTuple.setMatchState(MatchState.DORMANT);
+        dormantMatches.add(leftTuple);
         return leftTuple;
     }
 
@@ -293,62 +293,59 @@ public class RuleExecutor {
         return dormantMatches;
     }
 
-    public void addDormantTuple(RuleTerminalNodeLeftTuple tuple) {
-        if (DEBUG_DORMANT_TUPLE) {
-            if (tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
+    public void transitionToActive(RuleTerminalNodeLeftTuple tuple) {
+        MatchState current = tuple.getMatchState();
+        if (current == MatchState.ACTIVE) {
+            throw new IllegalStateException("Cannot transition to ACTIVE: already ACTIVE");
         }
-        dormantMatches.add(tuple);
-        if (DEBUG_DORMANT_TUPLE) {
-            tuple.setDormant(true);
-        }
-    }
-
-    public void removeDormantTuple(RuleTerminalNodeLeftTuple tuple) {
-        if (DEBUG_DORMANT_TUPLE) {
-            if (!tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
-        }
-        if (tuple.getPrevious() != null || dormantMatches.getFirst() == tuple) {
+        if (current == MatchState.DORMANT) {
             dormantMatches.remove(tuple);
-        } else {
-            log.debug("Skipping removeDormantTuple for orphan tuple {} on rule \"{}\" — tuple is not present in dormantMatches",
-                      tuple, ruleAgendaItem.getRule().getName());
         }
-        if (DEBUG_DORMANT_TUPLE) {
-            tuple.setDormant(false);
-        }
-   }
-
-    public void addActiveTuple(RuleTerminalNodeLeftTuple tuple) {
         tuple.setQueued(true);
-        if (DEBUG_DORMANT_TUPLE) {
-            if (tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
-        }
-        this.activeMatches.add(tuple);
+        tuple.setMatchState(MatchState.ACTIVE);
+        activeMatches.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
         }
     }
 
-    public void modifyActiveTuple(RuleTerminalNodeLeftTuple tuple) {
-        removeDormantTuple(tuple);
-        addActiveTuple(tuple);
+    public void transitionToDormant(RuleTerminalNodeLeftTuple tuple) {
+        MatchState current = tuple.getMatchState();
+        if (current == MatchState.DORMANT) {
+            throw new IllegalStateException("Cannot transition to DORMANT: already DORMANT");
+        }
+        if (current == MatchState.ACTIVE) {
+            tuple.setQueued(false);
+            activeMatches.remove(tuple);
+            if (queue != null) {
+                removeQueuedLeftTuple(tuple);
+            }
+        }
+        tuple.setMatchState(MatchState.DORMANT);
+        dormantMatches.add(tuple);
     }
 
-    public void removeActiveTuple(RuleTerminalNodeLeftTuple tuple) {
-        tuple.setQueued(false);
-        activeMatches.remove(tuple);
-        if (tuple.getStagedType() != Tuple.DELETE) {
-            addDormantTuple(tuple);
+    public void deactivateTuple(RuleTerminalNodeLeftTuple tuple) {
+        switch (tuple.getMatchState()) {
+            case ACTIVE:
+                tuple.setQueued(false);
+                activeMatches.remove(tuple);
+                if (queue != null) {
+                    removeQueuedLeftTuple(tuple);
+                }
+                if (tuple.getStagedType() != Tuple.DELETE) {
+                    tuple.setMatchState(MatchState.DORMANT);
+                    dormantMatches.add(tuple);
+                    return;
+                }
+                break;
+            case DORMANT:
+                dormantMatches.remove(tuple);
+                break;
+            default:
+                break;
         }
-        if (queue != null) {
-            removeQueuedLeftTuple(tuple);
-        }
+        tuple.setMatchState(MatchState.REMOVED);
     }
 
     public void addQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {
@@ -376,13 +373,14 @@ public class RuleExecutor {
         }
     }
 
+    // Does not use deactivateTuple() because cancel requires unconditional REMOVED regardless of stagedType.
     public void cancel(ReteEvaluator reteEvaluator, EventSupport es) {
         while (!activeMatches.isEmpty()) {
             RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) activeMatches.removeFirst();
+            rtnLt.setMatchState(MatchState.REMOVED);
             if (queue != null) {
                 queue.dequeue(rtnLt);
             }
-
             es.getAgendaEventSupport().fireActivationCancelled(rtnLt, reteEvaluator, MatchCancelledCause.CLEAR);
         }
     }
