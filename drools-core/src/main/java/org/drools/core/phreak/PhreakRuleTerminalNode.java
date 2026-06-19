@@ -113,6 +113,7 @@ public class PhreakRuleTerminalNode {
         // most recent PropagationContext is required to maintain the right recency which triggers the match
         PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
         if ( rtnNode.getRule().isNoLoop() && sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
+            executor.addDormantTuple(leftTuple);
             return;
         }
 
@@ -127,6 +128,7 @@ public class PhreakRuleTerminalNode {
             InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
             if (blockedByLockOnActive(rtnNode.getRule(), pctx, agendaGroup)) {
                 activationsManager.getAgendaEventSupport().fireActivationCancelled(leftTuple, reteEvaluator, MatchCancelledCause.FILTER );
+                executor.addDormantTuple(leftTuple);
                 return;
             }
         }
