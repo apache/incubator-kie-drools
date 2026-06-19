@@ -311,12 +311,9 @@ public class RuleExecutor {
                 throw new IllegalStateException();
             }
         }
-        if (tuple.getPrevious() != null || dormantMatches.getFirst() == tuple) {
-            dormantMatches.remove(tuple);
-        } else {
-            log.debug("Skipping removeDormantTuple for orphan tuple {} on rule \"{}\" — tuple is not present in dormantMatches",
-                      tuple, ruleAgendaItem.getRule().getName());
-        }
+
+        dormantMatches.remove(tuple);
+
         if (DEBUG_DORMANT_TUPLE) {
             tuple.setDormant(false);
         }
