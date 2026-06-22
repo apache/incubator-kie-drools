@@ -22,7 +22,6 @@ import org.drools.base.base.SalienceInteger;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +37,6 @@ import static org.mockito.Mockito.when;
  */
 public class RuleExecutorDormantTupleTest {
 
-    @Disabled("Temporarily disabled for testing without a guard")
     @Test
     public void removeDormantTuple_whenTupleAlreadyUnlinkedFromList_doesNotNPE() {
         final RuleExecutor executor = newRuleExecutor();
@@ -81,7 +79,6 @@ public class RuleExecutorDormantTupleTest {
      * {@link RuleExecutor#modifyActiveTuple} routes through {@code removeDormantTuple}, so the
      * same NPE could surface from this second entry point. Pins the guard from both call sites.
      */
-    @Disabled("Temporarily disabled for testing without a guard")
     @Test
     public void modifyActiveTuple_whenTupleAlreadyUnlinkedFromDormantList_doesNotNPE() {
         final RuleExecutor executor = newRuleExecutor();
