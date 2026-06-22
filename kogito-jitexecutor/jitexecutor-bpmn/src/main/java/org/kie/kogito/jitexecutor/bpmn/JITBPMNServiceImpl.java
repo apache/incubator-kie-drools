@@ -481,6 +481,8 @@ public class JITBPMNServiceImpl implements JITBPMNService {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
+            // Disable DOCTYPE declarations to prevent XXE attacks
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             org.w3c.dom.Document doc = builder.parse(new org.xml.sax.InputSource(new StringReader(modelXML)));
 
