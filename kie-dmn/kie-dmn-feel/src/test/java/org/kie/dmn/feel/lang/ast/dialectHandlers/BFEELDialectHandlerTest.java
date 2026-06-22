@@ -273,15 +273,10 @@ class BFEELDialectHandlerTest {
         
         assertThat(handler.executeNotEqual(null, null, ctx)).isEqualTo(Boolean.FALSE);
         assertThat(handler.executeNotEqual(10, 20, ctx)).isEqualTo(Boolean.TRUE);
-    
-        // Comparison_Relational - Fixed to expect correct behavior after bug fix
-        // For booleans: false >= false is true (equal via equality check)
         assertThat(handler.executeGte(Boolean.FALSE, Boolean.FALSE, ctx)).isEqualTo(Boolean.TRUE);
-        // Boolean TRUE >= FALSE: falls through to common operations which does OR → true
         assertThat(handler.executeGte(Boolean.TRUE, Boolean.FALSE, ctx)).isEqualTo(Boolean.TRUE);
         // String vs Boolean: incompatible types → false
         assertThat(handler.executeGte("test", Boolean.TRUE, ctx)).isEqualTo(Boolean.FALSE);
-        // FIXED: Numeric comparisons now work correctly
         assertThat(handler.executeGte(20, 10, ctx)).isEqualTo(Boolean.TRUE);  // 20 >= 10 is TRUE
         assertThat(handler.executeGte(10, 10, ctx)).isEqualTo(Boolean.TRUE);  // 10 >= 10 is TRUE
         assertThat(handler.executeGte("test", 10, ctx)).isEqualTo(Boolean.FALSE);
