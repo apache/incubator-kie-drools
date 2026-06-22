@@ -314,7 +314,7 @@ public class RuleExecutor {
         if (tuple.getPrevious() != null || dormantMatches.getFirst() == tuple) {
             dormantMatches.remove(tuple);
         } else {
-            log.debug("Skipping removeDormantTuple for orphan tuple {} on rule \"{}\" — tuple is not present in dormantMatches",
+            log.warn("Skipping removeDormantTuple for orphan tuple {} on rule \"{}\" — tuple is not present in dormantMatches",
                       tuple, ruleAgendaItem.getRule().getName());
         }
         if (DEBUG_DORMANT_TUPLE) {
@@ -345,7 +345,7 @@ public class RuleExecutor {
         activeMatches.remove(tuple);
         if (tuple.getStagedType() != Tuple.DELETE) {
             addDormantTuple(tuple);
-        }
+        } // if Tuple.DELETE, then the tuple should be removed/dereferenced entirely, so not in activeMatches nor dormantMatches.
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
         }
