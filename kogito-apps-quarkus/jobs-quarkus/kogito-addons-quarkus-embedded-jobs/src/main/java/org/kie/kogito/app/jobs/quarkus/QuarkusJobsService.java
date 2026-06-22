@@ -119,6 +119,9 @@ public class QuarkusJobsService implements JobsService {
 
                     @Override
                     public void synchronize(Runnable action) {
+                        if (registry.getTransactionStatus() != Status.STATUS_ACTIVE) {
+                            return;
+                        }
                         registry.registerInterposedSynchronization(new Synchronization() {
 
                             @Override

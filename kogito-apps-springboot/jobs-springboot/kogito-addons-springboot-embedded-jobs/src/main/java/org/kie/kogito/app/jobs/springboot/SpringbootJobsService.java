@@ -118,6 +118,9 @@ public class SpringbootJobsService implements JobsService {
 
                     @Override
                     public void synchronize(Runnable action) {
+                        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+                            return;
+                        }
                         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                             @Override
                             public void afterCommit() {
