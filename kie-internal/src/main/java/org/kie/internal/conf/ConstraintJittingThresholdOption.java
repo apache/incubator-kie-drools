@@ -33,7 +33,7 @@ public class ConstraintJittingThresholdOption implements SingleValueRuleBaseOpti
     /**
      * The property name for the constraint jitting option
      */
-    @KieProperty
+    @KieProperty(type = "int", defaultValue = "20")
     public static final String PROPERTY_NAME = "drools.jittingThreshold";
 
     public static OptionKey<ConstraintJittingThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

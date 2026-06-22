@@ -31,7 +31,7 @@ public class BeliefSystemTypeOption implements SingleValueRuleRuntimeOption {
     /**
      * The property name for the belief system configuration
      */
-    @KieProperty
+    @KieProperty(type = "string")
     public static final String PROPERTY_NAME = "drools.beliefSystem";
 
     public static OptionKey<BeliefSystemTypeOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

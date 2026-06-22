@@ -32,7 +32,7 @@ public class MaxThreadsOption implements SingleValueRuleBaseOption {
     /**
      * The property name for the max threads
      */
-    @KieProperty
+    @KieProperty(type = "int")
     public static final String PROPERTY_NAME = "drools.maxThreads";
 
     public static OptionKey<MaxThreadsOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

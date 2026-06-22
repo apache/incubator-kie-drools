@@ -31,7 +31,7 @@ public class DefaultPackageNameOption implements SingleValueKieBuilderOption {
     /**
      * The property name for the default package name
      */
-    @KieProperty
+    @KieProperty(type = "string")
     public static final String PROPERTY_NAME = "drools.defaultPackageName";
 
     public static OptionKey<DefaultPackageNameOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

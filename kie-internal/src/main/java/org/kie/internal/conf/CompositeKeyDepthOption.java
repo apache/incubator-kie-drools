@@ -32,7 +32,7 @@ public class CompositeKeyDepthOption implements SingleValueRuleBaseOption {
     /**
      * The property name for the default DIALECT
      */
-    @KieProperty
+    @KieProperty(type = "int")
     public static final String PROPERTY_NAME = "drools.compositeKeyDepth";
 
     public static OptionKey<CompositeKeyDepthOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

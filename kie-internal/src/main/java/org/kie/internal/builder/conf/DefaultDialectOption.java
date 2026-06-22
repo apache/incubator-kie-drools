@@ -31,7 +31,7 @@ public class DefaultDialectOption implements SingleValueKieBuilderOption {
     /**
      * The property name for the default DIALECT
      */
-    @KieProperty
+    @KieProperty(type = "string")
     public static final String PROPERTY_NAME = "drools.dialect.default";
 
     public static OptionKey<DefaultDialectOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

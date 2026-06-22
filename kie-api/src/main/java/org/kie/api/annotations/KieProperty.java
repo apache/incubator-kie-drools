@@ -32,4 +32,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.FIELD)
 public @interface KieProperty {
+
+    String defaultValue() default "";
+    String type() default "";
+    String allowedValues() default "";
 }

@@ -34,7 +34,7 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
     /**
      * The property name for the clock type configuration
      */
-    @KieProperty
+    @KieProperty(type = "string", allowedValues = "pseudo,realtime")
     public static final String PROPERTY_NAME = "drools.clockType";
 
     public static OptionKey<ClockTypeOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

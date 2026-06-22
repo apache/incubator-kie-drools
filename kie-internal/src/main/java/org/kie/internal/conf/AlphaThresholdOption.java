@@ -30,9 +30,9 @@ public class AlphaThresholdOption implements SingleValueRuleBaseOption {
     private static final long serialVersionUID = 510l;
 
     /**
-     * The property name for the default DIALECT
+     * The property name for the Alpha node hashing threshold
      */
-    @KieProperty
+    @KieProperty(type = "int")
     public static final String PROPERTY_NAME = "drools.alphaNodeHashingThreshold";
 
     public static OptionKey<AlphaThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

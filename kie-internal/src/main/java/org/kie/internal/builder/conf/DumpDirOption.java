@@ -35,7 +35,7 @@ public class DumpDirOption implements SingleValueKieBuilderOption {
     /**
      * The property name for the drools dump directory configuration
      */
-    @KieProperty
+    @KieProperty(type = "file")
     public static final String PROPERTY_NAME = "drools.dump.dir";
 
     public static OptionKey<DumpDirOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

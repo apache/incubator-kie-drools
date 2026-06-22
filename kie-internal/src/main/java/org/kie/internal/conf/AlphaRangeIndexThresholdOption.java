@@ -31,7 +31,7 @@ public class AlphaRangeIndexThresholdOption implements SingleValueRuleBaseOption
     /**
      * The property name
      */
-    @KieProperty
+    @KieProperty(type = "int", defaultValue = "9")
     public static final String PROPERTY_NAME = "drools.alphaNodeRangeIndexThreshold";
 
     public static OptionKey<AlphaRangeIndexThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

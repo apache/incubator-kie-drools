@@ -40,12 +40,12 @@ public interface DroolsModelBuildContext {
      * kogito.generate.rest.(engine_name) -> (boolean) enable/disable engine rest endpoint generation (default true)
      *
      */
-    @KieProperty
+    @KieProperty(defaultValue = "true", type = "boolean", allowedValues = "true,false")
     String KOGITO_GENERATE_REST = "kogito.generate.rest";
     /**
      * (boolean) dependency injection is available and enabled (default true)
      */
-    @KieProperty
+    @KieProperty(defaultValue = "true", type = "boolean", allowedValues = "true,false")
     String KOGITO_GENERATE_DI = "kogito.generate.di";
 
     Optional<String> getApplicationProperty(String property);

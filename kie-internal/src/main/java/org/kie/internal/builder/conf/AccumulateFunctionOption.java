@@ -32,7 +32,7 @@ public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
     /**
      * The prefix for the property name for accumulate functions
      */
-    @KieProperty
+    @KieProperty(type = "string")
     public static final String PROPERTY_NAME = "drools.accumulate.function.";
 
     public static OptionKey<AccumulateFunctionOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
