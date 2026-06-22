@@ -280,7 +280,8 @@ public class PhreakRuleTerminalNode {
             // Expiration propagations should not be removed from the list, as they still need to fire
             executor.removeActiveTuple( leftTuple );
         } else if ( leftTuple.getStagedType() == Tuple.DELETE && !leftTuple.isQueued() ) {
-            // if Tuple.DELETE, then the tuple should be removed/dereferenced entirely, so not in activeMatches nor dormantMatches
+            // if Tuple.DELETE, it's not in activeMatches nor dormantMatches. Basically, unlinked from parent nodes, so will be GC'ed.
+            // Note: there could be a case where such a tuple will be retained and activated again. (e.g., accPropCtx.getResultLeftTuple())
             executor.removeDormantTuple( leftTuple );
         }
 

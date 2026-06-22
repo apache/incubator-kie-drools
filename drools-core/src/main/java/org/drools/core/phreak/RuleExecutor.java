@@ -345,7 +345,8 @@ public class RuleExecutor {
         activeMatches.remove(tuple);
         if (tuple.getStagedType() != Tuple.DELETE) {
             addDormantTuple(tuple);
-        } // if Tuple.DELETE, then the tuple should be removed/dereferenced entirely, so not in activeMatches nor dormantMatches.
+        } // if Tuple.DELETE, it's not in activeMatches nor dormantMatches. Basically, unlinked from parent nodes, so will be GC'ed.
+          // Note: there could be a case where such a tuple will be retained and activated again. (e.g., accPropCtx.getResultLeftTuple())
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
         }
