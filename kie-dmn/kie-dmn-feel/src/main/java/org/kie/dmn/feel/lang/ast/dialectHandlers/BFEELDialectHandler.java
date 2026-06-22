@@ -203,24 +203,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        // Any non-Boolean coerces to false, so (false,false) --> false
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
-                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
-                }, false),
-                (left, right) -> Boolean.FALSE);
 
-        // non-Boolean coercion to false
-        map.put(
-                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
-                (left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
-                    return leftBool || rightBool;
-                });
         // numeric/comparable >= logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
@@ -249,25 +232,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // Any non-Boolean coerces to false, so (false,false) --> false
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
-                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
-                }, false),
-                (left, right) -> Boolean.FALSE);
-
-        // non-Boolean coercion to false
-        map.put(
-                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
-                (left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
-                    return leftBool || rightBool;
-                });
-
         // numeric/comparable > logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
@@ -284,25 +248,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-
-        // Any non-Boolean coerces to false, so (false,false) --> false
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
-                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
-                }, false),
-                (left, right) -> Boolean.FALSE);
-
-        // General non-Boolean coercion to false
-        map.put(
-                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
-                (left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
-                    return leftBool || rightBool;
-                });
 
         // Numeric/comparable ≤ logic
         map.put(
@@ -330,25 +275,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-
-        // Non-Boolean coerces to false, so (false,false) --> false
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
-                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
-                }, false),
-                (left, right) -> Boolean.FALSE);
-
-        // General non-Boolean coercion to false
-        map.put(
-                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
-                (left, right) -> {
-                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
-                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
-                    return leftBool || rightBool;
-                });
 
         // Numeric/comparable < logic
         map.put(

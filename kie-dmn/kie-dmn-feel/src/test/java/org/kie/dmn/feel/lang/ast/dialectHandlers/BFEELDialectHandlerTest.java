@@ -53,12 +53,14 @@ class BFEELDialectHandlerTest {
         // Case 1 : STRING - If either operand is a string, convert non-string to string
         // Left: string + other
         assertThat(handler.executeAdd("Hello", 123, ctx)).isEqualTo("Hello123");
+        assertThat(handler.executeAdd("The result is: ", 1, ctx)).isEqualTo("The result is: 1");
         assertThat(handler.executeAdd("Date:", LocalDate.of(2024, 1, 1), ctx)).isEqualTo("Date:2024-01-01");
         assertThat(handler.executeAdd("Duration:", Duration.ofDays(5), ctx)).isEqualTo("Duration:PT120H");
         assertThat(handler.executeAdd("Period:", Period.ofMonths(3), ctx)).isEqualTo("Period:P3M");
         
         // Right: other + string
         assertThat(handler.executeAdd(123, "World", ctx)).isEqualTo("123World");
+        assertThat(handler.executeAdd(5, " minutes", ctx)).isEqualTo("5 minutes");
         assertThat(handler.executeAdd(LocalDate.of(2024, 1, 1), " is the date", ctx)).isEqualTo("2024-01-01 is the date");
         assertThat(handler.executeAdd(Duration.ofDays(5), " duration", ctx)).isEqualTo("PT120H duration");
         assertThat(handler.executeAdd(Period.ofMonths(3), " period", ctx)).isEqualTo("P3M period");
@@ -272,22 +274,137 @@ class BFEELDialectHandlerTest {
         assertThat(handler.executeNotEqual(null, null, ctx)).isEqualTo(Boolean.FALSE);
         assertThat(handler.executeNotEqual(10, 20, ctx)).isEqualTo(Boolean.TRUE);
     
-        // Comparison_Relational
-        assertThat(handler.executeGte(Boolean.FALSE, Boolean.FALSE, ctx)).isEqualTo(Boolean.FALSE);
-        assertThat(handler.executeGte("test", Boolean.TRUE, ctx)).isEqualTo(Boolean.TRUE);
-        assertThat(handler.executeGte(20, 10, ctx)).isEqualTo(Boolean.FALSE);
+        // Comparison_Relational - Fixed to expect correct behavior after bug fix
+        // For booleans: false >= false is true (equal via equality check)
+        assertThat(handler.executeGte(Boolean.FALSE, Boolean.FALSE, ctx)).isEqualTo(Boolean.TRUE);
+        // Boolean TRUE >= FALSE: falls through to common operations which does OR → true
+        assertThat(handler.executeGte(Boolean.TRUE, Boolean.FALSE, ctx)).isEqualTo(Boolean.TRUE);
+        // String vs Boolean: incompatible types → false
+        assertThat(handler.executeGte("test", Boolean.TRUE, ctx)).isEqualTo(Boolean.FALSE);
+        // FIXED: Numeric comparisons now work correctly
+        assertThat(handler.executeGte(20, 10, ctx)).isEqualTo(Boolean.TRUE);  // 20 >= 10 is TRUE
+        assertThat(handler.executeGte(10, 10, ctx)).isEqualTo(Boolean.TRUE);  // 10 >= 10 is TRUE
         assertThat(handler.executeGte("test", 10, ctx)).isEqualTo(Boolean.FALSE);
         
-        assertThat(handler.executeGt(20, 10, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeGt(20, 10, ctx)).isEqualTo(Boolean.TRUE);   // 20 > 10 is TRUE
+        assertThat(handler.executeGt(10, 20, ctx)).isEqualTo(Boolean.FALSE);  // 10 > 20 is FALSE
         assertThat(handler.executeGt(new Object(), new Object(), ctx)).isEqualTo(Boolean.FALSE);
-        assertThat(handler.executeLte(5, 10, ctx)).isEqualTo(Boolean.FALSE);
-        assertThat(handler.executeLt(5, 10, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLte(5, 10, ctx)).isEqualTo(Boolean.TRUE);   // 5 <= 10 is TRUE
+        assertThat(handler.executeLte(10, 10, ctx)).isEqualTo(Boolean.TRUE);  // 10 <= 10 is TRUE
+        assertThat(handler.executeLt(5, 10, ctx)).isEqualTo(Boolean.TRUE);    // 5 < 10 is TRUE
+        assertThat(handler.executeLt(10, 5, ctx)).isEqualTo(Boolean.FALSE);   // 10 < 5 is FALSE
     
         // Comparison_CompareMethod
         assertThat(handler.compare(null, null, (l, r) -> l.compareTo(r) > 0)).isEqualTo(Boolean.FALSE);
         assertThat(handler.compare(20, 10, (l, r) -> l.compareTo(r) > 0)).isTrue();
         assertThat(handler.compare("test", "test", (l, r) -> l.compareTo(r) == 0)).isTrue();
         assertThat(handler.compare("test", 10, (l, r) -> l.compareTo(r) > 0)).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    void testRelationalOperatorsComprehensive() {
+        // Test GT (>) operator - comprehensive scenarios
+        assertThat(handler.executeGt(5, 2, ctx)).isEqualTo(Boolean.TRUE);     // 5 > 2
+        assertThat(handler.executeGt(2, 5, ctx)).isEqualTo(Boolean.FALSE);    // 2 > 5
+        assertThat(handler.executeGt(5, 5, ctx)).isEqualTo(Boolean.FALSE);    // 5 > 5 (equal)
+        assertThat(handler.executeGt(new BigDecimal("10.5"), new BigDecimal("10.4"), ctx)).isEqualTo(Boolean.TRUE);
+        assertThat(handler.executeGt(null, 5, ctx)).isEqualTo(Boolean.FALSE); // null > 5
+        assertThat(handler.executeGt(5, null, ctx)).isEqualTo(Boolean.FALSE); // 5 > null
+        
+        // Test GTE (>=) operator - comprehensive scenarios
+        assertThat(handler.executeGte(5, 2, ctx)).isEqualTo(Boolean.TRUE);    // 5 >= 2
+        assertThat(handler.executeGte(5, 5, ctx)).isEqualTo(Boolean.TRUE);    // 5 >= 5 (equal)
+        assertThat(handler.executeGte(2, 5, ctx)).isEqualTo(Boolean.FALSE);   // 2 >= 5
+        assertThat(handler.executeGte(new BigDecimal("10.5"), new BigDecimal("10.5"), ctx)).isEqualTo(Boolean.TRUE);
+        assertThat(handler.executeGte(null, 5, ctx)).isEqualTo(Boolean.FALSE); // null >= 5
+        
+        // Test LT (<) operator - comprehensive scenarios
+        assertThat(handler.executeLt(2, 5, ctx)).isEqualTo(Boolean.TRUE);     // 2 < 5
+        assertThat(handler.executeLt(5, 2, ctx)).isEqualTo(Boolean.FALSE);    // 5 < 2
+        assertThat(handler.executeLt(5, 5, ctx)).isEqualTo(Boolean.FALSE);    // 5 < 5 (equal)
+        assertThat(handler.executeLt(new BigDecimal("10.4"), new BigDecimal("10.5"), ctx)).isEqualTo(Boolean.TRUE);
+        assertThat(handler.executeLt(null, 5, ctx)).isEqualTo(Boolean.FALSE); // null < 5
+        assertThat(handler.executeLt(5, null, ctx)).isEqualTo(Boolean.FALSE); // 5 < null
+        
+        // Test LTE (<=) operator - comprehensive scenarios
+        assertThat(handler.executeLte(2, 5, ctx)).isEqualTo(Boolean.TRUE);    // 2 <= 5
+        assertThat(handler.executeLte(5, 5, ctx)).isEqualTo(Boolean.TRUE);    // 5 <= 5 (equal)
+        assertThat(handler.executeLte(5, 2, ctx)).isEqualTo(Boolean.FALSE);   // 5 <= 2
+        assertThat(handler.executeLte(new BigDecimal("10.5"), new BigDecimal("10.5"), ctx)).isEqualTo(Boolean.TRUE);
+        assertThat(handler.executeLte(null, 5, ctx)).isEqualTo(Boolean.FALSE); // null <= 5
+        
+        // Test with BigDecimal edge cases
+        assertThat(handler.executeGt(new BigDecimal("0.1"), new BigDecimal("0.09"), ctx)).isEqualTo(Boolean.TRUE);
+        assertThat(handler.executeLt(new BigDecimal("-5"), new BigDecimal("5"), ctx)).isEqualTo(Boolean.TRUE);
+        assertThat(handler.executeGte(new BigDecimal("0"), new BigDecimal("0"), ctx)).isEqualTo(Boolean.TRUE);
+        
+        // Test with negative numbers
+        assertThat(handler.executeGt(-2, -5, ctx)).isEqualTo(Boolean.TRUE);   // -2 > -5
+        assertThat(handler.executeLt(-5, -2, ctx)).isEqualTo(Boolean.TRUE);   // -5 < -2
+        assertThat(handler.executeGte(-5, -5, ctx)).isEqualTo(Boolean.TRUE);  // -5 >= -5
+        assertThat(handler.executeLte(-2, -2, ctx)).isEqualTo(Boolean.TRUE);  // -2 <= -2
+    }
+
+    @Test
+    void testRelationalOperatorsWithDatesAndDurations() {
+        // Test with LocalDate
+        LocalDate date1 = LocalDate.of(2024, 1, 1);
+        LocalDate date2 = LocalDate.of(2024, 1, 10);
+        LocalDate date3 = LocalDate.of(2024, 1, 1);
+        
+        assertThat(handler.executeGt(date2, date1, ctx)).isEqualTo(Boolean.TRUE);   // later > earlier
+        assertThat(handler.executeLt(date1, date2, ctx)).isEqualTo(Boolean.TRUE);   // earlier < later
+        assertThat(handler.executeGte(date1, date3, ctx)).isEqualTo(Boolean.TRUE);  // same >= same
+        assertThat(handler.executeLte(date1, date3, ctx)).isEqualTo(Boolean.TRUE);  // same <= same
+        assertThat(handler.executeGt(date1, date2, ctx)).isEqualTo(Boolean.FALSE);  // earlier > later
+        
+        // Test with Duration
+        Duration dur1 = Duration.ofHours(1);
+        Duration dur2 = Duration.ofHours(2);
+        Duration dur3 = Duration.ofHours(1);
+        
+        assertThat(handler.executeGt(dur2, dur1, ctx)).isEqualTo(Boolean.TRUE);     // 2h > 1h
+        assertThat(handler.executeLt(dur1, dur2, ctx)).isEqualTo(Boolean.TRUE);     // 1h < 2h
+        assertThat(handler.executeGte(dur1, dur3, ctx)).isEqualTo(Boolean.TRUE);    // 1h >= 1h
+        assertThat(handler.executeLte(dur1, dur3, ctx)).isEqualTo(Boolean.TRUE);    // 1h <= 1h
+        assertThat(handler.executeGt(dur1, dur2, ctx)).isEqualTo(Boolean.FALSE);    // 1h > 2h
+        
+        // Test with Period
+        Period period1 = Period.ofMonths(6);
+        Period period2 = Period.ofYears(1);  // 12 months
+        Period period3 = Period.ofMonths(6);
+        
+        assertThat(handler.executeGt(period2, period1, ctx)).isEqualTo(Boolean.TRUE);  // 12m > 6m
+        assertThat(handler.executeLt(period1, period2, ctx)).isEqualTo(Boolean.TRUE);  // 6m < 12m
+        assertThat(handler.executeGte(period1, period3, ctx)).isEqualTo(Boolean.TRUE); // 6m >= 6m
+        assertThat(handler.executeLte(period1, period3, ctx)).isEqualTo(Boolean.TRUE); // 6m <= 6m
+    }
+
+    @Test
+    void testRelationalOperatorsWithIncompatibleTypes() {
+        // String vs Number - should return false
+        assertThat(handler.executeGt("test", 10, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLt("test", 10, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeGte("test", 10, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLte("test", 10, ctx)).isEqualTo(Boolean.FALSE);
+        
+        // Number vs String - should return false
+        assertThat(handler.executeGt(10, "test", ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLt(10, "test", ctx)).isEqualTo(Boolean.FALSE);
+        
+        // Date vs Number - should return false
+        assertThat(handler.executeGt(LocalDate.of(2024, 1, 1), 10, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLt(LocalDate.of(2024, 1, 1), 10, ctx)).isEqualTo(Boolean.FALSE);
+        
+        // Duration vs String - should return false
+        assertThat(handler.executeGt(Duration.ofDays(5), "test", ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLt(Duration.ofDays(5), "test", ctx)).isEqualTo(Boolean.FALSE);
+        
+        // Object vs Object (non-comparable) - should return false
+        Object obj1 = new Object();
+        Object obj2 = new Object();
+        assertThat(handler.executeGt(obj1, obj2, ctx)).isEqualTo(Boolean.FALSE);
+        assertThat(handler.executeLt(obj1, obj2, ctx)).isEqualTo(Boolean.FALSE);
     }
 
 }
