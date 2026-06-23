@@ -19,7 +19,6 @@
 package org.kie.dmn.core.impl;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

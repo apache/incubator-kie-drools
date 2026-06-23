@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 public class DateTimeEvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger(DateTimeEvalHelper.class);
 
-    public static ZonedDateTime coerceDateTime(final LocalDate value) {
-        return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
+    public static FormattedZonedDateTime coerceDateTime(final LocalDate value) {
+        return FormattedZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
     }
 
     public static String toParsableString(TemporalAccessor temporalAccessor) {

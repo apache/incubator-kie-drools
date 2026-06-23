@@ -369,7 +369,6 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         return type;
     }
 
-
     private BuiltInType resolveBuiltInType(String name) {
         if (name == null) return null;
         for (BuiltInType t : BuiltInType.values()) {
