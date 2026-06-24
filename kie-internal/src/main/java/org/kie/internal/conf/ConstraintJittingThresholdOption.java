@@ -20,6 +20,7 @@ package org.kie.internal.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * An option to define after how many evaluations in interpreted mode (with mvel)
@@ -32,6 +33,7 @@ public class ConstraintJittingThresholdOption implements SingleValueRuleBaseOpti
     /**
      * The property name for the constraint jitting option
      */
+    @KieProperty(type = "int", defaultValue = "20")
     public static final String PROPERTY_NAME = "drools.jittingThreshold";
 
     public static OptionKey<ConstraintJittingThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
