@@ -204,7 +204,22 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // numeric/comparable >= logic
+        // BFEEL: null returns FALSE (not null like standard FEEL)
+        map.put(
+                new CheckedPredicate((left, right) -> left == null || right == null, false),
+                (left, right) -> Boolean.FALSE);
+
+        // BFEEL: Boolean >= logic (true >= false, true >= true, false >= false)
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Boolean && right instanceof Boolean, false),
+                (left, right) -> {
+                    Boolean leftBool = (Boolean) left;
+                    Boolean rightBool = (Boolean) right;
+                    // In BFEEL: true >= anything is true, false >= false is true, false >= true is false
+                    return leftBool || !rightBool;
+                });
+
+        // BFEEL: All other comparisons (numeric, dates, strings, etc.)
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -215,16 +230,13 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                             : null;
 
                     if (greater == null && equal == null) {
-                        return Boolean.FALSE; // BFEEL default
+                        return Boolean.FALSE; // BFEEL default for incompatible types
                     }
                     if (Boolean.TRUE.equals(greater) || Boolean.TRUE.equals(equal)) {
                         return Boolean.TRUE;
                     }
                     return Boolean.FALSE;
                 });
-
-        // Fall back to common >= operations for all other cases
-        map.putAll(getCommonGteOperations(ctx));
         return map;
     }
 
@@ -232,7 +244,12 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // numeric/comparable > logic
+        // BFEEL: null returns FALSE (not null like standard FEEL)
+        map.put(
+                new CheckedPredicate((left, right) -> left == null || right == null, false),
+                (left, right) -> Boolean.FALSE);
+
+        // BFEEL: All other comparisons (numeric, dates, strings, Booleans, etc.)
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -240,8 +257,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                             (l, r) -> l.compareTo(r) > 0);
                     return Objects.requireNonNullElse(greater, Boolean.FALSE);
                 });
-
-        map.putAll(getCommonGtOperations(ctx));
         return map;
     }
 
@@ -249,7 +264,21 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // Numeric/comparable ≤ logic
+        // BFEEL: null returns FALSE (not null like standard FEEL)
+        map.put(
+                new CheckedPredicate((left, right) -> left == null || right == null, false),
+                (left, right) -> Boolean.FALSE);
+
+        // BFEEL: Boolean <= logic (false <= anything is true, true <= true is true, true <= false is false)
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Boolean && right instanceof Boolean, false),
+                (left, right) -> {
+                    Boolean leftBool = (Boolean) left;
+                    Boolean rightBool = (Boolean) right;
+                    return !leftBool || rightBool;
+                });
+
+        // BFEEL: All other comparisons (numeric, dates, strings, etc.)
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -260,15 +289,13 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                             : null;
 
                     if (less == null && equal == null) {
-                        return Boolean.FALSE; // BFEEL default
+                        return Boolean.FALSE; // BFEEL default for incompatible types
                     }
                     if (Boolean.TRUE.equals(less) || Boolean.TRUE.equals(equal)) {
                         return Boolean.TRUE;
                     }
                     return Boolean.FALSE;
                 });
-
-        map.putAll(getCommonLteOperations(ctx));
         return map;
     }
 
@@ -276,7 +303,12 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // Numeric/comparable < logic
+        // BFEEL: null returns FALSE (not null like standard FEEL)
+        map.put(
+                new CheckedPredicate((left, right) -> left == null || right == null, false),
+                (left, right) -> Boolean.FALSE);
+
+        // BFEEL: All other comparisons (numeric, dates, strings, Booleans, etc.)
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -284,7 +316,6 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                             (l, r) -> l.compareTo(r) < 0);
                     return Objects.requireNonNullElse(less, Boolean.FALSE);
                 });
-        map.putAll(getCommonLtOperations(ctx));
         return map;
     }
 
