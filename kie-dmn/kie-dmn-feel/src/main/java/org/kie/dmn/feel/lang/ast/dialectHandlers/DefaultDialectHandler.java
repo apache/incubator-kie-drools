@@ -694,18 +694,17 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             Object right,
             EvaluationContext ctx,
             Map<CheckedPredicate, BiFunction<Object, Object, Object>> operationMap) {
-        Optional<Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>>> match =
-                operationMap.entrySet().stream()
-                        .filter(entry -> entry.getKey().predicate.test(left, right))
-                        .findFirst();
-
-        if (match.isPresent()) {
-            Object result = match.get().getValue().apply(left, right);
-            if (result == null && match.get().getKey().toNotify) {
-                commonManageInvalidParameters(ctx);
+        for (Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>> entry : operationMap.entrySet()) {
+            if (entry.getKey().predicate.test(left, right)) {
+                Object result = entry.getValue().apply(left, right);
+                if (result == null && entry.getKey().toNotify) {
+                    commonManageInvalidParameters(ctx);
+                }
+                return result;
             }
-            return result;
         }
+        
+        // No matching predicate found
         commonManageInvalidParameters(ctx);
         return null;
     }
