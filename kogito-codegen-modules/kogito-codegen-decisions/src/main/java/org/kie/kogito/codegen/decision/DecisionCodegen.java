@@ -34,6 +34,7 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.ConfigValue;
 import org.eclipse.microprofile.openapi.spi.OASFactoryResolver;
+import org.kie.api.annotations.KieProperty;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
@@ -60,33 +61,40 @@ public class DecisionCodegen extends AbstractGenerator {
     /**
      * (boolean) generate java classes to support strongly typed input (default false)
      */
-    public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
+    @KieProperty(type = "boolean", defaultValue = "false", allowedValues = "true,false")
+    public static final String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
     /**
      * model validation strategy; possible values: ENABLED, DISABLED, IGNORE; (default ENABLED)
      */
-    public static String VALIDATION_CONFIGURATION_KEY = "kogito.decisions.validation";
+    @KieProperty(type = "string", defaultValue = "ENABLED", allowedValues = "ENABLED,DISABLED,IGNORE")
+    public static final String VALIDATION_CONFIGURATION_KEY = "kogito.decisions.validation";
 
     /**
      * (string) kafka bootstrap server address
      */
+    @KieProperty(type = "string", defaultValue = "")
     public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_BOOTSTRAPADDRESS = "kogito.addon.tracing.decision.kafka.bootstrapAddress";
     /**
      * (string) name of the decision topic; default to kogito-tracing-decision
      */
+    @KieProperty(type = "string", defaultValue = "kogito-tracing-decision")
     public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_TOPIC_NAME = "kogito.addon.tracing.decision.kafka.topic.name";
     /**
      * (integer) number of decision topic partitions; default to 1
      */
+    @KieProperty(type = "integer", defaultValue = "1")
     public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_TOPIC_PARTITIONS = "kogito.addon.tracing.decision.kafka.topic.partitions";
 
     /**
      * (integer) number of decision topic replication factor; default to 1
      */
+    @KieProperty(type = "integer", defaultValue = "1")
     public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_TOPIC_REPLICATION_FACTOR = "kogito.addon.tracing.decision.kafka.topic.replicationFactor";
 
     /**
      * (boolean) enable/disable asynchronous collection of decision events; default to true
      */
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
     public static final String KOGITO_ADDON_TRACING_DECISION_ASYNC_ENABLED = "kogito.addon.tracing.decision.asyncEnabled";
 
     public static DecisionCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {

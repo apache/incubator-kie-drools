@@ -18,18 +18,26 @@
  */
 package org.kie.kogito.codegen.api.utils;
 
+import org.kie.api.annotations.KieInternal;
+import org.kie.api.annotations.KieProperty;
+
 public class KogitoCodeGenConstants {
 
     private KogitoCodeGenConstants() {
 
     }
 
+    @KieInternal
     public static final String VALIDATION_CLASS = "jakarta.validation.constraints.NotNull";
+    @KieInternal
     public static final String OPENAPI_SPEC_CLASS = "org.eclipse.microprofile.openapi.annotations.media.Schema";
+    @KieInternal
     public static final String QUARKUS_TRANSACTION_MANAGER_CLASS = "io.quarkus.narayana.jta.QuarkusTransaction";
+    @KieInternal
     public static final String SPRING_TRANSACTION_MANAGER_CLASS = "org.springframework.transaction.PlatformTransactionManager";
     /**
      * Property that controls whether Kogito Codegen should ignore hidden files. Defaults to true.
      */
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
     public static final String IGNORE_HIDDEN_FILES_PROP = "kogito.codegen.ignoreHiddenFiles";
 }

@@ -20,6 +20,7 @@ package org.kie.kogito.quarkus.workflow;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.kie.api.annotations.KieProperty;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.DefaultCorrelationService;
@@ -47,6 +48,7 @@ public class KogitoBeanProducer {
     /**
      * (string) strategy to resolve a Process version to use; possible values: project, workflow; if "project", requires project GAV; default is workflow
      */
+    @KieProperty(type = "string", defaultValue = "workflow", allowedValues = "project,workflow")
     public static final String KOGITO_WORKFLOW_VERSION_STRATEGY = "kogito.workflow.version-strategy";
 
     @DefaultBean

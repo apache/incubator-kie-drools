@@ -31,6 +31,8 @@ import java.util.Optional;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.infinispan.protostream.FileDescriptorSource;
+import org.kie.api.annotations.KieInternal;
+import org.kie.api.annotations.KieProperty;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
@@ -70,12 +72,19 @@ public class PersistenceGenerator extends AbstractGenerator {
     /**
      * Type of persistence
      */
+    @KieInternal
     public static final String FILESYSTEM_PERSISTENCE_TYPE = "filesystem";
+    @KieInternal
     public static final String INFINISPAN_PERSISTENCE_TYPE = "infinispan";
+    @KieInternal
     public static final String MONGODB_PERSISTENCE_TYPE = "mongodb";
+    @KieInternal
     public static final String POSTGRESQL_PERSISTENCE_TYPE = "postgresql";
+    @KieInternal
     public static final String KAFKA_PERSISTENCE_TYPE = "kafka";
+    @KieInternal
     public static final String JDBC_PERSISTENCE_TYPE = "jdbc";
+    @KieInternal
     public static final String DEFAULT_PERSISTENCE_TYPE = INFINISPAN_PERSISTENCE_TYPE;
 
     /**
@@ -85,16 +94,21 @@ public class PersistenceGenerator extends AbstractGenerator {
     /**
      * (boolean) enable/disable proto generation for DATA-INDEX; default to true
      */
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
     public static final String KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION = "kogito.persistence.data-index.proto.generation";
+    @KieInternal
     public static final String KOGITO_PERSISTENCE_DATA_INDEX_PROTO_GENERATION_DEFAULT = "true";
     /**
      * (boolean) enable/disable proto marshaller generation; default to true
      */
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
     public static final String KOGITO_PERSISTENCE_PROTO_MARSHALLER = "kogito.persistence.proto.marshaller";
+    @KieInternal
     public static final String KOGITO_PERSISTENCE_PROTO_MARSHALLER_DEFAULT = "true";
     /**
      * (string) kind of persistence used; possible values: filesystem, infinispan, mongodb, postgresql, kafka, jdbc; default to infinispan
      */
+    @KieProperty(type = "string", defaultValue = "infinispan", allowedValues = "filesystem,infinispan,mongodb,postgresql,kafka,jdbc")
     public static final String KOGITO_PERSISTENCE_TYPE = "kogito.persistence.type";
 
     /**
@@ -106,6 +120,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     /**
      * Generic PersistenceGenerator constants
      */
+    @KieInternal
     public static final String GENERATOR_NAME = "persistence";
     protected static final String CLASS_TEMPLATES_PERSISTENCE = "/class-templates/persistence/";
     private final ProtoGenerator protoGenerator;

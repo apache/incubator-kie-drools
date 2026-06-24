@@ -33,6 +33,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.kie.api.annotations.KieInternal;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import org.kie.kogito.event.cloudevents.SpecVersionDeserializer;
 import org.kie.kogito.event.cloudevents.SpecVersionSerializer;
@@ -71,6 +72,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
      * Since this is a required field, the constructor will fill them with this default value.
      * Ideally, callers would use #TYPE_FORMAT to fill this field using the process name and the signal node name, e.g: process.travelagency.visaapproved
      */
+    @KieInternal
     public static final String TYPE_PREFIX = "process";
     public static final String TYPE_FORMAT = TYPE_PREFIX + ".%s.%s";
     /**
@@ -78,6 +80,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
      * Since this is a required field, the constructor will fill them with default value, e.g.: /process/travelagency
      * See more about the source format: https://github.com/cloudevents/spec/blob/v1.0/spec.md#source-1
      */
+    @KieInternal
     public static final String SOURCE_FORMAT = "/process/%s";
     public static final String SPEC_VERSION = "1.0";
     public static final String DATA_CONTENT_TYPE = "application/json";

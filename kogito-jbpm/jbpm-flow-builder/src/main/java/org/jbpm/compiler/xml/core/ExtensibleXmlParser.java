@@ -43,6 +43,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.SemanticModule;
+import org.kie.api.annotations.KieInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -74,6 +75,7 @@ public class ExtensibleXmlParser extends DefaultHandler implements Parser {
     public static final String ENTITY_RESOLVER_PROPERTY_NAME = "org.drools.core.io.EntityResolver";
 
     /** Namespace URI for the general tags. */
+    @KieInternal
     public static final String RULES_NAMESPACE_URI = "http://drools.org/rules";
 
     private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";

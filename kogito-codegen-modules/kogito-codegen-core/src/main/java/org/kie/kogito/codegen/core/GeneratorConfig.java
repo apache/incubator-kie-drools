@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.codegen.core;
 
+import org.kie.api.annotations.KieProperty;
+
 /**
  * GeneratorConfig
  */
@@ -26,6 +28,7 @@ public class GeneratorConfig {
     /**
      * the type of generated rest (currently used only by processes); possible values: reactive; (default is empty)
      */
+    @KieProperty(type = "string", defaultValue = "", allowedValues = "reactive")
     public static final String KOGITO_REST_RESOURCE_TYPE_PROP = "kogito.rest.resource.type";
 
     private GeneratorConfig() {

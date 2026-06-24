@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kie.api.annotations.KieInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -47,12 +48,14 @@ public final class ProcessInstanceContext {
      * MDC key used to store the process instance ID.
      * This key should be referenced in logging configurations.
      */
+    @KieInternal
     public static final String MDC_PROCESS_INSTANCE_KEY = "processInstanceId";
 
     /**
      * Default value used when no process instance ID is available.
      * Empty string for cleaner log formatting and easier searching.
      */
+    @KieInternal
     public static final String GENERAL_CONTEXT = "";
 
     // Private constructor to prevent instantiation

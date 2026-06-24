@@ -20,6 +20,7 @@ package org.kie.kogito.codegen.core.utils;
 
 import java.util.function.Function;
 
+import org.kie.api.annotations.KieProperty;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
@@ -35,11 +36,13 @@ public final class CodegenUtil {
     /**
      * Flag used to configure transaction enabling. Default to <code>true</code>
      */
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
     public static final String TRANSACTION_ENABLED = "transactionEnabled";
 
     /**
      * Flag used to configure fault tolerance enabling. Default to <code>true</code>
      */
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
     public static final String FAULT_TOLERANCE_ENABLED = "faultToleranceEnabled";
 
     private CodegenUtil() {
@@ -51,7 +54,7 @@ public final class CodegenUtil {
      * 
      * @param generator
      * @param propertyName
-     * @return returns the property for certain generator
+     * @return the property for certain generator
      */
     public static String generatorProperty(Generator generator, String propertyName) {
         return String.format("kogito.%s.%s", generator.name(), propertyName);

@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.kie.api.annotations.KieInternal;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 /**
@@ -35,6 +36,7 @@ public interface Generator {
     /**
      * kogito.codegen.(engine_name) -> (boolean) enable/disable engine code generation (default true)
      */
+    @KieInternal
     String CONFIG_PREFIX = "kogito.codegen.";
 
     /**
