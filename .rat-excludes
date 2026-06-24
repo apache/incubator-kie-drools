@@ -45,6 +45,10 @@ script/ci/tests/scenarios-compute-build-scopes/11-fully-removed-subtree/changed-
 script/ci/tests/scenarios-compute-build-scopes/11-fully-removed-subtree/expected-affected.txt
 script/ci/tests/scenarios-compute-build-scopes/11-fully-removed-subtree/expected-changed.txt
 script/ci/tests/scenarios-compute-build-scopes/11-fully-removed-subtree/expected-upstream.txt
+script/ci/tests/scenarios-compute-build-scopes/12-quarkus-extension-pairing/changed-files.txt
+script/ci/tests/scenarios-compute-build-scopes/12-quarkus-extension-pairing/expected-affected.txt
+script/ci/tests/scenarios-compute-build-scopes/12-quarkus-extension-pairing/expected-changed.txt
+script/ci/tests/scenarios-compute-build-scopes/12-quarkus-extension-pairing/expected-upstream.txt
 script/ci/tests/scenarios-summary/01-no-tests-no-scope/env.properties
 script/ci/tests/scenarios-summary/01-no-tests-no-scope/expected-summary.md
 script/ci/tests/scenarios-summary/01-no-tests-no-scope/root/.gitkeep
