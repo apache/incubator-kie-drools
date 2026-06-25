@@ -221,6 +221,132 @@ public class WsHumanTaskLifeCycleIT {
     }
 
     @Test
+    public void testPotentialUserCanResumeSuspendedToReadyTask() {
+        var owner = "dave";
+        var potentialUser = "john";
+        var potentialUsers = new String[] { "john", "dave" };
+        var processId = "manager_multiple_users";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(owner, pid);
+        verifyTask(processId, pid, taskId, owner, "Ready", potentialUsers);
+
+        suspend(taskId, owner);
+        resume(taskId, potentialUser, "Ready");
+
+        claim(taskId, owner);
+        start(taskId, owner);
+        complete(taskId, owner);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
+    public void testActualOwnerCanResumeSuspendedToReservedTask() {
+        var owner = "dave";
+        var potentialUsers = new String[] { "john", "dave" };
+        var processId = "manager_multiple_users";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(owner, pid);
+        verifyTask(processId, pid, taskId, owner, "Ready", potentialUsers);
+
+        claim(taskId, owner);
+        suspend(taskId, owner);
+        resume(taskId, owner, "Reserved");
+
+        start(taskId, owner);
+        complete(taskId, owner);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
+    public void testActualOwnerCanResumeSuspendedToInProgressTask() {
+        var owner = "dave";
+        var potentialUsers = new String[] { "john", "dave" };
+        var processId = "manager_multiple_users";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(owner, pid);
+        verifyTask(processId, pid, taskId, owner, "Ready", potentialUsers);
+
+        claim(taskId, owner);
+        start(taskId, owner);
+        suspend(taskId, owner);
+        resume(taskId, owner, "InProgress");
+
+        complete(taskId, owner);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
+    public void testPotentialUserCannotResumeSuspendedToReservedTask() {
+        var owner = "dave";
+        var potentialUser = "john";
+        var potentialUsers = new String[] { "john", "dave" };
+        var processId = "manager_multiple_users";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(owner, pid);
+        verifyTask(processId, pid, taskId, owner, "Ready", potentialUsers);
+
+        claim(taskId, owner);
+        suspend(taskId, owner);
+        resumeNotAuthorized(taskId, potentialUser);
+        resume(taskId, owner, "Reserved");
+
+        start(taskId, owner);
+        complete(taskId, owner);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
+    public void testPotentialUserCannotResumeSuspendedToInProgressTask() {
+        var owner = "dave";
+        var potentialUser = "john";
+        var potentialUsers = new String[] { "john", "dave" };
+        var processId = "manager_multiple_users";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(owner, pid);
+        verifyTask(processId, pid, taskId, owner, "Ready", potentialUsers);
+
+        claim(taskId, owner);
+        start(taskId, owner);
+        suspend(taskId, owner);
+        resumeNotAuthorized(taskId, potentialUser);
+        resume(taskId, owner, "InProgress");
+
+        complete(taskId, owner);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
+    public void testBusinessAdminCanResumeSuspendedTask() {
+        var owner = "dave";
+        var admin = "carl";
+        var potentialUsers = new String[] { "john", "dave" };
+        var processId = "manager_admin_multiple_users";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(owner, pid);
+        verifyTask(processId, pid, taskId, owner, "Ready", potentialUsers);
+
+        suspend(taskId, owner);
+        resume(taskId, admin, "Ready");
+
+        claim(taskId, owner);
+        suspend(taskId, owner);
+        resume(taskId, admin, "Reserved");
+
+        start(taskId, owner);
+        suspend(taskId, owner);
+        resume(taskId, admin, "InProgress");
+
+        complete(taskId, owner);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
     public void testSuspendUntilWithDuration() {
         var user = "dave";
         var potentialUsers = new String[] { "john", "dave" };
@@ -741,6 +867,17 @@ public class WsHumanTaskLifeCycleIT {
                 .body("status.name", equalTo(previousState))
                 .body("status.terminate", equalTo(null))
                 .body("metadata.SuspendedJobId", equalTo(null));
+    }
+
+    private void resumeNotAuthorized(String taskId, String user) {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .body(new TransitionInfo("resume"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(403);
     }
 
     private void suspend(String taskId, String user) {

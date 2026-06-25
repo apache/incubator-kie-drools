@@ -443,7 +443,7 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
 
     private static ZonedDateTime parseSimpleDuration(String input) {
         try {
-            var millis = parseTimeString(input);
+            long millis = parseTimeString(input);
             if (millis <= 0) {
                 throw new IllegalArgumentException("Invalid suspendUntil duration: " + input);
             }
@@ -522,8 +522,11 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
             throw new UserTaskInstanceNotAuthorizedException(message);
         }
 
-        if (List.of(CREATED, READY, SUSPENDED).contains(userTaskInstance.getStatus())) {
-            // there is no user
+        if (CREATED.equals(userTaskInstance.getStatus())
+                || READY.equals(userTaskInstance.getStatus())
+                || (SUSPENDED.equals(userTaskInstance.getStatus())
+                        && READY.getName().equals(userTaskInstance.getMetadata().get(PREVIOUS_STATUS)))) {
+
             Set<String> users = new HashSet<>(userTaskInstance.getPotentialUsers());
             users.removeAll(userTaskInstance.getExcludedUsers());
             if (users.contains(user)) {
