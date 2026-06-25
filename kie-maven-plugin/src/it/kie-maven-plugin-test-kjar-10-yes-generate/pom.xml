@@ -43,26 +43,36 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel-compiler</artifactId>
+      <version>@org.kie.version@</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-maven-plugin-test-kjar-common</artifactId>
+      <version>@org.kie.version@</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-io</artifactId>
       <version>@org.kie.version@</version>
     </dependency>
   </dependencies>

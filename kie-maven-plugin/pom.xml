@@ -215,6 +215,16 @@
       <artifactId>drools-templates</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-prototype</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- org.kie -->
     <dependency>
       <groupId>org.kie</groupId>

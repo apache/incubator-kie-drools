@@ -57,6 +57,11 @@
       <artifactId>kie-maven-plugin-test-kjar-common</artifactId>
       <version>@org.kie.version@</version>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-io</artifactId>
+      <version>@org.kie.version@</version>
+    </dependency>
   </dependencies>
 
 </project>

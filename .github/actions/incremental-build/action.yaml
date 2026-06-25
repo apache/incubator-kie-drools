@@ -1,0 +1,88 @@
+name: "Maven based incremental build"
+description: "Execute incremental build using maven plugin"
+
+inputs:
+  github-token:
+    description: "the github token"
+    required: true
+  definition-file:
+    description: 'The `definition-file` input for the build-chain'
+    required: false
+    default: 'https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml'
+  flow-type:
+    description: "the flow to execute, it can be 'cross_pr' (or 'pull-request' which is deprecated), 'full_downstream' (or 'full-downstream' which is deprecated), 'single_pr' (or 'single' which is deprecated) or 'branch'"
+    default: "cross_pr"
+    required: false
+  starting-project:
+    description: "the project to start flow from. By default is the project triggering the job"
+    required: false
+  logger-level:
+    description: "the log level. 'info' (default) | 'trace' | 'debug'"
+    default: "info"
+    required: false
+  annotations-prefix:
+    description: "The prefix for the annotations title"
+    default: ''
+    required: false
+  additional-flags:
+    description: "The chance to define additional flags for the execution, as it is done on the CLI side. Just semicolon (;) separated, like '--skipParallelCheckout;--skipExecution;-cct (mvn .*)||$1 -s settings.xml'"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Set up JDK
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: "Merge PR changes (squashed)"
+      id: merge_changes
+      shell: bash
+      env:
+        PR_HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.name }}
+        PR_HEAD_LABEL: ${{ github.event.pull_request.head.label }}
+        HEAD_REF: ${{ github.head_ref  }}
+      run: |
+        echo "STEP: Merge PR changes (squashed)"
+        cd ${{ inputs.path }}
+        if [ ${{ github.event.pull_request }} ]; then
+          USER=$(node -e "console.log('$PR_HEAD_LABEL'.match(/(.+)\:(.+)$/)[1])")
+
+          echo "Merge changes from $USER/$HEAD_REF"
+          git remote add $USER https://github.com/$USER/$PR_HEAD_REPO_NAME.git
+          git fetch $USER $HEAD_REF
+
+          echo "Before merging..."
+          git log -n 1
+          echo "base_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+          git merge --squash $USER/$HEAD_REF
+          git commit --no-edit
+
+          echo "After merging..."
+          git log -n 1
+          echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        else
+          echo "Skip merge, not a pull request"
+          echo "base_sha=$(git rev-parse HEAD^1)" >> $GITHUB_OUTPUT
+          echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Add git gitgabrio remote
+      run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
+
+    # Development purpose - to be removed
+    - name: Show git remotes
+      run: git remote -v
+
+    - name: Fetch gitgabrio
+      run: git fetch gitgabrio test_incremental
+
+    - name: Show git refs
+      run: git show-ref
+

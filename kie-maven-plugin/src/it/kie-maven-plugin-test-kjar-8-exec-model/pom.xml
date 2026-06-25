@@ -39,13 +39,18 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-codegen-common</artifactId>
+      <version>@org.kie.version@</version>
     </dependency>
   </dependencies>
 

@@ -39,7 +39,12 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-engine</artifactId>
-      <version>${org.kie.version}</version>
+      <version>@org.kie.version@</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel-compiler</artifactId>
+      <version>@org.kie.version@</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

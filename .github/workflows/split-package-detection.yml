@@ -43,8 +43,23 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Add git gitgabrio remote
+        run: git remote add gitgabrio https://github.com/gitgabrio/drools.git
+
+      - name: Show git remotes
+        run: git remote -v
+
+      - name: Fetch origin
+        run: git fetch origin main
+
+      - name: Fetch gitgabrio
+        run: git fetch gitgabrio test_incremental
+
+      - name: Show git refs
+        run: git show-ref
+
       - name: Build with Maven
-        run: mvn package -Dquickly
+        run: mvn package -Dquickly -Dgib.disable=true
 
       - name: Make script executable
         run: chmod +x ./check-split-packages.sh
