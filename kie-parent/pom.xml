@@ -824,6 +824,12 @@
         <artifactId>netty-codec</artifactId>
         <version>${version.io.netty}</version>
       </dependency>
+      <!-- Netty codec-compression - explicitly managed to fix CVE -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-compression</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-dns</artifactId>
