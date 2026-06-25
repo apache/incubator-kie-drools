@@ -20,6 +20,7 @@ package org.kie.api.runtime.conf;
 
 
 import java.util.Objects;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the session persistence configuration.
@@ -53,6 +54,7 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
     /**
      * The property name for the clock type configuration
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.persistedsession";
 
     private final long sessionId;
