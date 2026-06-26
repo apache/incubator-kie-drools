@@ -189,6 +189,12 @@ import java.util.TreeSet;
  */
 public class KieCronExpression implements Serializable {
 
+    static {
+        System.err.println("[DIAG] KieCronExpression loaded: java.version=" + System.getProperty("java.version")
+                + ", java.home=" + System.getProperty("java.home")
+                + ", drools.dialect.java.compiler.lnglevel=" + System.getProperty("drools.dialect.java.compiler.lnglevel"));
+    }
+
     private static final long serialVersionUID = 510L;
 
     protected static final int YEAR_TO_GIVEUP_SCHEDULING_AT = 2299;

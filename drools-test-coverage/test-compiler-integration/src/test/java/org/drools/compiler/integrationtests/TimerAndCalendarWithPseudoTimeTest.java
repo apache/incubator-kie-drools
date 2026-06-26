@@ -65,6 +65,12 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class TimerAndCalendarWithPseudoTimeTest {
 
+    static {
+        System.err.println("[DIAG] TimerAndCalendarWithPseudoTimeTest loaded: java.version=" + System.getProperty("java.version")
+                + ", java.home=" + System.getProperty("java.home")
+                + ", drools.dialect.java.compiler.lnglevel=" + System.getProperty("drools.dialect.java.compiler.lnglevel"));
+    }
+
     public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
