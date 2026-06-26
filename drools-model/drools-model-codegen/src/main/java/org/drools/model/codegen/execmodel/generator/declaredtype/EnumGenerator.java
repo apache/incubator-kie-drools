@@ -107,7 +107,7 @@ public class EnumGenerator {
     private void addEnumerationValue(EnumLiteralDescr enumLiteral) {
         EnumConstantDeclaration element = new EnumConstantDeclaration(enumLiteral.getName());
         for (String constructorArgument : enumLiteral.getConstructorArgs()) {
-            element.addArgument(parseConstructorArgument(constructorArgument));
+            element.addArgument(parseConstructorArgument(enumLiteral, constructorArgument));
         }
         enumDeclaration.addEntry(element);
     }
@@ -115,11 +115,16 @@ public class EnumGenerator {
     /**
      * Parses an enum-constant constructor argument as a Java expression.
      */
-    private Expression parseConstructorArgument(String constructorArgument) {
+    private Expression parseConstructorArgument(EnumLiteralDescr enumLiteral,
+                                                String constructorArgument) {
         try {
             return StaticJavaParser.parseExpression(constructorArgument);
         } catch (ParseProblemException e) {
-            return new NameExpr(constructorArgument);
+            throw new IllegalStateException(
+                "Failed to parse constructor argument '" + constructorArgument +
+                    "' for enum literal '" + enumLiteral.getName() +
+                    "': " + e.getMessage(),
+                e);
         }
     }
 }
