@@ -41,6 +41,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
+import org.drools.model.codegen.execmodel.domain.PositionalParent;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -597,6 +598,40 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testExtendPojoInheritedFieldsConstructor(RUN_TYPE runType) throws Exception {
+        // A declared type extending a Java (classpath) class must generate a full-argument
+        // constructor that also includes the superclass @Position fields and forwards them to
+        // super(...). PositionalParent has @Position(0) name and @Position(1) age, so Child should
+        // expose Child(String name, int age, String dept). The executable model previously omitted
+        // the inherited fields, generating only Child(String dept), which failed to compile the
+        // 'new Child("Mario", 40, "Sales")' consequent.
+        String str =
+                "package org.test;\n" +
+                "import " + PositionalParent.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Child extends PositionalParent\n" +
+                "    dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "    insert( new Child(\"Mario\", 40, \"Sales\") );\n" +
+                "end\n" +
+                "rule Check when\n" +
+                "    $c : Child( name == \"Mario\", age == 40, dept == \"Sales\" )\n" +
+                "then\n" +
+                "    insert( new Result($c.getName()) );\n" +
+                "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).hasSize(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
     @ParameterizedTest
