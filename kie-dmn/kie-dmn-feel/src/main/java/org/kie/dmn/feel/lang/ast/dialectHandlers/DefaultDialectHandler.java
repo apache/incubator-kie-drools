@@ -212,10 +212,8 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> {
                     Boolean greater = compare(left, right,
                             (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0);
-                    //Boolean equal = BooleanEvalHelper.isEqual(left, right, dialect);
-                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
-                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
-                            : null;
+                    Object eqResult = EqExecutor.instance().evaluate(left, right, ctx);
+                    Boolean equal = (eqResult instanceof Boolean) ? (Boolean) eqResult : null;
                     if (greater == null && equal == null)
                         return null;
                     if (Boolean.TRUE.equals(greater) || Boolean.TRUE.equals(equal))
@@ -275,10 +273,8 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> {
                     Boolean less = compare(left, right,
                             (l, r) -> l.compareTo(r) < 0);
-                    // Boolean equal = BooleanEvalHelper.isEqual(left, right, dialect);
-                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
-                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
-                            : null;
+                    Object eqResult = EqExecutor.instance().evaluate(left, right, ctx);
+                    Boolean equal = (eqResult instanceof Boolean) ? (Boolean) eqResult : null;
 
                     if (less == null && equal == null) {
                         return null;
@@ -694,18 +690,17 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             Object right,
             EvaluationContext ctx,
             Map<CheckedPredicate, BiFunction<Object, Object, Object>> operationMap) {
-        Optional<Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>>> match =
-                operationMap.entrySet().stream()
-                        .filter(entry -> entry.getKey().predicate.test(left, right))
-                        .findFirst();
-
-        if (match.isPresent()) {
-            Object result = match.get().getValue().apply(left, right);
-            if (result == null && match.get().getKey().toNotify) {
-                commonManageInvalidParameters(ctx);
+        for (Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>> entry : operationMap.entrySet()) {
+            if (entry.getKey().predicate.test(left, right)) {
+                Object result = entry.getValue().apply(left, right);
+                if (result == null && entry.getKey().toNotify) {
+                    commonManageInvalidParameters(ctx);
+                }
+                return result;
             }
-            return result;
         }
+        
+        // No matching predicate found
         commonManageInvalidParameters(ctx);
         return null;
     }
