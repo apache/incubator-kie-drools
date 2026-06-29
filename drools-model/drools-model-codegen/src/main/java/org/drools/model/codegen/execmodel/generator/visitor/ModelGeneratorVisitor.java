@@ -35,6 +35,7 @@ import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
+import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.visitor.accumulate.AccumulateVisitor;
 import org.drools.model.codegen.execmodel.generator.visitor.accumulate.GroupByVisitor;
@@ -44,6 +45,7 @@ import org.drools.model.codegen.execmodel.generator.visitor.pattern.PatternVisit
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.EXISTS_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.FORALL_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.NOT_CALL;
+import static org.drools.model.codegen.execmodel.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambdaAndIndex;
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 
@@ -127,10 +129,36 @@ public class ModelGeneratorVisitor implements DescrVisitor {
                 } else {
                     new AccumulateVisitor(this, context, packageModel).visit(accSource, descr );
                     new PatternVisitor(context, packageModel).visit(descr).buildPattern();
+                    this.retypeInlineAccumulateResultConstraints(accSource);
                 }
             } else {
                 new PatternVisitor(context, packageModel).visit(descr).buildPattern();
             }
+        }
+    }
+
+    /**
+     * For an inline-binding accumulate (e.g. "$list : collectList(...) ; $list.size > 0"), the result
+     * pattern keeps its Object type node for matching, but a result constraint that uses the binding
+     * (here "$list.size > 0") must be typed against the accumulate function's result type. The
+     * constraint lambdas are only built by the PatternVisitor above, so retype the binding references
+     * in them now (without altering the pattern's object type / matching). The "List(...) from
+     * accumulate(...)" form has no function binding and is unaffected.
+     */
+    private void retypeInlineAccumulateResultConstraints(AccumulateDescr accSource) {
+        for (AccumulateDescr.AccumulateFunctionCallDescr function : accSource.getFunctions()) {
+            if (function.getBind() == null) {
+                continue;
+            }
+            context.getTypedDeclarationById(function.getBind())
+                   .map(DeclarationSpec.class::cast)
+                   .ifPresent(declaration -> {
+                       Class<?> resultType = declaration.getDeclarationClass();
+                       if (resultType != null && resultType != Object.class) {
+                           context.getExpressions().forEach(expression ->
+                                   replaceTypeInExprLambdaAndIndex(declaration.getBindingId(), resultType, expression));
+                       }
+                   });
         }
     }
 

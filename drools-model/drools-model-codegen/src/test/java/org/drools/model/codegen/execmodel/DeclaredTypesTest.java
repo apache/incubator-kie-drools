@@ -601,6 +601,26 @@ public class DeclaredTypesTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
+    public void testResultConstraintReferencingInlineAccumulateBinding(RUN_TYPE runType) {
+        // An inline-binding accumulate whose result binding is used in a result constraint
+        // (e.g. "$ages : collectList($a); $ages.size > 0") must compile: the binding has to be typed
+        // against the accumulate function's result type rather than left as Object, otherwise the
+        // result-constraint lambda fails to compile.
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate(\n" +
+                "    $p : Person( $a : age );\n" +
+                "    $ages : collectList( $a );\n" +
+                "    $ages.size > 0\n" +
+                "  )\n" +
+                "then end";
+        KieSession ksession = getKieSession(runType, str);
+        ksession.fireAllRules();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
     void testNonDefinedCustomAnnotation(RUN_TYPE runType) {
         String str = "package org.example.custom; \n" +
                 "import " + Date.class.getCanonicalName() + ";\n" +
