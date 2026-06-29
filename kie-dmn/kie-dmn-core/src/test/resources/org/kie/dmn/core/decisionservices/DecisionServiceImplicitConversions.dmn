@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+
+  Derived from TCK test 1157-implicit-conversions, keeping only the three
+  Decision Service nodes and their body decisions. The standalone decisions
+  and BKMs (commented-out in the original) are intentionally omitted.
+
+  Decision Services:
+   1. "To Singleton List DS"       – DS typeRef=dateList,      body typeRef=date
+      → evaluator wraps scalar date into a singleton dateList
+   2. "From Singleton List DS"     – DS typeRef=date,          body typeRef=dateList
+      → evaluator unwraps singleton dateList to a scalar date
+   3. "From Date to Date and Time DS" – DS typeRef=date and time, body typeRef=date
+      → evaluator coerces LocalDate to ZonedDateTime (midnight UTC)
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0"
+             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+             namespace="https://kie.org/dmn/_F9BB5760-8BCA-4216-AAD9-8BD4FB70802D"
+             id="_B6EF67C0-8376-4854-8D71-79484E1DBF39"
+             name="1157-implicit-conversions-DS">
+
+    <!-- ── Custom collection types ──────────────────────────────────────── -->
+    <itemDefinition id="_7546A1B0-00DF-40AB-B2CD-6ED845798BAA" name="dateList" isCollection="true">
+        <typeRef>date</typeRef>
+    </itemDefinition>
+
+    <!-- ── FunctionItem-based DS types ──────────────────────────────────── -->
+    <!-- DS1: function returning dateList (scalar date output → wrapped to list) -->
+    <itemDefinition id="_7546A1B0-00DF-40AB-B2CD-6ED845798BAE" name="functionReturningDateList">
+        <functionItem outputTypeRef="dateList" id="_DC20B4DF-E952-43B8-8CAB-AE78FD7E5F10" />
+    </itemDefinition>
+    <!-- DS2: function returning date (dateList output → unwrapped to scalar) -->
+    <itemDefinition id="_7546A1B0-00DF-40AB-B2CD-6ED845798BAF" name="functionReturningDate">
+        <functionItem outputTypeRef="date" id="_E1AEDADB-A715-4AF9-B312-A60619877709" />
+    </itemDefinition>
+    <!-- DS3: function returning date and time (date output → coerced to dateTime) -->
+    <itemDefinition id="_7546A1B0-00DF-40AB-B2CD-6ED845798BAD" name="functionReturningDateTime">
+        <functionItem outputTypeRef="date and time" id="_8FBD47B9-9EA7-4A08-9AAA-7858B9D62B55" />
+    </itemDefinition>
+
+    <!-- ── DS1: scalar date → singleton dateList ────────────────────────── -->
+    <decisionService name="To Singleton List DS" id="_BF3F2933-A588-41F1-AC98-492A79088A53">
+        <variable name="To Singleton List DS" id="_4C2AB9A4-BDB1-4BC4-A9B6-040020AA235E" typeRef="functionReturningDateList" />
+        <outputDecision href="#_B3384D41-36C1-414E-A48D-FF817F728BB2" />
+    </decisionService>
+    <decision name="Body 1" id="_B3384D41-36C1-414E-A48D-FF817F728BB2">
+        <variable id="_9F749E69-EDEB-4B02-9130-E32E0F1065A1" typeRef="date" name="Body 1" />
+        <literalExpression id="_56188658-200B-4385-99B0-72CC17A8A6F7" typeRef="date">
+            <text>date(2000, 1, 2)</text>
+        </literalExpression>
+    </decision>
+
+    <!-- ── DS2: singleton dateList → scalar date ────────────────────────── -->
+    <decisionService name="From Singleton List DS" id="_79630040-ED4D-4656-A7E8-700D5DF62B3F">
+        <variable name="From Singleton List DS" id="_6888721D-A77C-4EEB-BB53-0248D23E1B68" typeRef="functionReturningDate" />
+        <outputDecision href="#_A8E5ACA2-02C8-4424-A826-AC330FF424FF" />
+    </decisionService>
+    <decision name="Body 2" id="_A8E5ACA2-02C8-4424-A826-AC330FF424FF">
+        <variable id="_0B08A715-E336-4F39-8665-159D51BD30A7" typeRef="dateList" name="Body 2" />
+        <literalExpression id="_0A455E79-9FD3-469E-8917-099508B742DB" typeRef="dateList">
+            <text>[date(2000, 1, 2)]</text>
+        </literalExpression>
+    </decision>
+
+    <!-- ── DS3: date → date and time ────────────────────────────────────── -->
+    <decisionService name="From Date to Date and Time DS" id="_44150402-E698-4F84-B30D-51BB159F9E92">
+        <variable name="From Date to Date and Time DS" id="_A2C1C994-4A9C-4CF0-9062-4A9469E2779A" typeRef="functionReturningDateTime" />
+        <outputDecision href="#_9B10A67E-B994-492A-BB53-089F22A8B9D4" />
+    </decisionService>
+    <decision name="Body 3" id="_9B10A67E-B994-492A-BB53-089F22A8B9D4">
+        <variable id="_EDE24ED4-A39B-4FFF-9C67-11369F5F67D6" typeRef="date" name="Body 3" />
+        <literalExpression id="_363B48FD-4E56-4176-BA21-0B619143EEE7" typeRef="date">
+            <text>date(2000, 1, 2)</text>
+        </literalExpression>
+    </decision>
+
+</definitions>

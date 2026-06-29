@@ -18,24 +18,28 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamedElement;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -142,6 +146,181 @@ public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
             }
         }
 
+    }
+
+    @Test
+    void resolveBuiltInType_nullReturnsNull() {
+        assertThat(DecisionServiceCompiler.resolveBuiltInType(null)).isNull();
+    }
+
+    @Test
+    void resolveBuiltInType_stringCaseInsensitive() {
+        assertThat(DecisionServiceCompiler.resolveBuiltInType("STRING")).isEqualTo(BuiltInType.STRING);
+    }
+
+    @Test
+    void resolveBuiltInType_date() {
+        assertThat(DecisionServiceCompiler.resolveBuiltInType("date")).isEqualTo(BuiltInType.DATE);
+    }
+
+    @Test
+    void resolveBuiltInType_dateAndTime() {
+        assertThat(DecisionServiceCompiler.resolveBuiltInType("date and time")).isEqualTo(BuiltInType.DATE_TIME);
+    }
+
+    @Test
+    void resolveBuiltInType_number() {
+        assertThat(DecisionServiceCompiler.resolveBuiltInType("number")).isEqualTo(BuiltInType.NUMBER);
+    }
+
+    @Test
+    void resolveBuiltInType_boolean() {
+        assertThat(DecisionServiceCompiler.resolveBuiltInType("boolean")).isEqualTo(BuiltInType.BOOLEAN);
+    }
+
+
+    @Test
+    void resolveDMNTypeString() {
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+        when(registry.resolveType("ns", "string"))
+                .thenReturn(null);
+
+        QName qName = new QName("", "string");
+
+        DMNType result = DecisionServiceCompiler.resolveDMNType(qName, model);
+        assertThat(result).isInstanceOf(SimpleTypeImpl.class);
+        assertThat(((SimpleTypeImpl) result).getFeelType()).isEqualTo(BuiltInType.STRING);
+    }
+
+    @Test
+    void resolveDMNTypeDateAndTime() {
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenReturn(null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        DMNType result = DecisionServiceCompiler.resolveDMNType(new QName("", "date and time"), model);
+        assertThat(result).isInstanceOf(SimpleTypeImpl.class);
+        assertThat(((SimpleTypeImpl) result).getFeelType()).isEqualTo(BuiltInType.DATE_TIME);
+        assertThat(result.isCollection()).isFalse();
+    }
+
+    @Test
+    void resolveDMNType_listBuiltInIsMarkedAsCollection() {
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenReturn(null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        DMNType result = DecisionServiceCompiler.resolveDMNType(new QName("", "list"), model);
+        assertThat(result).isInstanceOf(SimpleTypeImpl.class);
+        assertThat(((SimpleTypeImpl) result).getFeelType()).isEqualTo(BuiltInType.LIST);
+        assertThat(result.isCollection()).isTrue();
+    }
+
+    @Test
+    void resolveDMNType_unknownNameReturnsNull() {
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenReturn(null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DecisionServiceCompiler.resolveDMNType(new QName("", "not-a-type"), model)).isNull();
+    }
+
+    // fi=scalar "string", fd=collection "tDateList" (base=date) — bases differ → false
+    @Test
+    void isReturnTypeCollectionCompatible_incompatibleType() {
+        final String ns = "ns";
+        SimpleTypeImpl dateType = new SimpleTypeImpl(ns, "date", null, false, null, null, null, BuiltInType.DATE);
+        SimpleTypeImpl tDateList = new SimpleTypeImpl(ns, "tDateList", null, true, null, null, dateType, BuiltInType.DATE);
+
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenAnswer(inv -> "tDateList".equals(inv.getArgument(1)) ? tDateList : null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn(ns);
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DecisionServiceCompiler.isReturnTypeCollectionCompatible(
+                new QName(ns, "string"), new QName(ns, "tDateList"), model)).isFalse();
+    }
+
+    // fi=scalar "date", fd=collection "tDateList" (base=date) — same base → true
+    @Test
+    void isReturnTypeCollectionCompatible_compatibleType() {
+        final String ns = "ns";
+        SimpleTypeImpl dateType = new SimpleTypeImpl(ns, "date", null, false, null, null, null, BuiltInType.DATE);
+        SimpleTypeImpl tDateList = new SimpleTypeImpl(ns, "tDateList", null, true, null, null, dateType, BuiltInType.DATE);
+
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenAnswer(inv -> "tDateList".equals(inv.getArgument(1)) ? tDateList : null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn(ns);
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DecisionServiceCompiler.isReturnTypeCollectionCompatible(
+                new QName(ns, "date"), new QName(ns, "tDateList"), model)).isTrue();
+    }
+
+
+    // fi=collection "tDateList" (base=date), fd=scalar "date" — compatible → true
+    @Test
+    void isReturnTypeCollectionCompatible_collectionFi_scalarFd_compatibleBase() {
+        final String ns = "ns";
+        SimpleTypeImpl dateType = new SimpleTypeImpl(ns, "date", null, false, null, null, null, BuiltInType.DATE);
+        SimpleTypeImpl tDateList = new SimpleTypeImpl(ns, "tDateList", null, true, null, null, dateType, BuiltInType.DATE);
+
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenAnswer(inv -> "tDateList".equals(inv.getArgument(1)) ? tDateList : null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn(ns);
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DecisionServiceCompiler.isReturnTypeCollectionCompatible(
+                new QName(ns, "tDateList"), new QName(ns, "date"), model)).isTrue();
+    }
+
+
+    // fi="date and time", fd="date" — date-to-dateTime coercion pattern → true
+    @Test
+    void isReturnTypeCollectionCompatible_dateTimeFi_dateFd_compatible() {
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenReturn(null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DecisionServiceCompiler.isReturnTypeCollectionCompatible(
+                new QName("", "date and time"), new QName("", "date"), model)).isTrue();
+    }
+
+    // fi="date", fd="date and time" — order matters → false
+    @Test
+    void isReturnTypeCollectionCompatible_dateFi_dateTimeFd_incompatible() {
+        DMNTypeRegistry registry = mock(DMNTypeRegistry.class);
+        when(registry.resolveType(any(), any())).thenReturn(null);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DecisionServiceCompiler.isReturnTypeCollectionCompatible(
+                new QName("", "date"), new QName("", "date and time"), model)).isFalse();
     }
 
 }
