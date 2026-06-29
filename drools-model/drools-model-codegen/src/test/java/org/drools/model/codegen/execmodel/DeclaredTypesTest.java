@@ -636,6 +636,35 @@ public class DeclaredTypesTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
+    public void testDeclaredTypeExtendingDeclaredTypeInDifferentPackage(RUN_TYPE runType) {
+        // A declared type that extends a declared type in a DIFFERENT package must generate a
+        // full-argument constructor that includes the inherited fields and forwards them to super(...).
+        // Here Child (com.test.childpkg) extends Parent (com.test.parentpkg), so the consequent
+        // 'new Child("Mario", 40, "Sales")' must compile and the inherited name/age must be populated.
+        String parentDrl =
+                "package com.test.parentpkg;\n" +
+                "declare Parent\n" +
+                "  name : String\n" +
+                "  age : int\n" +
+                "end\n";
+        String childDrl =
+                "package com.test.childpkg;\n" +
+                "import com.test.parentpkg.Parent;\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Child extends Parent\n" +
+                "  dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then insert( new Child(\"Mario\", 40, \"Sales\") ); end\n" +
+                "rule Chk when\n" +
+                "  Child( name == \"Mario\", age == 40, dept == \"Sales\" )\n" +
+                "then insert( new Result(\"ok\") ); end";
+        KieSession ksession = getKieSession(runType, parentDrl, childDrl);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
     void testNonDefinedCustomAnnotation(RUN_TYPE runType) {
         String str = "package org.example.custom; \n" +
                 "import " + Date.class.getCanonicalName() + ";\n" +
