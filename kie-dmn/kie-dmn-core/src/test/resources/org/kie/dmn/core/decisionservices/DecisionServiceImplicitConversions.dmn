@@ -16,18 +16,6 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-
-  Derived from TCK test 1157-implicit-conversions, keeping only the three
-  Decision Service nodes and their body decisions. The standalone decisions
-  and BKMs (commented-out in the original) are intentionally omitted.
-
-  Decision Services:
-   1. "To Singleton List DS"       – DS typeRef=dateList,      body typeRef=date
-      → evaluator wraps scalar date into a singleton dateList
-   2. "From Singleton List DS"     – DS typeRef=date,          body typeRef=dateList
-      → evaluator unwraps singleton dateList to a scalar date
-   3. "From Date to Date and Time DS" – DS typeRef=date and time, body typeRef=date
-      → evaluator coerces LocalDate to ZonedDateTime (midnight UTC)
 -->
 <definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
              xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
