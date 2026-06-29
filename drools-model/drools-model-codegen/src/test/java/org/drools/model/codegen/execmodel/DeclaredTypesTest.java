@@ -18,6 +18,11 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -40,8 +45,10 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.model.codegen.execmodel.domain.Address;
+import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
+import org.drools.model.codegen.execmodel.generator.visitor.pattern.ClassPatternDSL;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
@@ -50,6 +57,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -597,6 +605,42 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersPatternOnly")
+    public void testUnparseableConstraintInUnnamedPatternIsLoggedWithContext(RUN_TYPE runType) {
+        // When the pattern auto-naming pre-pass (ClassPatternDSL.findFirstInnerBinding) hits a
+        // constraint it cannot parse, it must not fail with a bare "unexpected token:" that hides which
+        // rule is at fault. It now logs a WARN naming the rule and the offending expression, then skips
+        // it; the real constraint compilation still rejects it (that abort is unchanged and correct).
+        // 'class == X.class' is rejected by the executable-model DRLX grammar, so it triggers the path.
+        // Executable-model only: the classic compiler accepts 'class ==' and never reaches this pre-pass.
+        Logger logger = (Logger) LoggerFactory.getLogger(ClassPatternDSL.class);
+        ListAppender<ILoggingEvent> appender = new ListAppender<>();
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            String str =
+                    "package org.test;\n" +
+                    "import " + Person.class.getCanonicalName() + ";\n" +
+                    "import " + Child.class.getCanonicalName() + ";\n" +
+                    "rule R when\n" +
+                    "    Person( class == Child.class )\n" +
+                    "then end";
+            try {
+                createKieBuilder(runType, str);
+            } catch (RuntimeException expected) {
+                // The real constraint compilation still rejects 'class == ...'; that abort is unchanged.
+            }
+            assertThat(appender.list)
+                    .as("a WARN naming the rule and the offending constraint expression must be logged")
+                    .anyMatch(e -> e.getLevel() == Level.WARN
+                            && e.getFormattedMessage().contains("rule 'R'")
+                            && e.getFormattedMessage().contains("Child.class"));
+        } finally {
+            logger.detachAppender(appender);
+        }
     }
 
     @ParameterizedTest
