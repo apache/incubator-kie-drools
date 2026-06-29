@@ -212,10 +212,8 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> {
                     Boolean greater = compare(left, right,
                             (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0);
-                    //Boolean equal = BooleanEvalHelper.isEqual(left, right, dialect);
-                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
-                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
-                            : null;
+                    Object eqResult = EqExecutor.instance().evaluate(left, right, ctx);
+                    Boolean equal = (eqResult instanceof Boolean) ? (Boolean) eqResult : null;
                     if (greater == null && equal == null)
                         return null;
                     if (Boolean.TRUE.equals(greater) || Boolean.TRUE.equals(equal))
@@ -275,10 +273,8 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> {
                     Boolean less = compare(left, right,
                             (l, r) -> l.compareTo(r) < 0);
-                    // Boolean equal = BooleanEvalHelper.isEqual(left, right, dialect);
-                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
-                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
-                            : null;
+                    Object eqResult = EqExecutor.instance().evaluate(left, right, ctx);
+                    Boolean equal = (eqResult instanceof Boolean) ? (Boolean) eqResult : null;
 
                     if (less == null && equal == null) {
                         return null;

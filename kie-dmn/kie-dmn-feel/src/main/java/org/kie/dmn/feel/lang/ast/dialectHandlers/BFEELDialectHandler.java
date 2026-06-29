@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
@@ -224,18 +223,13 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     Boolean greater = compare(left, right, (l, r) -> l.compareTo(r) > 0);
-                    //Boolean equal = BooleanEvalHelper.isEqual(left, right, ctx.getFEELDialect());
-                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
-                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
-                            : null;
+                    Object eqResult = EqExecutor.instance().evaluate(left, right, ctx);
+                    Boolean equal = (eqResult instanceof Boolean) ? (Boolean) eqResult : null;
 
-                    if (greater == null && equal == null) {
-                        return Boolean.FALSE; // BFEEL default for incompatible types
-                    }
                     if (Boolean.TRUE.equals(greater) || Boolean.TRUE.equals(equal)) {
                         return Boolean.TRUE;
                     }
-                    return Boolean.FALSE;
+                    return Boolean.FALSE; // BFEEL default for incompatible types
                 });
         return map;
     }
@@ -252,11 +246,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         // BFEEL: All other comparisons (numeric, dates, strings, Booleans, etc.)
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> {
-                    Boolean greater = compare(left, right,
-                            (l, r) -> l.compareTo(r) > 0);
-                    return Objects.requireNonNullElse(greater, Boolean.FALSE);
-                });
+                (left, right) -> compare(left, right, (l, r) -> l.compareTo(r) > 0));
         return map;
     }
 
@@ -282,19 +272,14 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean less = compare(left, right,
-                            (l, r) -> l.compareTo(r) < 0);
-                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
-                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
-                            : null;
+                    Boolean less = compare(left, right, (l, r) -> l.compareTo(r) < 0);
+                    Object eqResult = EqExecutor.instance().evaluate(left, right, ctx);
+                    Boolean equal = (eqResult instanceof Boolean) ? (Boolean) eqResult : null;
 
-                    if (less == null && equal == null) {
-                        return Boolean.FALSE; // BFEEL default for incompatible types
-                    }
                     if (Boolean.TRUE.equals(less) || Boolean.TRUE.equals(equal)) {
                         return Boolean.TRUE;
                     }
-                    return Boolean.FALSE;
+                    return Boolean.FALSE; // BFEEL default for incompatible types
                 });
         return map;
     }
@@ -311,11 +296,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         // BFEEL: All other comparisons (numeric, dates, strings, Booleans, etc.)
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> {
-                    Boolean less = compare(left, right,
-                            (l, r) -> l.compareTo(r) < 0);
-                    return Objects.requireNonNullElse(less, Boolean.FALSE);
-                });
+                (left, right) -> compare(left, right, (l, r) -> l.compareTo(r) < 0));
         return map;
     }
 
