@@ -202,8 +202,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-
-        // BFEEL: null returns FALSE (not null like standard FEEL)
+        // BFEEL: null returns FALSE
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> Boolean.FALSE);
@@ -237,8 +236,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-
-        // BFEEL: null returns FALSE (not null like standard FEEL)
+        // BFEEL: null returns FALSE 
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> Boolean.FALSE);
@@ -253,8 +251,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-
-        // BFEEL: null returns FALSE (not null like standard FEEL)
+        // BFEEL: null returns FALSE
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> Boolean.FALSE);
@@ -287,8 +284,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-
-        // BFEEL: null returns FALSE (not null like standard FEEL)
+        // BFEEL: null returns FALSE
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> Boolean.FALSE);
