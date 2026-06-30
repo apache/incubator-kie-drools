@@ -22,6 +22,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.phreak.PhreakAsyncReceiveNode;
 import org.drools.core.phreak.PhreakAsyncSendNode;
+import org.drools.core.phreak.PhreakBiLinearJoinNode;
 import org.drools.core.phreak.PhreakBranchNode;
 import org.drools.core.phreak.PhreakEvalNode;
 import org.drools.core.phreak.PhreakExistsNode;
@@ -46,6 +47,11 @@ public class MetricPhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFact
         } else {
             return new PhreakJoinNode(reteEvaluator);
         }
+    }
+
+    @Override
+    public PhreakBiLinearJoinNode createPhreakBiLinearJoinNode(ReteEvaluator reteEvaluator) {
+        return new PhreakBiLinearJoinNode(reteEvaluator);
     }
 
     @Override

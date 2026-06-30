@@ -42,6 +42,7 @@ import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.BiLinearJoinNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -72,12 +73,18 @@ import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.util.LinkedList;
 
+import static org.drools.core.phreak.BiLinearRoutingHelper.routePeerToBiLinearRightMemory;
+import static org.drools.core.phreak.BiLinearRoutingHelper.routePeerUpdateToBiLinearRightMemory;
+import static org.drools.core.phreak.BiLinearRoutingHelper.routePeerDeleteToBiLinearRightMemory;
+import static org.drools.core.phreak.BiLinearRoutingHelper.shouldRouteToBiLinearRightMemory;
+
 import static org.drools.core.common.TupleSetsImpl.createLeftTupleTupleSets;
 
 public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
 
     
     private final PhreakJoinNode         pJoinNode;
+    private final PhreakBiLinearJoinNode pBiLinearJoinNode;
     private final PhreakEvalNode         pEvalNode;
     private final PhreakFromNode         pFromNode;
     private final PhreakReactiveFromNode pReactiveFromNode;
@@ -103,6 +110,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         this.nodeMemories = nodeMemories;
         this.segmentMemorySupport = segmentMemorySupport;
         pJoinNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakJoinNode(reteEvaluator);
+        pBiLinearJoinNode = PhreakNetworkNodeFactory.Factory.get().createPhreakBiLinearJoinNode(reteEvaluator);
         pEvalNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakEvalNode(reteEvaluator);
         pFromNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakFromNode(reteEvaluator);
         pReactiveFromNode = PhreakNetworkNodeFactory.Factory.get().createPhreakReactiveFromNode(reteEvaluator);
@@ -522,9 +530,15 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         sc.traceSwitchOnBetaNodes(bm);
 
         LeftTupleSinkNode sink = sc.getFirstLeftTupleSink();
-        switch (sc.getCurrentNode().getType()) {
+        int nodeType = sc.getCurrentNode().getType();
+        switch (nodeType) {
             case NodeTypeEnums.JoinNode: {
                 pJoinNode.doNode((JoinNode) sc.getCurrentNode(), sink, bm,
+                        sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
+                break;
+            }
+            case NodeTypeEnums.BiLinearJoinNode: {
+                pBiLinearJoinNode.doNode((BiLinearJoinNode) sc.getCurrentNode(), sink, bm,
                         sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
                 break;
             }
@@ -689,9 +703,9 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         if (leftTuples.isEmpty()) {
             return;
         }
-        
+
         segmentMemorySupport.initializeChildSegmentsIfNeeded(sourceSegment);
-                
+
         processPeers(sourceSegment, leftTuples);
 
         Iterator<SegmentMemory> peersIterator = sourceSegment.getPeersWithDataDrivenPathMemoriesIterator();
@@ -704,7 +718,17 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                     // skip flushing segments that have only inserts staged and the path is not linked
                     continue;
                 }
-                forceFlushLeftTuple(dataDrivenPmem, smem, smem.getStagedLeftTuples());
+
+                // For BiLinear paths, start evaluation from segment 0 to pick up consumer segment updates.
+                // The BiLinear right memory already has peer updates staged via processPeers/BiLinearRoutingHelper.
+                if (shouldRouteToBiLinearRightMemory(sourceSegment, smem)) {
+                    SegmentMemory segment0 = dataDrivenPmem.getSegmentMemories()[0];
+                    if (segment0 != null) {
+                        forceFlushLeftTuple(dataDrivenPmem, segment0, segment0.getStagedLeftTuples().takeAll());
+                    }
+                } else {
+                    forceFlushLeftTuple(dataDrivenPmem, smem, smem.getStagedLeftTuples());
+                }
                 forceFlushWhenSubnetwork(dataDrivenPmem);
             }
         }
@@ -713,16 +737,16 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     private static void processPeers(SegmentMemory sourceSegment, TupleSets leftTuples) {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
-        processPeerDeletes( leftTuples.getDeleteFirst(), firstSmem );
-        processPeerDeletes( leftTuples.getNormalizedDeleteFirst(), firstSmem );
-        processPeerUpdates( leftTuples, firstSmem );
-        processPeerInserts( leftTuples, firstSmem );
+        processPeerDeletes( leftTuples.getDeleteFirst(), firstSmem, sourceSegment );
+        processPeerDeletes( leftTuples.getNormalizedDeleteFirst(), firstSmem, sourceSegment );
+        processPeerUpdates( leftTuples, firstSmem, sourceSegment );
+        processPeerInserts( leftTuples, firstSmem, sourceSegment );
 
         firstSmem.getStagedLeftTuples().addAll( leftTuples );
         leftTuples.resetAll();
     }
 
-    private static void processPeerInserts(TupleSets leftTuples, SegmentMemory firstSmem) {
+    private static void processPeerInserts(TupleSets leftTuples, SegmentMemory firstSmem, SegmentMemory sourceSegment) {
         for (TupleImpl leftTuple = leftTuples.getInsertFirst(); leftTuple != null; leftTuple =  leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
@@ -734,15 +758,25 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                     for (; smem != null; smem = smem.getNext()) {
                         LeftTupleSink sink = smem.getSinkFactory();
                         peer = TupleFactory.createPeer(sink, peer); // pctx is set during peer cloning
-                        smem.getStagedLeftTuples().addInsert( peer );
+                        // Check if this peer segment needs BiLinear right memory routing
+                        if (shouldRouteToBiLinearRightMemory(sourceSegment, smem)) {
+                            routePeerToBiLinearRightMemory(smem, peer);
+                        } else {
+                            smem.getStagedLeftTuples().addInsert( peer );
+                        }
                     }
                 } else {
                     TupleImpl peer = leftTuple.getPeer();
                     // peers exist, so update them as an insert, which also handles staged clashing.
                     for (; smem != null; smem = smem.getNext()) {
                         peer.setPropagationContext( leftTuple.getPropagationContext() );
-                        // ... and update the staged LeftTupleSets according to its current staged state
-                        updateChildLeftTupleDuringInsert(peer, smem.getStagedLeftTuples(), smem.getStagedLeftTuples());
+                        // Check if this peer segment needs BiLinear right memory routing
+                        if (shouldRouteToBiLinearRightMemory(sourceSegment, smem)) {
+                            routePeerToBiLinearRightMemory(smem, peer);
+                        } else {
+                            // ... and update the staged LeftTupleSets according to its current staged state
+                            updateChildLeftTupleDuringInsert(peer, smem.getStagedLeftTuples(), smem.getStagedLeftTuples());
+                        }
                         peer = peer.getPeer();
                     }
                 }
@@ -750,15 +784,20 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
     }
 
-    private static void processPeerUpdates(TupleSets leftTuples, SegmentMemory firstSmem) {
+    private static void processPeerUpdates(TupleSets leftTuples, SegmentMemory firstSmem, SegmentMemory sourceSegment) {
         for (TupleImpl leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
                 for ( TupleImpl peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                    // only stage, if not already staged, if insert, leave as insert
-                    if ( peer.getStagedType() == LeftTuple.NONE ) {
-                        peer.setPropagationContext( leftTuple.getPropagationContext() );
-                        smem.getStagedLeftTuples().addUpdate( peer );
+                    peer.setPropagationContext( leftTuple.getPropagationContext() );
+                    // Check if this peer segment needs BiLinear right memory routing
+                    if (shouldRouteToBiLinearRightMemory(sourceSegment, smem)) {
+                        routePeerUpdateToBiLinearRightMemory(smem, peer);
+                    } else {
+                        // only stage, if not already staged, if insert, leave as insert
+                        if ( peer.getStagedType() == LeftTuple.NONE ) {
+                            smem.getStagedLeftTuples().addUpdate( peer );
+                        }
                     }
 
                     smem = smem.getNext();
@@ -789,15 +828,20 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
     }
 
-    private static void processPeerDeletes(TupleImpl leftTuple, SegmentMemory firstSmem) {
+    private static void processPeerDeletes(TupleImpl leftTuple, SegmentMemory firstSmem, SegmentMemory sourceSegment) {
         for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
                 for ( TupleImpl peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
                     peer.setPropagationContext( leftTuple.getPropagationContext() );
-                    TupleSets stagedLeftTuples = smem.getStagedLeftTuples();
-                    // if the peer is already staged as insert or update the LeftTupleSets will reconcile it internally
-                    stagedLeftTuples.addDelete( peer );
+                    // Check if this peer segment needs BiLinear right memory routing
+                    if (shouldRouteToBiLinearRightMemory(sourceSegment, smem)) {
+                        routePeerDeleteToBiLinearRightMemory(smem, peer);
+                    } else {
+                        TupleSets stagedLeftTuples = smem.getStagedLeftTuples();
+                        // if the peer is already staged as insert or update the LeftTupleSets will reconcile it internally
+                        stagedLeftTuples.addDelete( peer );
+                    }
                     smem = smem.getNext();
                 }
             }

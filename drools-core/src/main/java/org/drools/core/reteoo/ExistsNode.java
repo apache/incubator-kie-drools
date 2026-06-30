@@ -56,7 +56,7 @@ public class ExistsNode extends BetaNode {
     }
     
     public String toString() {
-        BaseNode source = this.rightInput;
+        BaseNode source = this.rightInput.asBaseNode();
         while ( source != null && source.getClass() != ObjectTypeNode.class ) {
             source = source.getParent();
         }

@@ -671,6 +671,10 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         return this.index;
     }
 
+    protected void setIndex(int index) {
+        this.index = index;
+    }
+
     /* Had to add the set method because sink adapters must override
      * the tuple sink set when the tuple was created.
      */

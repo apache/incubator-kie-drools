@@ -25,6 +25,8 @@ public interface PhreakNetworkNodeFactory extends KieService {
 
     PhreakJoinNode createPhreakJoinNode(ReteEvaluator reteEvaluator);
 
+    PhreakBiLinearJoinNode createPhreakBiLinearJoinNode(ReteEvaluator reteEvaluator);
+
     PhreakEvalNode createPhreakEvalNode(ReteEvaluator reteEvaluator);
 
     PhreakFromNode createPhreakFromNode(ReteEvaluator reteEvaluator);

@@ -63,7 +63,7 @@ public abstract class BetaNode extends LeftTupleSource
     protected static final Logger log = LoggerFactory.getLogger(BetaNode.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    protected RightInputAdapterNode rightInput;
+    protected BetaRightInput rightInput;
 
     protected BetaConstraints constraints;
 
@@ -97,7 +97,7 @@ public abstract class BetaNode extends LeftTupleSource
      */
     protected BetaNode(final int id,
              final LeftTupleSource leftInput,
-             final RightInputAdapterNode rightInput,
+             final BetaRightInput<BetaNode> rightInput,
              final BetaConstraints constraints,
              final BuildContext context) {
         super(id, context);
@@ -182,7 +182,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public RightInputAdapterNode getRightInput() {
+    public BetaRightInput getRightInput() {
         return this.rightInput;
     }
 

@@ -21,7 +21,7 @@ package org.drools.mvel.compiler.reteoo;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collections;
-
+import java.util.HashMap;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
@@ -29,6 +29,7 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.builder.BiLinearDetector;
 import org.drools.mvel.integrationtests.LargeRuleBase;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ public class ReteooBuilderPerformanceTest {
         long    start   = System.currentTimeMillis();
         for (ReteooBuilder reteBuilder : reteBuilders) {
             for (Rule rule : pkg.getRules())
-                reteBuilder.addRule((RuleImpl)rule, Collections.emptyList());
+                reteBuilder.addRule((RuleImpl)rule, Collections.emptyList(), new BiLinearDetector.BiLinearContext(new HashMap<>(), new HashMap<>()));
         }
         System.out.println("Added "+RULE_COUNT+" rules to each ReteBuilder's in "+
                            format(System.currentTimeMillis()-start));
