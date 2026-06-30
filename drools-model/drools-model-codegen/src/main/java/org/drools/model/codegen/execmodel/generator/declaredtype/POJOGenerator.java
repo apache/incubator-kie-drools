@@ -29,6 +29,7 @@ import java.util.Set;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
@@ -64,19 +65,33 @@ public class POJOGenerator implements CompilationPhase {
     private InternalKnowledgePackage pkg;
     private PackageDescr packageDescr;
     private PackageModel packageModel;
+    private final Collection<? extends PackageDescr> allPackages;
+    private final PackageRegistryManager pkgRegistryManager;
 
     private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
 
-    public POJOGenerator(BuildResultCollector builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public POJOGenerator(BuildResultCollector builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel,
+                         Collection<? extends PackageDescr> allPackages, PackageRegistryManager pkgRegistryManager) {
         this.builder = builder;
         this.pkg = pkg;
         this.packageDescr = packageDescr;
         this.packageModel = packageModel;
+        this.allPackages = allPackages;
+        this.pkgRegistryManager = pkgRegistryManager;
         packageModel.addImports(pkg.getTypeResolver().getImports());
     }
 
+    public POJOGenerator(BuildResultCollector builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+        this(builder, pkg, packageDescr, packageModel, null, null);
+    }
+
     public POJOGenerator(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
-        this(new BuildResultCollectorImpl(), pkg, packageDescr, packageModel);
+        this(new BuildResultCollectorImpl(), pkg, packageDescr, packageModel, null, null);
+    }
+
+    public POJOGenerator(InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel,
+                         Collection<? extends PackageDescr> allPackages, PackageRegistryManager pkgRegistryManager) {
+        this(new BuildResultCollectorImpl(), pkg, packageDescr, packageModel, allPackages, pkgRegistryManager);
     }
 
     public static Map<String, Class<?>> compileType(BuildResultCollector resultAccumulator,
@@ -145,7 +160,7 @@ public class POJOGenerator implements CompilationPhase {
 
     private void createPOJO(TypeDeclarationDescr typeDescr) {
         SafeTypeResolver typeResolver = new SafeTypeResolver(pkg.getTypeResolver());
-        DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr, typeResolver);
+        DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr, typeResolver, allPackages, pkgRegistryManager);
         descrDeclaredTypeDefinition.getErrors().forEach(builder::addBuilderResult);
 
         // Implemented types should be probably in
