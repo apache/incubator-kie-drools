@@ -21,15 +21,14 @@ package org.kie.dmn.core.util;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -112,14 +111,14 @@ class CoerceUtilTest {
                                                   BuiltInType.DATE_TIME);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdtRetrieved = (ZonedDateTime)retrieved;
+        assertThat(retrieved).isInstanceOf(FormattedZonedDateTime.class);
+        FormattedZonedDateTime zdtRetrieved = (FormattedZonedDateTime)retrieved;
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
 
-         assertThat(zdtRetrieved.getHour()).isEqualTo(0);
-        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
-        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
+        assertThat(zdtRetrieved.getZonedDateTime().getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getZonedDateTime().getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getZonedDateTime().getSecond()).isEqualTo(0);
     }
 
     @Test
@@ -206,13 +205,13 @@ class CoerceUtilTest {
                                                   BuiltInType.DATE_TIME);
         Object retrieved = CoerceUtil.actualCoerceValue(requiredType, value);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdtRetrieved = (ZonedDateTime)retrieved;
+        assertThat(retrieved).isInstanceOf(FormattedZonedDateTime.class);
+        FormattedZonedDateTime zdtRetrieved = (FormattedZonedDateTime)retrieved;
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
-        assertThat(zdtRetrieved.getHour()).isEqualTo(0);
-        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
-        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
+        assertThat(zdtRetrieved.getZonedDateTime().getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getZonedDateTime().getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getZonedDateTime().getSecond()).isEqualTo(0);
     }
 
     @Test
