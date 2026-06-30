@@ -16,25 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.runtime.rule;
-import org.kie.api.annotations.KieInternal;
+package org.kie.api.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface AgendaGroup {
-
-    /**
-     * Static reference to determine the default <code>AgendaGroup</code> name.
-     */
-    @KieInternal
-    String MAIN = "MAIN";
-
-    /**
-     * @return
-     *      The AgendaGroup name
-     */
-    String getName();
-
-    void clear();
-
-    void setFocus();
+/**
+ * Annotation used to mark <code>String</code>s that are used as <b>internal properties</b> in running applications, e.g. <code>private static final String MAIN_NODE = "Main"</code>
+ * and not meant to be configurable by users.
+ * Its retention is set as <code>RetentionPolicy.SOURCE</code> because, for the moment being, it is meant to be used only for description
+ * purpose.
+ * It has to be applied to <b>class properties</b>.
+ */
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.FIELD)
+public @interface KieInternal {
 }

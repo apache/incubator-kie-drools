@@ -1,0 +1,228 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import org.jenkinsci.plugins.workflow.libs.Library
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+// Map of executed jobs
+// See https://javadoc.jenkins.io/plugin/workflow-support/org/jenkinsci/plugins/workflow/support/steps/build/RunWrapper.html
+// for more options on built job entity
+JOBS = [:]
+
+FAILED_STAGES = [:]
+UNSTABLE_STAGES = [:]
+
+pipeline {
+    agent {
+        label util.avoidFaultyNodes('ubuntu')
+    }
+
+    options {
+        timeout(time: 360, unit: 'MINUTES')
+    }
+
+    environment {
+        DROOLS_CI_EMAIL = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        // Use branch name in nightly tag as we may have parallel main and release branch builds
+        NIGHTLY_TAG = """${getBuildBranch()}-${sh(
+                returnStdout: true,
+                script: 'date -u "+%Y-%m-%d"'
+            ).trim()}"""
+}
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    echo "nightly tag is ${env.NIGHTLY_TAG}"
+
+                    currentBuild.displayName = env.NIGHTLY_TAG
+                }
+            }
+        }
+
+        stage('Init Drools') {
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addDroolsVersionParam(buildParams)
+                    buildJob('drools', buildParams)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage('drools')
+                }
+            }
+        }
+
+        // Commented as not migrated for now
+        // stage('Init KIE jpmml integration') {
+        //     steps {
+        //         script {
+        //             def buildParams = getDefaultBuildParams()
+        //             addDroolsVersionParam(buildParams)
+        //             buildJob('kie-jpmml-integration', buildParams)
+        //         }
+        //     }
+        //     post {
+        //         failure {
+        //             addFailedStage('kie-jpmml-integration')
+        //         }
+        //     }
+        // }
+
+        // Launch the nightly to deploy all artifacts from the branch
+        stage('Launch the nightly') {
+            when {
+                expression { return params.DEPLOY }
+            }
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addBooleanParam(buildParams, 'SKIP_TESTS', true)
+                    build(job: '../nightly/0-nightly', wait: false, parameters: buildParams, propagate: false)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage('nightly')
+                }
+            }
+        }
+
+        // Launch the weekly to deploy all artifacts from the branch
+        stage('Launch the weekly') {
+            when {
+                expression { return params.DEPLOY }
+            }
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addBooleanParam(buildParams, 'SKIP_TESTS', true)
+                    build(job: '../other/0-weekly', wait: false, parameters: buildParams, propagate: false)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage('weekly')
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendPipelineErrorNotification()
+        }
+    }
+}
+
+def buildJob(String jobName, List buildParams, String jobKey = jobName, boolean waitForJob = true) {
+    echo "[${jobKey}] Build ${jobName} with params ${buildParams}"
+
+    def job = build(job: "${jobName}", wait: waitForJob, parameters: buildParams, propagate: false)
+    JOBS[jobKey] = job
+
+    // Set Unstable if job did not succeed
+    if (waitForJob && !isJobSucceeded(jobKey)) {
+        addUnstableStage(jobKey)
+        unstable("Job ${jobName} finished with result ${job.result}")
+    }
+    return job
+}
+
+def getJob(String jobKey) {
+    return JOBS[jobKey]
+}
+
+String getJobUrl(String jobKey) {
+    echo "getJobUrl for ${jobKey}"
+    return getJob(jobKey)?.absoluteUrl ?: ''
+}
+
+boolean isJobSucceeded(String jobKey) {
+    return getJob(jobKey)?.result == 'SUCCESS'
+}
+
+void addFailedStage(String jobKey = '') {
+    FAILED_STAGES.put("${STAGE_NAME}", jobKey)
+}
+void addUnstableStage(String jobKey = '') {
+    UNSTABLE_STAGES.put("${STAGE_NAME}", jobKey)
+}
+
+void sendPipelineErrorNotification() {
+    String bodyMsg = "Kogito setup branch job #${BUILD_NUMBER} was: ${currentBuild.currentResult}"
+
+    if (FAILED_STAGES.size()) {
+        bodyMsg += '\nFailed stages: \n- '
+        bodyMsg += FAILED_STAGES.collect { "${it.key} => ${getJobUrl(it.value)}" }.join('\n- ')
+    }
+    bodyMsg += '\n'
+    if (UNSTABLE_STAGES.size()) {
+        bodyMsg += '\nUnstable stages: \n- '
+        bodyMsg += UNSTABLE_STAGES.collect { "${it.key} => ${getJobUrl(it.value)}" }.join('\n- ')
+    }
+    bodyMsg += '\n'
+    bodyMsg += "\nPlease look here: ${BUILD_URL}"
+    emailext body: bodyMsg, subject: "[${getBuildBranch()}][d] Setup branch",
+                to: env.DROOLS_CI_EMAIL
+}
+
+List getDefaultBuildParams() {
+    List buildParams = []
+    addStringParam(buildParams, 'DISPLAY_NAME', "${env.NIGHTLY_TAG}")
+    addBooleanParam(buildParams, 'SEND_NOTIFICATION', true)
+
+    return buildParams
+}
+
+void addDroolsVersionParam(buildParams) {
+    addStringParam(buildParams, 'DROOLS_VERSION', getDroolsVersion())
+}
+
+void addStringParam(List params, String key, String value) {
+    params.add(string(name: key, value: value))
+}
+
+void addBooleanParam(List params, String key, boolean value) {
+    params.add(booleanParam(name: key, value: value))
+}
+
+String getBuildBranch() {
+    return env.GIT_BRANCH_NAME
+}
+
+String getDroolsVersion() {
+    return params.DROOLS_VERSION ?: getVersionFromReleaseBranch(getBuildBranch())
+}
+
+String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 999, String suffix = 'SNAPSHOT') {
+    String [] versionSplit = releaseBranch.split("\\.")
+    if (versionSplit.length == 3
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+        && versionSplit[2] == 'x') {
+        return "${versionSplit[0]}.${versionSplit[1]}.${microVersion}${suffix ? '-' + suffix : ''}"
+    } else {
+        error 'Cannot parse given branch as a release branch, aka [M].[m].x ...'
+    }
+}

@@ -97,7 +97,7 @@ public class AbstractDroolsAssetsProcessor {
                                  BuildProducer<GlobalsBuildItem> globalsBI,
                                  BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer) {
 
-        DroolsModelBuildContext context = createDroolsBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex());
+        DroolsModelBuildContext context = createDroolsBuildContext(root.getResolvedPaths(), combinedIndexBuildItem.getIndex());
 
         Path[] assetPaths = getAssetPaths(context, curateOutcomeBuildItem);
         Collection<Resource> resources = ResourceCollector.fromPaths(assetPaths);

@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
@@ -31,6 +33,7 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -104,8 +107,24 @@ public class EnumGenerator {
     private void addEnumerationValue(EnumLiteralDescr enumLiteral) {
         EnumConstantDeclaration element = new EnumConstantDeclaration(enumLiteral.getName());
         for (String constructorArgument : enumLiteral.getConstructorArgs()) {
-            element.addArgument(new NameExpr(constructorArgument));
+            element.addArgument(parseConstructorArgument(enumLiteral, constructorArgument));
         }
         enumDeclaration.addEntry(element);
+    }
+
+    /**
+     * Parses an enum-constant constructor argument as a Java expression.
+     */
+    private Expression parseConstructorArgument(EnumLiteralDescr enumLiteral,
+                                                String constructorArgument) {
+        try {
+            return StaticJavaParser.parseExpression(constructorArgument);
+        } catch (ParseProblemException e) {
+            throw new IllegalStateException(
+                "Failed to parse constructor argument '" + constructorArgument +
+                    "' for enum literal '" + enumLiteral.getName() +
+                    "': " + e.getMessage(),
+                e);
+        }
     }
 }
