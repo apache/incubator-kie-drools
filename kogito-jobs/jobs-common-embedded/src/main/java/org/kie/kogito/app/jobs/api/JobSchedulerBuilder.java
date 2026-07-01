@@ -22,6 +22,7 @@ import org.kie.kogito.app.jobs.impl.VertxJobScheduler;
 import org.kie.kogito.app.jobs.integrations.JobExceptionDetailsExtractor;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
+import org.kie.kogito.app.jobs.spi.TransactionRollbackMarker;
 import org.kie.kogito.event.EventPublisher;
 
 public interface JobSchedulerBuilder {
@@ -61,4 +62,6 @@ public interface JobSchedulerBuilder {
     JobSchedulerBuilder withJobDescriptorMergers(JobDescriptionMerger... jobDescriptionMergers);
 
     JobSchedulerBuilder withExceptionDetailsExtractor(JobExceptionDetailsExtractor exceptionDetailsExtractor);
+
+    JobSchedulerBuilder withTransactionRollbackMarker(TransactionRollbackMarker transactionRollbackMarker);
 }

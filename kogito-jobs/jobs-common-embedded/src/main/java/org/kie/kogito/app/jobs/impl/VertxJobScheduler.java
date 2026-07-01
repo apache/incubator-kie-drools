@@ -47,6 +47,8 @@ import org.kie.kogito.app.jobs.integrations.UserTaskInstanceJobDescriptorMerger;
 import org.kie.kogito.app.jobs.spi.JobContext;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
+import org.kie.kogito.app.jobs.spi.NoOpTransactionRollbackMarker;
+import org.kie.kogito.app.jobs.spi.TransactionRollbackMarker;
 import org.kie.kogito.app.jobs.spi.memory.MemoryJobContextFactory;
 import org.kie.kogito.app.jobs.spi.memory.MemoryJobStore;
 import org.kie.kogito.event.DataEvent;
@@ -114,6 +116,8 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
     private JobSynchronization jobSynchronization;
 
     private JobExceptionDetailsExtractor exceptionDetailsExtractor;
+
+    private TransactionRollbackMarker transactionRollbackMarker;
 
     public class VertxJobSchedulerBuilder implements JobSchedulerBuilder {
 
@@ -213,6 +217,12 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
             return this;
         }
 
+        @Override
+        public JobSchedulerBuilder withTransactionRollbackMarker(TransactionRollbackMarker transactionRollbackMarker) {
+            VertxJobScheduler.this.transactionRollbackMarker = transactionRollbackMarker;
+            return this;
+        }
+
     }
 
     public VertxJobScheduler() {
@@ -242,6 +252,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         this.refreshJobsInterval = 1000L;
         this.retryInterval = 10 * 1000L; // ten seconds
         this.maxRefreshJobsIntervalWindow = 5 * 60 * 1000L; // every 5 minute
+        this.transactionRollbackMarker = new NoOpTransactionRollbackMarker();
     }
 
     @Override
@@ -390,7 +401,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
     private void timeout(Long timerId, String jobId) {
         LOG.debug("Executing timeout with timer Id {} and jobId {}", timerId, jobId);
-        workerExecutor.executeBlocking(newTimeoutTask(timerId, jobId));
+        workerExecutor.executeBlocking(newTimeoutTask(timerId, jobId), false);
     }
 
     private Callable<JobTimeoutExecution> newTimeoutTask(Long timerId, String jobId) {
@@ -421,6 +432,10 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
                     return new JobTimeoutExecution(nextJobDetails);
                 } catch (Exception exception) {
                     LOG.trace("Timeout {} with jobId {} will be retried if possible", timerId, jobId, exception);
+
+                    // Mark the current transaction for rollback
+                    markTransactionForRollbackWhenEnabled();
+
                     JobDetails nextJobDetails = doRetryOrError(jobDetails, exception);
                     reconcileScheduling(timerId, jobContext, nextJobDetails);
                     jobSchedulerListeners.forEach(l -> l.onFailure(jobDetails));
@@ -435,6 +450,55 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         return current;
     }
 
+    /**
+     * Handles retry scheduling for RETRY and ERROR job statuses.
+     * If there's an active transaction that was marked for rollback, schedules the retry
+     * in a new transaction. Otherwise, persists the job immediately.
+     */
+    private void scheduleRetry(JobContext jobContext, JobDetails jobDetails) {
+        String jobId = jobDetails.getId();
+        JobStatus status = jobDetails.getStatus();
+
+        // Check if we need to execute in a new transaction
+        if (transactionRollbackMarker != null && transactionRollbackMarker.isTransactionActive()) {
+            // Current transaction will be rolled back, so schedule retry in a new transaction
+            LOG.trace("Job {} with status {} will be scheduled in new transaction", jobId, status);
+
+            JobContext newJobContext = jobContextFactory.newContext();
+
+            Callable<JobTimeoutExecution> newTransactionTask = () -> persistAndSchedule(newJobContext, jobDetails, status);
+
+            // Apply transaction interceptors to ensure this runs in a new transaction
+            for (JobTimeoutInterceptor interceptor : interceptors) {
+                newTransactionTask = interceptor.chainIntercept(newTransactionTask);
+            }
+
+            vertx.executeBlocking(newTransactionTask, false)
+                    .onFailure(e -> LOG.error("Async retry scheduling failed for job {}", jobId, e));
+        } else {
+            // No active transaction or transaction not marked for rollback
+            LOG.trace("Job {} with status {} will be scheduled", jobId, status);
+
+            try {
+                persistAndSchedule(jobContext, jobDetails, status);
+            } catch (Exception e) {
+                LOG.error("Failed to schedule retry for job {}", jobId, e);
+            }
+        }
+    }
+
+    private JobTimeoutExecution persistAndSchedule(JobContext jobContext, JobDetails jobDetails, JobStatus status) throws Exception {
+        jobStore.update(jobContext, jobDetails);
+        fireEvents(jobDetails);
+        // Schedule timer after persistence
+        if (status == JobStatus.RETRY) {
+            addOrUpdateTxTimer(jobDetails);
+        } else {
+            removeTxTimer(jobDetails);
+        }
+        return new JobTimeoutExecution(jobDetails);
+    }
+
     private void reconcileScheduling(Long timerId, JobContext jobContext, JobDetails nextJobDetails) {
         String jobId = nextJobDetails.getId();
         switch (nextJobDetails.getStatus()) {
@@ -445,15 +509,13 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
                 jobStore.remove(jobContext, jobId);
                 break;
             case SCHEDULED:
-            case RETRY:
                 LOG.trace("Timeout {} with jobId {} will be updated and scheduled", timerId, jobId);
                 addOrUpdateTxTimer(nextJobDetails);
                 jobStore.update(jobContext, nextJobDetails);
                 break;
+            case RETRY:
             case ERROR:
-                LOG.trace("Timeout {} with jobId {} will be set to error", timerId, jobId);
-                removeTxTimer(nextJobDetails);
-                jobStore.update(jobContext, nextJobDetails);
+                scheduleRetry(jobContext, nextJobDetails);
                 break;
             default:
                 LOG.trace("Timeout {} with jobId {} is RUNNING and should not happen", timerId, jobId);
@@ -553,7 +615,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
     private JobDetails doRetryOrError(JobDetails jobDetails, Exception exception) {
         Integer retryCounter = jobDetails.getRetries();
-        // First, create the next JobDetails (RETRY or ERROR) without firing events
+        // Create the next JobDetails (RETRY or ERROR)
         JobDetails nextJobDetails;
         if (retryCounter < this.maxNumberOfRetries) {
             LOG.trace("doRetryOrError: Job {} will be retried (retry {} of {})", jobDetails.getId(), retryCounter + 1, maxNumberOfRetries);
@@ -562,11 +624,10 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
             LOG.trace("doRetryOrError: Job {} exceeded max retries ({}) and will transition to ERROR", jobDetails.getId(), maxNumberOfRetries);
             nextJobDetails = createErrorJobDetails(jobDetails);
         }
-        // Then extract and set exception details BEFORE firing events
+        // Extract and set exception details
         extractAndSetExceptionDetails(nextJobDetails, exception);
         LOG.trace("doRetryOrError: Created {} with exception details: {}", nextJobDetails.getStatus(), nextJobDetails);
-        // Finally fire events with exception details already set
-        fireEvents(nextJobDetails);
+        // Events will be fired in scheduleRetry() after persistence
         return nextJobDetails;
     }
 
@@ -646,6 +707,17 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         List<DataEvent<byte[]>> jobInstanceEvents = jobEventAdapters.stream().filter(e -> e.accept(jobDetails)).map(e -> e.adapt(jobDetails)).toList();
         for (DataEvent<byte[]> jobEvent : jobInstanceEvents) {
             eventPublishers.forEach(e -> e.publish(jobEvent));
+        }
+    }
+
+    /**
+     * Marks the current transaction for rollback using the injected TransactionRollbackMarker.
+     */
+    private void markTransactionForRollbackWhenEnabled() {
+        if (transactionRollbackMarker != null) {
+            transactionRollbackMarker.markForRollback();
+        } else {
+            LOG.warn("No TransactionRollbackMarker configured. Transaction rollback marking is not supported.");
         }
     }
 

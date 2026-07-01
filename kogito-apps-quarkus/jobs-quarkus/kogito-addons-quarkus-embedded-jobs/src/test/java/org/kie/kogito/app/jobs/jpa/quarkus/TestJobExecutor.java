@@ -23,6 +23,7 @@ import org.kie.kogito.jobs.service.model.JobDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -30,6 +31,9 @@ public class TestJobExecutor implements JobExecutor {
 
     private Logger LOG = LoggerFactory.getLogger(TestJobExecutor.class);
     private int numberOfFailures;
+
+    @Inject
+    MockDataRepository mockDataRepository;
 
     @Override
     public boolean accept(JobDetails jobDescription) {
@@ -39,6 +43,12 @@ public class TestJobExecutor implements JobExecutor {
     @Override
     public void execute(JobDetails jobDescription) {
         LOG.info("executing {}", jobDescription);
+
+        // Simulate data persistence (e.g., creating a user task)
+        if (mockDataRepository != null) {
+            mockDataRepository.persistData(jobDescription.getId(), "execution-data");
+        }
+
         if (numberOfFailures > 0) {
             --numberOfFailures;
             throw new RuntimeException();

@@ -41,7 +41,9 @@ public class ErrorHandlingJobTimeoutInterceptor implements JobTimeoutInterceptor
 
     @Override
     public Integer priority() {
-        return 50;
+        // Priority 5 ensures this runs OUTSIDE the transaction interceptor (priority 10)
+        // This allows error handling to occur after transaction rollback
+        return 5;
     }
 
     @Override

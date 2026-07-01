@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import org.kie.kogito.app.jobs.api.JobTimeoutExecution;
 import org.kie.kogito.app.jobs.api.JobTimeoutInterceptor;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public class TransactionJobTimeoutInterceptor implements JobTimeoutInterceptor {
@@ -41,9 +42,25 @@ public class TransactionJobTimeoutInterceptor implements JobTimeoutInterceptor {
             public JobTimeoutExecution call() throws Exception {
                 return transactionTemplate.execute(status -> {
                     try {
+                        // Initialize transaction synchronization if not already active
+                        // This is needed for TransactionSynchronizationManager callbacks to work
+                        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+                            TransactionSynchronizationManager.initSynchronization();
+                        }
+
+                        // Store the transaction status in thread-local for SpringBootTransactionRollbackMarker
+                        SpringBootTransactionRollbackMarker.setCurrentTransactionStatus(status);
+
                         return callable.call();
+                    } catch (RuntimeException e) {
+                        // Re-throw RuntimeException to trigger rollback
+                        throw e;
                     } catch (Exception e) {
+                        // Wrap checked exceptions in RuntimeException to trigger rollback
                         throw new RuntimeException(e);
+                    } finally {
+                        // Clear the transaction status from thread-local
+                        SpringBootTransactionRollbackMarker.clearCurrentTransactionStatus();
                     }
                 });
             }

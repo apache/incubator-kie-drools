@@ -31,6 +31,7 @@ import org.kie.kogito.app.jobs.integrations.UserTaskInstanceJobDescriptionJobIns
 import org.kie.kogito.app.jobs.quarkus.resource.RestApiConstants;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
+import org.kie.kogito.app.jobs.spi.TransactionRollbackMarker;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.handler.ExceptionHandler;
 import org.kie.kogito.jobs.JobDescription;
@@ -94,6 +95,9 @@ public class QuarkusJobsService implements JobsService {
     @Inject
     WrappingConditionalJobExceptionDetailsExtractor exceptionDetailsExtractor;
 
+    @Inject
+    TransactionRollbackMarker transactionRollbackMarker;
+
     @PostConstruct
     public void init() {
         this.jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
@@ -114,6 +118,7 @@ public class QuarkusJobsService implements JobsService {
                         new TransactionJobTimeoutInterceptor(),
                         new ErrorHandlingJobTimeoutInterceptor(exceptionHandlers.stream().toList()))
                 .withExceptionDetailsExtractor(exceptionDetailsExtractor)
+                .withTransactionRollbackMarker(transactionRollbackMarker)
                 .withNumberOfWorkerThreads(numberOfWorkerThreads)
                 .withJobSynchronization(new JobSynchronization() {
 
