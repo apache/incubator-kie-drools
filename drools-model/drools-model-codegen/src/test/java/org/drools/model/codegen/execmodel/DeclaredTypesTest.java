@@ -627,7 +627,7 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results).hasSize(1);
-        assertThat((List) results.iterator().next().getValue()).containsExactlyInAnyOrder(37, 40);
+        assertThat((List<?>) results.iterator().next().getValue()).containsExactlyInAnyOrder(37, 40);
     }
 
     @ParameterizedTest
