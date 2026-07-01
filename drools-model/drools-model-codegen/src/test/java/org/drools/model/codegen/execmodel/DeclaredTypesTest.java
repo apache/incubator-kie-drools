@@ -608,15 +608,26 @@ public class DeclaredTypesTest extends BaseModelTest {
         // result-constraint lambda fails to compile.
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  accumulate(\n" +
                 "    $p : Person( $a : age );\n" +
                 "    $ages : collectList( $a );\n" +
                 "    $ages.size > 0\n" +
                 "  )\n" +
-                "then end";
+                "then\n" +
+                "  insert(new Result($ages));\n" +
+                "end";
         KieSession ksession = getKieSession(runType, str);
-        ksession.fireAllRules();
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Mario", 40));
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).hasSize(1);
+        assertThat((List) results.iterator().next().getValue()).containsExactlyInAnyOrder(37, 40);
     }
 
     @ParameterizedTest
