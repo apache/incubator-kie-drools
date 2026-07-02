@@ -19,6 +19,8 @@
 package org.kie.dmn.core.decisionservices;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,6 +34,7 @@ import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -732,5 +735,84 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         assertSupplyingPersonname(runtime, dmnModel);
+    }
+
+    // =========================================================================
+    // Integration tests — DecisionServiceImplicitConversions.dmn (incubator-kie-issues#2188)
+    //
+    // DS1 "To Singleton List DS":          body typeRef=date,     DS typeRef=dateList
+    //     → evaluator wraps scalar date into a singleton dateList
+    // DS2 "From Singleton List DS":        body typeRef=dateList,  DS typeRef=date
+    //     → evaluator unwraps singleton dateList to a scalar date
+    // DS3 "From Date to Date and Time DS": body typeRef=date,      DS typeRef=date and time
+    //     → evaluator coerces LocalDate to ZonedDateTime at midnight UTC
+    // =========================================================================
+
+    private static final String NS = "https://kie.org/dmn/_F9BB5760-8BCA-4216-AAD9-8BD4FB70802D";
+    private static final String NAME = "1157-implicit-conversions-DS";
+    private static final String FILE_NAME = "DecisionServiceImplicitConversions.dmn";
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void implicitConversionToSingletonList(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(FILE_NAME, this.getClass());
+        final DMNModel dmnModel = runtime.getModel(NS, NAME);
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, DMNFactory.newContext(), "To Singleton List DS");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        // Body 1 returns date(2000,1,2) — a scalar date; the DS wraps it into a singleton dateList
+        Object result = dmnResult.getContext().get("Body 1");
+        assertThat(result).isInstanceOf(List.class);
+        assertThat((List<Object>) result).containsExactly(LocalDate.of(2000, 1, 2));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void implicitConversionFromSingletonListDS(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(FILE_NAME, this.getClass());
+        final DMNModel dmnModel = runtime.getModel(NS, NAME);
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, DMNFactory.newContext(), "From Singleton List DS");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        // Body 2 returns [date(2000,1,2)] — a singleton list; the DS unwraps it to the scalar date
+        assertThat(dmnResult.getContext().get("Body 2")).isEqualTo(LocalDate.of(2000, 1, 2));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void implicitConversionfromDateToDateTimeDS(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(FILE_NAME, this.getClass());
+        final DMNModel dmnModel = runtime.getModel(NS, NAME);
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, DMNFactory.newContext(), "From Date to Date and Time DS");
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        // Body 3 returns date(2000,1,2) — the DS coerces it to a ZonedDateTime at midnight UTC
+        Object result = dmnResult.getContext().get("Body 3");
+        assertThat(result).isInstanceOf(FormattedZonedDateTime.class);
+        FormattedZonedDateTime zdt = (FormattedZonedDateTime) result;
+        assertThat(zdt.getZonedDateTime().getYear()).isEqualTo(2000);
+        assertThat(zdt.getZonedDateTime().getMonthValue()).isEqualTo(1);
+        assertThat(zdt.getZonedDateTime().getDayOfMonth()).isEqualTo(2);
+        assertThat(zdt.getZonedDateTime().getHour()).isEqualTo(0);
+        assertThat(zdt.getZonedDateTime().getMinute()).isEqualTo(0);
+        assertThat(zdt.getZonedDateTime().getSecond()).isEqualTo(0);
     }
 }

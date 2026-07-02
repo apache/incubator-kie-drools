@@ -41,15 +41,18 @@ import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.core.util.NamespaceUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.typesafe.DMNTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +152,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         ni.setEvaluator(exprEvaluator);
 
         if (ni.getType() != null) {
-            checkFnConsistency(model, ni, ni.getType(), outputDecisions);
+            validateDecisionServiceFunctionSignature(model, ni, ni.getType(), outputDecisions);
         }
     }
 
@@ -216,115 +219,166 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                 ni.getName());
     }
 
-    private void checkFnConsistency(DMNModelImpl model, DecisionServiceNodeImpl ni, DMNType type, List<DecisionNode> outputDecisions) {
-        SimpleFnTypeImpl fnType = ((SimpleFnTypeImpl) type);
-        FunctionItem fi = fnType.getFunctionItem();
-        if (fi.getParameters().size() != ni.getInputParameters().size()) {
+    private void validateDecisionServiceFunctionSignature(DMNModelImpl model, DecisionServiceNodeImpl decisionServiceNode, DMNType decisionServiceFunctionType, List<DecisionNode> outputDecisions) {
+        SimpleFnTypeImpl functionType = ((SimpleFnTypeImpl) decisionServiceFunctionType);
+        FunctionItem functionItem = functionType.getFunctionItem();
+        if (functionItem.getParameters().size() != decisionServiceNode.getInputParameters().size()) {
             MsgUtil.reportMessage(LOG,
                                   DMNMessage.Severity.ERROR,
-                                  ni.getDecisionService(),
+                                  decisionServiceNode.getDecisionService(),
                                   model,
                                   null,
                                   null,
                                   Msg.PARAMETER_COUNT_MISMATCH_COMPILING,
-                                  ni.getName(),
-                                  fi.getParameters().size(),
-                                  ni.getInputParameters().size());
+                                  decisionServiceNode.getName(),
+                                  functionItem.getParameters().size(),
+                                  decisionServiceNode.getInputParameters().size());
             return;
         }
-        for (int i = 0; i < fi.getParameters().size(); i++) {
-            InformationItem fiII = fi.getParameters().get(i);
-            String fpName = ni.getInputParameters().keySet().stream().skip(i).findFirst().orElse(null);
-            if (!fiII.getName().equals(fpName)) {
-                List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
-                List<String> funcDefParamNames = ni.getInputParameters().keySet().stream().collect(Collectors.toList());
+        for (int i = 0; i < functionItem.getParameters().size(); i++) {
+            InformationItem functionParameter = functionItem.getParameters().get(i);
+            String functionParameterName = decisionServiceNode.getInputParameters().keySet().stream().skip(i).findFirst().orElse(null);
+            if (!functionParameter.getName().equals(functionParameterName)) {
+                List<String> functionItemParamNames = functionItem.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
+                List<String> decisionServiceParamNames = decisionServiceNode.getInputParameters().keySet().stream().collect(Collectors.toList());
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
+                                      decisionServiceNode.getDecisionService(),
                                       model,
                                       null,
                                       null,
                                       Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
-                                      ni.getName(),
-                                      fiParamNames,
-                                      funcDefParamNames);
+                                      decisionServiceNode.getName(),
+                                      functionItemParamNames,
+                                      decisionServiceParamNames);
                 return;
             }
-            QName fiQname = fiII.getTypeRef();
-            QName fdQname = null;
-            DMNNode fpDMNNode = ni.getInputParameters().get(fpName);
-            if (fpDMNNode instanceof InputDataNodeImpl) {
-                fdQname = ((InputDataNodeImpl) fpDMNNode).getInputData().getVariable().getTypeRef();
-            } else if (fpDMNNode instanceof DecisionNodeImpl) {
-                fdQname = ((DecisionNodeImpl) fpDMNNode).getDecision().getVariable().getTypeRef();
+            QName functionParameterTypeRef = functionParameter.getTypeRef();
+            QName decisionServiceParameterTypeRef = null;
+            DMNNode inputParameterNode = decisionServiceNode.getInputParameters().get(functionParameterName);
+            if (inputParameterNode instanceof InputDataNodeImpl) {
+                decisionServiceParameterTypeRef = ((InputDataNodeImpl) inputParameterNode).getInputData().getVariable().getTypeRef();
+            } else if (inputParameterNode instanceof DecisionNodeImpl) {
+                decisionServiceParameterTypeRef = ((DecisionNodeImpl) inputParameterNode).getDecision().getVariable().getTypeRef();
             }
-            if (fiQname != null && fdQname != null && !fiQname.equals(fdQname)) {
+            if (functionParameterTypeRef != null && decisionServiceParameterTypeRef != null && !functionParameterTypeRef.equals(decisionServiceParameterTypeRef)) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
+                                      decisionServiceNode.getDecisionService(),
                                       model,
                                       null,
                                       null,
                                       Msg.PARAMETER_TYPEREF_MISMATCH_COMPILING,
-                                      ni.getName(),
-                                      fiII.getName(),
-                                      fiQname,
-                                      fdQname);
+                                      decisionServiceNode.getName(),
+                                      functionParameter.getName(),
+                                      functionParameterTypeRef,
+                                      decisionServiceParameterTypeRef);
             }
         }
-        QName fiReturnType = fi.getOutputTypeRef();
-        if (ni.getDecisionService().getOutputDecision().size() == 1) {
-            QName fdReturnType = outputDecisions.get(0).getDecision().getVariable().getTypeRef();
-            if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
+        QName functionReturnTypeRef = functionItem.getOutputTypeRef();
+        if (decisionServiceNode.getDecisionService().getOutputDecision().size() == 1) {
+            QName outputDecisionReturnTypeRef = outputDecisions.get(0).getDecision().getVariable().getTypeRef();
+            if (functionReturnTypeRef != null && outputDecisionReturnTypeRef != null && !functionReturnTypeRef.equals(outputDecisionReturnTypeRef) && !isReturnTypeCollectionCompatible(functionReturnTypeRef, outputDecisionReturnTypeRef, model)) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
+                                      decisionServiceNode.getDecisionService(),
                                       model,
                                       null,
                                       null,
                                       Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
-                                      ni.getName(),
-                                      fiReturnType,
-                                      fdReturnType);
+                                      decisionServiceNode.getName(),
+                                      functionReturnTypeRef,
+                                      outputDecisionReturnTypeRef);
             }
-        } else if (ni.getDecisionService().getOutputDecision().size() > 1) {
-            final Function<QName, QName> lookupFn = (in) -> NamespaceUtil.getNamespaceAndName(ni.getDecisionService(), model.getImportAliasesForNS(), in, model.getNamespace());
-            LinkedHashMap<String, QName> fdComposite = new LinkedHashMap<>();
-            for (DecisionNode dn : outputDecisions) {
-                fdComposite.put(dn.getName(), lookupFn.apply(dn.getDecision().getVariable().getTypeRef()));
+        } else if (decisionServiceNode.getDecisionService().getOutputDecision().size() > 1) {
+            final Function<QName, QName> namespaceQNameLookup = (qname) -> NamespaceUtil.getNamespaceAndName(decisionServiceNode.getDecisionService(), model.getImportAliasesForNS(), qname, model.getNamespace());
+            LinkedHashMap<String, QName> decisionServiceCompositeType = new LinkedHashMap<>();
+            for (DecisionNode decisionNode : outputDecisions) {
+                decisionServiceCompositeType.put(decisionNode.getName(), namespaceQNameLookup.apply(decisionNode.getDecision().getVariable().getTypeRef()));
             }
-            final QName lookup = lookupFn.apply(fiReturnType);
-            Optional<ItemDefNodeImpl> composite = model.getItemDefinitions().stream().filter(id -> id.getModelNamespace().equals(lookup.getNamespaceURI()) && id.getName().equals(lookup.getLocalPart())).map(ItemDefNodeImpl.class::cast).findFirst();
-            if (composite.isEmpty()) {
+            final QName resolvedFunctionReturnTypeRef = namespaceQNameLookup.apply(functionReturnTypeRef);
+            Optional<ItemDefNodeImpl> matchedItemDefNode = model.getItemDefinitions().stream().filter(id -> id.getModelNamespace().equals(resolvedFunctionReturnTypeRef.getNamespaceURI()) && id.getName().equals(resolvedFunctionReturnTypeRef.getLocalPart())).map(ItemDefNodeImpl.class::cast).findFirst();
+            if (matchedItemDefNode.isEmpty()) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
+                                      decisionServiceNode.getDecisionService(),
                                       model,
                                       null,
                                       null,
                                       Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
-                                      ni.getName(),
-                                      lookup,
-                                      fdComposite);
+                                      decisionServiceNode.getName(),
+                                      resolvedFunctionReturnTypeRef,
+                                      decisionServiceCompositeType);
                 return;
             }
-            LinkedHashMap<String, QName> fiComposite = new LinkedHashMap<>();
-            for (ItemDefinition ic : composite.get().getItemDef().getItemComponent()) {
-                fiComposite.put(ic.getName(), lookupFn.apply(ic.getTypeRef()));
+            LinkedHashMap<String, QName> functionCompositeType = new LinkedHashMap<>();
+            for (ItemDefinition itemDefinition : matchedItemDefNode.get().getItemDef().getItemComponent()) {
+                functionCompositeType.put(itemDefinition.getName(), namespaceQNameLookup.apply(itemDefinition.getTypeRef()));
             }
-            if (!fiComposite.equals(fdComposite)) {
+            if (!functionCompositeType.equals(decisionServiceCompositeType)) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
+                                      decisionServiceNode.getDecisionService(),
                                       model,
                                       null,
                                       null,
                                       Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
-                                      ni.getName(),
-                                      fiComposite,
-                                      fdComposite);
+                                      decisionServiceNode.getName(),
+                                      functionCompositeType,
+                                      decisionServiceCompositeType);
             }
         }
+    }
+
+    static boolean isReturnTypeCollectionCompatible(QName functionReturnTypeRef,  QName outputDecisionReturnTypeRef, DMNModelImpl model) {
+        DMNType decisionServiceOutputType = resolveDMNType(functionReturnTypeRef, model);
+        DMNType decisionOutputType = resolveDMNType(outputDecisionReturnTypeRef, model);
+
+        if (!decisionServiceOutputType.isCollection() && decisionOutputType.isCollection()) {
+            DMNType outputDecisionElementType = decisionOutputType.getBaseType();
+            return outputDecisionElementType == null || DMNTypeUtils.getFEELBuiltInType(outputDecisionElementType)
+                    == DMNTypeUtils.getFEELBuiltInType(decisionServiceOutputType);
+        }
+        if (decisionServiceOutputType.isCollection() && !decisionOutputType.isCollection()) {
+            DMNType decisionServiceElementType = decisionServiceOutputType.getBaseType();
+            return decisionServiceElementType != null && DMNTypeUtils.getFEELBuiltInType(decisionServiceElementType)
+                    == DMNTypeUtils.getFEELBuiltInType(decisionOutputType);
+        }
+        return decisionServiceOutputType instanceof SimpleTypeImpl decisionServiceSimpleType && decisionServiceSimpleType.getFeelType() == BuiltInType.DATE_TIME &&
+                decisionOutputType instanceof SimpleTypeImpl decisionOutputSimpleType && decisionOutputSimpleType.getFeelType() == BuiltInType.DATE;
+    }
+
+    static DMNType resolveDMNType(QName typeRef, DMNModelImpl model) {
+        DMNType type = model.getTypeRegistry().resolveType(model.getNamespace(), typeRef.getLocalPart());
+        if (type == null) {
+            BuiltInType builtInType = resolveBuiltInType(typeRef.getLocalPart());
+            if (builtInType != null) {
+                boolean isCollection = (builtInType == BuiltInType.LIST);
+                type = new SimpleTypeImpl(
+                        model.getNamespace(),
+                        builtInType.getName(),
+                        null,
+                        isCollection,
+                        null,
+                        null,
+                        null,
+                        builtInType
+                );
+            }
+        }
+        return type;
+    }
+
+    static BuiltInType resolveBuiltInType(String name) {
+        if (name == null) return null;
+        for (BuiltInType builtInType : BuiltInType.values()) {
+            for (String typeName : builtInType.getNames()) {
+                if (typeName.equalsIgnoreCase(name)) {
+                    return builtInType;
+                }
+            }
+        }
+        return null;
     }
 
 }
