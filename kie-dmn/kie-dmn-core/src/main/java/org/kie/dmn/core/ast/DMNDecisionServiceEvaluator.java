@@ -78,7 +78,7 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
 
             DMNType expectedType = dsNode.getResultType();
             Object originalResult = decisionResultById.getResult();
-            Object coercedResult = originalResult != null ? CoerceUtil.coerceValue(expectedType, originalResult) : null;
+            Object coercedResult = CoerceUtil.coerceValue(expectedType, originalResult);
             if (coercedResult != originalResult) {
                 ((DMNDecisionResultImpl) decisionResultById).setResult(coercedResult);
             }
