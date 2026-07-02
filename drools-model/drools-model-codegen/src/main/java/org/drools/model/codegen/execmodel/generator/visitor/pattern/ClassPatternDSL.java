@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -72,6 +73,8 @@ import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.StreamUtils.optionalToStream;
 
 public class ClassPatternDSL extends PatternDSL {
+
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ClassPatternDSL.class);
 
     private Class<?> patternType;
 
@@ -166,12 +169,36 @@ public class ClassPatternDSL extends PatternDSL {
     }
 
     private Optional<String> findFirstInnerBinding(List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
-        return constraintDescrs.stream()
-                .map( constraint -> ConstraintExpression.createConstraintExpression( context, patternType, constraint, isPositional(constraint) ).getExpression() )
-                .map( DrlxParseUtil::parseExpression )
-                .filter( drlx -> drlx.getBind() != null )
-                .map( drlx -> drlx.getBind().asString() )
-                .findFirst();
+        for ( BaseDescr constraint : constraintDescrs ) {
+            ConstraintExpression constraintExpression =
+                    ConstraintExpression.createConstraintExpression( context, patternType, constraint, isPositional( constraint ) );
+            if ( constraintExpression == null ) {
+                continue;
+            }
+            String expression = constraintExpression.getExpression();
+            if ( expression == null || expression.trim().isEmpty() ) {
+                continue;
+            }
+            DrlxExpression drlx;
+            try {
+                drlx = DrlxParseUtil.parseExpression( expression );
+            } catch ( RuntimeException e ) {
+                // This method only parses constraints to derive a name for an *unnamed* pattern. A
+                // constraint that doesn't parse here cannot declare an inner binding ($x : field) anyway,
+                // so deriving a name from it is impossible regardless; don't let it abort the whole
+                // KieBase build. Log which rule and pattern carry the offending constraint (to aid
+                // diagnosis), then skip. The actual constraint compilation is handled separately in
+                // findAllConstraint and will report a proper compilation error there if warranted.
+                LOG.warn( "Skipping a constraint that could not be parsed while generating an identifier for an " +
+                          "unnamed pattern of type {} in rule '{}'. Offending constraint expression: [{}] ({}: {})",
+                          patternType, context.getRuleName(), expression, e.getClass().getSimpleName(), e.getMessage() );
+                continue;
+            }
+            if ( drlx.getBind() != null ) {
+                return Optional.of( drlx.getBind().asString() );
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
