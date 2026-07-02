@@ -18,10 +18,13 @@
  */
 package org.drools.model.codegen.execmodel.generator.declaredtype;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,7 @@ import org.drools.model.codegen.execmodel.generator.declaredtype.api.FieldDefini
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.MethodDefinition;
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeDefinition;
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeResolver;
+import org.kie.api.definition.type.Position;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
@@ -161,7 +165,45 @@ public class DescrTypeDefinition implements TypeDefinition {
 
     @Override
     public List<FieldDefinition> findInheritedDeclaredFields() {
-        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclarationDescr, packageDescr));
+        List<FieldDefinition> fields = findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclarationDescr, packageDescr));
+        if (fields.isEmpty()) {
+            abstractClass.ifPresent(superClass -> fields.addAll(inheritedFieldsFromSuperClass(superClass)));
+        }
+        return fields;
+    }
+
+    /**
+     * Collects the positional fields of a resolved Java superclass, walking the class hierarchy.
+     * A field participates only when it carries {@link Position} (explicit opt-in), ordered by its
+     * position value; this deterministically excludes non-positional members (and keeps the
+     * generated {@code super(...)} call aligned with a positional constructor on the superclass).
+     * When the superclass declares no {@link Position} at all, fall back to all non-static instance
+     * fields in declaration order (top-most ancestor first).
+     */
+    private List<FieldDefinition> inheritedFieldsFromSuperClass(Class<?> superClass) {
+        List<Class<?>> hierarchy = new ArrayList<>();
+        for (Class<?> c = superClass; c != null && c != Object.class; c = c.getSuperclass()) {
+            hierarchy.add(0, c);
+        }
+
+        List<Field> instanceFields = new ArrayList<>();
+        for (Class<?> c : hierarchy) {
+            for (Field f : c.getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers())) {
+                    instanceFields.add(f);
+                }
+            }
+        }
+
+        List<Field> positioned = instanceFields.stream()
+                .filter(f -> f.getAnnotation(Position.class) != null)
+                .sorted(Comparator.comparingInt(f -> f.getAnnotation(Position.class).value()))
+                .collect(Collectors.toList());
+
+        List<Field> chosen = positioned.isEmpty() ? instanceFields : positioned;
+        return chosen.stream()
+                .map(f -> (FieldDefinition) new DescrFieldDefinition(f.getName(), f.getType().getCanonicalName(), null))
+                .collect(Collectors.toList());
     }
 
     private List<FieldDefinition> findInheritedDeclaredFields(List<FieldDefinition> fields, Optional<TypeDeclarationDescr> superType) {
