@@ -1,0 +1,48 @@
+{
+  "id" : 0,
+  "n" : 4,
+  "columnList" : [ {
+    "id" : 0,
+    "index" : 0
+  }, {
+    "id" : 1,
+    "index" : 1
+  }, {
+    "id" : 2,
+    "index" : 2
+  }, {
+    "id" : 3,
+    "index" : 3
+  } ],
+  "rowList" : [ {
+    "id" : 0,
+    "index" : 0
+  }, {
+    "id" : 1,
+    "index" : 1
+  }, {
+    "id" : 2,
+    "index" : 2
+  }, {
+    "id" : 3,
+    "index" : 3
+  } ],
+  "queenList" : [ {
+    "id" : 0,
+    "column" : 0,
+    "row" : null
+  }, {
+    "id" : 1,
+    "column" : 1,
+    "row" : null
+  }, {
+    "id" : 2,
+    "column" : 2,
+    "row" : null
+  }, {
+    "id" : 3,
+    "column" : 3,
+    "row" : null
+  } ],
+  "score" : null
+}

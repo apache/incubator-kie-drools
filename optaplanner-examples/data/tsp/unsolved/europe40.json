@@ -1,0 +1,529 @@
+{
+  "id" : 0,
+  "name" : "europe40",
+  "distanceType" : "AIR_DISTANCE",
+  "distanceUnitOfMeasurement" : "distance",
+  "locationList" : [ {
+    "@type" : "air",
+    "@id" : "AirLocation#1",
+    "id" : 1,
+    "name" : "Brussels",
+    "latitude" : 50797.14,
+    "longitude" : 4361.572
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#2",
+    "id" : 2,
+    "name" : "Dublin",
+    "latitude" : 53309.435,
+    "longitude" : -6284.18
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#3",
+    "id" : 3,
+    "name" : "London",
+    "latitude" : 51465.872,
+    "longitude" : -131.836
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#4",
+    "id" : 4,
+    "name" : "Paris",
+    "latitude" : 48797.698,
+    "longitude" : 2351.074
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#5",
+    "id" : 5,
+    "name" : "Reykjavik",
+    "latitude" : 64133.219,
+    "longitude" : -21886.139
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#6",
+    "id" : 6,
+    "name" : "Luxembourg",
+    "latitude" : 49537.568,
+    "longitude" : 6130.371
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#7",
+    "id" : 7,
+    "name" : "Amsterdam",
+    "latitude" : 52320.12,
+    "longitude" : 4888.916
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#8",
+    "id" : 8,
+    "name" : "Berlin",
+    "latitude" : 52480.996,
+    "longitude" : 13414.307
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#9",
+    "id" : 9,
+    "name" : "Copenhagen",
+    "latitude" : 55620.139,
+    "longitude" : 12579.346
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#10",
+    "id" : 10,
+    "name" : "Oslo",
+    "latitude" : 59876.442,
+    "longitude" : 10766.602
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#11",
+    "id" : 11,
+    "name" : "Stockholm",
+    "latitude" : 59292.446,
+    "longitude" : 18061.523
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#12",
+    "id" : 12,
+    "name" : "Helsinki",
+    "latitude" : 60134.576,
+    "longitude" : 24949.951
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#13",
+    "id" : 13,
+    "name" : "Tallinn",
+    "latitude" : 59363.808,
+    "longitude" : 24763.184
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#14",
+    "id" : 14,
+    "name" : "Riga",
+    "latitude" : 56845.768,
+    "longitude" : 24082.031
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#15",
+    "id" : 15,
+    "name" : "Vilnius",
+    "latitude" : 54581.401,
+    "longitude" : 25268.555
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#16",
+    "id" : 16,
+    "name" : "Minsk",
+    "latitude" : 53810.166,
+    "longitude" : 27553.711
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#17",
+    "id" : 17,
+    "name" : "Warsaw",
+    "latitude" : 52129.891,
+    "longitude" : 21005.859
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#18",
+    "id" : 18,
+    "name" : "Moscow",
+    "latitude" : 55661.888,
+    "longitude" : 37617.188
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#19",
+    "id" : 19,
+    "name" : "Kiev",
+    "latitude" : 50355.742,
+    "longitude" : 30541.992
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#20",
+    "id" : 20,
+    "name" : "Chisinau",
+    "latitude" : 46916.253,
+    "longitude" : 28828.125
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#21",
+    "id" : 21,
+    "name" : "Bucharest",
+    "latitude" : 44319.656,
+    "longitude" : 26059.57
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#22",
+    "id" : 22,
+    "name" : "Sofia",
+    "latitude" : 42581.13,
+    "longitude" : 23312.988
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#23",
+    "id" : 23,
+    "name" : "Ankara",
+    "latitude" : 39943.436,
+    "longitude" : 32857.132
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#24",
+    "id" : 24,
+    "name" : "Athens",
+    "latitude" : 37852.881,
+    "longitude" : 23730.469
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#25",
+    "id" : 25,
+    "name" : "Nicosia",
+    "latitude" : 35099.537,
+    "longitude" : 33365.479
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#26",
+    "id" : 26,
+    "name" : "Tirana",
+    "latitude" : 41283.861,
+    "longitude" : 19808.35
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#27",
+    "id" : 27,
+    "name" : "Skopje",
+    "latitude" : 41949.141,
+    "longitude" : 21456.299
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#28",
+    "id" : 28,
+    "name" : "Podgorica",
+    "latitude" : 42380.73,
+    "longitude" : 19281.006
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#29",
+    "id" : 29,
+    "name" : "Belgrade",
+    "latitude" : 44752.455,
+    "longitude" : 20456.543
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#30",
+    "id" : 30,
+    "name" : "Sarajevo",
+    "latitude" : 43784.843,
+    "longitude" : 18347.168
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#31",
+    "id" : 31,
+    "name" : "Zagreb",
+    "latitude" : 45757.815,
+    "longitude" : 15974.121
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#32",
+    "id" : 32,
+    "name" : "Ljubljana",
+    "latitude" : 45994.926,
+    "longitude" : 14490.967
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#33",
+    "id" : 33,
+    "name" : "Rome",
+    "latitude" : 41842.83,
+    "longitude" : 12491.455
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#34",
+    "id" : 34,
+    "name" : "Madrid",
+    "latitude" : 40369.427,
+    "longitude" : -3691.406
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#35",
+    "id" : 35,
+    "name" : "Lisbon",
+    "latitude" : 38648.91,
+    "longitude" : -9140.625
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#36",
+    "id" : 36,
+    "name" : "Bern",
+    "latitude" : 46895.737,
+    "longitude" : 7437.744
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#37",
+    "id" : 37,
+    "name" : "Vienna",
+    "latitude" : 48142.143,
+    "longitude" : 16380.615
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#38",
+    "id" : 38,
+    "name" : "Prague",
+    "latitude" : 50066.778,
+    "longitude" : 14419.556
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#39",
+    "id" : 39,
+    "name" : "Bratislava",
+    "latitude" : 48098.138,
+    "longitude" : 17105.713
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#40",
+    "id" : 40,
+    "name" : "Budapest",
+    "latitude" : 47440.969,
+    "longitude" : 19039.307
+  } ],
+  "domicile" : {
+    "@type" : "domicile",
+    "@id" : "Domicile#1",
+    "id" : 1,
+    "location" : "AirLocation#1"
+  },
+  "visitList" : [ {
+    "@type" : "visit",
+    "@id" : "Visit#2",
+    "id" : 2,
+    "location" : "AirLocation#2",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#3",
+    "id" : 3,
+    "location" : "AirLocation#3",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#4",
+    "id" : 4,
+    "location" : "AirLocation#4",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#5",
+    "id" : 5,
+    "location" : "AirLocation#5",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#6",
+    "id" : 6,
+    "location" : "AirLocation#6",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#7",
+    "id" : 7,
+    "location" : "AirLocation#7",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#8",
+    "id" : 8,
+    "location" : "AirLocation#8",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#9",
+    "id" : 9,
+    "location" : "AirLocation#9",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#10",
+    "id" : 10,
+    "location" : "AirLocation#10",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#11",
+    "id" : 11,
+    "location" : "AirLocation#11",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#12",
+    "id" : 12,
+    "location" : "AirLocation#12",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#13",
+    "id" : 13,
+    "location" : "AirLocation#13",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#14",
+    "id" : 14,
+    "location" : "AirLocation#14",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#15",
+    "id" : 15,
+    "location" : "AirLocation#15",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#16",
+    "id" : 16,
+    "location" : "AirLocation#16",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#17",
+    "id" : 17,
+    "location" : "AirLocation#17",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#18",
+    "id" : 18,
+    "location" : "AirLocation#18",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#19",
+    "id" : 19,
+    "location" : "AirLocation#19",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#20",
+    "id" : 20,
+    "location" : "AirLocation#20",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#21",
+    "id" : 21,
+    "location" : "AirLocation#21",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#22",
+    "id" : 22,
+    "location" : "AirLocation#22",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#23",
+    "id" : 23,
+    "location" : "AirLocation#23",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#24",
+    "id" : 24,
+    "location" : "AirLocation#24",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#25",
+    "id" : 25,
+    "location" : "AirLocation#25",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#26",
+    "id" : 26,
+    "location" : "AirLocation#26",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#27",
+    "id" : 27,
+    "location" : "AirLocation#27",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#28",
+    "id" : 28,
+    "location" : "AirLocation#28",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#29",
+    "id" : 29,
+    "location" : "AirLocation#29",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#30",
+    "id" : 30,
+    "location" : "AirLocation#30",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#31",
+    "id" : 31,
+    "location" : "AirLocation#31",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#32",
+    "id" : 32,
+    "location" : "AirLocation#32",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#33",
+    "id" : 33,
+    "location" : "AirLocation#33",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#34",
+    "id" : 34,
+    "location" : "AirLocation#34",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#35",
+    "id" : 35,
+    "location" : "AirLocation#35",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#36",
+    "id" : 36,
+    "location" : "AirLocation#36",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#37",
+    "id" : 37,
+    "location" : "AirLocation#37",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#38",
+    "id" : 38,
+    "location" : "AirLocation#38",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#39",
+    "id" : 39,
+    "location" : "AirLocation#39",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "Visit#40",
+    "id" : 40,
+    "location" : "AirLocation#40",
+    "previousStandstill" : null
+  } ],
+  "score" : null
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark">
+  <benchmarkDirectory>data</benchmarkDirectory>
+  <inheritedSolverBenchmark>
+    <solver>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
+    <problemBenchmarks>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+    </problemBenchmarks>
+  </inheritedSolverBenchmark>
+  <solverBenchmark>
+    <name>Entity Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.benchmark.config.PlannerBenchmarkConfigTest$TestdataSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>nonExistingDataset1.xml</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+</plannerBenchmark>

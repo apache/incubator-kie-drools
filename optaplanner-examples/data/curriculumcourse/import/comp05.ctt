@@ -1,0 +1,990 @@
+Name: Let0405-1
+Courses: 54
+Rooms: 9
+Days: 6
+Periods_per_day: 6
+Curricula: 139
+Constraints: 771
+
+COURSES:
+LinTed1 t000 1 1 10
+AlfInf t001 1 1 10
+LetIta1 t002 3 3 300
+FilTesItaCS t003 3 3 100
+LinGreA t004 3 3 50
+LinLatA t005 2 2 60
+LinLetGre1 t006 3 3 170
+LinLetLat1 t007 3 2 350
+LetCriAnt t008 3 3 80
+Papiro t009 3 3 230
+EpiGre t010 3 3 80
+StoMod1 t011 3 3 440
+StoCon t012 2 2 400
+Geo2 t013 3 3 20
+AntCul1 t014 3 3 370
+StoFil1 t015 3 2 80
+StoCriChi t016 3 3 60
+StoSci t017 3 3 50
+MetRicArc t018 3 3 10
+ArcCla1 t019 3 3 130
+LinLatB t020 3 3 30
+Numism t021 3 3 60
+PrePro t022 3 2 40
+StoVicOriAnt t023 3 3 40
+ArcEge t024 3 3 50
+FilSem t023 3 3 50
+LegBenCul1 t025 2 2 170
+Bibeco t026 3 3 70
+ConBenArcLib t027 3 3 10
+ResBenArcLib t028 3 3 150
+InfArcBib t029 3 3 90
+TeoTecCatCla t030 3 3 90
+StoArtMed1 t031 3 3 150
+IcoIcoA t032 3 3 100
+IcoIcoB t032 3 3 100
+StoArtMod1 t033 2 2 200
+MetRicStoArt t034 3 3 70
+StoArtLatAmeA t035 3 3 170
+StoArtCon1 t036 3 3 150
+PsiArt t037 3 3 50
+ArcPae t038 1 1 340
+LetIta4CS t002 3 3 30
+StoGreCS t039 3 3 60
+StoMedCS t040 3 3 110
+BioArcCS t041 3 3 40
+Antrop t041 3 3 10
+LegBenCul2 t025 3 3 140
+StoArtMed2CS t031 3 3 100
+ChiAppBenCul t042 3 3 20
+StoArc t019 3 3 10
+StoArt t043 3 3 60
+FonSocAntCulI t044 3 3 70
+Bibgra t045 3 3 280
+BibgraCS t046 3 3 60
+
+ROOMS:
+10	130
+14	50
+15	50
+C1	48
+L	65
+M	60
+O	30
+B	200
+A	450
+
+CURRICULA:
+q000  4 LetIta1 LinLatA StoArtMed1 StoFil1 
+q001  3 LinLetLat1 StoMod1 StoArtMod1 
+q002  4 LinLetLat1 StoMod1 StoArtMod1 Bibeco 
+q003  4 LinLetLat1 StoMod1 StoArtMod1 Bibgra 
+q004  4 StoCon StoArtCon1 LinTed1 AlfInf
+q005  4 LetIta1 LinGreA LinLatA StoFil1 
+q006  3 LinLetGre1 LinLetLat1 ArcCla1 
+q007  3 LinLetLat1 LetCriAnt Papiro 
+q009  3 LinLetGre1 ArcCla1 StoVicOriAnt 
+q010  3 LinLetLat1 EpiGre Papiro 
+q011  4 LinLetLat1 EpiGre Papiro LetCriAnt 
+q012  4 LinLetLat1 EpiGre Papiro Numism 
+q013  4 LinLetLat1 EpiGre Papiro StoCriChi 
+q015  5 LinLetLat1 StoMod1 StoArtMod1 FonSocAntCulI AntCul1 
+q016  4 StoCon StoCriChi StoArtCon1 StoSci 
+q017  5 LetIta1 LinLatA StoFil1 FonSocAntCulI AntCul1 
+q018  4 LinLetLat1 StoMod1 Geo2 AntCul1 
+q019  3 StoCon StoSci PsiArt 
+q020  4 StoCon StoSci PsiArt Geo2 
+q021  4 StoCon StoSci PsiArt AntCul1 
+q022  3 LetIta1 LinLatA StoFil1 
+q023  6 StoMod1 StoCriChi StoSci LetCriAnt FonSocAntCulI AntCul1 
+q024  4 FonSocAntCulI AntCul1 StoArtMed1 StoMod1 
+q025  4 FonSocAntCulI AntCul1 StoArtMod1 StoMod1 
+q026  4 FonSocAntCulI AntCul1 StoArtMed1 StoCon 
+q027  4 FonSocAntCulI AntCul1 StoArtMod1 StoCon 
+q028  4 LetIta1 MetRicArc ArcCla1 LinLatB 
+q029  2 Numism LinGreA 
+q030  3 Numism LinGreA PrePro 
+q031  3 Numism LinGreA StoVicOriAnt 
+q032  2 ArcPae LegBenCul1 
+q033  5 ArcPae LegBenCul1 StoCriChi Papiro FilSem 
+q034  5 ArcPae LegBenCul1 StoCriChi ArcEge FilSem 
+q035  5 ArcPae LegBenCul1 AntCul1 Papiro FilSem 
+q036  5 ArcPae LegBenCul1 AntCul1 ArcEge FilSem 
+q037  6 Bibeco ConBenArcLib Papiro LinLatB StoMod1 LegBenCul1 
+q038  2 Bibgra LetIta1 
+q039  5 Bibgra LetIta1 StoMod1 StoCon StoArtMed1 
+q040  5 Bibgra LetIta1 StoMod1 StoCon StoArtMod1 
+q041  5 Bibgra LetIta1 StoMod1 StoCon StoArtCon1 
+q042  5 Bibgra LetIta1 StoMod1 ResBenArcLib StoArtMed1 
+q043  5 Bibgra LetIta1 StoMod1 ResBenArcLib StoArtMod1 
+q044  5 Bibgra LetIta1 StoMod1 ResBenArcLib StoArtCon1 
+q045  5 Bibgra LetIta1 StoMod1 LinLetGre1 StoArtMed1 
+q046  5 Bibgra LetIta1 StoMod1 LinLetGre1 StoArtMod1 
+q047  5 Bibgra LetIta1 StoMod1 LinLetGre1 StoArtCon1 
+q048  5 Bibgra LetIta1 StoMod1 LinLetLat1 StoArtMed1 
+q049  5 Bibgra LetIta1 StoMod1 LinLetLat1 StoArtMod1 
+q050  5 Bibgra LetIta1 StoMod1 LinLetLat1 StoArtCon1 
+q051  5 Bibgra LetIta1 StoCon ResBenArcLib StoArtMed1 
+q052  5 Bibgra LetIta1 StoCon ResBenArcLib StoArtMod1 
+q053  5 Bibgra LetIta1 StoCon ResBenArcLib StoArtCon1 
+q054  5 Bibgra LetIta1 StoCon LinLetGre1 StoArtMed1 
+q055  5 Bibgra LetIta1 StoCon LinLetGre1 StoArtMod1 
+q056  5 Bibgra LetIta1 StoCon LinLetGre1 StoArtCon1 
+q057  5 Bibgra LetIta1 StoCon LinLetLat1 StoArtMed1 
+q058  5 Bibgra LetIta1 StoCon LinLetLat1 StoArtMod1 
+q059  5 Bibgra LetIta1 StoCon LinLetLat1 StoArtCon1 
+q060  4 ArcPae StoCon StoMod1 InfArcBib 
+q061  4 ArcPae StoCon StoMod1 LinLetGre1 
+q062  4 ArcPae StoCon StoMod1 LinLetLat1 
+q063  4 ArcPae StoCon StoMod1 ResBenArcLib 
+q064  4 ArcPae StoCon StoMod1 TeoTecCatCla 
+q065  4 ArcPae StoCon InfArcBib LinLetGre1 
+q066  4 ArcPae StoCon InfArcBib LinLetLat1 
+q067  4 ArcPae StoCon InfArcBib ResBenArcLib 
+q068  4 ArcPae StoCon InfArcBib TeoTecCatCla 
+q069  4 ArcPae StoCon LinLetGre1 LinLetLat1 
+q070  4 ArcPae StoCon LinLetGre1 ResBenArcLib 
+q071  4 ArcPae StoCon LinLetGre1 TeoTecCatCla 
+q072  4 ArcPae StoCon LinLetLat1 ResBenArcLib 
+q073  4 ArcPae StoCon LinLetLat1 TeoTecCatCla 
+q074  4 ArcPae StoCon ResBenArcLib TeoTecCatCla 
+q075  4 ArcPae StoMod1 InfArcBib LinLetGre1 
+q076  4 ArcPae StoMod1 InfArcBib LinLetLat1 
+q077  4 ArcPae StoMod1 InfArcBib ResBenArcLib 
+q078  4 ArcPae StoMod1 InfArcBib TeoTecCatCla 
+q079  4 ArcPae StoMod1 LinLetGre1 LinLetLat1 
+q080  4 ArcPae StoMod1 LinLetGre1 ResBenArcLib 
+q081  4 ArcPae StoMod1 LinLetGre1 TeoTecCatCla 
+q082  4 ArcPae StoMod1 LinLetLat1 ResBenArcLib 
+q083  4 ArcPae StoMod1 LinLetLat1 TeoTecCatCla 
+q084  4 ArcPae StoMod1 ResBenArcLib TeoTecCatCla 
+q085  4 LetIta1 StoArtMed1 LinLatB IcoIcoA 
+q086  3 StoMod1 StoArtMod1 LegBenCul1 
+q087  4 StoMod1 StoArtMod1 LegBenCul1 IcoIcoA 
+q088  4 StoMod1 StoArtMod1 LegBenCul1 MetRicStoArt 
+q089  4 StoMod1 StoArtMod1 LegBenCul1 StoArtLatAmeA 
+q090  3 StoCon StoArtCon1 ArcPae 
+q091  5 StoCon StoArtCon1 StoArtLatAmeA ArcPae StoFil1 
+q092  5 StoCon StoArtCon1 StoArtLatAmeA ArcPae PsiArt 
+q093  3 StoArc LegBenCul1 AntCul1 
+q094  3 StoArt LegBenCul1 AntCul1 
+q095  4 StoArt LegBenCul1 AntCul1 StoMod1 
+q096  4 StoArt LegBenCul1 AntCul1 StoCon 
+q100  5 StoVicOriAnt ArcEge BioArcCS StoGreCS Papiro 
+q101  4 StoVicOriAnt Papiro BioArcCS StoGreCS 
+q102  5 PrePro ArcEge BioArcCS StoGreCS Papiro 
+q103  4 PrePro Papiro BioArcCS StoGreCS
+q104  1 Antrop 
+q105  3 BibgraCS LegBenCul2 StoMod1 
+q106  3 BibgraCS LegBenCul2 StoCon 
+q108  2 Papiro LinLetLat1 
+q109  2 Papiro LetIta4CS 
+q110  2 Papiro BibgraCS 
+q111  2 BibgraCS LinLetLat1 
+q112  2 BibgraCS LetIta4CS 
+q113  2 LegBenCul2 AntCul1 
+q114  7 LegBenCul2 AntCul1 StoArtMed2CS ArcCla1 IcoIcoA IcoIcoB MetRicStoArt 
+q115  7 LegBenCul2 AntCul1 StoArtMed2CS ArcCla1 IcoIcoA IcoIcoB StoArtLatAmeA 
+q120  7 LegBenCul2 AntCul1 StoArtMed2CS ArcCla1 IcoIcoA MetRicStoArt StoArtLatAmeA 
+q121  7 LegBenCul2 AntCul1 StoArtMed2CS ArcCla1 IcoIcoB MetRicStoArt StoArtLatAmeA 
+q122  6 LegBenCul2 AntCul1 StoArtMed2CS ArcCla1 IcoIcoA StoArtLatAmeA
+q123  6 LegBenCul2 AntCul1 StoArtMed2CS ArcCla1 MetRicStoArt StoArtLatAmeA
+q124  2 ChiAppBenCul StoFil1 
+q125  2 ChiAppBenCul PsiArt 
+q126  2 ArcPae AntCul1 
+q127  4 FilTesItaCS Bibeco StoMedCS StoArtMed1 
+q128  4 FilTesItaCS Bibeco StoMedCS StoArtMod1 
+q129  4 FilTesItaCS Bibeco StoMedCS StoArtCon1 
+q130  4 FilTesItaCS Bibeco StoMedCS IcoIcoA 
+q131  4 FilTesItaCS Bibeco StoMedCS IcoIcoB 
+q132  4 FilTesItaCS Bibgra StoMedCS StoArtMed1 
+q133  4 FilTesItaCS Bibgra StoMedCS StoArtMod1 
+q134  4 FilTesItaCS Bibgra StoMedCS StoArtCon1 
+q135  4 FilTesItaCS Bibgra StoMedCS IcoIcoA 
+q136  4 FilTesItaCS Bibgra StoMedCS IcoIcoB 
+q137  2 LetIta4CS LinLetLat1 
+q139  5 Papiro LinLetLat1 EpiGre LetCriAnt StoGreCS 
+q140  3 Papiro LetCriAnt FilSem 
+q142  6 LinLetLat1 Papiro EpiGre PrePro ArcEge Numism 
+q143  2 StoGreCS Papiro 
+q144  3 StoCriChi Numism StoMedCS 
+q145  2 AntCul1 StoArtMed1 
+q146  2 AntCul1 StoArtMod1 
+q147  2 AntCul1 StoArtCon1 
+q148  2 AntCul1 IcoIcoA 
+q149  2 AntCul1 IcoIcoB 
+q150  2 AntCul1 StoArtLatAmeA 
+
+UNAVAILABILITY_CONSTRAINTS:
+LinTed1 5 2
+LinTed1 5 3
+LinTed1 5 4
+LinTed1 5 5
+AlfInf 5 2
+AlfInf 5 3
+AlfInf 5 4
+AlfInf 5 5
+LetIta1 0 2
+LetIta1 0 5
+LetIta1 1 5
+LetIta1 2 3
+LetIta1 2 4
+LetIta1 2 5
+LetIta1 3 0
+LetIta1 3 1
+LetIta1 3 2
+LetIta1 3 3
+LetIta1 3 4
+LetIta1 3 5
+LetIta1 4 0
+LetIta1 4 1
+LetIta1 4 2
+LetIta1 4 3
+LetIta1 4 4
+LetIta1 4 5
+LetIta1 5 0
+LetIta1 5 1
+LetIta1 5 2
+LetIta1 5 3
+LetIta1 5 4
+LetIta1 5 5
+FilTesItaCS 0 0
+FilTesItaCS 0 1
+FilTesItaCS 0 4
+FilTesItaCS 0 5
+FilTesItaCS 1 0
+FilTesItaCS 1 5
+FilTesItaCS 2 0
+FilTesItaCS 2 5
+FilTesItaCS 3 0
+FilTesItaCS 3 5
+FilTesItaCS 4 0
+FilTesItaCS 4 5
+FilTesItaCS 5 0
+FilTesItaCS 5 1
+FilTesItaCS 5 2
+FilTesItaCS 5 3
+FilTesItaCS 5 4
+FilTesItaCS 5 5
+LinGreA 0 0
+LinGreA 1 0
+LinGreA 2 0
+LinGreA 3 0
+LinGreA 4 0
+LinGreA 5 2
+LinGreA 5 3
+LinGreA 5 4
+LinGreA 5 5
+LinLatA 0 0
+LinLatA 1 0
+LinLatA 2 0
+LinLatA 2 1
+LinLatA 3 0
+LinLatA 3 1
+LinLatA 4 0
+LinLatA 5 0
+LinLatA 5 2
+LinLatA 5 3
+LinLatA 5 4
+LinLatA 5 5
+LinLetGre1 5 2
+LinLetGre1 5 3
+LinLetGre1 5 4
+LinLetGre1 5 5
+LinLetLat1 0 0
+LinLetLat1 0 1
+LinLetLat1 0 2
+LinLetLat1 2 3
+LinLetLat1 2 4
+LinLetLat1 2 5
+LinLetLat1 3 0
+LinLetLat1 3 1
+LinLetLat1 3 2
+LinLetLat1 3 3
+LinLetLat1 3 4
+LinLetLat1 3 5
+LinLetLat1 4 0
+LinLetLat1 4 1
+LinLetLat1 4 2
+LinLetLat1 4 3
+LinLetLat1 4 4
+LinLetLat1 4 5
+LinLetLat1 5 0
+LinLetLat1 5 1
+LinLetLat1 5 2
+LinLetLat1 5 3
+LinLetLat1 5 4
+LinLetLat1 5 5
+LetCriAnt 0 0
+LetCriAnt 1 0
+LetCriAnt 2 0
+LetCriAnt 3 0
+LetCriAnt 4 0
+LetCriAnt 4 2
+LetCriAnt 5 0
+LetCriAnt 5 1
+LetCriAnt 5 2
+LetCriAnt 5 3
+LetCriAnt 5 4
+LetCriAnt 5 5
+Papiro 5 2
+Papiro 5 3
+Papiro 5 4
+Papiro 5 5
+EpiGre 0 0
+EpiGre 0 5
+EpiGre 1 0
+EpiGre 1 5
+EpiGre 2 0
+EpiGre 2 5
+EpiGre 3 0
+EpiGre 3 5
+EpiGre 4 0
+EpiGre 4 5
+EpiGre 5 2
+EpiGre 5 3
+EpiGre 5 4
+EpiGre 5 5
+StoMod1 0 0
+StoMod1 0 1
+StoMod1 0 2
+StoMod1 2 3
+StoMod1 2 4
+StoMod1 2 5
+StoMod1 3 0
+StoMod1 3 1
+StoMod1 3 2
+StoMod1 3 3
+StoMod1 3 4
+StoMod1 3 5
+StoMod1 4 0
+StoMod1 4 1
+StoMod1 4 2
+StoMod1 4 3
+StoMod1 4 4
+StoMod1 4 5
+StoMod1 5 0
+StoMod1 5 1
+StoMod1 5 2
+StoMod1 5 3
+StoMod1 5 4
+StoMod1 5 5
+StoCon 0 0
+StoCon 0 1
+StoCon 0 2
+StoCon 2 3
+StoCon 2 4
+StoCon 2 5
+StoCon 3 0
+StoCon 3 1
+StoCon 3 2
+StoCon 3 3
+StoCon 3 4
+StoCon 3 5
+StoCon 4 0
+StoCon 4 1
+StoCon 4 2
+StoCon 4 3
+StoCon 4 4
+StoCon 4 5
+StoCon 5 0
+StoCon 5 1
+StoCon 5 2
+StoCon 5 3
+StoCon 5 4
+StoCon 5 5
+Geo2 5 2
+Geo2 5 3
+Geo2 5 4
+Geo2 5 5
+AntCul1 5 0
+AntCul1 5 1
+AntCul1 5 2
+AntCul1 5 3
+AntCul1 5 4
+AntCul1 5 5
+StoFil1 0 0
+StoFil1 0 1
+StoFil1 0 2
+StoFil1 4 3
+StoFil1 4 4
+StoFil1 4 5
+StoFil1 5 0
+StoFil1 5 1
+StoFil1 5 2
+StoFil1 5 3
+StoFil1 5 4
+StoFil1 5 5
+StoCriChi 5 2
+StoCriChi 5 3
+StoCriChi 5 4
+StoCriChi 5 5
+StoSci 0 0
+StoSci 0 1
+StoSci 0 2
+StoSci 2 3
+StoSci 2 4
+StoSci 2 5
+StoSci 5 2
+StoSci 5 3
+StoSci 5 4
+StoSci 5 5
+MetRicArc 5 2
+MetRicArc 5 3
+MetRicArc 5 4
+MetRicArc 5 5
+ArcCla1 5 0
+ArcCla1 5 1
+ArcCla1 5 2
+ArcCla1 5 3
+ArcCla1 5 4
+ArcCla1 5 5
+LinLatB 0 0
+LinLatB 0 1
+LinLatB 0 2
+LinLatB 0 3
+LinLatB 0 4
+LinLatB 0 5
+LinLatB 1 3
+LinLatB 1 4
+LinLatB 1 5
+LinLatB 2 0
+LinLatB 2 1
+LinLatB 2 2
+LinLatB 2 3
+LinLatB 2 4
+LinLatB 2 5
+LinLatB 3 3
+LinLatB 3 4
+LinLatB 3 5
+LinLatB 4 0
+LinLatB 4 1
+LinLatB 4 2
+LinLatB 4 3
+LinLatB 4 4
+LinLatB 4 5
+LinLatB 5 2
+LinLatB 5 3
+LinLatB 5 4
+LinLatB 5 5
+Numism 0 0
+Numism 0 5
+Numism 1 0
+Numism 1 5
+Numism 2 0
+Numism 2 5
+Numism 3 0
+Numism 3 1
+Numism 3 5
+Numism 4 0
+Numism 4 5
+Numism 5 0
+Numism 5 1
+Numism 5 2
+Numism 5 3
+Numism 5 4
+Numism 5 5
+PrePro 0 3
+PrePro 0 4
+PrePro 0 5
+PrePro 1 3
+PrePro 1 4
+PrePro 1 5
+PrePro 2 5
+PrePro 3 5
+PrePro 4 5
+PrePro 5 2
+PrePro 5 3
+PrePro 5 4
+PrePro 5 5
+StoVicOriAnt 5 2
+StoVicOriAnt 5 3
+StoVicOriAnt 5 4
+StoVicOriAnt 5 5
+ArcEge 0 4
+ArcEge 0 5
+ArcEge 1 4
+ArcEge 1 5
+ArcEge 2 5
+ArcEge 3 5
+ArcEge 4 3
+ArcEge 4 4
+ArcEge 4 5
+ArcEge 5 2
+ArcEge 5 3
+ArcEge 5 4
+ArcEge 5 5
+FilSem 5 2
+FilSem 5 3
+FilSem 5 4
+FilSem 5 5
+LegBenCul1 5 2
+LegBenCul1 5 3
+LegBenCul1 5 4
+LegBenCul1 5 5
+Bibeco 0 0
+Bibeco 0 1
+Bibeco 0 2
+Bibeco 1 0
+Bibeco 1 1
+Bibeco 1 2
+Bibeco 2 0
+Bibeco 2 1
+Bibeco 2 2
+Bibeco 3 0
+Bibeco 3 1
+Bibeco 3 2
+Bibeco 4 0
+Bibeco 4 1
+Bibeco 4 2
+Bibeco 5 0
+Bibeco 5 1
+Bibeco 5 2
+Bibeco 5 3
+Bibeco 5 4
+Bibeco 5 5
+ConBenArcLib 1 0
+ConBenArcLib 1 1
+ConBenArcLib 1 2
+ConBenArcLib 1 3
+ConBenArcLib 1 4
+ConBenArcLib 1 5
+ConBenArcLib 4 3
+ConBenArcLib 4 4
+ConBenArcLib 4 5
+ConBenArcLib 5 0
+ConBenArcLib 5 1
+ConBenArcLib 5 2
+ConBenArcLib 5 3
+ConBenArcLib 5 4
+ConBenArcLib 5 5
+ResBenArcLib 0 0
+ResBenArcLib 0 1
+ResBenArcLib 0 2
+ResBenArcLib 0 3
+ResBenArcLib 0 4
+ResBenArcLib 0 5
+ResBenArcLib 1 0
+ResBenArcLib 1 1
+ResBenArcLib 1 2
+ResBenArcLib 1 3
+ResBenArcLib 1 4
+ResBenArcLib 1 5
+ResBenArcLib 4 3
+ResBenArcLib 4 4
+ResBenArcLib 4 5
+ResBenArcLib 5 0
+ResBenArcLib 5 1
+ResBenArcLib 5 2
+ResBenArcLib 5 3
+ResBenArcLib 5 4
+ResBenArcLib 5 5
+InfArcBib 5 2
+InfArcBib 5 3
+InfArcBib 5 4
+InfArcBib 5 5
+TeoTecCatCla 0 0
+TeoTecCatCla 0 1
+TeoTecCatCla 0 2
+TeoTecCatCla 1 0
+TeoTecCatCla 1 1
+TeoTecCatCla 1 2
+TeoTecCatCla 2 0
+TeoTecCatCla 2 1
+TeoTecCatCla 2 2
+TeoTecCatCla 3 0
+TeoTecCatCla 3 1
+TeoTecCatCla 3 2
+TeoTecCatCla 4 0
+TeoTecCatCla 4 1
+TeoTecCatCla 4 2
+TeoTecCatCla 5 0
+TeoTecCatCla 5 1
+TeoTecCatCla 5 2
+TeoTecCatCla 5 3
+TeoTecCatCla 5 4
+TeoTecCatCla 5 5
+StoArtMed1 0 0
+StoArtMed1 0 1
+StoArtMed1 0 2
+StoArtMed1 0 3
+StoArtMed1 0 4
+StoArtMed1 0 5
+StoArtMed1 1 0
+StoArtMed1 1 1
+StoArtMed1 1 2
+StoArtMed1 1 3
+StoArtMed1 1 4
+StoArtMed1 1 5
+StoArtMed1 2 0
+StoArtMed1 2 1
+StoArtMed1 2 2
+StoArtMed1 2 3
+StoArtMed1 2 4
+StoArtMed1 2 5
+StoArtMed1 3 0
+StoArtMed1 3 1
+StoArtMed1 3 2
+StoArtMed1 5 2
+StoArtMed1 5 3
+StoArtMed1 5 4
+StoArtMed1 5 5
+IcoIcoA 3 0
+IcoIcoA 3 1
+IcoIcoA 3 2
+IcoIcoA 3 3
+IcoIcoA 3 4
+IcoIcoA 3 5
+IcoIcoA 4 0
+IcoIcoA 4 1
+IcoIcoA 4 2
+IcoIcoA 4 3
+IcoIcoA 4 4
+IcoIcoA 4 5
+IcoIcoA 5 0
+IcoIcoA 5 1
+IcoIcoA 5 2
+IcoIcoA 5 3
+IcoIcoA 5 4
+IcoIcoA 5 5
+StoArtMod1 0 0
+StoArtMod1 0 1
+StoArtMod1 0 2
+StoArtMod1 2 2
+StoArtMod1 2 3
+StoArtMod1 2 4
+StoArtMod1 2 5
+StoArtMod1 3 0
+StoArtMod1 3 1
+StoArtMod1 3 2
+StoArtMod1 3 3
+StoArtMod1 3 4
+StoArtMod1 3 5
+StoArtMod1 4 0
+StoArtMod1 4 1
+StoArtMod1 4 2
+StoArtMod1 4 3
+StoArtMod1 4 4
+StoArtMod1 4 5
+StoArtMod1 5 0
+StoArtMod1 5 1
+StoArtMod1 5 2
+StoArtMod1 5 3
+StoArtMod1 5 4
+StoArtMod1 5 5
+MetRicStoArt 0 0
+MetRicStoArt 1 0
+MetRicStoArt 2 0
+MetRicStoArt 3 0
+MetRicStoArt 4 0
+MetRicStoArt 5 2
+MetRicStoArt 5 3
+MetRicStoArt 5 4
+MetRicStoArt 5 5
+StoArtLatAmeA 2 3
+StoArtLatAmeA 2 4
+StoArtLatAmeA 2 5
+StoArtLatAmeA 3 0
+StoArtLatAmeA 3 1
+StoArtLatAmeA 3 2
+StoArtLatAmeA 3 3
+StoArtLatAmeA 3 4
+StoArtLatAmeA 3 5
+StoArtLatAmeA 4 0
+StoArtLatAmeA 4 1
+StoArtLatAmeA 4 2
+StoArtLatAmeA 4 3
+StoArtLatAmeA 4 4
+StoArtLatAmeA 4 5
+StoArtLatAmeA 5 0
+StoArtLatAmeA 5 1
+StoArtLatAmeA 5 2
+StoArtLatAmeA 5 3
+StoArtLatAmeA 5 4
+StoArtLatAmeA 5 5
+StoArtCon1 0 0
+StoArtCon1 0 1
+StoArtCon1 0 2
+StoArtCon1 0 3
+StoArtCon1 0 4
+StoArtCon1 0 5
+StoArtCon1 1 0
+StoArtCon1 1 1
+StoArtCon1 1 2
+StoArtCon1 1 3
+StoArtCon1 1 4
+StoArtCon1 1 5
+StoArtCon1 2 0
+StoArtCon1 2 1
+StoArtCon1 2 2
+StoArtCon1 4 3
+StoArtCon1 4 4
+StoArtCon1 4 5
+StoArtCon1 5 0
+StoArtCon1 5 1
+StoArtCon1 5 2
+StoArtCon1 5 3
+StoArtCon1 5 4
+StoArtCon1 5 5
+PsiArt 0 0
+PsiArt 0 1
+PsiArt 0 2
+PsiArt 0 3
+PsiArt 0 4
+PsiArt 0 5
+PsiArt 1 0
+PsiArt 2 0
+PsiArt 3 0
+PsiArt 4 0
+PsiArt 5 2
+PsiArt 5 3
+PsiArt 5 4
+PsiArt 5 5
+ArcPae 1 3
+ArcPae 1 4
+ArcPae 1 5
+ArcPae 2 3
+ArcPae 2 4
+ArcPae 2 5
+ArcPae 5 0
+ArcPae 5 1
+ArcPae 5 2
+ArcPae 5 3
+ArcPae 5 4
+ArcPae 5 5
+LetIta4CS 5 2
+LetIta4CS 5 3
+LetIta4CS 5 4
+LetIta4CS 5 5
+StoGreCS 0 3
+StoGreCS 0 4
+StoGreCS 0 5
+StoGreCS 1 3
+StoGreCS 1 4
+StoGreCS 1 5
+StoGreCS 2 3
+StoGreCS 2 4
+StoGreCS 2 5
+StoGreCS 3 0
+StoGreCS 3 1
+StoGreCS 3 2
+StoGreCS 3 3
+StoGreCS 3 4
+StoGreCS 3 5
+StoGreCS 4 0
+StoGreCS 4 1
+StoGreCS 4 2
+StoGreCS 4 3
+StoGreCS 4 4
+StoGreCS 4 5
+StoGreCS 5 0
+StoGreCS 5 1
+StoGreCS 5 2
+StoGreCS 5 3
+StoGreCS 5 4
+StoGreCS 5 5
+StoMedCS 0 0
+StoMedCS 0 1
+StoMedCS 0 2
+StoMedCS 0 3
+StoMedCS 0 4
+StoMedCS 0 5
+StoMedCS 1 0
+StoMedCS 1 1
+StoMedCS 1 2
+StoMedCS 1 3
+StoMedCS 1 4
+StoMedCS 1 5
+StoMedCS 2 0
+StoMedCS 2 1
+StoMedCS 2 2
+StoMedCS 2 3
+StoMedCS 2 4
+StoMedCS 2 5
+StoMedCS 4 5
+StoMedCS 5 2
+StoMedCS 5 3
+StoMedCS 5 4
+StoMedCS 5 5
+BioArcCS 0 0
+BioArcCS 0 1
+BioArcCS 0 2
+BioArcCS 0 3
+BioArcCS 2 3
+BioArcCS 2 4
+BioArcCS 2 5
+BioArcCS 3 0
+BioArcCS 3 1
+BioArcCS 3 2
+BioArcCS 3 3
+BioArcCS 3 4
+BioArcCS 3 5
+BioArcCS 4 0
+BioArcCS 4 1
+BioArcCS 4 2
+BioArcCS 4 3
+BioArcCS 4 4
+BioArcCS 4 5
+BioArcCS 5 0
+BioArcCS 5 1
+BioArcCS 5 2
+BioArcCS 5 3
+BioArcCS 5 4
+BioArcCS 5 5
+Antrop 0 0
+Antrop 0 1
+Antrop 0 2
+Antrop 0 3
+Antrop 2 3
+Antrop 2 4
+Antrop 2 5
+Antrop 3 0
+Antrop 3 1
+Antrop 3 2
+Antrop 3 3
+Antrop 3 4
+Antrop 3 5
+Antrop 4 0
+Antrop 4 1
+Antrop 4 2
+Antrop 4 3
+Antrop 4 4
+Antrop 4 5
+Antrop 5 0
+Antrop 5 1
+Antrop 5 2
+Antrop 5 3
+Antrop 5 4
+Antrop 5 5
+LegBenCul2 5 2
+LegBenCul2 5 3
+LegBenCul2 5 4
+LegBenCul2 5 5
+StoArtMed2CS 0 0
+StoArtMed2CS 0 1
+StoArtMed2CS 0 2
+StoArtMed2CS 0 3
+StoArtMed2CS 0 4
+StoArtMed2CS 0 5
+StoArtMed2CS 1 0
+StoArtMed2CS 1 1
+StoArtMed2CS 1 2
+StoArtMed2CS 1 3
+StoArtMed2CS 1 4
+StoArtMed2CS 1 5
+StoArtMed2CS 2 0
+StoArtMed2CS 2 1
+StoArtMed2CS 2 2
+StoArtMed2CS 2 3
+StoArtMed2CS 2 4
+StoArtMed2CS 2 5
+StoArtMed2CS 3 0
+StoArtMed2CS 3 1
+StoArtMed2CS 3 2
+StoArtMed2CS 5 2
+StoArtMed2CS 5 3
+StoArtMed2CS 5 4
+StoArtMed2CS 5 5
+ChiAppBenCul 0 5
+ChiAppBenCul 1 5
+ChiAppBenCul 2 5
+ChiAppBenCul 3 5
+ChiAppBenCul 4 3
+ChiAppBenCul 4 4
+ChiAppBenCul 4 5
+ChiAppBenCul 5 0
+ChiAppBenCul 5 1
+ChiAppBenCul 5 2
+ChiAppBenCul 5 3
+ChiAppBenCul 5 4
+ChiAppBenCul 5 5
+StoArc 5 0
+StoArc 5 1
+StoArc 5 2
+StoArc 5 3
+StoArc 5 4
+StoArc 5 5
+StoArt 0 0
+StoArt 3 0
+StoArt 3 1
+StoArt 3 2
+StoArt 3 3
+StoArt 3 4
+StoArt 3 5
+StoArt 4 0
+StoArt 4 1
+StoArt 4 2
+StoArt 4 3
+StoArt 4 4
+StoArt 4 5
+StoArt 5 0
+StoArt 5 1
+StoArt 5 2
+StoArt 5 3
+StoArt 5 4
+StoArt 5 5
+FonSocAntCulI 5 2
+FonSocAntCulI 5 3
+FonSocAntCulI 5 4
+FonSocAntCulI 5 5
+Bibgra 0 0
+Bibgra 0 1
+Bibgra 0 2
+Bibgra 0 3
+Bibgra 1 0
+Bibgra 1 1
+Bibgra 1 2
+Bibgra 1 3
+Bibgra 2 0
+Bibgra 2 1
+Bibgra 2 2
+Bibgra 2 3
+Bibgra 3 0
+Bibgra 3 1
+Bibgra 3 2
+Bibgra 3 3
+Bibgra 3 4
+Bibgra 3 5
+Bibgra 4 0
+Bibgra 4 1
+Bibgra 4 2
+Bibgra 4 3
+Bibgra 4 4
+Bibgra 4 5
+Bibgra 5 0
+Bibgra 5 1
+Bibgra 5 2
+Bibgra 5 3
+Bibgra 5 4
+Bibgra 5 5
+BibgraCS 0 0
+BibgraCS 0 1
+BibgraCS 0 2
+BibgraCS 0 3
+BibgraCS 1 0
+BibgraCS 1 1
+BibgraCS 1 2
+BibgraCS 1 3
+BibgraCS 2 0
+BibgraCS 2 1
+BibgraCS 2 2
+BibgraCS 2 3
+BibgraCS 3 0
+BibgraCS 3 1
+BibgraCS 3 2
+BibgraCS 3 3
+BibgraCS 3 4
+BibgraCS 3 5
+BibgraCS 4 0
+BibgraCS 4 1
+BibgraCS 4 2
+BibgraCS 4 3
+BibgraCS 4 4
+BibgraCS 4 5
+BibgraCS 5 0
+BibgraCS 5 1
+BibgraCS 5 2
+BibgraCS 5 3
+BibgraCS 5 4
+BibgraCS 5 5
+
+END.

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+  <benchmarkDirectory>local/data/general</benchmarkDirectory>
+  <!--<warmUpMinutesSpentLimit>10</warmUpMinutesSpentLimit>-->
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
+    <!--<subSingleCount>8</subSingleCount>-->
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>Cloud Balancing Late Acceptance</name>
+    <solver>
+      <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+      <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.json</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Machine Reassignment Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      <customPhase>
+        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
+      </customPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>7</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Course Scheduling Late Acceptance</name>
+    <solver>
+      <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
+      <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector>
+            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+          </swapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>600</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp08.json</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Examination Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
+      <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <queuedEntityPlacer>
+          <entitySelector id="placerEntitySelector">
+            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SORTED</selectionOrder>
+            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
+          </entitySelector>
+          <cartesianProductMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="placerEntitySelector"/>
+              <valueSelector variableName="period">
+                <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
+                <cacheType>PHASE</cacheType>
+                <!--<selectionOrder>SORTED</selectionOrder>-->
+                <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
+              </valueSelector>
+            </changeMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="placerEntitySelector"/>
+              <valueSelector variableName="room">
+                <cacheType>PHASE</cacheType>
+                <selectionOrder>SORTED</selectionOrder>
+                <sorterManner>INCREASING_STRENGTH</sorterManner>
+              </valueSelector>
+            </changeMoveSelector>
+          </cartesianProductMoveSelector>
+        </queuedEntityPlacer>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <cartesianProductMoveSelector>
+            <changeMoveSelector>
+              <entitySelector id="cartesianProductEntitySelector">
+                <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+              </entitySelector>
+              <valueSelector variableName="room"/>
+            </changeMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
+              <valueSelector variableName="period">
+                <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
+              </valueSelector>
+            </changeMoveSelector>
+          </cartesianProductMoveSelector>
+          <swapMoveSelector>
+            <entitySelector>
+              <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
+            </entitySelector>
+          </swapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>10</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set2.json</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.json</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Nurse Rostering Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <changeMoveSelector>
+            <entitySelector>
+              <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+            </entitySelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector>
+              <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+            </entitySelector>
+          </swapMoveSelector>
+          <pillarChangeMoveSelector>
+            <subPillarType>SEQUENCE</subPillarType>
+            <pillarSelector>
+              <entitySelector>
+                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+              </entitySelector>
+            </pillarSelector>
+          </pillarChangeMoveSelector>
+          <pillarSwapMoveSelector>
+            <subPillarType>SEQUENCE</subPillarType>
+            <pillarSelector>
+              <entitySelector>
+                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
+              </entitySelector>
+            </pillarSelector>
+          </pillarSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>7</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>800</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nurserostering/unsolved/medium01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.json</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>TravelingTournament Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+      <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.travelingtournament.score.TravelingTournamentConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      <localSearch>
+        <unionMoveSelector>
+          <swapMoveSelector>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
+          </swapMoveSelector>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
+            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.json</inputSolutionFile>
+    </problemBenchmarks>
+  </solverBenchmark>
+</plannerBenchmark>

@@ -1,0 +1,730 @@
+{
+  "id" : 0,
+  "skillList" : [ {
+    "@id" : "Skill#0",
+    "id" : 0,
+    "name" : "Problem Solving"
+  }, {
+    "@id" : "Skill#1",
+    "id" : 1,
+    "name" : "Team Building"
+  }, {
+    "@id" : "Skill#2",
+    "id" : 2,
+    "name" : "Business Storytelling"
+  }, {
+    "@id" : "Skill#3",
+    "id" : 3,
+    "name" : "Risk Management"
+  }, {
+    "@id" : "Skill#4",
+    "id" : 4,
+    "name" : "Creative Thinking"
+  } ],
+  "taskTypeList" : [ {
+    "@id" : "TaskType#0",
+    "id" : 0,
+    "code" : "Improve Sales",
+    "title" : "IS",
+    "baseDuration" : 83,
+    "requiredSkillList" : [ "Skill#0" ]
+  }, {
+    "@id" : "TaskType#1",
+    "id" : 1,
+    "code" : "Expand Tax",
+    "title" : "ET",
+    "baseDuration" : 56,
+    "requiredSkillList" : [ "Skill#0" ]
+  }, {
+    "@id" : "TaskType#2",
+    "id" : 2,
+    "code" : "Shrink VAT",
+    "title" : "SV",
+    "baseDuration" : 46,
+    "requiredSkillList" : [ "Skill#1" ]
+  }, {
+    "@id" : "TaskType#3",
+    "id" : 3,
+    "code" : "Approve Legal",
+    "title" : "AL",
+    "baseDuration" : 53,
+    "requiredSkillList" : [ "Skill#2" ]
+  }, {
+    "@id" : "TaskType#4",
+    "id" : 4,
+    "code" : "Localize Cloud",
+    "title" : "LC",
+    "baseDuration" : 47,
+    "requiredSkillList" : [ "Skill#1" ]
+  }, {
+    "@id" : "TaskType#5",
+    "id" : 5,
+    "code" : "Review Marketing",
+    "title" : "RM",
+    "baseDuration" : 48,
+    "requiredSkillList" : [ "Skill#2" ]
+  }, {
+    "@id" : "TaskType#6",
+    "id" : 6,
+    "code" : "Clean IT",
+    "title" : "CI",
+    "baseDuration" : 79,
+    "requiredSkillList" : [ "Skill#2" ]
+  }, {
+    "@id" : "TaskType#7",
+    "id" : 7,
+    "code" : "Merge Contract",
+    "title" : "MC",
+    "baseDuration" : 33,
+    "requiredSkillList" : [ "Skill#2", "Skill#1" ]
+  }, {
+    "@id" : "TaskType#8",
+    "id" : 8,
+    "code" : "Double Financial",
+    "title" : "DF",
+    "baseDuration" : 71,
+    "requiredSkillList" : [ "Skill#1" ]
+  }, {
+    "@id" : "TaskType#9",
+    "id" : 9,
+    "code" : "Optimize Advertisement",
+    "title" : "OA",
+    "baseDuration" : 67,
+    "requiredSkillList" : [ "Skill#1" ]
+  } ],
+  "customerList" : [ {
+    "@id" : "Customer#0",
+    "id" : 0,
+    "name" : "Steel Inc"
+  }, {
+    "@id" : "Customer#1",
+    "id" : 1,
+    "name" : "Paper Corp"
+  }, {
+    "@id" : "Customer#2",
+    "id" : 2,
+    "name" : "Stone Limited"
+  }, {
+    "@id" : "Customer#3",
+    "id" : 3,
+    "name" : "Wood Express"
+  }, {
+    "@id" : "Customer#4",
+    "id" : 4,
+    "name" : "Water Telco"
+  }, {
+    "@id" : "Customer#5",
+    "id" : 5,
+    "name" : "Food Mobile"
+  }, {
+    "@id" : "Customer#6",
+    "id" : 6,
+    "name" : "Oil Soft"
+  }, {
+    "@id" : "Customer#7",
+    "id" : 7,
+    "name" : "Car Mart"
+  }, {
+    "@id" : "Customer#8",
+    "id" : 8,
+    "name" : "Power Bank"
+  }, {
+    "@id" : "Customer#9",
+    "id" : 9,
+    "name" : "Computer Labs"
+  } ],
+  "taskList" : [ {
+    "@id" : "Task#0",
+    "id" : 0,
+    "taskType" : "TaskType#7",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#6",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#1",
+    "id" : 1,
+    "taskType" : "TaskType#3",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#2",
+    "id" : 2,
+    "taskType" : "TaskType#7",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#3",
+    "id" : 3,
+    "taskType" : "TaskType#9",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#0",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#4",
+    "id" : 4,
+    "taskType" : "TaskType#8",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#9",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#5",
+    "id" : 5,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#9",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#6",
+    "id" : 6,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#5",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#7",
+    "id" : 7,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#8",
+    "id" : 8,
+    "taskType" : "TaskType#9",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#9",
+    "id" : 9,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#10",
+    "id" : 10,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#0",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#11",
+    "id" : 11,
+    "taskType" : "TaskType#2",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#5",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#12",
+    "id" : 12,
+    "taskType" : "TaskType#2",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#9",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#13",
+    "id" : 13,
+    "taskType" : "TaskType#8",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#14",
+    "id" : 14,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#3",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#15",
+    "id" : 15,
+    "taskType" : "TaskType#8",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#6",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#16",
+    "id" : 16,
+    "taskType" : "TaskType#8",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#3",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#17",
+    "id" : 17,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#7",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#18",
+    "id" : 18,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#3",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#19",
+    "id" : 19,
+    "taskType" : "TaskType#7",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#20",
+    "id" : 20,
+    "taskType" : "TaskType#7",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#21",
+    "id" : 21,
+    "taskType" : "TaskType#2",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#5",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#22",
+    "id" : 22,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#7",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#23",
+    "id" : 23,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#3",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#24",
+    "id" : 24,
+    "taskType" : "TaskType#2",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#3",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#25",
+    "id" : 25,
+    "taskType" : "TaskType#9",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#26",
+    "id" : 26,
+    "taskType" : "TaskType#2",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#27",
+    "id" : 27,
+    "taskType" : "TaskType#5",
+    "indexInTaskType" : 1,
+    "customer" : "Customer#5",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#28",
+    "id" : 28,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#29",
+    "id" : 29,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#30",
+    "id" : 30,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#0",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#31",
+    "id" : 31,
+    "taskType" : "TaskType#9",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#32",
+    "id" : 32,
+    "taskType" : "TaskType#7",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#33",
+    "id" : 33,
+    "taskType" : "TaskType#8",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#2",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#34",
+    "id" : 34,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 6,
+    "customer" : "Customer#7",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#35",
+    "id" : 35,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 7,
+    "customer" : "Customer#9",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#36",
+    "id" : 36,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 6,
+    "customer" : "Customer#9",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#37",
+    "id" : 37,
+    "taskType" : "TaskType#7",
+    "indexInTaskType" : 6,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#38",
+    "id" : 38,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 8,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#39",
+    "id" : 39,
+    "taskType" : "TaskType#5",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#40",
+    "id" : 40,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 4,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#41",
+    "id" : 41,
+    "taskType" : "TaskType#5",
+    "indexInTaskType" : 3,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#42",
+    "id" : 42,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#2",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#43",
+    "id" : 43,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 9,
+    "customer" : "Customer#0",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#44",
+    "id" : 44,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 6,
+    "customer" : "Customer#0",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#45",
+    "id" : 45,
+    "taskType" : "TaskType#0",
+    "indexInTaskType" : 7,
+    "customer" : "Customer#2",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#46",
+    "id" : 46,
+    "taskType" : "TaskType#3",
+    "indexInTaskType" : 2,
+    "customer" : "Customer#1",
+    "readyTime" : 0,
+    "priority" : "CRITICAL",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#47",
+    "id" : 47,
+    "taskType" : "TaskType#6",
+    "indexInTaskType" : 10,
+    "customer" : "Customer#4",
+    "readyTime" : 0,
+    "priority" : "MAJOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#48",
+    "id" : 48,
+    "taskType" : "TaskType#9",
+    "indexInTaskType" : 5,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  }, {
+    "@id" : "Task#49",
+    "id" : 49,
+    "taskType" : "TaskType#1",
+    "indexInTaskType" : 7,
+    "customer" : "Customer#8",
+    "readyTime" : 0,
+    "priority" : "MINOR",
+    "employee" : null,
+    "startTime" : null
+  } ],
+  "employeeList" : [ {
+    "@id" : "Employee#0",
+    "id" : 0,
+    "fullName" : "Amy",
+    "skillSet" : [ "Skill#0", "Skill#1", "Skill#2" ],
+    "affinityMap" : {
+      "Customer#0" : "HIGH",
+      "Customer#1" : "MEDIUM",
+      "Customer#2" : "NONE",
+      "Customer#3" : "MEDIUM",
+      "Customer#4" : "NONE",
+      "Customer#5" : "LOW",
+      "Customer#6" : "NONE",
+      "Customer#7" : "LOW",
+      "Customer#8" : "NONE",
+      "Customer#9" : "NONE"
+    },
+    "tasks" : [ ]
+  }, {
+    "@id" : "Employee#1",
+    "id" : 1,
+    "fullName" : "Beth",
+    "skillSet" : [ "Skill#3", "Skill#4", "Skill#0" ],
+    "affinityMap" : {
+      "Customer#0" : "HIGH",
+      "Customer#1" : "HIGH",
+      "Customer#2" : "LOW",
+      "Customer#3" : "NONE",
+      "Customer#4" : "LOW",
+      "Customer#5" : "HIGH",
+      "Customer#6" : "HIGH",
+      "Customer#7" : "MEDIUM",
+      "Customer#8" : "HIGH",
+      "Customer#9" : "MEDIUM"
+    },
+    "tasks" : [ ]
+  }, {
+    "@id" : "Employee#2",
+    "id" : 2,
+    "fullName" : "Chad",
+    "skillSet" : [ "Skill#1", "Skill#2" ],
+    "affinityMap" : {
+      "Customer#0" : "MEDIUM",
+      "Customer#1" : "MEDIUM",
+      "Customer#2" : "LOW",
+      "Customer#3" : "HIGH",
+      "Customer#4" : "HIGH",
+      "Customer#5" : "MEDIUM",
+      "Customer#6" : "MEDIUM",
+      "Customer#7" : "HIGH",
+      "Customer#8" : "LOW",
+      "Customer#9" : "MEDIUM"
+    },
+    "tasks" : [ ]
+  }, {
+    "@id" : "Employee#3",
+    "id" : 3,
+    "fullName" : "Dan",
+    "skillSet" : [ "Skill#3", "Skill#4" ],
+    "affinityMap" : {
+      "Customer#0" : "LOW",
+      "Customer#1" : "HIGH",
+      "Customer#2" : "NONE",
+      "Customer#3" : "MEDIUM",
+      "Customer#4" : "NONE",
+      "Customer#5" : "LOW",
+      "Customer#6" : "NONE",
+      "Customer#7" : "HIGH",
+      "Customer#8" : "LOW",
+      "Customer#9" : "HIGH"
+    },
+    "tasks" : [ ]
+  }, {
+    "@id" : "Employee#4",
+    "id" : 4,
+    "fullName" : "Elsa",
+    "skillSet" : [ "Skill#0", "Skill#1" ],
+    "affinityMap" : {
+      "Customer#0" : "NONE",
+      "Customer#1" : "HIGH",
+      "Customer#2" : "LOW",
+      "Customer#3" : "NONE",
+      "Customer#4" : "MEDIUM",
+      "Customer#5" : "NONE",
+      "Customer#6" : "LOW",
+      "Customer#7" : "HIGH",
+      "Customer#8" : "MEDIUM",
+      "Customer#9" : "HIGH"
+    },
+    "tasks" : [ ]
+  } ],
+  "score" : null,
+  "frozenCutoff" : 0
+}

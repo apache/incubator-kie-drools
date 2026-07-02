@@ -1,0 +1,137 @@
+{
+  "id" : 0,
+  "dayList" : [ {
+    "@id" : "Day#0",
+    "id" : 0,
+    "index" : 0,
+    "nextDay" : {
+      "@id" : "Day#1",
+      "id" : 1,
+      "index" : 1,
+      "nextDay" : {
+        "@id" : "Day#2",
+        "id" : 2,
+        "index" : 2,
+        "nextDay" : {
+          "@id" : "Day#3",
+          "id" : 3,
+          "index" : 3,
+          "nextDay" : {
+            "@id" : "Day#4",
+            "id" : 4,
+            "index" : 4,
+            "nextDay" : {
+              "@id" : "Day#5",
+              "id" : 5,
+              "index" : 5,
+              "nextDay" : null
+            }
+          }
+        }
+      }
+    }
+  }, "Day#1", "Day#2", "Day#3", "Day#4", "Day#5" ],
+  "teamList" : [ {
+    "@id" : "Team#0",
+    "id" : 0,
+    "name" : "BFN",
+    "distanceToTeamMap" : {
+      "Team#0" : 0,
+      "Team#1" : 7431,
+      "Team#2" : 6628,
+      "Team#3" : 226
+    }
+  }, {
+    "@id" : "Team#1",
+    "id" : 1,
+    "name" : "AKL",
+    "distanceToTeamMap" : {
+      "Team#0" : 7431,
+      "Team#1" : 0,
+      "Team#2" : 1429,
+      "Team#3" : 7586
+    }
+  }, {
+    "@id" : "Team#2",
+    "id" : 2,
+    "name" : "CAN",
+    "distanceToTeamMap" : {
+      "Team#0" : 6628,
+      "Team#1" : 1429,
+      "Team#2" : 0,
+      "Team#3" : 6712
+    }
+  }, {
+    "@id" : "Team#3",
+    "id" : 3,
+    "name" : "PRE",
+    "distanceToTeamMap" : {
+      "Team#0" : 226,
+      "Team#1" : 7586,
+      "Team#2" : 6712,
+      "Team#3" : 0
+    }
+  } ],
+  "matchList" : [ {
+    "id" : 0,
+    "homeTeam" : "Team#0",
+    "awayTeam" : "Team#1",
+    "day" : "Day#2"
+  }, {
+    "id" : 1,
+    "homeTeam" : "Team#0",
+    "awayTeam" : "Team#2",
+    "day" : "Day#4"
+  }, {
+    "id" : 2,
+    "homeTeam" : "Team#0",
+    "awayTeam" : "Team#3",
+    "day" : "Day#3"
+  }, {
+    "id" : 3,
+    "homeTeam" : "Team#1",
+    "awayTeam" : "Team#0",
+    "day" : "Day#5"
+  }, {
+    "id" : 4,
+    "homeTeam" : "Team#1",
+    "awayTeam" : "Team#2",
+    "day" : "Day#0"
+  }, {
+    "id" : 5,
+    "homeTeam" : "Team#1",
+    "awayTeam" : "Team#3",
+    "day" : "Day#4"
+  }, {
+    "id" : 6,
+    "homeTeam" : "Team#2",
+    "awayTeam" : "Team#0",
+    "day" : "Day#1"
+  }, {
+    "id" : 7,
+    "homeTeam" : "Team#2",
+    "awayTeam" : "Team#1",
+    "day" : "Day#3"
+  }, {
+    "id" : 8,
+    "homeTeam" : "Team#2",
+    "awayTeam" : "Team#3",
+    "day" : "Day#5"
+  }, {
+    "id" : 9,
+    "homeTeam" : "Team#3",
+    "awayTeam" : "Team#0",
+    "day" : "Day#0"
+  }, {
+    "id" : 10,
+    "homeTeam" : "Team#3",
+    "awayTeam" : "Team#1",
+    "day" : "Day#1"
+  }, {
+    "id" : 11,
+    "homeTeam" : "Team#3",
+    "awayTeam" : "Team#2",
+    "day" : "Day#2"
+  } ],
+  "score" : null
+}

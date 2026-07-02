@@ -1,0 +1,132 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+////
+
+:projectKey: org.optaplanner:optaplanner
+:sonarBadge: image:https://sonarcloud.io/api/project_badges/measure?project={projectKey}
+:sonarLink: link="https://sonarcloud.io/dashboard?id={projectKey}"
+
+:branch: main
+
+:jenkinsUrl: https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner
+:branchJenkinsUrl: {jenkinsUrl}/job/{branch}
+:toolsFolderJenkinsUrl: {branchJenkinsUrl}/job/tools
+:releaseFolderJenkinsUrl: {branchJenkinsUrl}/job/release
+
+image::optaplanner-docs/src/modules/ROOT/images/shared/optaPlannerLogo.png[link="https://www.optaplanner.org/",OptaPlanner,150,150,align="center"]
+
+image:https://img.shields.io/maven-central/v/org.optaplanner/optaplanner-bom?logo=apache-maven&style=for-the-badge["Maven artifact", link="https://ossindex.sonatype.org/component/pkg:maven/org.optaplanner/optaplanner-bom"]
+image:https://img.shields.io/badge/stackoverflow-ask_question-orange.svg?logo=stackoverflow&style=for-the-badge["Stackoverflow", link="https://stackoverflow.com/questions/tagged/optaplanner"]
+image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip&style=for-the-badge[
+"Join Zulip Chat", link="https://kie.zulipchat.com/#narrow/stream/232679-optaplanner"]
+image:https://img.shields.io/github/commit-activity/m/kiegroup/optaplanner?label=commits&style=for-the-badge["Commit Activity", link="https://github.com/kiegroup/optaplanner/pulse"]
+image:https://img.shields.io/github/license/kiegroup/optaplanner?style=for-the-badge&logo=apache["Livense", link="https://www.apache.org/licenses/LICENSE-2.0"]
+image:https://img.shields.io/badge/JVM-11--17-brightgreen.svg?style=for-the-badge["JVM support", link="https://github.com/kiegroup/optaplanner/actions/workflows/pull_request.yml"]
+image:https://img.shields.io/badge/Maven-3.x-blue?style=for-the-badge["Maven",link="https://maven.apache.org/install.html"]
+image:https://img.shields.io/github/languages/code-size/kiegroup/optaplanner?style=for-the-badge["Code size", link="https://github.com/kiegroup/optaplanner/actions/workflows/pull_request.yml"]
+
+{sonarBadge}&style=for-the-badge&metric=reliability_rating["Reliability Rating", {sonarLink}]
+{sonarBadge}&metric=security_rating["Security Rating", {sonarLink}]
+{sonarBadge}&metric=sqale_rating["Maintainability Rating", {sonarLink}]
+{sonarBadge}&metric=coverage["Coverage", {sonarLink}]
+
+A fast, easy-to-use, open source AI constraint solver for software developers
+
+== Looking for Quickstarts?
+
+OptaPlanner's quickstarts are located in the https://github.com/kiegroup/optaplanner-quickstarts[optaplanner-quickstarts repository].
+
+== Quick development start
+
+To build and run from source:
+
+----
+$ mvn clean install -Dquickly
+$ cd optaplanner-examples
+$ mvn exec:java
+----
+
+To develop with IntelliJ IDEA, Eclipse or VSCode, open the root `pom.xml` as a new project
+and configure a _Run/Debug configuration_ like this:
+
+* Type: Application
+* Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
+* VM options: `-Xmx2G -server` (memory only needed when using the big datasets in the examples)
+* Program arguments: (none)
+* Working directory: `$MODULE_DIR$` (must resolve to optaplanner-examples directory)
+* Use classpath of module: `optaplanner-examples`
+
+== Contributing to OptaPlanner
+
+This is an open source project, and you are more than welcome to contribute :heart:!
+
+
+* If you're just starting out with OptaPlanner and want to contribute,
+take a look at our https://issues.redhat.com/issues/?jql=project%20%3D%20PLANNER%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20labels%20%3D%20starter%20ORDER%20BY%20priority%20DESC[starter issues].
+They're specifically chosen to be easier for first time contributors.
+
+* If you want to contribute or start an opinionated discussion, join our https://groups.google.com/g/optaplanner-dev[discussion] or send an e-mail directly to optaplanner-dev@googlegroups.com.
+
+* If you want to submit an issue, check out the https://issues.redhat.com/projects/PLANNER/issues[OptaPlanner Jira project].
+
+=== Time to make a change?
+
+Every change must be submitted through a GitHub pull request (PR). OptaPlanner uses continuous integration (CI). The OptaPlanner CI  runs checks against your branch after you submit the PR to ensure that your PR doesn't introduce errors. If the CI identifies a potential problem, our friendly PR maintainers will help you resolve it.
+
+=== Contributing
+
+. Fork it (https://github.com/kiegroup/optaplanner).
+. Create your feature branch: (`git checkout -b feature`).
+. Commit your changes with a comment: (`git commit -am 'Add some feature'`).
+. Push to the branch to GitHub: (`git push origin feature`).
+. Create a new pull request.
+
+=== Code standards
+
+Your code is automatically formatted according to the _Import and Code Style_ conventions during every Maven build. CI checks enforce those conventions too, so be sure to build your project with maven before creating your PR:
+----
+mvn clean install
+----
+For information about how to set up code style checks, see https://github.com/kiegroup/optaplanner/blob/main/optaplanner-build/optaplanner-ide-config/ide-configuration.adoc[IDE Setup Instructions].
+
+=== Building your OptaPlanner project
+
+Use one of the following ways to build your OptaPlanner project:
+
+- :rocket: *build-fast*: `mvn clean install -Dquickly` skips any checks and code analysis (~1 min)
+
+- :hammer: *build-normally*: `mvn clean install` runs tests, checks code style, skips documentation  (~17 min)
+
+- :receipt: *build-doc*: `mvn clean install` at `optaplanner/optaplanner-docs` creates asciidoctor documentation `target/optaplanner-docs-*/html_single/index.html` (~2 min)
+
+- :mechanical_arm: *build-all*: `mvn clean install -Dfull` runs all checks + creates documentation and distribution files (~20 min)
+
+== OptaPlanner CI status
+
+You can check the CI status of the OptaPlanner repositories from the https://kiegroup.github.io/optaplanner/[Chain Status webpage].
+
+=== Jenkins CI Jobs (need VPN access) ===
+
+All Jenkins jobs can be found under the OptaPlanner folder: {jenkinsUrl}
+
+Interesting Jenkins CI jobs (need VPN access):
+
+- {toolsFolderJenkinsUrl}/job/update-quarkus-all/[Update Quarkus version]
+- {toolsFolderJenkinsUrl}/job/update-drools-optaplanner/[Update Drools version]
+- {releasefolderjenkinsurl}/job/optaplanner-release[Release pipeline] (only available on release branches)
+- {releasefolderjenkinsurl}/job/optaplanner-post-release[Post-Release pipeline] (only available on release branches)

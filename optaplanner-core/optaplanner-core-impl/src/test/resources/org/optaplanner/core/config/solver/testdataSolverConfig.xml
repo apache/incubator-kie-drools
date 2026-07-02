@@ -1,0 +1,7 @@
+<solver>
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.core.impl.testdata.domain.TestdataEasyScoreCalculator</easyScoreCalculatorClass>
+  </scoreDirectorFactory>
+</solver>
