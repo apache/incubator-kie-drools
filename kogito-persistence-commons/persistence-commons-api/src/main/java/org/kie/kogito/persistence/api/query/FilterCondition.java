@@ -55,4 +55,16 @@ public enum FilterCondition {
         }
         return null;
     }
+
+    public boolean isCollectionOperation() {
+        return this == CONTAINS || this == CONTAINS_ALL || this == CONTAINS_ANY || this == EQUAL;
+    }
+
+    public boolean expectsSingleValue() {
+        return this == CONTAINS || this == EQUAL;
+    }
+
+    public boolean combineValuesWithAnd() {
+        return this != CONTAINS_ANY;
+    }
 }

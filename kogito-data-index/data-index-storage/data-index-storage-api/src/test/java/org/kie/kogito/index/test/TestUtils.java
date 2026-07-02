@@ -372,4 +372,32 @@ public class TestUtils {
 
         return task;
     }
+
+    public static ProcessInstanceStateDataEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId,
+            String parentProcessInstanceId, String identity) {
+
+        int eventType = status.equals(ProcessInstanceState.COMPLETED) ? ProcessInstanceStateEventBody.EVENT_TYPE_ENDED : ProcessInstanceStateEventBody.EVENT_TYPE_STARTED;
+        ProcessInstanceStateEventBody body = ProcessInstanceStateEventBody.create()
+                .processInstanceId(processInstanceId)
+                .parentInstanceId(parentProcessInstanceId)
+                .rootProcessInstanceId(rootProcessInstanceId)
+                .rootProcessId(rootProcessId)
+                .processId(processId)
+                .eventDate(new Date())
+                .state(status.ordinal())
+                .businessKey(processInstanceId)
+                .roles("admin")
+                .eventUser(identity)
+                .eventType(eventType)
+                .build();
+
+        ProcessInstanceStateDataEvent event = new ProcessInstanceStateDataEvent();
+        event.setKogitoProcessId(processId);
+        event.setKogitoRootProcessId(rootProcessId);
+        event.setKogitoRootProcessInstanceId(rootProcessInstanceId);
+        event.setKogitoProcessInstanceId(processInstanceId);
+        event.setData(body);
+
+        return event;
+    }
 }

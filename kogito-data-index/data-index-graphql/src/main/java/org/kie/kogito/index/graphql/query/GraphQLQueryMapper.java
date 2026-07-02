@@ -34,12 +34,14 @@ import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNamedType;
+import graphql.schema.GraphQLType;
 
 import static graphql.schema.GraphQLTypeUtil.isList;
 import static graphql.schema.GraphQLTypeUtil.simplePrint;
 import static graphql.schema.GraphQLTypeUtil.unwrapNonNull;
 import static graphql.schema.GraphQLTypeUtil.unwrapOne;
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.index.graphql.query.GraphQLInputObjectTypeMapper.ARRAY_ARGUMENT;
 import static org.kie.kogito.index.json.JsonUtils.jsonFilter;
 import static org.kie.kogito.persistence.api.query.FilterCondition.NOT;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.and;
@@ -82,10 +84,10 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                         parser.mapAttribute(field.getName(), mapEnumArgument(field.getName()));
                     } else if (isListOfType(field.getType(), type.getName())) {
                         parser.mapAttribute(field.getName(), mapRecursiveListArgument(field.getName(), parser));
-                    } else if (((GraphQLNamedType) field.getType()).getName().equals(type.getName())) {
+                    } else if (field.getType() instanceof GraphQLNamedType namedType && namedType.getName().equals(type.getName())) {
                         parser.mapAttribute(field.getName(), mapRecursiveArgument(field.getName(), parser));
-                    } else {
-                        String name = ((GraphQLNamedType) field.getType()).getName();
+                    } else if (field.getType() instanceof GraphQLNamedType namedType) {
+                        String name = namedType.getName();
                         switch (name) {
                             case "IdArgument":
                                 parser.mapAttribute(field.getName(), mapIdArgument(field.getName()));
@@ -115,8 +117,13 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                                 parser.mapAttribute(field.getName(), mapJsonArgument(field.getName()));
                                 break;
                             default:
-                                if (field.getType() instanceof GraphQLInputObjectType) {
-                                    parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), new GraphQLQueryMapper().apply((GraphQLInputObjectType) field.getType())));
+                                if (field.getType() instanceof GraphQLInputObjectType inputType) {
+                                    // Check if this is an array argument type (ends with "ArrayArgument")
+                                    if (inputType.getName().endsWith(ARRAY_ARGUMENT)) {
+                                        parser.mapAttribute(field.getName(), mapArrayArgument(field.getName(), inputType));
+                                    } else {
+                                        parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), new GraphQLQueryMapper().apply(inputType)));
+                                    }
                                 }
                         }
                     }
@@ -227,6 +234,183 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
             f.setAttribute(joining + "." + f.getAttribute());
             return f;
         });
+    }
+
+    private Function<Object, Stream<AttributeFilter<?>>> mapArrayArgument(String attribute, GraphQLInputObjectType arrayArgType) {
+        return argument -> {
+            Map<String, Object> argMap = (Map<String, Object>) argument;
+
+            // Separate array operations from backward-compatible fields
+            Map<String, Object> backwardCompatFields = new java.util.HashMap<>();
+            List<Stream<AttributeFilter<?>>> arrayOpStreams = new java.util.ArrayList<>();
+
+            // Lazy initialization of element parser (only when needed)
+            GraphQLQueryParser elementParser = null;
+
+            // Helper to get element parser (lazy initialization)
+            final GraphQLQueryParser[] parserHolder = new GraphQLQueryParser[1];
+            java.util.function.Supplier<GraphQLQueryParser> getElementParser = () -> {
+                if (parserHolder[0] == null) {
+                    GraphQLInputType containsFieldType = arrayArgType.getField("contains") != null ? arrayArgType.getField("contains").getType() : null;
+                    if (containsFieldType == null) {
+                        LOGGER.warn("Array argument type {} does not have a 'contains' field required for element operations", arrayArgType.getName());
+                        return null;
+                    }
+                    GraphQLType unwrappedType = unwrapNonNull(containsFieldType);
+                    if (!(unwrappedType instanceof GraphQLInputObjectType elementType)) {
+                        LOGGER.warn("Contains field type is not an input object type: {}", simplePrint(unwrappedType));
+                        return null;
+                    }
+                    parserHolder[0] = new GraphQLQueryMapper().apply(elementType);
+                }
+                return parserHolder[0];
+            };
+
+            for (Map.Entry<String, Object> entry : argMap.entrySet()) {
+                FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+                Object value = entry.getValue();
+
+                if (condition == null) {
+                    // Backward compatibility: treat as element property (like 'contains')
+                    backwardCompatFields.put(entry.getKey(), value);
+                    continue;
+                }
+
+                switch (condition) {
+                    case CONTAINS:
+                        // Single element filter: nodes.name = 'X'
+                        if (value instanceof Map) {
+                            GraphQLQueryParser parser = getElementParser.get();
+                            if (parser != null) {
+                                arrayOpStreams.add(parser.apply(value).stream().map(f -> {
+                                    f.setAttribute(attribute + "." + f.getAttribute());
+                                    return f;
+                                }));
+                            }
+                        }
+                        break;
+
+                    case CONTAINS_ALL:
+                        // All elements must match: AND(nodes.name = 'X', nodes.name = 'Y')
+                        if (value instanceof List) {
+                            GraphQLQueryParser parser = getElementParser.get();
+                            if (parser != null) {
+                                List<AttributeFilter<?>> allFilters = ((List<?>) value).stream()
+                                        .flatMap(elem -> {
+                                            if (elem instanceof Map) {
+                                                return parser.apply(elem).stream().map(f -> {
+                                                    f.setAttribute(attribute + "." + f.getAttribute());
+                                                    return f;
+                                                });
+                                            }
+                                            return Stream.empty();
+                                        })
+                                        .collect(toList());
+                                if (!allFilters.isEmpty()) {
+                                    arrayOpStreams.add(Stream.of(and(allFilters)));
+                                }
+                            }
+                        }
+                        break;
+
+                    case CONTAINS_ANY:
+                        // Any element matches: OR(nodes.name = 'X', nodes.name = 'Y')
+                        if (value instanceof List) {
+                            GraphQLQueryParser parser = getElementParser.get();
+                            if (parser != null) {
+                                List<AttributeFilter<?>> anyFilters = ((List<?>) value).stream()
+                                        .flatMap(elem -> {
+                                            if (elem instanceof Map) {
+                                                return parser.apply(elem).stream().map(f -> {
+                                                    f.setAttribute(attribute + "." + f.getAttribute());
+                                                    return f;
+                                                });
+                                            }
+                                            return Stream.empty();
+                                        })
+                                        .collect(toList());
+                                if (!anyFilters.isEmpty()) {
+                                    arrayOpStreams.add(Stream.of(or(anyFilters)));
+                                }
+                            }
+                        }
+                        break;
+
+                    case IS_NULL:
+                        // Check if array is null or empty
+                        if (value instanceof Boolean) {
+                            arrayOpStreams.add(Stream.of(Boolean.TRUE.equals(value) ? isNull(attribute) : notNull(attribute)));
+                        }
+                        break;
+
+                    case AND:
+                        // Recursively process AND conditions
+                        if (value instanceof List) {
+                            List<AttributeFilter<?>> andFilters = ((List<?>) value).stream()
+                                    .flatMap(elem -> {
+                                        if (elem instanceof Map) {
+                                            return mapArrayArgument(attribute, arrayArgType).apply(elem);
+                                        }
+                                        return Stream.empty();
+                                    })
+                                    .collect(toList());
+                            if (!andFilters.isEmpty()) {
+                                arrayOpStreams.add(Stream.of(and(andFilters)));
+                            }
+                        }
+                        break;
+
+                    case OR:
+                        // Recursively process OR conditions
+                        if (value instanceof List) {
+                            List<AttributeFilter<?>> orFilters = ((List<?>) value).stream()
+                                    .flatMap(elem -> {
+                                        if (elem instanceof Map) {
+                                            return mapArrayArgument(attribute, arrayArgType).apply(elem);
+                                        }
+                                        return Stream.empty();
+                                    })
+                                    .collect(toList());
+                            if (!orFilters.isEmpty()) {
+                                arrayOpStreams.add(Stream.of(or(orFilters)));
+                            }
+                        }
+                        break;
+
+                    case NOT:
+                        // Recursively process NOT condition
+                        if (value instanceof Map) {
+                            List<AttributeFilter<?>> notFilters = mapArrayArgument(attribute, arrayArgType).apply(value).collect(toList());
+                            if (notFilters.size() == 1) {
+                                // Single filter: apply NOT directly
+                                arrayOpStreams.add(Stream.of(not(notFilters.get(0))));
+                            } else if (notFilters.size() > 1) {
+                                // Multiple filters: combine with AND, then apply NOT
+                                arrayOpStreams.add(Stream.of(not(and(notFilters))));
+                            }
+                        }
+                        break;
+
+                    default:
+                        // Unknown condition - ignore
+                        break;
+                }
+            }
+
+            // Process backward-compatible fields as 'contains'
+            if (!backwardCompatFields.isEmpty()) {
+                GraphQLQueryParser parser = getElementParser.get();
+                if (parser != null) {
+                    arrayOpStreams.add(parser.apply(backwardCompatFields).stream().map(f -> {
+                        f.setAttribute(attribute + "." + f.getAttribute());
+                        return f;
+                    }));
+                }
+            }
+
+            // Combine all streams
+            return arrayOpStreams.stream().flatMap(s -> s);
+        };
     }
 
     private Function<Object, Stream<AttributeFilter<?>>> mapIdArgument(String attribute) {

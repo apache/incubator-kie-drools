@@ -24,6 +24,13 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.persistence.api.query.AttributeFilter;
+import org.kie.kogito.persistence.api.query.FilterCondition;
+
+import graphql.Scalars;
+import graphql.schema.GraphQLInputObjectField;
+import graphql.schema.GraphQLInputObjectType;
+import graphql.schema.GraphQLList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.json.JsonUtils.jsonFilter;
@@ -114,5 +121,282 @@ public class GraphQLQueryMapperTest {
     void testJsonMapperNotNull() {
         assertThat(mapper.mapJsonArgument("variables").apply(Map.of("workflowdata", Map.of("number", Map.of("isNull", false))))).containsExactly(
                 jsonFilter(notNull("variables.workflowdata.number")));
+    }
+
+    // ========== Array Argument Tests ==========
+
+    @Test
+    void testArrayArgumentContains() {
+        // Create the input type and parser
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { contains: { name: { equal: "StartProcess" } } }
+        var filters = parser.apply(Map.of("nodes", Map.of("contains", Map.of("name", Map.of("equal", "StartProcess")))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getAttribute()).isEqualTo("nodes.name");
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.EQUAL);
+        assertThat(filter.getValue()).isEqualTo("StartProcess");
+    }
+
+    @Test
+    void testArrayArgumentContainsAll() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { containsAll: [{ name: { equal: "Start" } }, { name: { equal: "End" } }] }
+        var filters = parser.apply(Map.of("nodes", Map.of("containsAll", List.of(
+                Map.of("name", Map.of("equal", "Start")),
+                Map.of("name", Map.of("equal", "End"))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.AND);
+
+        @SuppressWarnings("unchecked")
+        List<AttributeFilter<?>> andFilters = (List<AttributeFilter<?>>) filter.getValue();
+        assertThat(andFilters).hasSize(2);
+        assertThat(andFilters.get(0).getAttribute()).isEqualTo("nodes.name");
+        assertThat(andFilters.get(0).getValue()).isEqualTo("Start");
+        assertThat(andFilters.get(1).getAttribute()).isEqualTo("nodes.name");
+        assertThat(andFilters.get(1).getValue()).isEqualTo("End");
+    }
+
+    @Test
+    void testArrayArgumentContainsAny() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { containsAny: [{ name: { equal: "Start" } }, { name: { equal: "End" } }] }
+        var filters = parser.apply(Map.of("nodes", Map.of("containsAny", List.of(
+                Map.of("name", Map.of("equal", "Start")),
+                Map.of("name", Map.of("equal", "End"))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.OR);
+
+        @SuppressWarnings("unchecked")
+        List<AttributeFilter<?>> orFilters = (List<AttributeFilter<?>>) filter.getValue();
+        assertThat(orFilters).hasSize(2);
+        assertThat(orFilters.get(0).getAttribute()).isEqualTo("nodes.name");
+        assertThat(orFilters.get(1).getAttribute()).isEqualTo("nodes.name");
+    }
+
+    @Test
+    void testArrayArgumentIsNull() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { isNull: true }
+        var filters = parser.apply(Map.of("nodes", Map.of("isNull", true)));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getAttribute()).isEqualTo("nodes");
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.IS_NULL);
+    }
+
+    @Test
+    void testArrayArgumentIsNotNull() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { isNull: false }
+        var filters = parser.apply(Map.of("nodes", Map.of("isNull", false)));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getAttribute()).isEqualTo("nodes");
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.NOT_NULL);
+    }
+
+    @Test
+    void testArrayArgumentWithNot() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { not: { contains: { name: { equal: "StartProcess" } } } }
+        var filters = parser.apply(Map.of("nodes", Map.of("not", Map.of("contains", Map.of("name", Map.of("equal", "StartProcess"))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.NOT);
+
+        AttributeFilter<?> notFilter = (AttributeFilter<?>) filter.getValue();
+        assertThat(notFilter.getAttribute()).isEqualTo("nodes.name");
+        assertThat(notFilter.getValue()).isEqualTo("StartProcess");
+    }
+
+    @Test
+    void testArrayArgumentWithNotContainsAll() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { not: { containsAll: [{ name: { equal: "Start" } }, { name: { equal: "End" } }] } }
+        var filters = parser.apply(Map.of("nodes", Map.of("not", Map.of("containsAll", List.of(
+                Map.of("name", Map.of("equal", "Start")),
+                Map.of("name", Map.of("equal", "End")))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.NOT);
+
+        AttributeFilter<?> notFilter = (AttributeFilter<?>) filter.getValue();
+        assertThat(notFilter.getCondition()).isEqualTo(FilterCondition.AND);
+    }
+
+    @Test
+    void testArrayArgumentBackwardCompatibility() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { name: { equal: "StartProcess" } }
+        // Should work like 'contains' for backward compatibility
+        var filters = parser.apply(Map.of("nodes", Map.of("name", Map.of("equal", "StartProcess"))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getAttribute()).isEqualTo("nodes.name");
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.EQUAL);
+        assertThat(filter.getValue()).isEqualTo("StartProcess");
+    }
+
+    @Test
+    void testArrayArgumentWithAndOperator() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { and: [{ contains: { name: { equal: "Start" } } }, { contains: { type: { equal: "HumanTask" } } }] }
+        var filters = parser.apply(Map.of("nodes", Map.of("and", List.of(
+                Map.of("contains", Map.of("name", Map.of("equal", "Start"))),
+                Map.of("contains", Map.of("type", Map.of("equal", "HumanTask")))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.AND);
+
+        @SuppressWarnings("unchecked")
+        List<AttributeFilter<?>> andFilters = (List<AttributeFilter<?>>) filter.getValue();
+        assertThat(andFilters).hasSize(2);
+        assertThat(andFilters.get(0).getAttribute()).isEqualTo("nodes.name");
+        assertThat(andFilters.get(1).getAttribute()).isEqualTo("nodes.type");
+    }
+
+    @Test
+    void testArrayArgumentWithOrOperator() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { or: [{ contains: { name: { equal: "Start" } } }, { contains: { name: { equal: "End" } } }] }
+        var filters = parser.apply(Map.of("nodes", Map.of("or", List.of(
+                Map.of("contains", Map.of("name", Map.of("equal", "Start"))),
+                Map.of("contains", Map.of("name", Map.of("equal", "End")))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.OR);
+
+        @SuppressWarnings("unchecked")
+        List<AttributeFilter<?>> orFilters = (List<AttributeFilter<?>>) filter.getValue();
+        assertThat(orFilters).hasSize(2);
+        assertThat(orFilters.get(0).getAttribute()).isEqualTo("nodes.name");
+        assertThat(orFilters.get(1).getAttribute()).isEqualTo("nodes.name");
+    }
+
+    @Test
+    void testArrayArgumentComplexQuery() {
+        GraphQLInputObjectType inputType = createProcessInstanceArgumentWithNodes();
+        var parser = mapper.apply(inputType);
+
+        // Test: nodes: { and: [{ contains: { name: { equal: "HumanTask" } } }, { not: { contains: { type: { equal: "EndEvent" } } } }] }
+        var filters = parser.apply(Map.of("nodes", Map.of("and", List.of(
+                Map.of("contains", Map.of("name", Map.of("equal", "HumanTask"))),
+                Map.of("not", Map.of("contains", Map.of("type", Map.of("equal", "EndEvent"))))))));
+
+        assertThat(filters).hasSize(1);
+        AttributeFilter<?> filter = filters.get(0);
+        assertThat(filter.getCondition()).isEqualTo(FilterCondition.AND);
+
+        @SuppressWarnings("unchecked")
+        List<AttributeFilter<?>> andFilters = (List<AttributeFilter<?>>) filter.getValue();
+        assertThat(andFilters).hasSize(2);
+        assertThat(andFilters.get(0).getAttribute()).isEqualTo("nodes.name");
+        assertThat(andFilters.get(1).getCondition()).isEqualTo(FilterCondition.NOT);
+    }
+
+    // Helper method to create ProcessInstanceArgument with NodeInstanceArrayArgument
+    private GraphQLInputObjectType createProcessInstanceArgumentWithNodes() {
+        // Create StringArgument type
+        GraphQLInputObjectType stringArgument = GraphQLInputObjectType.newInputObject()
+                .name("StringArgument")
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("equal")
+                        .type(Scalars.GraphQLString)
+                        .build())
+                .build();
+
+        // Create NodeInstanceArgument type
+        GraphQLInputObjectType nodeInstanceArgument = GraphQLInputObjectType.newInputObject()
+                .name("NodeInstanceArgument")
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("name")
+                        .type(stringArgument)
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("type")
+                        .type(stringArgument)
+                        .build())
+                .build();
+
+        // Create NodeInstanceArrayArgument type (note the "ArrayArgument" suffix)
+        GraphQLInputObjectType nodeInstanceArrayArgument = GraphQLInputObjectType.newInputObject()
+                .name("NodeInstanceArrayArgument")
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("contains")
+                        .type(nodeInstanceArgument)
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("containsAll")
+                        .type(new GraphQLList(nodeInstanceArgument))
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("containsAny")
+                        .type(new GraphQLList(nodeInstanceArgument))
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("isNull")
+                        .type(Scalars.GraphQLBoolean)
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("and")
+                        .type(new GraphQLList(GraphQLInputObjectType.newInputObject()
+                                .name("NodeInstanceArrayArgumentRecursive")
+                                .build()))
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("or")
+                        .type(new GraphQLList(GraphQLInputObjectType.newInputObject()
+                                .name("NodeInstanceArrayArgumentRecursive2")
+                                .build()))
+                        .build())
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("not")
+                        .type(GraphQLInputObjectType.newInputObject()
+                                .name("NodeInstanceArrayArgumentRecursive3")
+                                .build())
+                        .build())
+                .build();
+
+        // Create ProcessInstanceArgument type with nodes field
+        return GraphQLInputObjectType.newInputObject()
+                .name("ProcessInstanceArgument")
+                .field(GraphQLInputObjectField.newInputObjectField()
+                        .name("nodes")
+                        .type(nodeInstanceArrayArgument)
+                        .build())
+                .build();
     }
 }

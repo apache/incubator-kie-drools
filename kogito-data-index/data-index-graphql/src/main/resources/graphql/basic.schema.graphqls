@@ -214,8 +214,8 @@ input ProcessInstanceArgument {
     rootProcessId: StringArgument
     state: ProcessInstanceStateArgument
     error: ProcessInstanceErrorArgument
-    nodes: NodeInstanceArgument
-    milestones: MilestoneArgument
+    nodes: NodeInstanceArrayArgument
+    milestones: MilestoneArrayArgument
     endpoint: StringArgument
     roles: StringArrayArgument
     start: DateArgument
@@ -252,12 +252,48 @@ input NodeInstanceArgument {
     slaDueDate: DateArgument
 }
 
+input NodeInstanceArrayArgument {
+    # Array-specific operations
+    contains: NodeInstanceArgument
+    containsAll: [NodeInstanceArgument!]
+    containsAny: [NodeInstanceArgument!]
+    isNull: Boolean
+    and: [NodeInstanceArrayArgument!]
+    or: [NodeInstanceArrayArgument!]
+    not: NodeInstanceArrayArgument
+    # Backward compatibility:
+    id: IdArgument
+    name: StringArgument
+    definitionId: StringArgument
+    nodeId: StringArgument
+    type: StringArgument
+    enter: DateArgument
+    exit: DateArgument
+    errorMessage: StringArgument
+    retrigger: BooleanArgument
+    slaDueDate: DateArgument
+}
+
 input MilestoneStatusArgument {
     equal: MilestoneStatus
     in: [MilestoneStatus]
 }
 
 input MilestoneArgument {
+    id: IdArgument
+    name: StringArgument
+    status: MilestoneStatusArgument
+}
+
+input MilestoneArrayArgument {
+    contains: MilestoneArgument
+    containsAll: [MilestoneArgument!]
+    containsAny: [MilestoneArgument!]
+    isNull: Boolean
+    and: [MilestoneArrayArgument!]
+    or: [MilestoneArrayArgument!]
+    not: MilestoneArrayArgument
+    # Backward compatibility fields
     id: IdArgument
     name: StringArgument
     status: MilestoneStatusArgument
@@ -437,8 +473,8 @@ input UserTaskInstanceArgument {
     started: DateArgument
     referenceName: StringArgument
     lastUpdate: DateArgument
-    comments: CommentArgument
-    attachments: AttachmentArgument
+    comments: CommentArrayArgument
+    attachments: AttachmentArrayArgument
     slaDueDate: DateArgument
     rootProcessInstanceId: StringArgument
     rootProcessId: StringArgument
@@ -448,10 +484,44 @@ input UserTaskInstanceArgument {
 
 input CommentArgument {
     id: IdArgument
-    name: StringArgument
+    content: StringArgument
+    updatedBy: StringArgument
+    updatedAt: DateArgument
+}
+
+input CommentArrayArgument {
+    # Array-specific operations
+    contains: CommentArgument
+    containsAll: [CommentArgument!]
+    containsAny: [CommentArgument!]
+    isNull: Boolean
+    # Logical operators
+    and: [CommentArrayArgument!]
+    or: [CommentArrayArgument!]
+    not: CommentArrayArgument
+    # Backward compatibility: direct property access (treated as 'contains')
+    id: IdArgument
+    content: StringArgument
+    updatedBy: StringArgument
+    updatedAt: DateArgument
 }
 
 input AttachmentArgument {
+    id: IdArgument
+    name: StringArgument
+}
+
+input AttachmentArrayArgument {
+    # Array-specific operations
+    contains: AttachmentArgument
+    containsAll: [AttachmentArgument!]
+    containsAny: [AttachmentArgument!]
+    isNull: Boolean
+    # Logical operators
+    and: [AttachmentArrayArgument!]
+    or: [AttachmentArrayArgument!]
+    not: AttachmentArrayArgument
+    # Backward compatibility: direct property access (treated as 'contains')
     id: IdArgument
     name: StringArgument
 }
