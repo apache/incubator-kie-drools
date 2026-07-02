@@ -20,7 +20,6 @@ package org.kie.dmn.core.decisionservices;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +34,7 @@ import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -774,7 +774,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void implicit1157_fromSingletonListDS(boolean useExecModelCompiler) {
+    void implicitConversionFromSingletonListDS(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(FILE_NAME, this.getClass());
         final DMNModel dmnModel = runtime.getModel(NS, NAME);
@@ -792,7 +792,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void implicit1157_fromDateToDateTimeDS(boolean useExecModelCompiler) {
+    void implicitConversionfromDateToDateTimeDS(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(FILE_NAME, this.getClass());
         final DMNModel dmnModel = runtime.getModel(NS, NAME);
@@ -806,13 +806,13 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         // Body 3 returns date(2000,1,2) — the DS coerces it to a ZonedDateTime at midnight UTC
         Object result = dmnResult.getContext().get("Body 3");
-        assertThat(result).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdt = (ZonedDateTime) result;
-        assertThat(zdt.getYear()).isEqualTo(2000);
-        assertThat(zdt.getMonthValue()).isEqualTo(1);
-        assertThat(zdt.getDayOfMonth()).isEqualTo(2);
-        assertThat(zdt.getHour()).isEqualTo(0);
-        assertThat(zdt.getMinute()).isEqualTo(0);
-        assertThat(zdt.getSecond()).isEqualTo(0);
+        assertThat(result).isInstanceOf(FormattedZonedDateTime.class);
+        FormattedZonedDateTime zdt = (FormattedZonedDateTime) result;
+        assertThat(zdt.getZonedDateTime().getYear()).isEqualTo(2000);
+        assertThat(zdt.getZonedDateTime().getMonthValue()).isEqualTo(1);
+        assertThat(zdt.getZonedDateTime().getDayOfMonth()).isEqualTo(2);
+        assertThat(zdt.getZonedDateTime().getHour()).isEqualTo(0);
+        assertThat(zdt.getZonedDateTime().getMinute()).isEqualTo(0);
+        assertThat(zdt.getZonedDateTime().getSecond()).isEqualTo(0);
     }
 }
