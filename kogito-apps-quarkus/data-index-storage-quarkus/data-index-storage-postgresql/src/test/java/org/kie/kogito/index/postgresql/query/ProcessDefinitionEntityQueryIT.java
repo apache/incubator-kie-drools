@@ -31,6 +31,7 @@ import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -44,6 +45,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
 
 @QuarkusTest
+@TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessDefinitionEntityQueryIT extends AbstractProcessDefinitionEntityQueryIT {
 

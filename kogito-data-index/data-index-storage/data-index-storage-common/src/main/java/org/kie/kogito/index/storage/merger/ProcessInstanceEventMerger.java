@@ -32,6 +32,9 @@ public abstract class ProcessInstanceEventMerger implements Merger<ProcessInstan
             pi = new ProcessInstance();
             pi.setId(event.getKogitoProcessInstanceId());
             pi.setProcessId(event.getKogitoProcessId());
+            pi.setProcessVersion(event.getKogitoProcessVersion());
+            pi.setRootProcessId(event.getKogitoRootProcessId());
+            pi.setRootProcessVersion(event.getKogitoRootProcessVersion());
             pi.setLastUpdate(DateTimeUtils.toZonedDateTime(date));
             pi.setMilestones(new ArrayList<>());
             pi.setNodes(new ArrayList<>());

@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.app.jobs.spi;
 
+import org.kie.kogito.process.Processes;
+
 public interface JobContext {
-
-    <T> T getContext();
-
+    Processes getProcesses();
 }

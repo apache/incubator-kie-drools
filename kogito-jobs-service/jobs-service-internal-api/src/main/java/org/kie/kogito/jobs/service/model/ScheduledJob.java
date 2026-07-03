@@ -50,7 +50,9 @@ public class ScheduledJob extends Job {
                 job.map(Job::getProcessInstanceId).orElse(null),
                 job.map(Job::getRootProcessInstanceId).orElse(null),
                 job.map(Job::getProcessId).orElse(null),
+                job.map(Job::getProcessVersion).orElse(null),
                 job.map(Job::getRootProcessId).orElse(null),
+                job.map(Job::getRootProcessVersion).orElse(null),
                 job.map(Job::getRepeatInterval).orElse(null),
                 job.map(Job::getRepeatLimit).orElse(null),
                 job.map(Job::getNodeInstanceId).orElse(null));
@@ -166,8 +168,10 @@ public class ScheduledJob extends Job {
                     .repeatLimit(j.map(Job::getRepeatLimit).orElse(job.getRepeatLimit()))
                     .priority(j.map(Job::getPriority).orElse(job.getPriority()))
                     .callbackEndpoint(j.map(Job::getCallbackEndpoint).orElse(job.getCallbackEndpoint()))
-                    .rootProcessId(j.map(Job::getRootProcessId).orElse(job.getRootProcessId()))
                     .processId(j.map(Job::getProcessId).orElse(job.getProcessId()))
+                    .processVersion(j.map(Job::getProcessVersion).orElse(job.getProcessVersion()))
+                    .rootProcessId(j.map(Job::getRootProcessId).orElse(job.getRootProcessId()))
+                    .rootProcessVersion(j.map(Job::getRootProcessVersion).orElse(job.getRootProcessVersion()))
                     .rootProcessInstanceId(j.map(Job::getRootProcessInstanceId).orElse(job.getRootProcessInstanceId()))
                     .processInstanceId(j.map(Job::getProcessInstanceId).orElse(job.getProcessInstanceId()))
                     .expirationTime(j.map(Job::getExpirationTime).orElse(job.getExpirationTime()))

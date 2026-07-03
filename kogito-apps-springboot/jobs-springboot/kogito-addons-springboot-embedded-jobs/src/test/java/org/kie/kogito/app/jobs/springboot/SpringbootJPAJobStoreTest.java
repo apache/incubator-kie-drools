@@ -31,10 +31,12 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SpringbootJPAJobStoreTest {
 
     @Autowired
@@ -58,9 +60,9 @@ public class SpringbootJPAJobStoreTest {
     @Test
     public void testBasicPersistence() throws Exception {
 
-        ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("1", "-1",
+        ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("test-basic-persistence", "-1",
                 ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))), 5,
-                "processInstanceId", null, "processId", null, "nodeInstanceId");
+                "processInstanceId", null, "processId", "v1", null, null, "nodeInstanceId");
 
         listener.setCount(1);
         jobsService.scheduleJob(jobDescription);
@@ -72,9 +74,9 @@ public class SpringbootJPAJobStoreTest {
     @Test
     public void testBasicError() throws Exception {
         testJobExecutor.setNumberOfFailures(4);
-        ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("1", "-1",
+        ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("test-basic-error", "-1",
                 ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))), 5,
-                "processInstanceId", null, "processId", null, "nodeInstanceId");
+                "processInstanceId", null, "processId", "v1", null, null, "nodeInstanceId");
 
         listener.setCount(4);
         jobsService.scheduleJob(jobDescription);

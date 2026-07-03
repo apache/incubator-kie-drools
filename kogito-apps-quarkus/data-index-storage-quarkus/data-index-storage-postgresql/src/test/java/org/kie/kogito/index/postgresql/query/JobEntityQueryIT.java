@@ -22,12 +22,14 @@ import org.kie.kogito.index.jpa.query.AbstractJobEntityQueryIT;
 import org.kie.kogito.index.jpa.storage.JobEntityStorage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 import jakarta.inject.Inject;
 
 @QuarkusTest
+@TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class JobEntityQueryIT extends AbstractJobEntityQueryIT {
     @Inject

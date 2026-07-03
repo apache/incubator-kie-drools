@@ -65,6 +65,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
     private ZonedDateTime end;
     private String rootProcessInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String parentProcessInstanceId;
     @Column(name = "lastUpdateTime")
     private ZonedDateTime lastUpdate;
@@ -183,6 +184,14 @@ public class ProcessInstanceEntity extends AbstractEntity {
 
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     public String getParentProcessInstanceId() {
@@ -320,6 +329,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
                 ", end=" + end +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", parentProcessInstanceId='" + parentProcessInstanceId + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 ", createdBy=" + createdBy +

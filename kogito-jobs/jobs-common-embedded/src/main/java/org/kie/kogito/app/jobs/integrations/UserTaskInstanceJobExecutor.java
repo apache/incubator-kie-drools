@@ -41,7 +41,8 @@ public class UserTaskInstanceJobExecutor implements JobExecutor {
 
     @Override
     public boolean accept(JobDetails jobDetails) {
-        return JobDetailsHelper.extractJobDescription(jobDetails) instanceof UserTaskInstanceJobDescription;
+        return JobDetailsHelper.extractJobDescription(jobDetails) instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription
+                && userTasks.userTaskIds().contains(userTaskInstanceJobDescription.id());
     }
 
     @Override

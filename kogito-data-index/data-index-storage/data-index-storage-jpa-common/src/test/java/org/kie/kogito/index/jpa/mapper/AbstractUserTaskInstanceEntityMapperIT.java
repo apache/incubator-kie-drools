@@ -67,7 +67,9 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
         Set<String> potentialUsers = singleton("testPotentialUsers");
         String referenceName = "testReferenceName";
         String processId = "testProcessId";
+        String processVersion = "v2";
         String rootProcessId = "testRootProcessId";
+        String rootProcessVersion = "v1";
         String rootProcessInstanceId = "testRootProcessInstanceId";
         String externalReferenceId = "testExternalReferenceId";
         Map<String, String> object = new HashMap<>();
@@ -117,7 +119,9 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
         userTaskInstance.setReferenceName(referenceName);
         userTaskInstance.setLastUpdate(time);
         userTaskInstance.setProcessId(processId);
+        userTaskInstance.setProcessVersion(processVersion);
         userTaskInstance.setRootProcessId(rootProcessId);
+        userTaskInstance.setRootProcessVersion(rootProcessVersion);
         userTaskInstance.setRootProcessInstanceId(rootProcessInstanceId);
         userTaskInstance.setInputs(inputs);
         userTaskInstance.setOutputs(outputs);
@@ -142,7 +146,9 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
         userTaskInstanceEntity.setReferenceName(referenceName);
         userTaskInstanceEntity.setLastUpdate(time);
         userTaskInstanceEntity.setProcessId(processId);
+        userTaskInstanceEntity.setProcessVersion(processVersion);
         userTaskInstanceEntity.setRootProcessId(rootProcessId);
+        userTaskInstanceEntity.setRootProcessVersion(rootProcessVersion);
         userTaskInstanceEntity.setRootProcessInstanceId(rootProcessInstanceId);
         userTaskInstanceEntity.setInputs(inputs);
         userTaskInstanceEntity.setOutputs(outputs);

@@ -34,6 +34,7 @@ import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -47,6 +48,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.*;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
 
 @QuarkusTest
+@TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT {
 
@@ -70,7 +72,7 @@ class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT 
         ProcessDefinition definitionEvent = TestUtils.createProcessDefinition(processId, version, Set.of());
         definitionEvent.setAnnotations(Set.of("Javierito", "Another"));
         definitionEvent.setMetadata(Map.of("name", "Javierito", "hobbies", List.of("community", "first")));
-        variableEvent.setKogitoProcessInstanceVersion(version);
+        variableEvent.setKogitoProcessVersion(version);
         definitionStorage.put(key, definitionEvent);
         storage.indexVariable(variableEvent);
         queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(equalTo("variables.traveller.name", "John"))), null, null, null,

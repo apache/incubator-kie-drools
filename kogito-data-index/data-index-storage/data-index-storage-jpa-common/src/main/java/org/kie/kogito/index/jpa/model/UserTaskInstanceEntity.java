@@ -78,7 +78,9 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     private String referenceName;
     private ZonedDateTime lastUpdate;
     private String processId;
+    private String processVersion;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String rootProcessInstanceId;
     @Convert(converter = JsonBinaryConverter.class)
     @Column(columnDefinition = "jsonb")
@@ -239,12 +241,30 @@ public class UserTaskInstanceEntity extends AbstractEntity {
         this.processId = processId;
     }
 
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public UserTaskInstanceEntity setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+        return this;
+    }
+
     public String getRootProcessId() {
         return rootProcessId;
     }
 
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public UserTaskInstanceEntity setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
+        return this;
     }
 
     public String getRootProcessInstanceId() {
@@ -349,7 +369,9 @@ public class UserTaskInstanceEntity extends AbstractEntity {
                 ", referenceName='" + referenceName + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 ", processId='" + processId + '\'' +
+                ", processVersion='" + processVersion + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +

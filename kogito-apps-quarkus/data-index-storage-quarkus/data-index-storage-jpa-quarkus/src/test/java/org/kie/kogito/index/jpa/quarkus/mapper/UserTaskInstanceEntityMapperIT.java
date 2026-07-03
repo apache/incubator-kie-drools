@@ -22,11 +22,13 @@ import org.kie.kogito.index.jpa.mapper.AbstractUserTaskInstanceEntityMapperIT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 
 import jakarta.inject.Inject;
 
 @QuarkusTest
+@TestTransaction
 class UserTaskInstanceEntityMapperIT extends AbstractUserTaskInstanceEntityMapperIT {
 
     @Inject

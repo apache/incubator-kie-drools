@@ -41,7 +41,9 @@ public class ProcessInstanceJobDescriptionMerger implements JobDescriptionMerger
                     processInstanceJobDescription.processInstanceId(),
                     processInstanceJobDescription.rootProcessInstanceId(),
                     processInstanceJobDescription.processId(),
+                    processInstanceJobDescription.processVersion(),
                     processInstanceJobDescription.rootProcessId(),
+                    processInstanceJobDescription.rootProcessVersion(),
                     processInstanceJobDescription.nodeInstanceId());
             return newProcessInstanceJobDescription;
         }

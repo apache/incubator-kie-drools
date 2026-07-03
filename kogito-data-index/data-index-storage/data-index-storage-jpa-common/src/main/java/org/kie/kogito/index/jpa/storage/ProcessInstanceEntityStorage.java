@@ -53,6 +53,7 @@ import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 import org.kie.kogito.persistence.api.StorageServiceCapabilityProvider;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -71,13 +72,12 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
     protected ProcessInstanceEntityStorage() {
     }
 
-    public ProcessInstanceEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> jsonPredicateBuilder) {
-        this(em, jsonPredicateBuilder, ProcessInstanceEntityMapper.INSTANCE);
+    public ProcessInstanceEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> jsonPredicateBuilder, Iterable<Processes> processes) {
+        this(em, jsonPredicateBuilder, ProcessInstanceEntityMapper.INSTANCE, processes);
     }
 
-    public ProcessInstanceEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> jsonPredicateBuilder, ProcessInstanceEntityMapper mapper) {
-        super(em, ProcessInstanceEntity.class, mapper::mapToModel, Optional.ofNullable(getInstance(jsonPredicateBuilder)));
-
+    public ProcessInstanceEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> jsonPredicateBuilder, ProcessInstanceEntityMapper mapper, Iterable<Processes> processes) {
+        super(em, ProcessInstanceEntity.class, mapper::mapToModel, Optional.ofNullable(getInstance(jsonPredicateBuilder)), Optional.ofNullable(getInstance(processes)));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         if (pi == null) {
             pi = new ProcessInstanceEntity();
             pi.setProcessId(event.getKogitoProcessId());
-            pi.setVersion(event.getKogitoProcessInstanceVersion());
+            pi.setVersion(event.getKogitoProcessVersion());
             pi.setId(event.getKogitoProcessInstanceId());
             pi.setLastUpdate(toZonedDateTime(event.getTime()));
             pi.setNodes(new ArrayList<>());
@@ -252,6 +252,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         pi.setProcessName(data.getProcessName());
         pi.setRootProcessInstanceId(data.getRootProcessInstanceId());
         pi.setRootProcessId(data.getRootProcessId());
+        pi.setRootProcessVersion(data.getRootProcessVersion());
         pi.setParentProcessInstanceId(data.getParentInstanceId());
         pi.setRoles(data.getRoles());
         pi.setState(data.getState());

@@ -102,10 +102,18 @@ public class DataAuditTestUtils {
                 .exceptionDetails(exceptionDetails)
                 .build();
 
-        JobInstanceDataEvent dataEvent =
-                new JobInstanceDataEvent("JobEvent", toURIEndpoint(processId), new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsBytes(job), procesInstanceId,
-                        rootProcessInstanceId, processId, rootProcessId, (String) "identity");
-        return dataEvent;
+        return JobInstanceDataEvent.builder()
+                .type("JobEvent")
+                .source(toURIEndpoint(processId))
+                .data(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsBytes(job))
+                .kogitoProcessInstanceId(procesInstanceId)
+                .kogitoRootProcessInstanceId(rootProcessInstanceId)
+                .kogitoProcessId(processId)
+                .kogitoProcessVersion(null)
+                .kogitoRootProcessId(rootProcessId)
+                .kogitoRootProcessVersion(null)
+                .kogitoIdentity("identity")
+                .build();
     }
 
     public static JobInstanceDataEvent deriveNewState(JobInstanceDataEvent jobEvent, Integer executionCounter, JobStatus state) throws Exception {
@@ -125,10 +133,18 @@ public class DataAuditTestUtils {
                 .exceptionDetails(exceptionDetails)
                 .build();
 
-        JobInstanceDataEvent dataEvent = new JobInstanceDataEvent("JobEvent", jobEvent.getSource().toString(), new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsBytes(job),
-                jobEvent.getKogitoProcessInstanceId(),
-                jobEvent.getKogitoRootProcessInstanceId(), jobEvent.getKogitoProcessId(), jobEvent.getKogitoRootProcessId(), (String) "identity");
-        return dataEvent;
+        return JobInstanceDataEvent.builder()
+                .type("JobEvent")
+                .source(jobEvent.getSource().toString())
+                .data(new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsBytes(job))
+                .kogitoProcessInstanceId(jobEvent.getKogitoProcessInstanceId())
+                .kogitoRootProcessInstanceId(jobEvent.getKogitoRootProcessInstanceId())
+                .kogitoProcessId(jobEvent.getKogitoProcessId())
+                .kogitoProcessVersion(jobEvent.getKogitoProcessVersion())
+                .kogitoRootProcessId(jobEvent.getKogitoRootProcessId())
+                .kogitoRootProcessVersion(jobEvent.getKogitoRootProcessVersion())
+                .kogitoIdentity("identity")
+                .build();
     }
 
     public static ProcessInstanceStateDataEvent newProcessInstanceStateEvent(
@@ -136,6 +152,7 @@ public class DataAuditTestUtils {
             String parentProcessInstanceId, String identity, int eventType) {
 
         String processVersion = "1.0";
+        String rootProcessVersion = "2.0";
         String processType = "BPMN2";
         ProcessInstanceStateEventBody body = ProcessInstanceStateEventBody.create()
                 .processInstanceId(processInstanceId)
@@ -162,13 +179,17 @@ public class DataAuditTestUtils {
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, processType);
         metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, parentProcessInstanceId);
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, rootProcessId);
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, rootProcessVersion);
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, rootProcessInstanceId);
 
-        ProcessInstanceStateDataEvent event =
-                new ProcessInstanceStateDataEvent(toURIEndpoint(processId), ADDONS, (String) identity, metadata, body);
-
-        event.setKogitoBusinessKey(body.getBusinessKey());
-        return event;
+        return ProcessInstanceStateDataEvent.builder()
+                .source(toURIEndpoint(processId))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(identity)
+                .metaData(metadata)
+                .data(body)
+                .kogitoBusinessKey(body.getBusinessKey())
+                .build();
     }
 
     public static ProcessInstanceStateDataEvent deriveProcessInstanceStateEvent(ProcessInstanceStateDataEvent event, String identity, int status, int eventType) {
@@ -190,11 +211,14 @@ public class DataAuditTestUtils {
                 .eventType(eventType)
                 .build();
 
-        ProcessInstanceStateDataEvent newEvent =
-                new ProcessInstanceStateDataEvent(toURIEndpoint(body.getProcessId()), ADDONS, (String) identity,
-                        extractProcessInstnaceEventMetadata(event), body);
-        newEvent.setKogitoBusinessKey(body.getBusinessKey());
-        return newEvent;
+        return ProcessInstanceStateDataEvent.builder()
+                .source(toURIEndpoint(body.getProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(identity)
+                .metaData(extractProcessInstanceEventMetadata(event))
+                .data(body)
+                .kogitoBusinessKey(body.getBusinessKey())
+                .build();
     }
 
     public static ProcessInstanceNodeDataEvent newProcessInstanceNodeEvent(
@@ -215,12 +239,14 @@ public class DataAuditTestUtils {
                 .connectionNodeDefinitionId(connection)
                 .build();
 
-        ProcessInstanceNodeDataEvent event = new ProcessInstanceNodeDataEvent(toURIEndpoint(body.getProcessId()),
-                ADDONS, (String) identity,
-                extractProcessInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return ProcessInstanceNodeDataEvent.builder()
+                .source(toURIEndpoint(body.getProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(identity)
+                .metaData(extractProcessInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
     public static ProcessInstanceVariableDataEvent newProcessInstanceVariableEvent(
@@ -238,12 +264,14 @@ public class DataAuditTestUtils {
                 .variableValue(variableValue)
                 .build();
 
-        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent(toURIEndpoint(body.getProcessId()),
-                ADDONS, (String) identity,
-                extractProcessInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return ProcessInstanceVariableDataEvent.builder()
+                .source(toURIEndpoint(body.getProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(identity)
+                .metaData(extractProcessInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
     public static ProcessInstanceErrorDataEvent newProcessInstanceErrorEvent(
@@ -261,23 +289,26 @@ public class DataAuditTestUtils {
                 .errorMessage(errorMessage)
                 .build();
 
-        ProcessInstanceErrorDataEvent event = new ProcessInstanceErrorDataEvent(toURIEndpoint(body.getProcessId()),
-                ADDONS, (String) identity,
-                extractProcessInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return ProcessInstanceErrorDataEvent.builder()
+                .source(toURIEndpoint(body.getProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(identity)
+                .metaData(extractProcessInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
-    private static Map<String, Object> extractProcessInstnaceEventMetadata(ProcessInstanceDataEvent<?> pEvent) {
+    private static Map<String, Object> extractProcessInstanceEventMetadata(ProcessInstanceDataEvent<?> pEvent) {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, pEvent.getKogitoProcessInstanceId());
-        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, pEvent.getKogitoProcessInstanceVersion());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, pEvent.getKogitoProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, pEvent.getKogitoProcessId());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, pEvent.getKogitoProcessInstanceState());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, pEvent.getKogitoProcessType());
         metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, pEvent.getKogitoParentProcessInstanceId());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, pEvent.getKogitoRootProcessId());
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, pEvent.getKogitoRootProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, pEvent.getKogitoRootProcessInstanceId());
         return metadata;
     }
@@ -314,16 +345,19 @@ public class DataAuditTestUtils {
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, processType);
         metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, null);
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, null);
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, null);
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, null);
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA, userTaskInstanceId);
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA, state);
 
-        UserTaskInstanceStateDataEvent event =
-                new UserTaskInstanceStateDataEvent(toURIEndpoint(processId), ADDONS, (String) eventUser,
-                        metadata, body);
-
-        event.setKogitoBusinessKey(UUID.randomUUID().toString());
-        return event;
+        return UserTaskInstanceStateDataEvent.builder()
+                .source(toURIEndpoint(processId))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(eventUser)
+                .metaData(metadata)
+                .data(body)
+                .kogitoBusinessKey(UUID.randomUUID().toString())
+                .build();
     }
 
     public static UserTaskInstanceVariableDataEvent newUserTaskInstanceVariableEvent(UserTaskInstanceStateDataEvent pEvent,
@@ -341,13 +375,14 @@ public class DataAuditTestUtils {
                 .variableValue(variableValue)
                 .build();
 
-        UserTaskInstanceVariableDataEvent event =
-                new UserTaskInstanceVariableDataEvent(toURIEndpoint(pEvent.getKogitoProcessId()), ADDONS,
-                        (String) eventUser,
-                        extractUserTaskInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return UserTaskInstanceVariableDataEvent.builder()
+                .source(toURIEndpoint(pEvent.getKogitoProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(eventUser)
+                .metaData(extractUserTaskInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
     public static UserTaskInstanceAssignmentDataEvent newUserTaskInstanceAssignmentEvent(UserTaskInstanceStateDataEvent pEvent,
@@ -363,13 +398,14 @@ public class DataAuditTestUtils {
                 .users(users)
                 .build();
 
-        UserTaskInstanceAssignmentDataEvent event =
-                new UserTaskInstanceAssignmentDataEvent(toURIEndpoint(pEvent.getKogitoProcessId()), ADDONS,
-                        (String) eventUser,
-                        extractUserTaskInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return UserTaskInstanceAssignmentDataEvent.builder()
+                .source(toURIEndpoint(pEvent.getKogitoProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(eventUser)
+                .metaData(extractUserTaskInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
     public static UserTaskInstanceAttachmentDataEvent newUserTaskInstanceAttachmentEvent(UserTaskInstanceStateDataEvent pEvent,
@@ -387,13 +423,13 @@ public class DataAuditTestUtils {
                 .eventType(eventType)
                 .build();
 
-        UserTaskInstanceAttachmentDataEvent event =
-                new UserTaskInstanceAttachmentDataEvent(toURIEndpoint(pEvent.getKogitoProcessId()), ADDONS,
-                        (String) eventUser,
-                        extractUserTaskInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return UserTaskInstanceAttachmentDataEvent.builder()
+                .source(toURIEndpoint(pEvent.getKogitoProcessId())).kogitoAddons(ADDONS)
+                .kogitoIdentity(eventUser)
+                .metaData(extractUserTaskInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
     public static UserTaskInstanceDeadlineDataEvent newUserTaskInstanceDeadlineEvent(UserTaskInstanceStateDataEvent pEvent,
@@ -409,13 +445,14 @@ public class DataAuditTestUtils {
                 .notification(notifications)
                 .build();
 
-        UserTaskInstanceDeadlineDataEvent event =
-                new UserTaskInstanceDeadlineDataEvent(toURIEndpoint(pEvent.getKogitoProcessId()), ADDONS,
-                        (String) eventUser,
-                        extractUserTaskInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return UserTaskInstanceDeadlineDataEvent.builder()
+                .source(toURIEndpoint(pEvent.getKogitoProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(eventUser)
+                .metaData(extractUserTaskInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
     public static UserTaskInstanceCommentDataEvent newUserTaskInstanceCommentEvent(UserTaskInstanceStateDataEvent pEvent,
@@ -432,24 +469,26 @@ public class DataAuditTestUtils {
                 .eventType(eventType)
                 .build();
 
-        UserTaskInstanceCommentDataEvent event =
-                new UserTaskInstanceCommentDataEvent(toURIEndpoint(pEvent.getKogitoProcessId()), ADDONS,
-                        (String) eventUser,
-                        extractUserTaskInstnaceEventMetadata(pEvent), body);
-
-        event.setKogitoBusinessKey(pEvent.getKogitoBusinessKey());
-        return event;
+        return UserTaskInstanceCommentDataEvent.builder()
+                .source(toURIEndpoint(pEvent.getKogitoProcessId()))
+                .kogitoAddons(ADDONS)
+                .kogitoIdentity(eventUser)
+                .metaData(extractUserTaskInstanceEventMetadata(pEvent))
+                .data(body)
+                .kogitoBusinessKey(pEvent.getKogitoBusinessKey())
+                .build();
     }
 
-    private static Map<String, Object> extractUserTaskInstnaceEventMetadata(UserTaskInstanceDataEvent<?> pEvent) {
+    private static Map<String, Object> extractUserTaskInstanceEventMetadata(UserTaskInstanceDataEvent<?> pEvent) {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, pEvent.getKogitoProcessInstanceId());
-        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, pEvent.getKogitoProcessInstanceVersion());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, pEvent.getKogitoProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, pEvent.getKogitoProcessId());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, pEvent.getKogitoProcessInstanceState());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, pEvent.getKogitoProcessType());
         metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, pEvent.getKogitoParentProcessInstanceId());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, pEvent.getKogitoRootProcessId());
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, pEvent.getKogitoRootProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, pEvent.getKogitoRootProcessInstanceId());
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA, pEvent.getKogitoUserTaskInstanceId());
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA, pEvent.getKogitoUserTaskInstanceState());

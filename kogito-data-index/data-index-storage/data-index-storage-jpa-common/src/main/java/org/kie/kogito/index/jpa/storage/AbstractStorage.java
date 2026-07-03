@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -44,7 +45,12 @@ public abstract class AbstractStorage<K, E extends AbstractEntity, V> extends Ab
 
     protected AbstractStorage(EntityManager em, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
             Function<V, E> mapToEntity, Function<E, K> mapEntityToKey, Optional<JsonPredicateBuilder> jsonPredicateBuilder) {
-        super(em, entityClass, mapToModel, jsonPredicateBuilder);
+        this(em, modelClass, entityClass, mapToModel, mapToEntity, mapEntityToKey, jsonPredicateBuilder, null);
+    }
+
+    protected AbstractStorage(EntityManager em, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
+            Function<V, E> mapToEntity, Function<E, K> mapEntityToKey, Optional<JsonPredicateBuilder> jsonPredicateBuilder, Optional<Processes> processes) {
+        super(em, entityClass, mapToModel, jsonPredicateBuilder, processes);
         this.modelClass = modelClass;
         this.mapToEntity = mapToEntity;
     }

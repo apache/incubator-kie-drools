@@ -74,6 +74,11 @@ public abstract class AbstractBuilder<B extends AbstractBuilder<B, T, E>, T exte
         return (B) this;
     }
 
+    public B processVersion(String processVersion) {
+        event.setProcessVersion(processVersion);
+        return (B) this;
+    }
+
     public B rootProcessInstanceId(String rootProcessInstanceId) {
         event.setRootProcessInstanceId(rootProcessInstanceId);
         return (B) this;
@@ -81,6 +86,11 @@ public abstract class AbstractBuilder<B extends AbstractBuilder<B, T, E>, T exte
 
     public B rootProcessId(String rootProcessId) {
         event.setRootProcessId(rootProcessId);
+        return (B) this;
+    }
+
+    public B rootProcessVersion(String rootProcessVersion) {
+        event.setRootProcessVersion(rootProcessVersion);
         return (B) this;
     }
 

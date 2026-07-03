@@ -76,7 +76,15 @@ public class QuarkusEmbeddedJPADataAuditTest {
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, processType);
 
         ProcessInstanceStateDataEvent event =
-                new ProcessInstanceStateDataEvent("http://localhost:8080/" + processId, "", "myUser", metadata, body);
+                ProcessInstanceStateDataEvent
+                        .builder()
+                        .source("http://localhost:8080/" + processId)
+                        .kogitoAddons("")
+                        .kogitoIdentity("myUser")
+                        .metaData(metadata)
+                        .data(body)
+                        .kogitoBusinessKey(body.getBusinessKey())
+                        .build();
 
         event.setKogitoBusinessKey(body.getBusinessKey());
 

@@ -49,7 +49,7 @@ public class WrappingConditionalJobExceptionDetailsExtractorDisabledTest {
      * This extractor should NOT be used when the feature is disabled.
      */
     @Configuration
-    static class TestConfiguration {
+    public static class TestConfiguration {
         @Bean(name = "customTestExtractorForDisabledTest")
         public JobExceptionDetailsExtractor customTestExtractor() {
             return new JobExceptionDetailsExtractor() {

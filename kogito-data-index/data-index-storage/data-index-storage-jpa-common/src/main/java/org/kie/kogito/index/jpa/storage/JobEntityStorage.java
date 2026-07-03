@@ -18,22 +18,28 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
+import java.util.Optional;
+
 import org.kie.kogito.index.jpa.mapper.JobEntityMapper;
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.index.jpa.model.JobEntity;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.storage.JobInstanceStorage;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+
+import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
 
 public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> implements JobInstanceStorage {
 
     protected JobEntityStorage() {
     }
 
-    public JobEntityStorage(EntityManager em) {
-        super(em, Job.class, JobEntity.class, JobEntityMapper.INSTANCE::mapToModel, JobEntityMapper.INSTANCE::mapToEntity, AbstractEntity::getId);
+    public JobEntityStorage(EntityManager em, Iterable<Processes> processes) {
+        super(em, Job.class, JobEntity.class, JobEntityMapper.INSTANCE::mapToModel, JobEntityMapper.INSTANCE::mapToEntity, AbstractEntity::getId,
+                java.util.Optional.empty(), Optional.ofNullable(getInstance(processes)));
     }
 
     @Transactional
@@ -49,14 +55,18 @@ public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> im
             entity = new JobEntity();
             entity.setId(jobId);
             entity.setProcessId(job.getProcessId());
+            entity.setProcessVersion(job.getProcessVersion());
             entity.setRootProcessId(job.getRootProcessId());
+            entity.setRootProcessVersion(job.getRootProcessVersion());
             em.persist(entity);
         } else {
             if (entity.getProcessId() == null) {
                 entity.setProcessId(job.getProcessId());
+                entity.setProcessVersion(job.getProcessVersion());
             }
             if (entity.getRootProcessId() == null) {
                 entity.setRootProcessId(job.getRootProcessId());
+                entity.setRootProcessVersion(job.getRootProcessVersion());
             }
         }
         return entity;

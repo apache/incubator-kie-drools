@@ -35,6 +35,7 @@ import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -43,6 +44,7 @@ import jakarta.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
+@TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class VariablesAndMetadataJsonIT {
 
@@ -75,7 +77,7 @@ class VariablesAndMetadataJsonIT {
                         28,
                         false,
                         List.of("A", "B"));
-        variableEvent.setKogitoProcessInstanceVersion(version);
+        variableEvent.setKogitoProcessVersion(version);
 
         storage.indexVariable(variableEvent);
 

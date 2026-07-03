@@ -19,6 +19,7 @@
 package org.kie.kogito.jobs.service.events;
 
 import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.DataEventState;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +32,7 @@ public class JobDataEvent extends AbstractDataEvent<ScheduledJob> {
 
     public static final String JOB_EVENT_TYPE = "JobEvent";
 
+    @Deprecated
     public JobDataEvent(String source, String identity, ScheduledJob data) {
         super(JOB_EVENT_TYPE,
                 source,
@@ -41,37 +43,36 @@ public class JobDataEvent extends AbstractDataEvent<ScheduledJob> {
                 data.getRootProcessId(),
                 null,
                 identity);
+        setKogitoProcessVersion(data.getProcessVersion());
+        setKogitoRootProcessVersion(data.getRootProcessVersion());
+    }
+
+    public JobDataEvent(DataEventState<ScheduledJob> state) {
+        super(state);
     }
 
     @JsonIgnore
     public static JobDataEventBuilder builder() {
-        return new JobDataEventBuilder();
+        return new JobDataEventBuilder().type(JOB_EVENT_TYPE);
     }
 
     @JsonIgnoreType
-    public static class JobDataEventBuilder {
-
-        private String source;
-        private ScheduledJob data;
-        private String identity;
-
-        public JobDataEventBuilder source(String source) {
-            this.source = source;
-            return this;
-        }
-
-        public JobDataEventBuilder identity(String identity) {
-            this.identity = identity;
-            return this;
-        }
-
+    public static class JobDataEventBuilder
+            extends AbstractDataEventBuilder<JobDataEventBuilder, ScheduledJob> {
+        @Override
         public JobDataEventBuilder data(ScheduledJob data) {
-            this.data = data;
+            super.data(data)
+                    .kogitoProcessInstanceId(data.getProcessInstanceId())
+                    .kogitoRootProcessInstanceId(data.getRootProcessInstanceId())
+                    .kogitoProcessId(data.getProcessId())
+                    .kogitoProcessVersion(data.getProcessVersion())
+                    .kogitoRootProcessId(data.getRootProcessId())
+                    .kogitoRootProcessVersion(data.getRootProcessVersion());
             return this;
         }
 
         public JobDataEvent build() {
-            return new JobDataEvent(source, identity, data);
+            return new JobDataEvent(this.toCommonStateRecord());
         }
     }
 }

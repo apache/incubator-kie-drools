@@ -44,10 +44,14 @@ public abstract class KogitoCloudEvent<T> {
     private String processInstanceId;
     @JsonProperty(CloudEventExtensionConstants.PROCESS_ID)
     private String processId;
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_VERSION)
+    private String processVersion;
     @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID)
     private String rootProcessInstanceId;
     @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID)
     private String rootProcessId;
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION)
+    private String rootProcessVersion;
     @JsonProperty(CloudEventExtensionConstants.PROCESS_REFERENCE_ID)
     private String kogitoReferenceId;
     @JsonProperty(CloudEventExtensionConstants.ADDONS)
@@ -131,6 +135,14 @@ public abstract class KogitoCloudEvent<T> {
         this.processId = processId;
     }
 
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+    }
+
     public String getRootProcessInstanceId() {
         return rootProcessInstanceId;
     }
@@ -149,6 +161,14 @@ public abstract class KogitoCloudEvent<T> {
         if (id != null && !id.trim().isEmpty()) {
             this.rootProcessId = id;
         }
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     public String getKogitoReferenceId() {
@@ -189,8 +209,10 @@ public abstract class KogitoCloudEvent<T> {
                 ", data=" + data +
                 ", " + CloudEventExtensionConstants.PROCESS_INSTANCE_ID + "='" + processInstanceId + '\'' +
                 ", " + CloudEventExtensionConstants.PROCESS_ID + "='" + processId + '\'' +
+                ", " + CloudEventExtensionConstants.PROCESS_VERSION + "='" + processVersion + '\'' +
                 ", " + CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID + "='" + rootProcessInstanceId + '\'' +
                 ", " + CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID + "='" + rootProcessId + '\'' +
+                ", " + CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION + "='" + rootProcessVersion + '\'' +
                 ", " + CloudEventExtensionConstants.PROCESS_REFERENCE_ID + "='" + kogitoReferenceId + '\'' +
                 ", " + CloudEventExtensionConstants.ADDONS + "='" + kogitoAddons + '\'' +
                 '}';

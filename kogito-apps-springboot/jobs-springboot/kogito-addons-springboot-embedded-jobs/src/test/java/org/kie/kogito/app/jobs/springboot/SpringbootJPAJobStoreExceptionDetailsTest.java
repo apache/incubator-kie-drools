@@ -20,12 +20,15 @@ package org.kie.kogito.app.jobs.springboot;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.app.jobs.jpa.JPAJobContext;
 import org.kie.kogito.app.jobs.jpa.JPAJobStore;
 import org.kie.kogito.app.jobs.jpa.model.JobDetailsEntity;
 import org.kie.kogito.app.jobs.spi.JobContext;
 import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.process.Processes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
@@ -37,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Focuses on testing the newly added exceptionMessage and exceptionDetails fields.
  */
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SpringbootJPAJobStoreExceptionDetailsTest {
 
     @Autowired
@@ -56,12 +60,7 @@ public class SpringbootJPAJobStoreExceptionDetailsTest {
         JobDetails jobDetails = createJobDetailsWithException("spring-direct-test-1");
 
         // When: Persisting through JobStore
-        JobContext jobContext = new JobContext() {
-            @Override
-            public <T> T getContext() {
-                return (T) entityManager;
-            }
-        };
+        JobContext jobContext = getJobContext();
         jobStore.persist(jobContext, jobDetails);
         entityManager.flush();
         entityManager.clear();
@@ -73,17 +72,28 @@ public class SpringbootJPAJobStoreExceptionDetailsTest {
         assertThat(entity.getExceptionDetails()).isEqualTo("Test exception details");
     }
 
+    private JobContext getJobContext() {
+        return new JPAJobContext() {
+
+            @Override
+            public EntityManager getEntityManager() {
+                return entityManager;
+            }
+
+            @Override
+            public Processes getProcesses() {
+                return null;
+            }
+
+        };
+    }
+
     @Test
     @Transactional
     public void testJobStoreUpdateClearsExceptionDetails() {
         // Given: A job with exception details exists
         JobDetails jobDetailsWithException = createJobDetailsWithException("spring-direct-test-2");
-        JobContext jobContext = new JobContext() {
-            @Override
-            public <T> T getContext() {
-                return (T) entityManager;
-            }
-        };
+        JobContext jobContext = getJobContext();
         jobStore.persist(jobContext, jobDetailsWithException);
         entityManager.flush();
         entityManager.clear();
@@ -106,12 +116,7 @@ public class SpringbootJPAJobStoreExceptionDetailsTest {
     public void testJobStoreFindReturnsExceptionDetails() {
         // Given: A job with exception details exists
         JobDetails jobDetails = createJobDetailsWithException("spring-direct-test-3");
-        JobContext jobContext = new JobContext() {
-            @Override
-            public <T> T getContext() {
-                return (T) entityManager;
-            }
-        };
+        JobContext jobContext = getJobContext();
         jobStore.persist(jobContext, jobDetails);
         entityManager.flush();
         entityManager.clear();

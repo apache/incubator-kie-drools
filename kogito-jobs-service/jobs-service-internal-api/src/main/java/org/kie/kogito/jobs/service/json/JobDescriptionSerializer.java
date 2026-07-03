@@ -46,21 +46,26 @@ public class JobDescriptionSerializer extends StdSerializer<JobDescription> {
         jgen.writeObjectField("expirationTime", value.expirationTime());
         if (value instanceof ProcessJobDescription processJobDescription) {
             jgen.writeStringField("processId", processJobDescription.processId());
+            jgen.writeStringField("processVersion", processJobDescription.processId());
         } else if (value instanceof ProcessInstanceJobDescription jobDescription) {
             jgen.writeStringField("timerId", jobDescription.timerId());
             jgen.writeStringField("processInstanceId", jobDescription.processInstanceId());
             jgen.writeStringField("rootProcessInstanceId", jobDescription.rootProcessInstanceId());
             jgen.writeStringField("processId", jobDescription.processId());
+            jgen.writeStringField("processVersion", jobDescription.processVersion());
             jgen.writeStringField("rootProcessId", jobDescription.rootProcessId());
+            jgen.writeStringField("rootProcessVersion", jobDescription.rootProcessVersion());
             jgen.writeStringField("nodeInstanceId", jobDescription.nodeInstanceId());
             jgen.writeEndObject();
         } else if (value instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
             jgen.writeStringField("userTaskInstanceId", userTaskInstanceJobDescription.userTaskInstanceId());
             jgen.writeStringField("processId", userTaskInstanceJobDescription.processId());
+            jgen.writeStringField("processVersion", userTaskInstanceJobDescription.processVersion());
             jgen.writeStringField("processInstanceId", userTaskInstanceJobDescription.processInstanceId());
             jgen.writeStringField("nodeInstanceId", userTaskInstanceJobDescription.nodeInstanceId());
             jgen.writeStringField("rootProcessInstanceId", userTaskInstanceJobDescription.rootProcessInstanceId());
             jgen.writeStringField("rootProcessId", userTaskInstanceJobDescription.rootProcessId());
+            jgen.writeStringField("rootProcessVersion", userTaskInstanceJobDescription.rootProcessVersion());
         }
         jgen.writeEndObject();
     }

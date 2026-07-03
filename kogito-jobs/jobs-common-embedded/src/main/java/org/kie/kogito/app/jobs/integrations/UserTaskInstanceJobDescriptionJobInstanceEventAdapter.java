@@ -37,11 +37,13 @@ public class UserTaskInstanceJobDescriptionJobInstanceEventAdapter extends Abstr
     @Override
     protected void doAdaptPayload(JobBuilder jobBuilder, JobDescription jobDescription) {
         if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
-            jobBuilder.processInstanceId(userTaskInstanceJobDescription.processInstanceId());
-            jobBuilder.processId(userTaskInstanceJobDescription.processId());
-            jobBuilder.nodeInstanceId(userTaskInstanceJobDescription.nodeInstanceId());
-            jobBuilder.rootProcessInstanceId(userTaskInstanceJobDescription.rootProcessInstanceId());
-            jobBuilder.rootProcessId(userTaskInstanceJobDescription.rootProcessId());
+            jobBuilder
+                    .processInstanceId(userTaskInstanceJobDescription.processInstanceId()).processId(userTaskInstanceJobDescription.processId())
+                    .processVersion(userTaskInstanceJobDescription.processVersion())
+                    .nodeInstanceId(userTaskInstanceJobDescription.nodeInstanceId())
+                    .rootProcessInstanceId(userTaskInstanceJobDescription.rootProcessInstanceId())
+                    .rootProcessId(userTaskInstanceJobDescription.rootProcessId())
+                    .rootProcessVersion(userTaskInstanceJobDescription.rootProcessVersion());
         }
     }
 

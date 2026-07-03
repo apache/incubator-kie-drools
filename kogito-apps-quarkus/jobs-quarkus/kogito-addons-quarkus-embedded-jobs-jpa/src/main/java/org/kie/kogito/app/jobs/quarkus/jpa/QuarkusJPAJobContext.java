@@ -18,21 +18,28 @@
  */
 package org.kie.kogito.app.jobs.quarkus.jpa;
 
-import org.kie.kogito.app.jobs.spi.JobContext;
+import org.kie.kogito.app.jobs.jpa.JPAJobContext;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
 
-public class QuarkusJPAJobContext implements JobContext {
+public class QuarkusJPAJobContext implements JPAJobContext {
 
+    private Processes processes;
     private EntityManager entityManager;
 
-    public QuarkusJPAJobContext(EntityManager entityManager) {
+    public QuarkusJPAJobContext(Processes processes, EntityManager entityManager) {
+        this.processes = processes;
         this.entityManager = entityManager;
     }
 
     @Override
-    public <T> T getContext() {
-        return (T) entityManager;
+    public Processes getProcesses() {
+        return processes;
     }
 
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 }

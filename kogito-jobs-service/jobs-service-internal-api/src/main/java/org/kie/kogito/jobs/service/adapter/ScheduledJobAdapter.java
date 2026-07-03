@@ -58,9 +58,11 @@ public class ScheduledJobAdapter {
                     String processInstanceId = httpRecipient.getHeader("processInstanceId");
                     String rootProcessInstanceId = httpRecipient.getHeader("rootProcessInstanceId");
                     String processId = httpRecipient.getHeader("processId");
+                    String processVersion = httpRecipient.getHeader("processVersion");
                     String rootProcessId = httpRecipient.getHeader("rootProcessId");
+                    String rootProcessVersion = httpRecipient.getHeader("rootProcessVersion");
                     String nodeInstanceId = httpRecipient.getHeader("nodeInstanceId");
-                    return new ProcessPayload(processInstanceId, rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
+                    return new ProcessPayload(processInstanceId, rootProcessInstanceId, processId, rootProcessId, nodeInstanceId, processVersion, rootProcessVersion);
                 })
                 .filter(processPayload -> Objects.nonNull(processPayload.processInstanceId))//just to guarantee headers were present
                 .orElse(new ProcessPayload());
@@ -82,8 +84,10 @@ public class ScheduledJobAdapter {
                         .repeatLimit(extractRepeatLimit(jobDetails.getTrigger()))
                         .repeatInterval(extractRepeatInterval(jobDetails.getTrigger()))
                         .rootProcessId(payload.getRootProcessId())
+                        .rootProcessVersion(payload.getRootProcessVersion())
                         .rootProcessInstanceId(payload.getRootProcessInstanceId())
                         .processId(payload.getProcessId())
+                        .processVersion(payload.getProcessVersion())
                         .processInstanceId(payload.getProcessInstanceId())
                         .nodeInstanceId(payload.getNodeInstanceId())
                         .build())
@@ -101,6 +105,10 @@ public class ScheduledJobAdapter {
         return new JobDetailsBuilder()
                 .id(scheduledJob.getId())
                 .correlationId(scheduledJob.getId())
+                .processId(scheduledJob.getProcessId())
+                .processVersion(scheduledJob.getProcessVersion())
+                .rootProcessId(scheduledJob.getRootProcessId())
+                .rootProcessVersion(scheduledJob.getRootProcessVersion())
                 .executionCounter(scheduledJob.getExecutionCounter())
                 .lastUpdate(scheduledJob.getLastUpdate())
                 .recipient(recipientAdapter(scheduledJob))
@@ -119,9 +127,11 @@ public class ScheduledJobAdapter {
                         .forStringPayload()
                         .url(url)
                         .header("processId", scheduledJob.getProcessId())
+                        .header("processVersion", scheduledJob.getProcessVersion())
                         .header("processInstanceId", scheduledJob.getProcessInstanceId())
                         .header("rootProcessInstanceId", scheduledJob.getRootProcessInstanceId())
                         .header("rootProcessId", scheduledJob.getRootProcessId())
+                        .header("rootProcessVersion", scheduledJob.getRootProcessVersion())
                         .header("nodeInstanceId", scheduledJob.getNodeInstanceId())
                         .build()))
                 .orElse(null);
@@ -175,7 +185,9 @@ public class ScheduledJobAdapter {
         private String processInstanceId;
         private String rootProcessInstanceId;
         private String processId;
+        private String processVersion;
         private String rootProcessId;
+        private String rootProcessVersion;
         private String nodeInstanceId;
 
         private ProcessPayload() {
@@ -183,11 +195,13 @@ public class ScheduledJobAdapter {
         }
 
         public ProcessPayload(String processInstanceId, String rootProcessInstanceId, String processId,
-                String rootProcessId, String nodeInstanceId) {
+                String rootProcessId, String nodeInstanceId, String processVersion, String rootProcessVersion) {
             this.processInstanceId = processInstanceId;
             this.rootProcessInstanceId = rootProcessInstanceId;
             this.processId = processId;
+            this.processVersion = processVersion;
             this.rootProcessId = rootProcessId;
+            this.rootProcessVersion = rootProcessVersion;
             this.nodeInstanceId = nodeInstanceId;
         }
 
@@ -203,8 +217,16 @@ public class ScheduledJobAdapter {
             return processId;
         }
 
+        public String getProcessVersion() {
+            return processVersion;
+        }
+
         public String getRootProcessId() {
             return rootProcessId;
+        }
+
+        public String getRootProcessVersion() {
+            return rootProcessVersion;
         }
 
         public String getNodeInstanceId() {
@@ -221,12 +243,13 @@ public class ScheduledJobAdapter {
             }
             ProcessPayload that = (ProcessPayload) o;
             return Objects.equals(processInstanceId, that.processInstanceId) && Objects.equals(rootProcessInstanceId, that.rootProcessInstanceId) && Objects.equals(processId,
-                    that.processId) && Objects.equals(rootProcessId, that.rootProcessId) && Objects.equals(nodeInstanceId, that.nodeInstanceId);
+                    that.processId) && Objects.equals(processVersion, that.processVersion) && Objects.equals(rootProcessId, that.rootProcessId)
+                    && Objects.equals(rootProcessVersion, that.rootProcessVersion) && Objects.equals(nodeInstanceId, that.nodeInstanceId);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(processInstanceId, rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
+            return Objects.hash(processInstanceId, rootProcessInstanceId, processId, rootProcessId, nodeInstanceId, processVersion, rootProcessVersion);
         }
     }
 }

@@ -19,20 +19,29 @@
 
 package org.kie.kogito.app.jobs.springboot.jpa;
 
-import org.kie.kogito.app.jobs.spi.JobContext;
+import org.kie.kogito.app.jobs.jpa.JPAJobContext;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
 
-public class SpringbootJPAJobContext implements JobContext {
+public class SpringbootJPAJobContext implements JPAJobContext {
 
     private EntityManager entityManager;
 
-    public SpringbootJPAJobContext(EntityManager entityManager) {
+    private Processes processes;
+
+    public SpringbootJPAJobContext(Processes processes, EntityManager entityManager) {
+        this.processes = processes;
         this.entityManager = entityManager;
     }
 
     @Override
-    public <T> T getContext() {
-        return (T) entityManager;
+    public Processes getProcesses() {
+        return processes;
+    }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

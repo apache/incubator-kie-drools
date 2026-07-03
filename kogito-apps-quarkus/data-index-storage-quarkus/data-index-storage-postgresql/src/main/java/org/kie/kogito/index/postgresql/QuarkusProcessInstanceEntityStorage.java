@@ -18,8 +18,12 @@
  */
 package org.kie.kogito.index.postgresql;
 
+import java.util.Collections;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.jpa.storage.JsonPredicateBuilder;
 import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
+import org.kie.kogito.process.Processes;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
@@ -30,7 +34,8 @@ import jakarta.persistence.EntityManager;
 public class QuarkusProcessInstanceEntityStorage extends ProcessInstanceEntityStorage {
 
     @Inject
-    public QuarkusProcessInstanceEntityStorage(EntityManager em, Instance<JsonPredicateBuilder> jsonPredicateBuilder) {
-        super(em, jsonPredicateBuilder);
+    public QuarkusProcessInstanceEntityStorage(EntityManager em, Instance<JsonPredicateBuilder> jsonPredicateBuilder, Instance<Processes> processesInstance,
+            @ConfigProperty(name = "kogito.persistence.data-isolation.enabled", defaultValue = "false") Boolean dataIsolationEnabled) {
+        super(em, jsonPredicateBuilder, dataIsolationEnabled ? processesInstance : Collections.emptyList());
     }
 }

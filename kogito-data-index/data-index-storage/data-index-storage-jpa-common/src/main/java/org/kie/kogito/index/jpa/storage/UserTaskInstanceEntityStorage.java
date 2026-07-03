@@ -19,10 +19,7 @@
 package org.kie.kogito.index.jpa.storage;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
@@ -47,6 +44,7 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.process.Processes;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.net.UrlEscapers;
@@ -56,14 +54,15 @@ import jakarta.transaction.Transactional;
 
 import static java.lang.String.format;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
+import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
 
 public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<String, UserTaskInstanceEntity, UserTaskInstance> implements UserTaskInstanceStorage {
 
     protected UserTaskInstanceEntityStorage() {
     }
 
-    public UserTaskInstanceEntityStorage(EntityManager em) {
-        super(em, UserTaskInstanceEntity.class, UserTaskInstanceEntityMapper.INSTANCE::mapToModel);
+    public UserTaskInstanceEntityStorage(EntityManager em, Iterable<Processes> processes) {
+        super(em, UserTaskInstanceEntity.class, UserTaskInstanceEntityMapper.INSTANCE::mapToModel, Optional.empty(), Optional.ofNullable(getInstance(processes)));
     }
 
     @Override
@@ -180,7 +179,9 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         UserTaskInstanceStateEventBody body = event.getData();
         task.setProcessInstanceId(body.getProcessInstanceId());
         task.setProcessId(event.getKogitoProcessId());
+        task.setProcessVersion(event.getKogitoProcessVersion());
         task.setRootProcessId(event.getKogitoRootProcessId());
+        task.setRootProcessVersion(event.getKogitoRootProcessVersion());
         task.setRootProcessInstanceId(event.getKogitoRootProcessInstanceId());
         task.setName(body.getUserTaskName());
         task.setUserTaskId(event.getData().getUserTaskDefinitionId());

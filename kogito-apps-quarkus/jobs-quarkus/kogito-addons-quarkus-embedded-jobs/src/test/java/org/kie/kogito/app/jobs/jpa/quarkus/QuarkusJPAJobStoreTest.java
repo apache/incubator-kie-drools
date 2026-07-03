@@ -69,7 +69,7 @@ public class QuarkusJPAJobStoreTest {
     public void testBasicPersistence() throws Exception {
         ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("a", "-1",
                 ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))), 5,
-                "processInstanceId", null, "processId", null, "nodeInstanceId");
+                "processInstanceId", null, "processId", "processVersion", null, null, "nodeInstanceId");
 
         listener.setCount(1);
         jobsService.scheduleJob(jobDescription);
@@ -83,7 +83,7 @@ public class QuarkusJPAJobStoreTest {
         testJobExecutor.setNumberOfFailures(4);
         ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("b", "-1",
                 ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))), 5,
-                "processInstanceId", null, "processId", null, "nodeInstanceId");
+                "processInstanceId", null, "processId", "processVersion", null, null, "nodeInstanceId");
 
         listener.setCount(4);
         jobsService.scheduleJob(jobDescription);

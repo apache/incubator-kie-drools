@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.persistence.api.StorageFetcher;
 import org.kie.kogito.persistence.api.query.Query;
+import org.kie.kogito.process.Processes;
 
 import io.smallrye.mutiny.Multi;
 
@@ -39,6 +40,7 @@ public class AbstractJPAStorageFetcher<K, E extends AbstractEntity, V> implement
     protected Class<E> entityClass;
     protected Function<E, V> mapToModel;
     protected Optional<JsonPredicateBuilder> jsonPredicateBuilder = Optional.empty();
+    protected Optional<Processes> processes;
 
     private String entityName;
 
@@ -50,10 +52,15 @@ public class AbstractJPAStorageFetcher<K, E extends AbstractEntity, V> implement
     }
 
     protected AbstractJPAStorageFetcher(EntityManager em, Class<E> entityClass, Function<E, V> mapToModel, Optional<JsonPredicateBuilder> jsonPredicateBuilder) {
+        this(em, entityClass, mapToModel, jsonPredicateBuilder, null);
+    }
+
+    protected AbstractJPAStorageFetcher(EntityManager em, Class<E> entityClass, Function<E, V> mapToModel, Optional<JsonPredicateBuilder> jsonPredicateBuilder, Optional<Processes> processes) {
         this.em = em;
         this.entityClass = entityClass;
         this.mapToModel = mapToModel;
         this.jsonPredicateBuilder = jsonPredicateBuilder;
+        this.processes = processes;
         Entity entity = entityClass.getAnnotation(Entity.class);
         this.entityName = entity != null ? entity.name() : entityClass.getSimpleName();
     }
@@ -75,7 +82,7 @@ public class AbstractJPAStorageFetcher<K, E extends AbstractEntity, V> implement
 
     @Override
     public Query<V> query() {
-        return new JPAQuery<>(em, mapToModel, entityClass, jsonPredicateBuilder);
+        return new JPAQuery<>(em, mapToModel, entityClass, jsonPredicateBuilder, processes);
     }
 
     @Override

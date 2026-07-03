@@ -20,6 +20,9 @@ package org.kie.kogito.index.jpa.model;
 
 import java.io.Serializable;
 
+/**
+ * Base class for all JPA entities in the data-index storage.
+ */
 public abstract class AbstractEntity implements Serializable {
 
     public abstract String getId();

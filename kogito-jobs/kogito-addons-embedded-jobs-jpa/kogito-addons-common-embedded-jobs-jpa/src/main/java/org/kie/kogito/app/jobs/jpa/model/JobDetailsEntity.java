@@ -37,7 +37,11 @@ import jakarta.persistence.TemporalType;
 @Table(name = "job_details",
         indexes = {
                 @Index(name = "job_details_fire_time_idx", columnList = "fire_time"),
-                @Index(name = "job_details_created_idx", columnList = "created")
+                @Index(name = "job_details_created_idx", columnList = "created"),
+                @Index(name = "idx_job_details_process_id", columnList = "process_id"),
+                @Index(name = "idx_job_details_root_process_id", columnList = "root_process_id"),
+                @Index(name = "idx_job_details_process_version", columnList = "process_id, process_version"),
+                @Index(name = "idx_job_details_root_process_version", columnList = "root_process_id, root_process_version"),
         })
 public class JobDetailsEntity {
 
@@ -46,6 +50,18 @@ public class JobDetailsEntity {
 
     @Column(name = "correlation_id")
     private String correlationId;
+
+    @Column(name = "process_id")
+    private String processId;
+
+    @Column(name = "process_version")
+    private String processVersion;
+
+    @Column(name = "root_process_id")
+    private String rootProcessId;
+
+    @Column(name = "root_process_version")
+    private String rootProcessVersion;
 
     private String status;
 
@@ -102,6 +118,38 @@ public class JobDetailsEntity {
 
     public void setCorrelationId(String correlationId) {
         this.correlationId = correlationId;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+    }
+
+    public String getRootProcessId() {
+        return rootProcessId;
+    }
+
+    public void setRootProcessId(String rootProcessId) {
+        this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     public String getStatus() {

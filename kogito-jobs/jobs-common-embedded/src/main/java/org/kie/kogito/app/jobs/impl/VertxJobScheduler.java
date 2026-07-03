@@ -425,6 +425,11 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
                     JobDetails runningJobDetails = doRun(jobDetails);
                     LOG.trace("Timeout {} with jobId {} have been executed", timerId, jobId);
                     JobDetails executeJobDetails = doExecute(runningJobDetails);
+                    if (executeJobDetails == null) {
+                        // Safe-check, should have been filtered already by shouldRun check above
+                        LOG.debug("Given job is not eligible for execution in this scheduler instance: {}", runningJobDetails);
+                        return null;
+                    }
                     LOG.trace("Timeout {} with jobId {} will be rescheduled if required", timerId, jobId);
                     JobDetails nextJobDetails = computeAndScheduleNextJobIfAny(executeJobDetails);
                     reconcileScheduling(timerId, jobContext, nextJobDetails);
@@ -605,12 +610,17 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
     private JobDetails doExecute(JobDetails jobDetails) {
         List<JobExecutor> validExecutors = jobExecutors.stream().filter(executor -> executor.accept(jobDetails)).toList();
-        LOG.trace("valid executors are: {}", validExecutors);
-        validExecutors.forEach(executor -> executor.execute(jobDetails));
-        JobDetails executedJobDetails = JobDetails.builder().of(jobDetails).status(JobStatus.EXECUTED).incrementExecutionCounter().build();
-        LOG.trace("doExecute {}", executedJobDetails);
-        fireEvents(executedJobDetails);
-        return executedJobDetails;
+        if (validExecutors.isEmpty()) {
+            LOG.debug("No executors found for job {}", jobDetails);
+            return null;
+        } else {
+            LOG.trace("valid executors are: {}", validExecutors);
+            validExecutors.forEach(executor -> executor.execute(jobDetails));
+            JobDetails executedJobDetails = JobDetails.builder().of(jobDetails).status(JobStatus.EXECUTED).incrementExecutionCounter().build();
+            LOG.trace("doExecute {}", executedJobDetails);
+            fireEvents(executedJobDetails);
+            return executedJobDetails;
+        }
     }
 
     private JobDetails doRetryOrError(JobDetails jobDetails, Exception exception) {

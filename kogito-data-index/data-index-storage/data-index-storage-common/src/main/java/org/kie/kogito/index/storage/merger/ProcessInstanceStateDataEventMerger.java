@@ -43,11 +43,13 @@ public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMer
         pi = getOrNew(pi, data, event.getData().getEventDate());
         LOGGER.debug("Value before merging: {}", pi);
         pi.setId(event.getData().getProcessInstanceId());
-        pi.setVersion(event.getData().getProcessVersion());
+        pi.setVersion(event.getKogitoProcessVersion());
         pi.setProcessId(event.getData().getProcessId());
+        pi.setProcessVersion(event.getKogitoProcessVersion());
         pi.setProcessName(event.getData().getProcessName());
         pi.setRootProcessInstanceId(event.getData().getRootProcessInstanceId());
         pi.setRootProcessId(event.getData().getRootProcessId());
+        pi.setRootProcessVersion(event.getKogitoRootProcessVersion());
         pi.setParentProcessInstanceId(event.getData().getParentInstanceId());
         pi.setRoles(event.getData().getRoles());
         pi.setState(event.getData().getState());

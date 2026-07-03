@@ -54,10 +54,11 @@ public class JobDescriptionDeserializer extends StdDeserializer<JobDescription> 
                 case "ProcessJobDescription": {
                     String id = ofNullable(node.get("id")).map(JsonNode::textValue).orElse(null);
                     String processId = ofNullable(node.get("processId")).map(JsonNode::textValue).orElse(null);
+                    String processVersion = ofNullable(node.get("processVersion")).map(JsonNode::textValue).orElse(null);
                     Integer priority = ofNullable(node.get("priority")).map(JsonNode::asInt).orElse(0);
                     String expirationTimeType = node.get("expirationTime").get("@type").asText();
                     ExpirationTime expirationTime = (ExpirationTime) ctxt.readTreeAsValue(node.get("expirationTime"), Class.forName(expirationTimeType));
-                    return ProcessJobDescription.of(expirationTime, priority, processId, id);
+                    return ProcessJobDescription.of(expirationTime, priority, processId, processVersion, id);
                 }
                 case "ProcessInstanceJobDescription": {
                     ProcessInstanceJobDescriptionBuilder builder = ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder();
@@ -70,7 +71,9 @@ public class JobDescriptionDeserializer extends StdDeserializer<JobDescription> 
                     ofNullable(node.get("processInstanceId")).ifPresent(e -> builder.processInstanceId(e.textValue()));
                     ofNullable(node.get("rootProcessInstanceId")).ifPresent(e -> builder.rootProcessInstanceId(e.textValue()));
                     ofNullable(node.get("processId")).ifPresent(e -> builder.processId(e.textValue()));
+                    ofNullable(node.get("processVersion")).ifPresent(e -> builder.processVersion(e.textValue()));
                     ofNullable(node.get("rootProcessId")).ifPresent(e -> builder.rootProcessId(e.textValue()));
+                    ofNullable(node.get("rootProcessVersion")).ifPresent(e -> builder.rootProcessVersion(e.textValue()));
                     ofNullable(node.get("nodeInstanceId")).ifPresent(e -> builder.nodeInstanceId(e.textValue()));
 
                     return builder.build();
@@ -85,10 +88,12 @@ public class JobDescriptionDeserializer extends StdDeserializer<JobDescription> 
                     ofNullable(node.get("userTaskInstanceId")).ifPresent(e -> builder.userTaskInstanceId(e.textValue()));
                     var metadata = new HashMap<String, Object>();
                     ofNullable(node.get("processId")).ifPresent(e -> metadata.put("ProcessId", e.textValue()));
+                    ofNullable(node.get("processVersion")).ifPresent(e -> metadata.put("ProcessVersion", e.textValue()));
                     ofNullable(node.get("processInstanceId")).ifPresent(e -> metadata.put("ProcessInstanceId", e.textValue()));
                     ofNullable(node.get("nodeInstanceId")).ifPresent(e -> metadata.put("NodeInstanceId", e.textValue()));
                     ofNullable(node.get("rootProcessInstanceId")).ifPresent(e -> metadata.put("RootProcessInstanceId", e.textValue()));
                     ofNullable(node.get("rootProcessId")).ifPresent(e -> metadata.put("RootProcessId", e.textValue()));
+                    ofNullable(node.get("rootProcessVersion")).ifPresent(e -> metadata.put("RootProcessVersion", e.textValue()));
                     builder.metadata(metadata);
                     return builder.build();
                 }

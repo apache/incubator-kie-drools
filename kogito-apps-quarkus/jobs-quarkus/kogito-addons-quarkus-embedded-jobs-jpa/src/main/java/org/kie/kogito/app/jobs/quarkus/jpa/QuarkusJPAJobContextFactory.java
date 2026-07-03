@@ -18,10 +18,13 @@
  */
 package org.kie.kogito.app.jobs.quarkus.jpa;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.app.jobs.spi.JobContext;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
+import org.kie.kogito.process.Processes;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -31,11 +34,18 @@ import jakarta.transaction.Transactional;
 public class QuarkusJPAJobContextFactory implements JobContextFactory {
 
     @Inject
+    Instance<Processes> processes;
+
+    @Inject
     protected EntityManager entityManager;
+
+    @Inject
+    @ConfigProperty(name = "kogito.persistence.data-isolation.enabled", defaultValue = "false")
+    Boolean dataIsolationEnabled;
 
     @Override
     public JobContext newContext() {
-        return new QuarkusJPAJobContext(entityManager);
+        return new QuarkusJPAJobContext(dataIsolationEnabled && processes.isResolvable() ? processes.get() : null, entityManager);
     }
 
 }

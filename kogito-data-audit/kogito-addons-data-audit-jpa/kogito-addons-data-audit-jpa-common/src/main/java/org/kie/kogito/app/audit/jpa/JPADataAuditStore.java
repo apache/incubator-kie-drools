@@ -219,7 +219,7 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setEventDate(new Date(event.getTime().toInstant().toEpochMilli()));
         log.setProcessType(event.getKogitoProcessType());
         log.setProcessId(event.getKogitoProcessId());
-        log.setProcessVersion(event.getKogitoProcessInstanceVersion());
+        log.setProcessVersion(event.getKogitoProcessVersion());
         log.setProcessInstanceId(event.getKogitoProcessInstanceId());
         log.setParentProcessInstanceId(getOnlyIfFilled(event::getKogitoParentProcessInstanceId));
         log.setRootProcessId(getOnlyIfFilled(event::getKogitoRootProcessId));

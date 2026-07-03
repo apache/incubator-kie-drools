@@ -28,9 +28,11 @@ public class Job {
 
     private String id;
     private String processId;
+    private String processVersion;
     private String processInstanceId;
     private String nodeInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String rootProcessInstanceId;
 
     private ZonedDateTime expirationTime;
@@ -83,12 +85,28 @@ public class Job {
         this.processId = processId;
     }
 
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+    }
+
     public String getRootProcessId() {
         return rootProcessId;
     }
 
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     public ZonedDateTime getExpirationTime() {
@@ -208,9 +226,11 @@ public class Job {
         return "Job{" +
                 "id='" + id + '\'' +
                 ", processId='" + processId + '\'' +
+                ", processVersion='" + processVersion + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", nodeInstanceId='" + nodeInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", expirationTime=" + expirationTime +
                 ", priority=" + priority +

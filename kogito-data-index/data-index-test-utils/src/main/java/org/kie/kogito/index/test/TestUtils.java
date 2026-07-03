@@ -118,8 +118,9 @@ public final class TestUtils {
                 .setNodes(List.of(NodeDefinition.builder().setName("node1").setId("id1").build()))
                 .setEndpoint(getEndpoint(processId))
                 .build();
-
-        return new ProcessDefinitionDataEvent(body);
+        return ProcessDefinitionDataEvent.builder()
+                .data(body)
+                .build();
     }
 
     public static ProcessDefinition getProcessDefinition(String processId) {
@@ -138,6 +139,7 @@ public final class TestUtils {
                 .parentInstanceId(parentProcessInstanceId)
                 .rootProcessInstanceId(rootProcessInstanceId)
                 .rootProcessId(rootProcessId)
+                .rootProcessVersion(PROCESS_VERSION)
                 .processId(processId)
                 .processVersion(PROCESS_VERSION)
                 .processName(getProcessName(processId))
@@ -149,8 +151,13 @@ public final class TestUtils {
                 .eventType(eventType)
                 .build();
 
-        return new ProcessInstanceStateDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", (String) identity,
-                body.metaData(), body);
+        return ProcessInstanceStateDataEvent.builder()
+                .source(URI.create("http://localhost:8080/" + processId).toString())
+                .kogitoAddons("jobs-management,prometheus-monitoring,process-management")
+                .kogitoIdentity((String) identity)
+                .metaData(body.metaData())
+                .data(body)
+                .build();
 
     }
 
@@ -169,7 +176,7 @@ public final class TestUtils {
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, event.getKogitoProcessInstanceId());
-        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, event.getKogitoProcessInstanceVersion());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, event.getKogitoProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, event.getKogitoProcessId());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, event.getKogitoProcessInstanceState());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, event.getKogitoProcessType());
@@ -177,7 +184,13 @@ public final class TestUtils {
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, event.getKogitoRootProcessId());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, event.getKogitoRootProcessInstanceId());
 
-        return new ProcessInstanceErrorDataEvent(event.getSource().toString(), event.getKogitoAddons(), event.getKogitoIdentity(), metadata, body);
+        return ProcessInstanceErrorDataEvent.builder()
+                .source(event.getSource().toString())
+                .kogitoAddons(event.getKogitoAddons())
+                .kogitoIdentity(event.getKogitoIdentity())
+                .metaData(metadata)
+                .data(body)
+                .build();
 
     }
 
@@ -195,7 +208,7 @@ public final class TestUtils {
                 .build();
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, event.getKogitoProcessInstanceId());
-        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, event.getKogitoProcessInstanceVersion());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, event.getKogitoProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, event.getKogitoProcessId());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, event.getKogitoProcessInstanceState());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, event.getKogitoProcessType());
@@ -203,7 +216,13 @@ public final class TestUtils {
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, event.getKogitoRootProcessId());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, event.getKogitoRootProcessInstanceId());
 
-        return new ProcessInstanceVariableDataEvent(event.getSource().toString(), event.getKogitoAddons(), event.getKogitoIdentity(), metadata, body);
+        return ProcessInstanceVariableDataEvent.builder()
+                .source(event.getSource().toString())
+                .kogitoAddons(event.getKogitoAddons())
+                .kogitoIdentity(event.getKogitoIdentity())
+                .metaData(metadata)
+                .data(body)
+                .build();
 
     }
 
@@ -296,7 +315,13 @@ public final class TestUtils {
                 .processInstanceId(processInstanceId)
                 .externalReferenceId("testExternalReferenceId")
                 .build();
-        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, null, body.metaData(), body);
+        UserTaskInstanceStateDataEvent event = UserTaskInstanceStateDataEvent.builder()
+                .source(URI.create("http://localhost:8080/" + processId).toString())
+                .kogitoAddons(null)
+                .kogitoIdentity(null)
+                .metaData(body.metaData())
+                .data(body)
+                .build();
         event.setKogitoProcessId(processId);
         event.setKogitoProcessInstanceId(processInstanceId);
         event.setKogitoRootProcessId(rootProcessId);
@@ -322,8 +347,13 @@ public final class TestUtils {
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, processInstanceId);
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA, state);
 
-        UserTaskInstanceAttachmentDataEvent attachmentEvent =
-                new UserTaskInstanceAttachmentDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, null, metadata, attachmentBody);
+        UserTaskInstanceAttachmentDataEvent attachmentEvent = UserTaskInstanceAttachmentDataEvent.builder()
+                .source(URI.create("http://localhost:8080/" + processId).toString())
+                .kogitoAddons(null)
+                .kogitoIdentity(null)
+                .metaData(metadata)
+                .data(attachmentBody)
+                .build();
         attachmentEvent.setKogitoProcessId(processId);
         attachmentEvent.setKogitoProcessInstanceId(processInstanceId);
         attachmentEvent.setKogitoRootProcessId(rootProcessId);
@@ -348,8 +378,13 @@ public final class TestUtils {
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, processInstanceId);
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA, state);
 
-        UserTaskInstanceCommentDataEvent attachmentEvent =
-                new UserTaskInstanceCommentDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, null, metadata, attachmentBody);
+        UserTaskInstanceCommentDataEvent attachmentEvent = UserTaskInstanceCommentDataEvent.builder()
+                .source(URI.create("http://localhost:8080/" + processId).toString())
+                .kogitoAddons(null)
+                .kogitoIdentity(null)
+                .metaData(metadata)
+                .data(attachmentBody)
+                .build();
         attachmentEvent.setKogitoProcessId(processId);
         attachmentEvent.setKogitoProcessInstanceId(processInstanceId);
         attachmentEvent.setKogitoRootProcessId(rootProcessId);

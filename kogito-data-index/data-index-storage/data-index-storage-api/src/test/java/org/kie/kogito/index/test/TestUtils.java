@@ -65,38 +65,52 @@ public class TestUtils {
 
     public static ProcessInstanceStateDataEvent createProcessInstanceEvent(String processInstance,
             String processId, String rootProcessInstanceId, String rootProcessId, Integer status) {
-        ProcessInstanceStateDataEvent event = new ProcessInstanceStateDataEvent();
-        event.setKogitoProcessId(processId);
-        event.setKogitoRootProcessId(rootProcessId);
-        event.setKogitoRootProcessInstanceId(rootProcessInstanceId);
-        event.setKogitoProcessInstanceId(processInstance);
-        event.setData(ProcessInstanceStateEventBody.create().processId(processId).rootProcessId(rootProcessId).rootProcessInstanceId(rootProcessInstanceId).processInstanceId(processInstance)
-                .state(status).build());
-        return event;
+        ProcessInstanceStateEventBody body = ProcessInstanceStateEventBody.create()
+                .processId(processId)
+                .rootProcessId(rootProcessId)
+                .rootProcessInstanceId(rootProcessInstanceId)
+                .processInstanceId(processInstance)
+                .state(status)
+                .build();
+        return ProcessInstanceStateDataEvent.builder()
+                .data(body)
+                .kogitoProcessId(processId)
+                .kogitoRootProcessId(rootProcessId)
+                .kogitoRootProcessInstanceId(rootProcessInstanceId)
+                .kogitoProcessInstanceId(processInstance)
+                .build();
     }
 
     public static ProcessInstanceVariableDataEvent createProcessInstanceVariableEvent(String processInstance,
             String processId, String firstName, String lastName) {
-        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent();
-        event.setKogitoProcessId(processId);
-        event.setKogitoProcessInstanceId(processInstance);
-        event.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstance)
-                .variableName("traveller").variableValue(ObjectMapperFactory.get().createObjectNode().put("firstName", firstName).put("lastName", lastName)).build());
-        return event;
+        ProcessInstanceVariableEventBody body = ProcessInstanceVariableEventBody.create()
+                .processId(processId)
+                .processInstanceId(processInstance)
+                .variableName("traveller")
+                .variableValue(ObjectMapperFactory.get().createObjectNode().put("firstName", firstName).put("lastName", lastName))
+                .build();
+        return ProcessInstanceVariableDataEvent.builder()
+                .data(body)
+                .kogitoProcessId(processId)
+                .kogitoProcessInstanceId(processInstance)
+                .build();
     }
 
     public static ProcessInstanceVariableDataEvent createProcessInstanceVariableEvent(String processInstance,
             String processId, String name, int age, boolean isMartian, List<String> aliases) {
-        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent();
-        event.setKogitoProcessId(processId);
-        event.setKogitoProcessInstanceId(processInstance);
         ArrayNode node = ObjectMapperFactory.get().createArrayNode();
         aliases.forEach(s -> node.add(new TextNode(s)));
-        event.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstance)
-                .variableName("traveller").variableValue(ObjectMapperFactory.get().createObjectNode().put("name", name).put("age", age).put("isMartian", isMartian)
-                        .set("aliases", node))
-                .build());
-        return event;
+        ProcessInstanceVariableEventBody body = ProcessInstanceVariableEventBody.create()
+                .processId(processId)
+                .processInstanceId(processInstance)
+                .variableName("traveller")
+                .variableValue(ObjectMapperFactory.get().createObjectNode().put("name", name).put("age", age).put("isMartian", isMartian).set("aliases", node))
+                .build();
+        return ProcessInstanceVariableDataEvent.builder()
+                .data(body)
+                .kogitoProcessId(processId)
+                .kogitoProcessInstanceId(processInstance)
+                .build();
     }
 
     public static ProcessInstanceNodeDataEvent createProcessInstanceNodeDataEvent(String processInstance, String processId, String nodeDefinitionId, String nodeInstanceId, String nodeName,
@@ -114,12 +128,11 @@ public class TestUtils {
                 .setRetrigger(false)
                 .build();
 
-        ProcessInstanceNodeDataEvent event = new ProcessInstanceNodeDataEvent();
-        event.setKogitoProcessId(processId);
-        event.setKogitoProcessInstanceId(processInstance);
-        event.setData(body);
-
-        return event;
+        return ProcessInstanceNodeDataEvent.builder()
+                .data(body)
+                .kogitoProcessId(processId)
+                .kogitoProcessInstanceId(processInstance)
+                .build();
     }
 
     public static ProcessInstanceErrorDataEvent createProcessInstanceErrorDataEvent(String processInstance, String processId, String userId, String errorMessage, String nodeDefinitionId,
@@ -134,11 +147,11 @@ public class TestUtils {
                 .nodeInstanceId(nodeInstanceId)
                 .build();
 
-        ProcessInstanceErrorDataEvent event = new ProcessInstanceErrorDataEvent();
-        event.setKogitoProcessInstanceId(processInstance);
-        event.setKogitoProcessId(processId);
-        event.setData(body);
-        return event;
+        return ProcessInstanceErrorDataEvent.builder()
+                .data(body)
+                .kogitoProcessInstanceId(processInstance)
+                .kogitoProcessId(processId)
+                .build();
     }
 
     public static UserTaskInstanceStateDataEvent createUserTaskStateEvent(String taskId, String taskName, String processInstanceId, String processId, String state) {
@@ -149,15 +162,12 @@ public class TestUtils {
                 .processInstanceId(processInstanceId)
                 .build();
 
-        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent();
-
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoProcessId(processId);
-
-        event.setData(body);
-
-        return event;
+        return UserTaskInstanceStateDataEvent.builder()
+                .data(body)
+                .kogitoUserTaskInstanceId(taskId)
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoProcessId(processId)
+                .build();
     }
 
     public static UserTaskInstanceCommentDataEvent createUserTaskCommentEvent(String taskId, String processInstanceId, String processId, String commentId, String comment, String userId,
@@ -172,12 +182,12 @@ public class TestUtils {
                 .userTaskInstanceId(taskId)
                 .build();
 
-        UserTaskInstanceCommentDataEvent event = new UserTaskInstanceCommentDataEvent();
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoProcessId(processId);
-        event.setData(body);
-        return event;
+        return UserTaskInstanceCommentDataEvent.builder()
+                .data(body)
+                .kogitoUserTaskInstanceId(taskId)
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoProcessId(processId)
+                .build();
     }
 
     public static UserTaskInstanceAttachmentDataEvent createUserTaskAttachmentEvent(String taskId, String processInstanceId, String processId, String attachmentId, String attachmentName,
@@ -193,12 +203,12 @@ public class TestUtils {
                 .userTaskInstanceId(taskId)
                 .build();
 
-        UserTaskInstanceAttachmentDataEvent event = new UserTaskInstanceAttachmentDataEvent();
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoProcessId(processId);
-        event.setData(body);
-        return event;
+        return UserTaskInstanceAttachmentDataEvent.builder()
+                .data(body)
+                .kogitoUserTaskInstanceId(taskId)
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoProcessId(processId)
+                .build();
     }
 
     public static UserTaskInstanceAssignmentDataEvent createUserTaskAssignmentEvent(String taskId, String processInstanceId, String processId, String assignmentType, String... users) {
@@ -207,12 +217,12 @@ public class TestUtils {
                 .assignmentType(assignmentType)
                 .build();
 
-        UserTaskInstanceAssignmentDataEvent event = new UserTaskInstanceAssignmentDataEvent();
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoProcessId(processId);
-        event.setData(body);
-        return event;
+        return UserTaskInstanceAssignmentDataEvent.builder()
+                .data(body)
+                .kogitoUserTaskInstanceId(taskId)
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoProcessId(processId)
+                .build();
     }
 
     public static UserTaskInstanceVariableDataEvent createUserTaskVariableEvent(String taskId, String processInstanceId, String processId, String variableName, Object variableValue,
@@ -223,12 +233,12 @@ public class TestUtils {
                 .variableType(variableType)
                 .build();
 
-        UserTaskInstanceVariableDataEvent event = new UserTaskInstanceVariableDataEvent();
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoProcessId(processId);
-        event.setData(body);
-        return event;
+        return UserTaskInstanceVariableDataEvent.builder()
+                .data(body)
+                .kogitoUserTaskInstanceId(taskId)
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoProcessId(processId)
+                .build();
     }
 
     public static ProcessInstance createProcessInstance(String processInstanceId,

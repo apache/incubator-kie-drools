@@ -112,14 +112,17 @@ public class JobInVMEventPublisher implements JobEventPublisher {
             }
 
             byte[] jsonContent = objectMapper.writeValueAsBytes(scheduledJob);
-            JobInstanceDataEvent event = new JobInstanceDataEvent(JOB_EVENT_TYPE,
-                    url + RestApiConstants.JOBS_PATH,
-                    jsonContent,
-                    scheduledJob.getProcessInstanceId(),
-                    scheduledJob.getRootProcessInstanceId(),
-                    scheduledJob.getProcessId(),
-                    scheduledJob.getRootProcessId(),
-                    null);
+            JobInstanceDataEvent event = JobInstanceDataEvent.builder()
+                    .type(JOB_EVENT_TYPE)
+                    .source(url + RestApiConstants.JOBS_PATH)
+                    .data(jsonContent)
+                    .kogitoProcessInstanceId(scheduledJob.getProcessInstanceId())
+                    .kogitoRootProcessInstanceId(scheduledJob.getRootProcessInstanceId())
+                    .kogitoProcessId(scheduledJob.getProcessId())
+                    .kogitoProcessVersion(scheduledJob.getProcessVersion())
+                    .kogitoRootProcessId(scheduledJob.getRootProcessId())
+                    .kogitoRootProcessVersion(scheduledJob.getRootProcessVersion())
+                    .build();
 
             eventPublishers.forEach(e -> e.publish(event));
         } catch (Exception e) {

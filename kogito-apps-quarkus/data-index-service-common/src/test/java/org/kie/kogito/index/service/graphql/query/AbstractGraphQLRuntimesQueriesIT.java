@@ -128,7 +128,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT {
     }
 
     private ProcessInstanceVariableDataEvent buildVariableEvent(String processInstanceId, String key, String name) {
-        ProcessInstanceVariableDataEvent variableEvent = new ProcessInstanceVariableDataEvent();
+        ProcessInstanceVariableDataEvent variableEvent = ProcessInstanceVariableDataEvent.builder().build();
         variableEvent.setKogitoProcessId(processId);
         variableEvent.setKogitoProcessInstanceId(processInstanceId);
         variableEvent.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstanceId)

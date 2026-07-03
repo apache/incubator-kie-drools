@@ -82,6 +82,10 @@ public class JobDetailsEntityHelper {
 
         instance.setId(job.getId());
         instance.setCorrelationId(job.getCorrelationId());
+        instance.setProcessId(job.getProcessId());
+        instance.setProcessVersion(job.getProcessVersion());
+        instance.setRootProcessId(job.getRootProcessId());
+        instance.setRootProcessVersion(job.getRootProcessVersion());
         instance.setStatus(mapOptionalValue(job.getStatus(), Enum::name));
 
         instance.setRetries(job.getRetries());
@@ -140,6 +144,10 @@ public class JobDetailsEntityHelper {
         return JobDetails.builder()
                 .id(instance.getId())
                 .correlationId(instance.getCorrelationId())
+                .processId(instance.getProcessId())
+                .processVersion(instance.getProcessVersion())
+                .rootProcessId(instance.getRootProcessId())
+                .rootProcessVersion(instance.getRootProcessVersion())
                 .status(mapOptionalValue(instance.getStatus(), JobStatus::valueOf))
                 .retries(instance.getRetries())
                 .executionCounter(instance.getExecutionCounter())

@@ -49,7 +49,13 @@ public class DataEventDeserializerTest {
 
     @Test
     public void testProcessInstanceDataEvent() throws IOException {
-        ProcessInstanceStateDataEvent dataEvent = new ProcessInstanceStateDataEvent("source", "addons", "identity", new HashMap<>(), new ProcessInstanceStateEventBody());
+        ProcessInstanceStateDataEvent dataEvent = ProcessInstanceStateDataEvent.builder()
+                .source("source")
+                .kogitoAddons("addons")
+                .kogitoIdentity("identity")
+                .metaData(new HashMap<>())
+                .data(new ProcessInstanceStateEventBody())
+                .build();
 
         String jsonValue = mapper.writeValueAsString(dataEvent);
         ProcessInstanceDataEvent<?> readDataEvent = mapper.readValue(jsonValue.getBytes(), ProcessInstanceDataEvent.class);
@@ -59,7 +65,13 @@ public class DataEventDeserializerTest {
 
     @Test
     public void testUserTaskInstanceDataEvent() throws IOException {
-        UserTaskInstanceStateDataEvent dataEvent = new UserTaskInstanceStateDataEvent("source", "addons", "identity", new HashMap<>(), new UserTaskInstanceStateEventBody());
+        UserTaskInstanceStateDataEvent dataEvent = UserTaskInstanceStateDataEvent.builder()
+                .source("source")
+                .kogitoAddons("addons")
+                .kogitoIdentity("identity")
+                .metaData(new HashMap<>())
+                .data(new UserTaskInstanceStateEventBody())
+                .build();
 
         String jsonValue = mapper.writeValueAsString(dataEvent);
         UserTaskInstanceDataEvent<?> readDataEvent = mapper.readValue(jsonValue.getBytes(), UserTaskInstanceDataEvent.class);

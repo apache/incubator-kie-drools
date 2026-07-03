@@ -24,23 +24,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.hibernate.query.criteria.*;
 import org.kie.kogito.index.jpa.model.AbstractEntity;
+import org.kie.kogito.index.jpa.model.DataIsolationKeyDescriptor;
+import org.kie.kogito.index.jpa.model.DataIsolationKeyDescriptorRegistry;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
 import org.kie.kogito.persistence.api.query.FilterCondition;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.api.query.SortDirection;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
 
 import static java.util.stream.Collectors.toList;
@@ -55,16 +53,22 @@ public class JPAQuery<E extends AbstractEntity, T> implements Query<T> {
     protected final Class<E> entityClass;
     protected final Function<E, T> mapper;
     private Optional<JsonPredicateBuilder> jsonPredicateBuilder;
+    private Optional<Processes> processes;
 
     public JPAQuery(EntityManager em, Function<E, T> mapper, Class<E> entityClass) {
-        this(em, mapper, entityClass, Optional.empty());
+        this(em, mapper, entityClass, Optional.empty(), Optional.empty());
     }
 
     public JPAQuery(EntityManager em, Function<E, T> mapper, Class<E> entityClass, Optional<JsonPredicateBuilder> jsonPredicateBuilder) {
+        this(em, mapper, entityClass, jsonPredicateBuilder, Optional.empty());
+    }
+
+    public JPAQuery(EntityManager em, Function<E, T> mapper, Class<E> entityClass, Optional<JsonPredicateBuilder> jsonPredicateBuilder, Optional<Processes> processes) {
         this.em = em;
         this.mapper = mapper;
         this.entityClass = entityClass;
         this.jsonPredicateBuilder = jsonPredicateBuilder;
+        this.processes = processes;
     }
 
     @Override
@@ -93,27 +97,29 @@ public class JPAQuery<E extends AbstractEntity, T> implements Query<T> {
 
     @Override
     public List<T> execute() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<E> criteriaQuery = builder.createQuery(entityClass);
-        Root<E> root = criteriaQuery.from(entityClass);
+        HibernateCriteriaBuilder builder = (HibernateCriteriaBuilder) em.getCriteriaBuilder();
+        JpaCriteriaQuery<E> jpaMainQuery = builder.createQuery(entityClass);
+        JpaRoot<E> root = jpaMainQuery.from(entityClass);
 
-        criteriaQuery.select(root);
-        addWhere(builder, criteriaQuery, root);
+        applyFilters(builder, jpaMainQuery, root);
         if (sortBy != null && !sortBy.isEmpty()) {
             List<Order> orderBy = sortBy.stream().map(f -> {
                 Path attributePath = getAttributePath(root, f.getAttribute());
                 return f.getSort() == SortDirection.ASC ? builder.asc(attributePath) : builder.desc(attributePath);
             }).collect(toList());
-            criteriaQuery.orderBy(orderBy);
+            jpaMainQuery.orderBy(orderBy);
         }
-        jakarta.persistence.Query query = em.createQuery(criteriaQuery);
+        jpaMainQuery.select(root);
+        TypedQuery<E> query = em.createQuery(jpaMainQuery);
         if (limit != null) {
             query.setMaxResults(limit);
         }
         if (offset != null) {
             query.setFirstResult(offset);
         }
-        return (List<T>) query.getResultList().stream().map(mapper).collect(toList());
+        return query.getResultList().stream()
+                .map(mapper)
+                .collect(toList());
     }
 
     /**
@@ -320,11 +326,11 @@ public class JPAQuery<E extends AbstractEntity, T> implements Query<T> {
             return root.get(attribute);
         }
 
-        Join join = root.join(split[0]);
-        for (int i = 1; i < split.length - 1; i++) {
-            join = join.join(split[i]);
+        Path path = root.get(split[0]);
+        for (int i = 1; i < split.length; i++) {
+            path = path.get(split[i]);
         }
-        return join.get(split[split.length - 1]);
+        return path;
     }
 
     private boolean isPluralAttribute(final String attribute) {
@@ -355,17 +361,43 @@ public class JPAQuery<E extends AbstractEntity, T> implements Query<T> {
 
     @Override
     public long count() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
-        Root<E> root = criteriaQuery.from(entityClass);
+        HibernateCriteriaBuilder builder = (HibernateCriteriaBuilder) em.getCriteriaBuilder();
+        JpaCriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
+        JpaRoot<E> root = criteriaQuery.from(entityClass);
         criteriaQuery.select(builder.count(root));
-        addWhere(builder, criteriaQuery, root);
+
+        applyFilters(builder, criteriaQuery, root);
+
         return em.createQuery(criteriaQuery).getSingleResult();
     }
 
-    private <V> void addWhere(CriteriaBuilder builder, CriteriaQuery<V> criteriaQuery, Root<E> root) {
+    /**
+     * Applies all filtering (data isolation + user filters) and sets the WHERE clause.
+     *
+     * @param builder the Hibernate criteria builder
+     * @param criteriaQuery the criteria query to apply filters to
+     * @param root the query root
+     */
+    private void applyFilters(
+            HibernateCriteriaBuilder builder,
+            JpaCriteriaQuery<?> criteriaQuery,
+            Root<E> root) {
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Apply data isolation filtering
+        applyDataIsolationFiltering(builder, criteriaQuery, root, predicates);
+
+        // Apply user-defined filters
         if (filters != null && !filters.isEmpty()) {
-            criteriaQuery.where(filters.stream().map(filterPredicateFunction(root, builder, criteriaQuery)).toArray(Predicate[]::new));
+            predicates.addAll(filters.stream()
+                    .map(filterPredicateFunction(root, builder, criteriaQuery))
+                    .toList());
+        }
+
+        // Set WHERE clause if predicates exist
+        if (!predicates.isEmpty()) {
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
         }
     }
 
@@ -423,4 +455,102 @@ public class JPAQuery<E extends AbstractEntity, T> implements Query<T> {
 
         return builder.exists(subquery);
     }
+
+    /**
+     * Applies data isolation filtering using CTE if process IDs are present.
+     * This method adds the CTE join predicate to the predicates list.
+     *
+     * @param builder the Hibernate criteria builder
+     * @param query the JPA criteria query
+     * @param root the query root
+     * @param predicates the list to add predicates to
+     */
+    private void applyDataIsolationFiltering(
+            HibernateCriteriaBuilder builder,
+            JpaCriteriaQuery<?> query,
+            Root<E> root,
+            List<Predicate> predicates) {
+
+        if (processes.isEmpty()) {
+            return;
+        }
+
+        if (processes.get().processIds().isEmpty()) {
+            predicates.add(builder.disjunction());
+            return;
+        }
+
+        JpaCteCriteria<Tuple> cte = buildDataIsolationFilteringCte(builder, query);
+
+        DataIsolationKeyDescriptor descriptor = DataIsolationKeyDescriptorRegistry.getDescriptor(entityClass);
+        Path<String> rootProcessIdPath = descriptor.rootProcessId() != null ? getAttributePath(root, descriptor.rootProcessId()) : null;
+        Path<String> rootProcessVersionPath = descriptor.rootProcessVersion() != null ? getAttributePath(root, descriptor.rootProcessVersion()) : null;
+        Path<String> processIdPath = getAttributePath(root, descriptor.processId());
+        Path<String> processVersionPath = getAttributePath(root, descriptor.processVersion());
+
+        // Pre-filter based on indexed processId
+        JpaSubQuery<String> scalarSubquery = query.subquery(String.class);
+        JpaRoot<Tuple> scalarCteRoot = scalarSubquery.from(cte);
+        scalarSubquery.select(scalarCteRoot.get("pid"));
+
+        predicates.add(processIdPath.in(scalarSubquery));
+
+        // Exact tuple checks wrapped inside their own isolated OR block
+        List<Predicate> isolationOrBranches = new ArrayList<>();
+
+        isolationOrBranches.add(builder.isNull(processVersionPath));
+
+        if (rootProcessIdPath != null) {
+            JpaSubQuery<Integer> subqueryRootMatch = query.subquery(Integer.class);
+            JpaRoot<Tuple> rootCteRoot = subqueryRootMatch.from(cte);
+            subqueryRootMatch.select(builder.literal(1));
+            subqueryRootMatch.where(builder.and(
+                    builder.equal(rootCteRoot.get("pid"), rootProcessIdPath),
+                    builder.equal(rootCteRoot.get("pversion"), rootProcessVersionPath)));
+            isolationOrBranches.add(builder.exists(subqueryRootMatch));
+        }
+
+        JpaSubQuery<Integer> subqueryLocalMatch = query.subquery(Integer.class);
+        JpaRoot<Tuple> localCteRoot = subqueryLocalMatch.from(cte);
+        subqueryLocalMatch.select(builder.literal(1));
+        subqueryLocalMatch.where(builder.and(
+                builder.equal(localCteRoot.get("pid"), processIdPath),
+                builder.equal(localCteRoot.get("pversion"), processVersionPath)));
+
+        if (rootProcessIdPath != null) {
+            isolationOrBranches.add(builder.and(
+                    builder.isNull(rootProcessIdPath),
+                    builder.exists(subqueryLocalMatch)));
+        } else {
+            isolationOrBranches.add(builder.exists(subqueryLocalMatch));
+        }
+
+        // Merge the isolated validation nodes back into a grouped tuple check statement
+        predicates.add(builder.or(isolationOrBranches.toArray(new Predicate[0])));
+    }
+
+    private JpaCteCriteria<Tuple> buildDataIsolationFilteringCte(
+            HibernateCriteriaBuilder builder,
+            JpaCriteriaQuery<?> mainQuery) {
+
+        List<JpaCriteriaQuery<Tuple>> rows = processes.get().processes().stream().map(p -> {
+            JpaCriteriaQuery<Tuple> row = builder.createTupleQuery();
+            row.select(builder.tuple(
+                    builder.literal(p.id()).alias("pid"),
+                    builder.literal(p.version()).alias("pversion")));
+            return row;
+        }).toList();
+
+        if (rows.isEmpty()) {
+            return null;
+        }
+
+        CriteriaQuery<Tuple> unionedRowsQuery = rows.get(0);
+        for (int i = 1; i < rows.size(); i++) {
+            unionedRowsQuery = builder.unionAll(unionedRowsQuery, rows.get(i));
+        }
+
+        return mainQuery.with("allowed_processes", unionedRowsQuery);
+    }
+
 }

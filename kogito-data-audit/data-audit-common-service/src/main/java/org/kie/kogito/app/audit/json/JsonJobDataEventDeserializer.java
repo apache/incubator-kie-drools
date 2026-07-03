@@ -51,20 +51,19 @@ public class JsonJobDataEventDeserializer extends StdDeserializer<JobInstanceDat
         JsonNode node = jp.getCodec().readTree(jp);
         LOGGER.debug("Deserialize process instance data event: {}", node);
 
-        JobInstanceDataEvent event = new JobInstanceDataEvent(
-                node.has("type") ? node.get("type").asText() : null,
-                node.has("source") ? node.get("source").asText() : null,
-                node.has("data") ? node.get("data").binaryValue() : null,
-                node.has("kogitoprocinstanceid") ? node.get("kogitoprocinstanceid").asText() : null,
-                node.has("kogitorootprociid") ? node.get("kogitorootprociid").asText() : null,
-                node.has("kogitoprocid") ? node.get("kogitoprocid").asText() : null,
-                node.has("kogitorootprocid") ? node.get("kogitorootprocid").asText() : null,
-                node.has("kogitoidentity") ? node.get("kogitoidentity").asText() : null);
-
-        event.setId(node.has("id") ? node.get("id").asText() : null);
-        event.setKogitoIdentity(node.has("kogitoidentity") ? node.get("kogitoidentity").asText() : null);
-        event.setTime(node.has("time") ? jp.getCodec().treeToValue(node.get("time"), OffsetDateTime.class) : null);
-
-        return event;
+        return JobInstanceDataEvent.builder()
+                .type(node.has("type") ? node.get("type").asText() : null)
+                .source(node.has("source") ? node.get("source").asText() : null)
+                .data(node.has("data") ? node.get("data").binaryValue() : null)
+                .kogitoProcessInstanceId(node.has("kogitoprocinstanceid") ? node.get("kogitoprocinstanceid").asText() : null)
+                .kogitoRootProcessInstanceId(node.has("kogitorootprociid") ? node.get("kogitorootprociid").asText() : null)
+                .kogitoProcessId(node.has("kogitoprocid") ? node.get("kogitoprocid").asText() : null)
+                .kogitoProcessVersion(node.has("kogitoprocversion") ? node.get("kogitoprocversion").asText() : null)
+                .kogitoRootProcessId(node.has("kogitorootprocid") ? node.get("kogitorootprocid").asText() : null)
+                .kogitoRootProcessVersion(node.has("kogitorootprocversion") ? node.get("kogitorootprocversion").asText() : null)
+                .kogitoIdentity(node.has("kogitoidentity") ? node.get("kogitoidentity").asText() : null)
+                .id(node.has("id") ? node.get("id").asText() : null)
+                .time(node.has("time") ? jp.getCodec().treeToValue(node.get("time"), OffsetDateTime.class) : null)
+                .build();
     }
 }

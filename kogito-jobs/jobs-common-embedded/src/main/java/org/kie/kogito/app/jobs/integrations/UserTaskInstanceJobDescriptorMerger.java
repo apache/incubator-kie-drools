@@ -39,10 +39,12 @@ public class UserTaskInstanceJobDescriptorMerger implements JobDescriptionMerger
                     userTaskInstanceJobDescription.priority(),
                     userTaskInstanceJobDescription.userTaskInstanceId(),
                     userTaskInstanceJobDescription.processId(),
+                    userTaskInstanceJobDescription.processVersion(),
                     userTaskInstanceJobDescription.processInstanceId(),
                     userTaskInstanceJobDescription.nodeInstanceId(),
                     userTaskInstanceJobDescription.rootProcessInstanceId(),
-                    userTaskInstanceJobDescription.rootProcessId());
+                    userTaskInstanceJobDescription.rootProcessId(),
+                    userTaskInstanceJobDescription.rootProcessVersion());
             return newUserTaskInstanceJobDescription;
         }
         throw new IllegalArgumentException("jobDescription type not supported by this merger " + jobDescription);

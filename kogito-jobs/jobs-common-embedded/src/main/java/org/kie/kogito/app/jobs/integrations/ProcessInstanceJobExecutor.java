@@ -43,7 +43,8 @@ public class ProcessInstanceJobExecutor implements JobExecutor {
 
     @Override
     public boolean accept(JobDetails jobDetails) {
-        return JobDetailsHelper.extractJobDescription(jobDetails) instanceof ProcessInstanceJobDescription;
+        return JobDetailsHelper.extractJobDescription(jobDetails) instanceof ProcessInstanceJobDescription processInstanceJobDescription
+                && processes.processIds().contains(processInstanceJobDescription.processId());
     }
 
     @Override

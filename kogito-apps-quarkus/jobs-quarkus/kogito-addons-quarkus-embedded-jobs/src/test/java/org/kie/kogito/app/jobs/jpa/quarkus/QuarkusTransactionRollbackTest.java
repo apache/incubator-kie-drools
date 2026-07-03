@@ -89,16 +89,16 @@ public class QuarkusTransactionRollbackTest {
         // Configure the test executor to fail 4 times (initial + 3 retries)
         testJobExecutor.setNumberOfFailures(4);
 
-        ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription(
-                "rollback-test-job",
-                "-1",
-                ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))),
-                5,
-                "test-process-instance",
-                null,
-                "test-process",
-                null,
-                "test-node-instance");
+        ProcessInstanceJobDescription jobDescription = ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
+                .id("rollback-test-job")
+                .timerId("-1")
+                .expirationTime(ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))))
+                .priority(5)
+                .processInstanceId("test-process-instance")
+                .rootProcessInstanceId(null)
+                .processId("test-process")
+                .processVersion(null)
+                .rootProcessId("test-node-instance").build();
 
         listener.setCount(4);
         jobsService.scheduleJob(jobDescription);

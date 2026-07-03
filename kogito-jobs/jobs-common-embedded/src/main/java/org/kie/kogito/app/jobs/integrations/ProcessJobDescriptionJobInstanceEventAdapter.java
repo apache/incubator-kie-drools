@@ -37,7 +37,9 @@ public class ProcessJobDescriptionJobInstanceEventAdapter extends AbstractJobDes
     @Override
     protected void doAdaptPayload(JobBuilder jobBuilder, JobDescription jobDescription) {
         if (jobDescription instanceof ProcessJobDescription processJobDescription) {
-            jobBuilder.processId(processJobDescription.processId());
+            jobBuilder
+                    .processId(processJobDescription.processId())
+                    .processVersion(processJobDescription.processVersion());
         }
     }
 

@@ -45,7 +45,9 @@ public class UserTaskInstanceStateEventMerger implements UserTaskInstanceEventMe
         task.setId(event.getData().getUserTaskInstanceId());
         task.setProcessInstanceId(event.getData().getProcessInstanceId());
         task.setProcessId(event.getKogitoProcessId());
+        task.setProcessVersion(event.getKogitoProcessVersion());
         task.setRootProcessId(event.getKogitoRootProcessId());
+        task.setRootProcessVersion(event.getKogitoRootProcessVersion());
         task.setRootProcessInstanceId(event.getKogitoRootProcessInstanceId());
         task.setName(event.getData().getUserTaskName());
         task.setDescription(event.getData().getUserTaskDescription());

@@ -20,6 +20,7 @@ package org.kie.kogito.app.jobs.spi.memory;
 
 import org.kie.kogito.app.jobs.spi.JobContext;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
+import org.kie.kogito.process.Processes;
 
 public class MemoryJobContextFactory implements JobContextFactory {
 
@@ -28,7 +29,7 @@ public class MemoryJobContextFactory implements JobContextFactory {
         return new JobContext() {
 
             @Override
-            public <T> T getContext() {
+            public Processes getProcesses() {
                 return null;
             }
 

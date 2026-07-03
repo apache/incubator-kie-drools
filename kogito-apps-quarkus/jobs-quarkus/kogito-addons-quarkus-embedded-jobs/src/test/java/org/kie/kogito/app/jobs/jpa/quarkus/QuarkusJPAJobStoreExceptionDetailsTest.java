@@ -20,10 +20,12 @@ package org.kie.kogito.app.jobs.jpa.quarkus;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.app.jobs.jpa.JPAJobContext;
 import org.kie.kogito.app.jobs.jpa.JPAJobStore;
 import org.kie.kogito.app.jobs.jpa.model.JobDetailsEntity;
 import org.kie.kogito.app.jobs.spi.JobContext;
 import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.process.Processes;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -57,12 +59,7 @@ public class QuarkusJPAJobStoreExceptionDetailsTest {
         JobDetails jobDetails = createJobDetailsWithException("direct-test-1");
 
         // When: Persisting through JobStore
-        JobContext jobContext = new JobContext() {
-            @Override
-            public <T> T getContext() {
-                return (T) entityManager;
-            }
-        };
+        JobContext jobContext = getJobContext();
         jobStore.persist(jobContext, jobDetails);
         entityManager.flush();
         entityManager.clear();
@@ -79,12 +76,7 @@ public class QuarkusJPAJobStoreExceptionDetailsTest {
     public void testJobStoreUpdateClearsExceptionDetails() {
         // Given: A job with exception details exists
         JobDetails jobDetailsWithException = createJobDetailsWithException("direct-test-2");
-        JobContext jobContext = new JobContext() {
-            @Override
-            public <T> T getContext() {
-                return (T) entityManager;
-            }
-        };
+        JobContext jobContext = getJobContext();
         jobStore.persist(jobContext, jobDetailsWithException);
         entityManager.flush();
         entityManager.clear();
@@ -107,12 +99,7 @@ public class QuarkusJPAJobStoreExceptionDetailsTest {
     public void testJobStoreFindReturnsExceptionDetails() {
         // Given: A job with exception details exists
         JobDetails jobDetails = createJobDetailsWithException("direct-test-3");
-        JobContext jobContext = new JobContext() {
-            @Override
-            public <T> T getContext() {
-                return (T) entityManager;
-            }
-        };
+        JobContext jobContext = getJobContext();
         jobStore.persist(jobContext, jobDetails);
         entityManager.flush();
         entityManager.clear();
@@ -138,5 +125,21 @@ public class QuarkusJPAJobStoreExceptionDetailsTest {
 
     private JobDetails createJobDetailsWithoutException(String jobId) {
         return TestJobDetailsFactory.createJobDetailsWithoutException(jobId);
+    }
+
+    private JobContext getJobContext() {
+        return new JPAJobContext() {
+
+            @Override
+            public EntityManager getEntityManager() {
+                return entityManager;
+            }
+
+            @Override
+            public Processes getProcesses() {
+                return null;
+            }
+
+        };
     }
 }

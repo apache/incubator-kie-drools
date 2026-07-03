@@ -26,6 +26,9 @@ import org.kie.kogito.app.jobs.api.JobDescriptionMerger;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.SimpleTimerTrigger;
@@ -46,5 +49,61 @@ public class JobDescriptionHelper {
     public static JobDescription newJobDescription(JobDescription jobDescription, Trigger trigger) {
         List<JobDescriptionMerger> mergers = List.of(new ProcessInstanceJobDescriptionMerger(), new ProcessJobDescriptionMerger(), new UserTaskInstanceJobDescriptorMerger());
         return mergers.stream().filter(merger -> merger.accept(jobDescription)).map(merger -> merger.mergeTrigger(jobDescription, trigger)).findFirst().orElseThrow();
+    }
+
+    public static <T extends JobDescription> String resolveCorrelationId(T jobDescription) {
+        String correlationId = null;
+        if (jobDescription instanceof ProcessJobDescription processJobDescription) {
+            correlationId = processJobDescription.processId();
+        } else if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+            correlationId = processInstanceJobDescription.processInstanceId();
+        } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+            correlationId = userTaskInstanceJobDescription.id();
+        }
+        return correlationId;
+    }
+
+    public static <T extends JobDescription> String resolveProcessId(T jobDescription) {
+        String processId = null;
+        if (jobDescription instanceof ProcessJobDescription processJobDescription) {
+            processId = processJobDescription.processId();
+        } else if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+            processId = processInstanceJobDescription.processId();
+        } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+            processId = userTaskInstanceJobDescription.processId();
+        }
+        return processId;
+    }
+
+    public static <T extends JobDescription> String resolveProcessVersion(T jobDescription) {
+        String processVersion = null;
+        if (jobDescription instanceof ProcessJobDescription processJobDescription) {
+            processVersion = processJobDescription.processVersion();
+        } else if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+            processVersion = processInstanceJobDescription.processVersion();
+        } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+            processVersion = userTaskInstanceJobDescription.processVersion();
+        }
+        return processVersion;
+    }
+
+    public static <T extends JobDescription> String resolveRootProcessId(T jobDescription) {
+        String rootProcessId = null;
+        if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+            rootProcessId = processInstanceJobDescription.rootProcessId();
+        } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+            rootProcessId = userTaskInstanceJobDescription.rootProcessId();
+        }
+        return rootProcessId;
+    }
+
+    public static <T extends JobDescription> String resolveRootProcessVersion(T jobDescription) {
+        String rootProcessVersion = null;
+        if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+            rootProcessVersion = processInstanceJobDescription.rootProcessVersion();
+        } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+            rootProcessVersion = userTaskInstanceJobDescription.rootProcessVersion();
+        }
+        return rootProcessVersion;
     }
 }

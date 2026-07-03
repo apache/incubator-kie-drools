@@ -121,7 +121,7 @@ public class ProcessInstanceNodeDataEventMergerTest {
     }
 
     private ProcessInstanceNodeDataEvent buildNodeEvent(String nodeInstanceId, String nodeName, String nodeDefinitionId, String nodeType, Integer eventType) {
-        return new ProcessInstanceNodeDataEvent(HIRING_PROCESS_ID, "", "", new HashMap<>(), ProcessInstanceNodeEventBody.create()
+        ProcessInstanceNodeEventBody body = ProcessInstanceNodeEventBody.create()
                 .processId(HIRING_PROCESS_ID)
                 .processInstanceId(PROCESS_INSTANCE_ID)
                 .nodeInstanceId(nodeInstanceId)
@@ -130,6 +130,13 @@ public class ProcessInstanceNodeDataEventMergerTest {
                 .nodeType(nodeType)
                 .eventDate(new Date())
                 .eventType(eventType)
-                .build());
+                .build();
+        return ProcessInstanceNodeDataEvent.builder()
+                .source(HIRING_PROCESS_ID)
+                .kogitoAddons("")
+                .kogitoIdentity("")
+                .metaData(new HashMap<>())
+                .data(body)
+                .build();
     }
 }

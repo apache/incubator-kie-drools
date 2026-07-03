@@ -52,10 +52,11 @@ public abstract class AbstractUserTaskInstanceEntityQueryIT extends AbstractUser
     void testCount() {
         String taskId = UUID.randomUUID().toString();
         String processInstanceId = UUID.randomUUID().toString();
-        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent();
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setData(UserTaskInstanceStateEventBody.create().processInstanceId(processInstanceId).state("InProgress").userTaskInstanceId(taskId).build());
+        UserTaskInstanceStateDataEvent event = UserTaskInstanceStateDataEvent.builder()
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoUserTaskInstanceId(taskId)
+                .data(UserTaskInstanceStateEventBody.create().processInstanceId(processInstanceId).state("InProgress").userTaskInstanceId(taskId).userTaskName("Task").build())
+                .build();
         storage.indexState(event);
         assertThat(storage.query().count()).isNotZero();
         assertThat(storage.query().filter(List.of(in("state", List.of("Javierito")))).count()).isZero();

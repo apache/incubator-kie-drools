@@ -25,7 +25,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class UserTaskInstance extends UserTaskInstanceMeta {
 
     private String processId;
+    private String processVersion;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String rootProcessInstanceId;
     private ObjectNode inputs;
     private ObjectNode outputs;
@@ -44,6 +46,16 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
         }
     }
 
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String version) {
+        if (version != null && !version.trim().isEmpty()) {
+            this.processVersion = version;
+        }
+    }
+
     public String getRootProcessId() {
         return rootProcessId;
     }
@@ -51,6 +63,16 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     public void setRootProcessId(String id) {
         if (id != null && !id.trim().isEmpty()) {
             this.rootProcessId = id;
+        }
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        if (rootProcessVersion != null && !rootProcessVersion.trim().isEmpty()) {
+            this.rootProcessVersion = rootProcessVersion;
         }
     }
 
@@ -74,7 +96,9 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     public String toString() {
         return "UserTaskInstance{" +
                 "processId='" + processId + '\'' +
+                ", processVersion='" + processVersion + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +

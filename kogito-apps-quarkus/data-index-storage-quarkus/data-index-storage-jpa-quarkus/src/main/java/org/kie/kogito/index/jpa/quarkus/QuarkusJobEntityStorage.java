@@ -18,16 +18,22 @@
  */
 package org.kie.kogito.index.jpa.quarkus;
 
+import java.util.Collections;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.jpa.storage.JobEntityStorage;
+import org.kie.kogito.process.Processes;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
 public class QuarkusJobEntityStorage extends JobEntityStorage {
     @Inject
-    public QuarkusJobEntityStorage(EntityManager em) {
-        super(em);
+    public QuarkusJobEntityStorage(EntityManager em, Instance<Processes> processesInstance,
+            @ConfigProperty(name = "kogito.persistence.data-isolation.enabled", defaultValue = "false") Boolean dataIsolationEnabled) {
+        super(em, dataIsolationEnabled ? processesInstance : Collections.emptyList());
     }
 }

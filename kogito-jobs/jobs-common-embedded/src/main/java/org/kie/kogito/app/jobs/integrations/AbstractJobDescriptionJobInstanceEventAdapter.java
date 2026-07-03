@@ -55,13 +55,17 @@ public abstract class AbstractJobDescriptionJobInstanceEventAdapter implements J
         try {
             ScheduledJob scheduledJob = toScheduleJob(jobDetails);
             byte[] jsonContent = objectMapper.writeValueAsBytes(scheduledJob);
-            JobInstanceDataEvent jobInstanceEvent = new JobInstanceDataEvent(
-                    JOB_EVENT_TYPE,
-                    serviceURL,
-                    jsonContent,
-                    scheduledJob.getProcessInstanceId(), scheduledJob.getRootProcessInstanceId(),
-                    scheduledJob.getProcessId(), scheduledJob.getRootProcessId(), null);
-            return jobInstanceEvent;
+            return JobInstanceDataEvent.builder()
+                    .type(JOB_EVENT_TYPE)
+                    .source(serviceURL)
+                    .data(jsonContent)
+                    .kogitoProcessInstanceId(scheduledJob.getProcessInstanceId())
+                    .kogitoRootProcessInstanceId(scheduledJob.getRootProcessInstanceId())
+                    .kogitoProcessId(scheduledJob.getProcessId())
+                    .kogitoProcessVersion(scheduledJob.getProcessVersion())
+                    .kogitoRootProcessId(scheduledJob.getRootProcessId())
+                    .kogitoRootProcessVersion(scheduledJob.getRootProcessVersion())
+                    .build();
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }

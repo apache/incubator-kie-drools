@@ -58,8 +58,10 @@ class EventPublisherJobStreamsTest {
 
     private static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
     private static final String PROCESS_ID = "PROCESS_ID";
+    private static final String PROCESS_VERSION = "PROCESS_VERSION";
     private static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
     private static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
+    private static final String ROOT_PROCESS_VERSION = "ROOT_PROCESS_VERSION";
     public static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     private static final String URL = "http://my_service";
     private static final String JOB_ID = "JOB_ID";
@@ -84,8 +86,10 @@ class EventPublisherJobStreamsTest {
             .url(RECIPIENT_URL)
             .header("processInstanceId", PROCESS_INSTANCE_ID)
             .header("processId", PROCESS_ID)
+            .header("processVersion", PROCESS_VERSION)
             .header("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
             .header("rootProcessId", ROOT_PROCESS_ID)
+            .header("rootProcessVersion", ROOT_PROCESS_VERSION)
             .header("nodeInstanceId", NODE_INSTANCE_ID)
             .build());
 
@@ -125,23 +129,27 @@ class EventPublisherJobStreamsTest {
         assertThat(event.getSubject()).isNull();
         assertThat(event.getKogitoProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
         assertThat(event.getKogitoProcessId()).isEqualTo(PROCESS_ID);
+        assertThat(event.getKogitoProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(event.getKogitoRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
         assertThat(event.getKogitoRootProcessId()).isEqualTo(ROOT_PROCESS_ID);
+        assertThat(event.getKogitoRootProcessVersion()).isEqualTo(ROOT_PROCESS_VERSION);
         assertThat(event.getData()).isNotEmpty();
 
         assertData(objectMapper.readTree(event.getData()));
     }
 
     private void assertData(JsonNode jsonNode) {
-        assertThat(jsonNode).hasSize(19);
+        assertThat(jsonNode).hasSize(21);
         assertHasField(jsonNode, "id", JOB_ID);
         assertHasField(jsonNode, "expirationTime", EXPIRATION_TIME.toString());
         assertHasField(jsonNode, "priority", Integer.toString(PRIORITY));
         assertHasField(jsonNode, "callbackEndpoint", RECIPIENT_URL);
         assertHasField(jsonNode, "processInstanceId", PROCESS_INSTANCE_ID);
         assertHasField(jsonNode, "processId", PROCESS_ID);
+        assertHasField(jsonNode, "processVersion", PROCESS_VERSION);
         assertHasField(jsonNode, "rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID);
         assertHasField(jsonNode, "rootProcessId", ROOT_PROCESS_ID);
+        assertHasField(jsonNode, "rootProcessVersion", ROOT_PROCESS_VERSION);
         assertHasField(jsonNode, "nodeInstanceId", NODE_INSTANCE_ID);
         assertHasField(jsonNode, "repeatInterval", Long.toString(PERIOD));
         assertHasField(jsonNode, "repeatLimit", Integer.toString(REPEAT_COUNT));
@@ -159,6 +167,10 @@ class EventPublisherJobStreamsTest {
         return JobDetails.builder()
                 .id(JOB_ID)
                 .correlationId(CORRELATION_ID)
+                .processId(PROCESS_ID)
+                .processVersion(PROCESS_VERSION)
+                .rootProcessId(ROOT_PROCESS_ID)
+                .rootProcessVersion(ROOT_PROCESS_VERSION)
                 .status(STATUS)
                 .lastUpdate(LAST_UPDATE)
                 .retries(RETRIES)

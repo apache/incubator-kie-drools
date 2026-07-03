@@ -22,6 +22,7 @@ import org.kie.kogito.index.jpa.storage.AbstractUserTaskInstanceStorageIT;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -29,6 +30,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 @QuarkusTest
+@TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 public class UserTaskInstanceStorageIT extends AbstractUserTaskInstanceStorageIT {
     @Inject

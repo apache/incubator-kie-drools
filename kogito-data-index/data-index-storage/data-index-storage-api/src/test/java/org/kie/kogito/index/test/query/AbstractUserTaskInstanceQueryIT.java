@@ -43,10 +43,12 @@ public abstract class AbstractUserTaskInstanceQueryIT extends QueryTestBase<Stri
         String taskId = UUID.randomUUID().toString();
         String processInstanceId = UUID.randomUUID().toString();
         UserTaskInstanceStorage storage = getStorage();
-        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent();
-        event.setKogitoProcessInstanceId(processInstanceId);
-        event.setKogitoUserTaskInstanceId(taskId);
-        event.setData(UserTaskInstanceStateEventBody.create().processInstanceId(processInstanceId).state("InProgress").userTaskInstanceId(taskId).build());
+        UserTaskInstanceStateDataEvent event = UserTaskInstanceStateDataEvent.builder()
+                .kogitoProcessInstanceId(processInstanceId)
+                .kogitoUserTaskInstanceId(taskId)
+                .data(UserTaskInstanceStateEventBody.create().processInstanceId(processInstanceId).state("InProgress").userTaskInstanceId(taskId).userTaskName("Task")
+                        .externalReferenceId("external-ref").build())
+                .build();
         storage.indexState(event);
         queryAndAssert(assertWithId(), storage, singletonList(equalTo("state", "InProgress")), null, null, null, taskId);
     }

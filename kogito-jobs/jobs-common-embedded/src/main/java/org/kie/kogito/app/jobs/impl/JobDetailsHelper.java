@@ -24,10 +24,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
+import org.kie.kogito.app.jobs.integrations.JobDescriptionHelper;
 import org.kie.kogito.jobs.JobDescription;
-import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
-import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
@@ -58,17 +56,18 @@ public final class JobDetailsHelper {
 
         SimpleTimerTrigger trigger = new SimpleTimerTrigger(date, delay, ChronoUnit.MILLIS, repeat, time.getOffset().getId());
 
-        String correlationId = null;
-        if (jobDescription instanceof ProcessJobDescription processJobDescription) {
-            correlationId = processJobDescription.processId();
-        } else if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
-            correlationId = processInstanceJobDescription.processInstanceId();
-        } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
-            correlationId = userTaskInstanceJobDescription.id();
-        }
+        String correlationId = JobDescriptionHelper.resolveCorrelationId(jobDescription);
+        String processId = JobDescriptionHelper.resolveProcessId(jobDescription);
+        String processVersion = JobDescriptionHelper.resolveProcessVersion(jobDescription);
+        String rootProcessId = JobDescriptionHelper.resolveRootProcessId(jobDescription);
+        String rootProcessVersion = JobDescriptionHelper.resolveRootProcessVersion(jobDescription);
 
         return JobDetails.builder().id(jobDescription.id())
                 .correlationId(correlationId)
+                .processId(processId)
+                .processVersion(processVersion)
+                .rootProcessId(rootProcessId)
+                .rootProcessVersion(rootProcessVersion)
                 .status(JobStatus.SCHEDULED).trigger(trigger)
                 .recipient(new RecipientInstance(new InVMRecipient(new InVMPayloadData(jobDescription))))
                 .executionTimeout(trigger.hasNextFireTime().getTime())
@@ -76,6 +75,5 @@ public final class JobDetailsHelper {
                 .retries(0)
                 .executionCounter(0)
                 .build();
-
     }
 }

@@ -133,7 +133,7 @@ public class IndexEventConverterHelper {
     }
 
     private ProcessDefinitionDataEvent buildProcessDefinitionEvent(CloudEvent cloudEvent) throws IOException {
-        return DataEventFactory.from(new ProcessDefinitionDataEvent(), cloudEvent, definitionConverter);
+        return DataEventFactory.from(ProcessDefinitionDataEvent.builder().build(), cloudEvent, definitionConverter);
     }
 
     private DataEvent<?> buildProcessInstanceDataEventVariant(CloudEvent cloudEvent) throws IOException {

@@ -28,6 +28,7 @@ public class ProcessInstanceMeta {
 
     private String id;
     private String processId;
+    private String processVersion;
     private String processName;
 
     private String version;
@@ -42,6 +43,7 @@ public class ProcessInstanceMeta {
     @JsonProperty("rootInstanceId")
     private String rootProcessInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
     @JsonProperty("parentInstanceId")
     private String parentProcessInstanceId;
     @JsonProperty("createdBy")
@@ -69,6 +71,14 @@ public class ProcessInstanceMeta {
 
     public void setProcessId(String processId) {
         this.processId = processId;
+    }
+
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
     }
 
     public String getEndpoint() {
@@ -137,6 +147,14 @@ public class ProcessInstanceMeta {
 
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     public String getParentProcessInstanceId() {
@@ -218,6 +236,7 @@ public class ProcessInstanceMeta {
         return "ProcessInstanceMeta{" +
                 "id='" + id + '\'' +
                 ", processId='" + processId + '\'' +
+                ", processVersion='" + processVersion + '\'' +
                 ", processName='" + processName + '\'' +
                 ", state=" + state +
                 ", businessKey=" + businessKey +
@@ -227,6 +246,7 @@ public class ProcessInstanceMeta {
                 ", end=" + end +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", parentProcessInstanceId='" + parentProcessInstanceId + '\'' +
                 ", lastUpdated=" + lastUpdate +
                 ", version=" + version +

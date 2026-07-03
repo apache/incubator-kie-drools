@@ -37,7 +37,8 @@ public class ProcessJobDescriptionMerger implements JobDescriptionMerger {
             ProcessJobDescription newProcessJobDescription = ProcessJobDescription.of(
                     JobDescriptionHelper.toExpirationTime(trigger),
                     processJobDescription.priority(),
-                    processJobDescription.processId());
+                    processJobDescription.processId(),
+                    processJobDescription.processVersion());
             return newProcessJobDescription;
         }
         throw new IllegalArgumentException("jobDescription type not supported by this merger " + jobDescription);

@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.app.jobs.jpa.quarkus;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -30,22 +32,30 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class TestJobSchedulerListener implements JobSchedulerListener {
 
     private CountDownLatch latch;
+    private final Set<String> executedJobIds = ConcurrentHashMap.newKeySet();
 
     void setCount(Integer count) {
         latch = new CountDownLatch(count);
+        executedJobIds.clear();
     }
 
     public boolean await(long timeout, TimeUnit unit) throws Exception {
         return latch.await(timeout, unit);
     }
 
+    public Set<String> getExecutedJobIds() {
+        return Set.copyOf(executedJobIds);
+    }
+
     @Override
     public void onFailure(JobDetails jobDetails) {
+        executedJobIds.add(jobDetails.getId());
         latch.countDown();
     }
 
     @Override
     public void onExecution(JobDetails jobDetails) {
+        executedJobIds.add(jobDetails.getId());
         latch.countDown();
     }
 

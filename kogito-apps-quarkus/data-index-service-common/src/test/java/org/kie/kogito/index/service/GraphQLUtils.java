@@ -76,10 +76,10 @@ public class GraphQLUtils {
     private static final Map<String, String> QUERIES = new HashMap<>();
 
     static {
-        QUERY_FIELDS.put(ProcessDefinition.class, getAllFieldsList(ProcessDefinition.class).map(getFieldName()).collect(joining(", ")));
-        QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFieldName()).collect(joining(", ")));
-        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFieldName()).collect(joining(", ")));
-        QUERY_FIELDS.put(Job.class, getAllFieldsList(Job.class).map(getFieldName()).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessDefinition.class, getAllFieldsList(ProcessDefinition.class).map(getFieldName()).filter(it -> !it.toLowerCase().contains("processversion")).collect(joining(", ")));
+        QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFieldName()).filter(it -> !it.toLowerCase().contains("processversion")).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFieldName()).filter(it -> !it.toLowerCase().contains("processversion")).collect(joining(", ")));
+        QUERY_FIELDS.put(Job.class, getAllFieldsList(Job.class).map(getFieldName()).filter(it -> !it.toLowerCase().contains("processversion")).collect(joining(", ")));
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", serviceUrl");
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstances { id, processName }");
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", parentProcessInstance { id, processName }");

@@ -49,4 +49,8 @@ public class TestProcesses implements Processes {
         return Collections.emptyList();
     }
 
+    @Override
+    public Collection<Process<? extends Model>> processes() {
+        return Collections.emptyList();
+    }
 }

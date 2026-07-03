@@ -24,6 +24,7 @@ import org.kie.kogito.index.jpa.mapper.ProcessDefinitionEntityMapper;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
+import org.kie.kogito.process.Processes;
 
 import jakarta.persistence.EntityManager;
 
@@ -34,13 +35,13 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
     protected ProcessDefinitionEntityStorage() {
     }
 
-    public ProcessDefinitionEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> predicateBuilder) {
-        this(em, predicateBuilder, ProcessDefinitionEntityMapper.INSTANCE);
+    public ProcessDefinitionEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> predicateBuilder, Iterable<Processes> processes) {
+        this(em, predicateBuilder, ProcessDefinitionEntityMapper.INSTANCE, processes);
     }
 
-    public ProcessDefinitionEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> predicateBuilder, ProcessDefinitionEntityMapper mapper) {
+    public ProcessDefinitionEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> predicateBuilder, ProcessDefinitionEntityMapper mapper, Iterable<Processes> processes) {
         super(em, ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper.INSTANCE::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
-                e.getVersion()), Optional.ofNullable(getInstance(predicateBuilder)));
+                e.getVersion()), Optional.ofNullable(getInstance(predicateBuilder)), Optional.ofNullable(getInstance(processes)));
     }
 
 }

@@ -32,9 +32,11 @@ public class JobEntity extends AbstractEntity {
     @Id
     private String id;
     private String processId;
+    private String processVersion;
     private String processInstanceId;
     private String nodeInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String rootProcessInstanceId;
     private ZonedDateTime expirationTime;
     private Integer priority;
@@ -67,6 +69,14 @@ public class JobEntity extends AbstractEntity {
         this.processId = processId;
     }
 
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+    }
+
     public String getProcessInstanceId() {
         return processInstanceId;
     }
@@ -81,6 +91,14 @@ public class JobEntity extends AbstractEntity {
 
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     public String getRootProcessInstanceId() {
@@ -225,9 +243,11 @@ public class JobEntity extends AbstractEntity {
         return "JobEntity{" +
                 "id='" + id + '\'' +
                 ", processId='" + processId + '\'' +
+                ", processVersion='" + processVersion + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", nodeInstanceId='" + nodeInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", expirationTime=" + expirationTime +
                 ", priority=" + priority +

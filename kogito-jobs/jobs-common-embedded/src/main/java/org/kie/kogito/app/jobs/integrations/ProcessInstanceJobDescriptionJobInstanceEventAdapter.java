@@ -37,11 +37,14 @@ public class ProcessInstanceJobDescriptionJobInstanceEventAdapter extends Abstra
     @Override
     protected void doAdaptPayload(JobBuilder jobBuilder, JobDescription jobDescription) {
         if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
-            jobBuilder.processInstanceId(processInstanceJobDescription.processInstanceId());
-            jobBuilder.processId(processInstanceJobDescription.processId());
-            jobBuilder.rootProcessInstanceId(processInstanceJobDescription.rootProcessInstanceId());
-            jobBuilder.rootProcessId(processInstanceJobDescription.rootProcessId());
-            jobBuilder.nodeInstanceId(processInstanceJobDescription.nodeInstanceId());
+            jobBuilder
+                    .processInstanceId(processInstanceJobDescription.processInstanceId())
+                    .processId(processInstanceJobDescription.processId())
+                    .processVersion(processInstanceJobDescription.processVersion())
+                    .rootProcessInstanceId(processInstanceJobDescription.rootProcessInstanceId())
+                    .rootProcessId(processInstanceJobDescription.rootProcessId())
+                    .rootProcessVersion(processInstanceJobDescription.rootProcessVersion())
+                    .nodeInstanceId(processInstanceJobDescription.nodeInstanceId());
         }
     }
 

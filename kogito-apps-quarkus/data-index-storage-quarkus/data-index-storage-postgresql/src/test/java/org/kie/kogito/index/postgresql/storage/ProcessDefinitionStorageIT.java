@@ -22,12 +22,14 @@ import org.kie.kogito.index.jpa.storage.AbstractProcessDefinitionStorageIT;
 import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 import jakarta.inject.Inject;
 
 @QuarkusTest
+@TestTransaction
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessDefinitionStorageIT extends AbstractProcessDefinitionStorageIT {
     @Inject

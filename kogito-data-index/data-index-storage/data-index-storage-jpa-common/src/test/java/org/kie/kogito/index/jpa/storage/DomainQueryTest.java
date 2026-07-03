@@ -21,6 +21,7 @@ package org.kie.kogito.index.jpa.storage;
 import java.util.List;
 import java.util.function.Function;
 
+import org.hibernate.query.criteria.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -44,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 import static org.kie.kogito.persistence.api.query.SortDirection.ASC;
 import static org.kie.kogito.persistence.api.query.SortDirection.DESC;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -59,10 +55,10 @@ class DomainQueryTest {
     EntityManager entityManager;
 
     @Mock
-    CriteriaBuilder criteriaBuilder;
+    HibernateCriteriaBuilder criteriaBuilder;
 
     @Mock
-    CriteriaQuery criteriaQuery;
+    JpaCriteriaQuery criteriaQuery;
 
     @Mock
     TypedQuery mockQuery;
@@ -121,21 +117,21 @@ class DomainQueryTest {
 
     @Test
     void testOrderBy() {
-        Root root = mock(Root.class);
+        JpaRoot root = mock(JpaRoot.class);
         when(root.get(any(String.class))).thenAnswer(inv -> {
-            Path path = mock(Path.class);
+            JpaPath path = mock(JpaPath.class);
             when(path.getAlias()).thenReturn(inv.getArgument(0));
             return path;
         });
         when(criteriaQuery.from(rootType)).thenReturn(root);
-        when(criteriaBuilder.asc(any())).thenAnswer(inv -> {
-            Order order = mock(Order.class);
+        when(criteriaBuilder.asc((Expression<?>) any())).thenAnswer(inv -> {
+            JpaOrder order = mock(JpaOrder.class);
             when(order.isAscending()).thenReturn(true);
             when(order.getExpression()).thenReturn(inv.getArgument(0));
             return order;
         });
-        when(criteriaBuilder.desc(any())).thenAnswer(inv -> {
-            Order order = mock(Order.class);
+        when(criteriaBuilder.desc((Expression<?>) any())).thenAnswer(inv -> {
+            JpaOrder order = mock(JpaOrder.class);
             when(order.isAscending()).thenReturn(false);
             when(order.getExpression()).thenReturn(inv.getArgument(0));
             return order;
@@ -158,5 +154,4 @@ class DomainQueryTest {
         verify(entityManager).createQuery(criteriaQuery);
         verify(mockQuery).getResultList();
     }
-
 }

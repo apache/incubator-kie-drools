@@ -20,8 +20,10 @@ package org.kie.kogito.index.postgresql.mapper;
 
 import org.kie.kogito.index.jpa.mapper.AbstractProcessInstanceEntityMapperIT;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
+@TestTransaction
 class ProcessInstanceEntityMapperIT extends AbstractProcessInstanceEntityMapperIT {
 }
