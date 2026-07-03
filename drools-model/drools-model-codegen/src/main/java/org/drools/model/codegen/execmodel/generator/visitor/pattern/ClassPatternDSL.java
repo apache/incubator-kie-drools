@@ -153,10 +153,12 @@ public class ClassPatternDSL extends PatternDSL {
 
     private Optional<Expression> buildFromDeclaration(PatternDescr pattern) {
         Optional<PatternSourceDescr> source = Optional.ofNullable(pattern.getSource());
-        try {
-            patternType = context.getTypeResolver().resolveType( pattern.getObjectType() );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
+        if (patternType == null) {
+            try {
+                patternType = context.getTypeResolver().resolveType( pattern.getObjectType() );
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
         }
         Optional<Expression> declarationSourceFrom = source.flatMap(new FromVisitor(context, patternType)::visit);
         if (declarationSourceFrom.isPresent()) {

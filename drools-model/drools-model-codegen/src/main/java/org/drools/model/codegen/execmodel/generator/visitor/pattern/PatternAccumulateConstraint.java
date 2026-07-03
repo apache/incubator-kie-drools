@@ -30,6 +30,7 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
+import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.visitor.DSLNode;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
@@ -66,9 +67,12 @@ class PatternAccumulateConstraint implements DSLNode {
             }
         }
 
-        constraintsByVar.forEach( (id, constraints) -> {
+        constraintsByVar.forEach((id, constraints) -> {
             pattern.setIdentifier(id);
-            new ClassPatternDSL(context, packageModel, pattern, constraints, null).buildPattern();
+            Class<?> resultType = context.getTypedDeclarationById(id)
+                    .map(TypedDeclarationSpec::getDeclarationClass)
+                    .orElse(null);
+            new ClassPatternDSL(context, packageModel, pattern, constraints, resultType).buildPattern();
         });
         pattern.setIdentifier(null);
     }
