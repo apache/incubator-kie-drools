@@ -37,7 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SpringBootJPAUserTaskInstances extends JPAUserTaskInstances {
 
     @Autowired
-    public SpringBootJPAUserTaskInstances(UserTaskInstanceRepository userTaskInstanceRepository, UserTaskInstanceEntityMapper userTaskInstanceEntityMapper) {
+    public SpringBootJPAUserTaskInstances(UserTaskInstanceRepository userTaskInstanceRepository,
+            UserTaskInstanceEntityMapper userTaskInstanceEntityMapper) {
         super(userTaskInstanceRepository, userTaskInstanceEntityMapper);
     }
 

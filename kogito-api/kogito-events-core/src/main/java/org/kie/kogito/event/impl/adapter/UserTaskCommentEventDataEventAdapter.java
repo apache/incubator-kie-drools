@@ -69,10 +69,14 @@ public class UserTaskCommentEventDataEventAdapter extends AbstractDataEventAdapt
         }
 
         UserTaskInstanceCommentEventBody body = builder.build();
-        UserTaskInstanceCommentDataEvent utEvent = new UserTaskInstanceCommentDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()),
-                getConfig().addons().toString(), updatedBy, metadata, body);
 
-        return utEvent;
+        return UserTaskInstanceCommentDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(updatedBy)
+                .metaData(metadata)
+                .data(body)
+                .build();
     }
 
 }

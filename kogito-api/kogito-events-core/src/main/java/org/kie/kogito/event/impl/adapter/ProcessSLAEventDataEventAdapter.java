@@ -60,10 +60,15 @@ public class ProcessSLAEventDataEventAdapter extends AbstractDataEventAdapter {
         }
 
         ProcessInstanceSLAEventBody body = builder.build();
-        ProcessInstanceSLADataEvent piEvent = new ProcessInstanceSLADataEvent(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()),
-                getConfig().addons().toString(), event.getEventIdentity(), metadata, body);
-        piEvent.setKogitoBusinessKey(pi.getBusinessKey());
-        return piEvent;
+
+        return ProcessInstanceSLADataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventIdentity())
+                .metaData(metadata)
+                .data(body)
+                .kogitoBusinessKey(pi.getBusinessKey())
+                .build();
     }
 
 }

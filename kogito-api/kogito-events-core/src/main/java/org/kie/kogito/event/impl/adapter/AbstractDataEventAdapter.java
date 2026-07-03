@@ -82,6 +82,7 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .processType(pi.getProcess().getType())
                 .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootProcessId(pi.getRootProcessId())
+                .rootProcessVersion(pi.getRootProcessVersion())
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .businessKey(pi.getBusinessKey())
                 .slaDueDate(pi.getSlaDueDate());
@@ -106,11 +107,14 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
         }
 
         ProcessInstanceStateEventBody body = builder.build();
-        ProcessInstanceStateDataEvent piEvent =
-                new ProcessInstanceStateDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()), getConfig().addons().toString(),
-                        event.getEventIdentity(), metadata, body);
-        piEvent.setKogitoBusinessKey(pi.getBusinessKey());
-        return piEvent;
+        return ProcessInstanceStateDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventIdentity())
+                .metaData(metadata)
+                .data(body)
+                .kogitoBusinessKey(pi.getBusinessKey())
+                .build();
     }
 
     private String getHeader(Map<String, List<String>> headers, String key) {
@@ -160,9 +164,14 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
         }
 
         ProcessInstanceNodeEventBody body = builder.build();
-        ProcessInstanceNodeDataEvent piEvent = new ProcessInstanceNodeDataEvent(AdapterHelper.buildSource(getConfig().service(), pi.getProcessId()),
-                getConfig().addons().toString(), event.getEventIdentity(), metadata, body);
-        piEvent.setKogitoBusinessKey(pi.getBusinessKey());
-        return piEvent;
+
+        return ProcessInstanceNodeDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), pi.getProcessId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventIdentity())
+                .metaData(metadata)
+                .data(body)
+                .kogitoBusinessKey(pi.getBusinessKey())
+                .build();
     }
 }

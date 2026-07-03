@@ -38,20 +38,24 @@ public class ProcessJobDescription implements JobDescription {
 
     private String processId;
 
+    private String processVersion;
+
     private Process<?> process;
 
-    private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId) {
+    private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId, String processVersion) {
         this.id = UUID.randomUUID().toString();
         this.expirationTime = requireNonNull(expirationTime);
         this.priority = requireNonNull(priority);
         this.processId = requireNonNull(processId);
+        this.processVersion = processVersion;
     }
 
-    private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId, String id) {
+    private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId, String processVersion, String id) {
         this.id = id;
         this.expirationTime = requireNonNull(expirationTime);
         this.priority = requireNonNull(priority);
         this.processId = requireNonNull(processId);
+        this.processVersion = processVersion;
     }
 
     public ProcessJobDescription(ExpirationTime expirationTime, Integer priority, Process<?> process) {
@@ -65,18 +69,18 @@ public class ProcessJobDescription implements JobDescription {
         return new ProcessJobDescription(expirationTime, DEFAULT_PRIORITY, process);
     }
 
-    public static ProcessJobDescription of(ExpirationTime expirationTime, String processId) {
-        return of(expirationTime, DEFAULT_PRIORITY, processId);
+    public static ProcessJobDescription of(ExpirationTime expirationTime, String processId, String processVersion) {
+        return of(expirationTime, DEFAULT_PRIORITY, processId, processVersion);
     }
 
-    public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId) {
+    public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId, String processVersion) {
 
-        return new ProcessJobDescription(expirationTime, priority, processId);
+        return new ProcessJobDescription(expirationTime, priority, processId, processVersion);
     }
 
-    public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId, String id) {
+    public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId, String processVersion, String id) {
 
-        return new ProcessJobDescription(expirationTime, priority, processId, id);
+        return new ProcessJobDescription(expirationTime, priority, processId, processVersion, id);
     }
 
     @Override
@@ -96,6 +100,10 @@ public class ProcessJobDescription implements JobDescription {
 
     public String processId() {
         return processId;
+    }
+
+    public String processVersion() {
+        return processVersion;
     }
 
     public Process<?> process() {

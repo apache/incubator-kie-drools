@@ -84,6 +84,7 @@ public class ProcessInstanceMarshallTest {
     private static final String PROCESS_DESCRIPTION = "The description";
     private static final String PROCESS_INSTANCE_ID = "1";
     private static final String ROOT_PROCESS_ID = "rootProcess";
+    private static final String ROOT_PROCESS_VERSION = "v1";
     private static final String ROOT_PROCESS_INSTANCE_ID = "0";
     private static final String PARENT_PROCESS_ID = "2";
 
@@ -167,6 +168,7 @@ public class ProcessInstanceMarshallTest {
         if (!orphan) {
             instance.setRootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID);
             instance.setRootProcessId(ROOT_PROCESS_ID);
+            instance.setRootProcessVersion(ROOT_PROCESS_VERSION);
             instance.setParentProcessInstanceId(PARENT_PROCESS_ID);
         }
 
@@ -237,6 +239,7 @@ public class ProcessInstanceMarshallTest {
                 .hasFieldOrPropertyWithValue("description", toMarshall.getDescription())
                 .hasFieldOrPropertyWithValue("rootProcessInstanceId", toMarshall.getRootProcessInstanceId())
                 .hasFieldOrPropertyWithValue("rootProcessId", toMarshall.getRootProcessId())
+                .hasFieldOrPropertyWithValue("rootProcessVersion", toMarshall.getRootProcessVersion())
                 .hasFieldOrPropertyWithValue("parentProcessInstanceId", toMarshall.getParentProcessInstanceId())
                 .hasFieldOrPropertyWithValue("process", toMarshall.getProcess());
     }

@@ -40,6 +40,7 @@ public class AdapterHelper {
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, pi.getProcess().getType());
         metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, pi.getParentProcessInstanceId());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, pi.getRootProcessId());
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, pi.getRootProcessVersion());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, pi.getRootProcessInstanceId());
         return metadata;
     }
@@ -57,6 +58,7 @@ public class AdapterHelper {
             metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, processInfo.getProcessId());
             metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, processInfo.getParentProcessInstanceId());
             metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, processInfo.getRootProcessId());
+            metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, processInfo.getRootProcessVersion());
             metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, processInfo.getRootProcessInstanceId());
             metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, String.valueOf(uti.getMetadata().get("ProcessInstanceState")));
             metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, uti.getMetadata().get("ProcessType"));

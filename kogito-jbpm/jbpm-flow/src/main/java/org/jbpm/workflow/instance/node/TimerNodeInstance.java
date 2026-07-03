@@ -84,7 +84,9 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                                     .processInstanceId(getProcessInstance().getStringId())
                                     .rootProcessInstanceId(getProcessInstance().getRootProcessInstanceId())
                                     .processId(getProcessInstance().getProcessId())
+                                    .processVersion(getProcessInstance().getProcessVersion())
                                     .rootProcessId(getProcessInstance().getRootProcessId())
+                                    .rootProcessVersion(getProcessInstance().getRootProcessVersion())
                                     .nodeInstanceId(this.getId())
                                     .build();
                     JobsService jobService = processRuntime.getJobsService();

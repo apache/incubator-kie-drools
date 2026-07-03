@@ -28,6 +28,7 @@ public class ProcessInfo {
 
     private String parentProcessInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String rootProcessInstanceId;
 
     private ProcessInfo() {
@@ -79,6 +80,14 @@ public class ProcessInfo {
         this.rootProcessId = rootProcessId;
     }
 
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
+    }
+
     public String getRootProcessInstanceId() {
         return rootProcessInstanceId;
     }
@@ -98,6 +107,7 @@ public class ProcessInfo {
 
         private String parentProcessInstanceId;
         private String rootProcessId;
+        private String rootProcessVersion;
         private String rootProcessInstanceId;
 
         public Builder withProcessId(String processId) {
@@ -125,6 +135,11 @@ public class ProcessInfo {
             return this;
         }
 
+        public Builder withRootProcessVersion(String rootProcessVersion) {
+            this.rootProcessVersion = rootProcessVersion;
+            return this;
+        }
+
         public Builder withRootProcessInstanceId(String rootProcessInstanceId) {
             this.rootProcessInstanceId = rootProcessInstanceId;
             return this;
@@ -135,6 +150,7 @@ public class ProcessInfo {
 
             processInfo.setRootProcessInstanceId(rootProcessInstanceId);
             processInfo.setRootProcessId(rootProcessId);
+            processInfo.setRootProcessVersion(rootProcessVersion);
             processInfo.setParentProcessInstanceId(parentProcessInstanceId);
             return processInfo;
         }

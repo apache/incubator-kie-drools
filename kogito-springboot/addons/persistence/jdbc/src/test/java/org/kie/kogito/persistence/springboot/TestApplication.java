@@ -16,12 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.persistence.jdbc;
+package org.kie.kogito.persistence.springboot;
 
-public class PostgreSqlProcessInstancesLockIT extends PostgreSqlProcessInstancesIT {
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-    @Override
-    boolean lock() {
-        return true;
+/**
+ * Test Spring Boot application for JDBC persistence data isolation tests.
+ */
+@SpringBootApplication
+public class TestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(TestApplication.class, args);
     }
 }

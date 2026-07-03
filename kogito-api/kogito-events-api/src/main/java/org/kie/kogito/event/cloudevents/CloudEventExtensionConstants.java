@@ -32,14 +32,15 @@ public final class CloudEventExtensionConstants {
     public static final String PMML_FILE_NAME = "kogitopmmlfilename";
     public static final String PMML_MODEL_NAME = "kogitopmmlmodelname";
     public static final String PROCESS_INSTANCE_ID = "kogitoprocinstanceid";
-    public static final String PROCESS_INSTANCE_VERSION = "kogitoprocversion";
     public static final String PROCESS_REFERENCE_ID = "kogitoprocrefid";
     public static final String PROCESS_INSTANCE_STATE = "kogitoprocist";
     public static final String PROCESS_ID = "kogitoprocid";
+    public static final String PROCESS_VERSION = "kogitoprocversion";
     public static final String PROCESS_TYPE = "kogitoproctype";
     public static final String PROCESS_PARENT_PROCESS_INSTANCE_ID = "kogitoparentprociid";
     public static final String PROCESS_ROOT_PROCESS_INSTANCE_ID = "kogitorootprociid";
     public static final String PROCESS_ROOT_PROCESS_ID = "kogitorootprocid";
+    public static final String PROCESS_ROOT_PROCESS_VERSION = "kogitorootprocversion";
     public static final String PROCESS_START_FROM_NODE = "kogitoprocstartfrom";
     public static final String PROCESS_USER_TASK_INSTANCE_ID = "kogitousertaskiid";
     public static final String PROCESS_USER_TASK_INSTANCE_STATE = "kogitousertaskist";

@@ -48,7 +48,9 @@ public class Job {
     private String processInstanceId;
     private String rootProcessInstanceId;
     private String processId;
+    private String processVersion;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String nodeInstanceId;
     private Long repeatInterval;
     private Integer repeatLimit;
@@ -60,6 +62,15 @@ public class Job {
     public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint,
             String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId,
             Long repeatInterval, Integer repeatLimit, String nodeInstanceId) {
+        this(id, expirationTime, priority, callbackEndpoint, processInstanceId, rootProcessInstanceId, processId, null, rootProcessId, null,
+                repeatInterval, repeatLimit, nodeInstanceId);
+    }
+
+    @SuppressWarnings("squid:S00107")
+    public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint,
+            String processInstanceId, String rootProcessInstanceId, String processId, String processVersion, String rootProcessId,
+            String rootProcessVersion,
+            Long repeatInterval, Integer repeatLimit, String nodeInstanceId) {
         this.id = id;
         this.expirationTime = expirationTime;
         this.priority = priority;
@@ -68,6 +79,8 @@ public class Job {
         this.rootProcessInstanceId = rootProcessInstanceId;
         this.processId = processId;
         this.rootProcessId = rootProcessId;
+        this.processVersion = processVersion;
+        this.rootProcessVersion = rootProcessVersion;
         this.repeatInterval = repeatInterval;
         this.repeatLimit = repeatLimit;
         this.nodeInstanceId = nodeInstanceId;
@@ -137,6 +150,22 @@ public class Job {
         this.rootProcessId = rootProcessId;
     }
 
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
+    }
+
     public Long getRepeatInterval() {
         return repeatInterval;
     }
@@ -178,6 +207,8 @@ public class Job {
                 Objects.equals(getRootProcessInstanceId(), job.getRootProcessInstanceId()) &&
                 Objects.equals(getProcessId(), job.getProcessId()) &&
                 Objects.equals(getRootProcessId(), job.getRootProcessId()) &&
+                Objects.equals(getProcessVersion(), job.getProcessVersion()) &&
+                Objects.equals(getRootProcessVersion(), job.getRootProcessVersion()) &&
                 Objects.equals(getRepeatLimit(), job.getRepeatLimit()) &&
                 Objects.equals(getRepeatInterval(), job.getRepeatInterval()) &&
                 Objects.equals(getNodeInstanceId(), job.getNodeInstanceId());
@@ -186,8 +217,8 @@ public class Job {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getExpirationTime(), getPriority(), getCallbackEndpoint(), getProcessInstanceId(),
-                getRootProcessInstanceId(), getProcessId(), getRootProcessId(), getRepeatLimit(),
-                getRepeatInterval(), getNodeInstanceId());
+                getRootProcessInstanceId(), getProcessId(), getRootProcessId(), getProcessVersion(), getRootProcessVersion(),
+                getRepeatLimit(), getRepeatInterval(), getNodeInstanceId());
     }
 
     @Override
@@ -201,6 +232,8 @@ public class Job {
                 .add("rootProcessInstanceId='" + rootProcessInstanceId + "'")
                 .add("processId='" + processId + "'")
                 .add("rootProcessId='" + rootProcessId + "'")
+                .add("processVersion='" + processVersion + "'")
+                .add("rootProcessVersion='" + rootProcessVersion + "'")
                 .add("repeatInterval=" + repeatInterval)
                 .add("repeatLimit=" + repeatLimit)
                 .add("nodeInstanceId=" + nodeInstanceId)

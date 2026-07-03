@@ -24,17 +24,19 @@ import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
 
 public class UserTaskInstanceVariableDataEvent extends UserTaskInstanceDataEvent<UserTaskInstanceVariableEventBody> {
 
+    public static final String USER_TASK_INSTANCE_VARIABLE_DATA_EVENT = "UserTaskInstanceVariableDataEvent";
+
     public UserTaskInstanceVariableDataEvent() {
     }
 
+    @Deprecated
     public UserTaskInstanceVariableDataEvent(String source, String addons, String identity, Map<String, Object> metaData, UserTaskInstanceVariableEventBody body) {
-        super("UserTaskInstanceVariableDataEvent",
+        super(USER_TASK_INSTANCE_VARIABLE_DATA_EVENT,
                 source,
                 body,
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA),
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),
-                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA),
@@ -47,4 +49,22 @@ public class UserTaskInstanceVariableDataEvent extends UserTaskInstanceDataEvent
 
     }
 
+    public UserTaskInstanceVariableDataEvent(UserTaskInstanceDataEventState<UserTaskInstanceVariableEventBody> state) {
+        super(state);
+    }
+
+    public static UserTaskInstanceVariableDataEventBuilder builder() {
+        return new UserTaskInstanceVariableDataEventBuilder();
+    }
+
+    public static class UserTaskInstanceVariableDataEventBuilder extends UserTaskInstanceDataEventBuilder<UserTaskInstanceVariableDataEventBuilder, UserTaskInstanceVariableEventBody> {
+
+        public UserTaskInstanceVariableDataEventBuilder() {
+            this.type = USER_TASK_INSTANCE_VARIABLE_DATA_EVENT;
+        }
+
+        public UserTaskInstanceVariableDataEvent build() {
+            return new UserTaskInstanceVariableDataEvent(this.toStateRecord());
+        }
+    }
 }

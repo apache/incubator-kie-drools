@@ -24,17 +24,19 @@ import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
 
 public class UserTaskInstanceCommentDataEvent extends UserTaskInstanceDataEvent<UserTaskInstanceCommentEventBody> {
 
+    public static final String USER_TASK_INSTANCE_COMMENT_DATA_EVENT = "UserTaskInstanceCommentDataEvent";
+
     public UserTaskInstanceCommentDataEvent() {
     }
 
+    @Deprecated
     public UserTaskInstanceCommentDataEvent(String source, String addons, String identity, Map<String, Object> metaData, UserTaskInstanceCommentEventBody body) {
-        super("UserTaskInstanceCommentDataEvent",
+        super(USER_TASK_INSTANCE_COMMENT_DATA_EVENT,
                 source,
                 body,
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA),
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),
-                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA),
@@ -47,4 +49,22 @@ public class UserTaskInstanceCommentDataEvent extends UserTaskInstanceDataEvent<
 
     }
 
+    public UserTaskInstanceCommentDataEvent(UserTaskInstanceDataEventState<UserTaskInstanceCommentEventBody> state) {
+        super(state);
+    }
+
+    public static UserTaskInstanceCommentDataEventBuilder builder() {
+        return new UserTaskInstanceCommentDataEventBuilder();
+    }
+
+    public static class UserTaskInstanceCommentDataEventBuilder extends UserTaskInstanceDataEventBuilder<UserTaskInstanceCommentDataEventBuilder, UserTaskInstanceCommentEventBody> {
+
+        public UserTaskInstanceCommentDataEventBuilder() {
+            this.type = USER_TASK_INSTANCE_COMMENT_DATA_EVENT;
+        }
+
+        public UserTaskInstanceCommentDataEvent build() {
+            return new UserTaskInstanceCommentDataEvent(this.toStateRecord());
+        }
+    }
 }

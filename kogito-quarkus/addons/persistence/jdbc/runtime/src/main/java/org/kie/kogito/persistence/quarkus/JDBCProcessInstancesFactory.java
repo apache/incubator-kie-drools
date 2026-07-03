@@ -26,8 +26,10 @@ import javax.sql.DataSource;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
+import org.kie.kogito.process.Processes;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
@@ -37,8 +39,10 @@ public class JDBCProcessInstancesFactory extends AbstractProcessInstancesFactory
     public JDBCProcessInstancesFactory(DataSource dataSource,
             @ConfigProperty(name = "kogito.persistence.optimistic.lock", defaultValue = "false") Boolean lock,
             @ConfigProperty(name = "kogito.persistence.headers.enabled", defaultValue = "false") boolean headersEnabled,
-            @ConfigProperty(name = "kogito.persistence.headers.excluded") Optional<List<String>> headersExcluded) {
-        super(dataSource, lock, HeadersPersistentConfig.of(headersEnabled, headersExcluded));
+            @ConfigProperty(name = "kogito.persistence.headers.excluded") Optional<List<String>> headersExcluded,
+            Instance<Processes> processes,
+            @ConfigProperty(name = "kogito.persistence.data-isolation.enabled", defaultValue = "false") Boolean dataIsolationEnabled) {
+        super(dataSource, lock, HeadersPersistentConfig.of(headersEnabled, headersExcluded), dataIsolationEnabled && processes.isResolvable() ? processes.get() : null);
     }
 
     public JDBCProcessInstancesFactory() {

@@ -96,6 +96,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         pi.setParentProcessInstanceId(getProcessInstance().getStringId());
         pi.setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
         pi.setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
+        pi.setRootProcessVersion(StringUtils.isEmpty(getProcessInstance().getRootProcessVersion()) ? getProcessInstance().getProcessVersion() : getProcessInstance().getRootProcessVersion());
         pi.setSignalCompletion(getSubProcessNode().isWaitForCompletion());
         Map<String, List<String>> headers = getProcessInstance().getHeaders();
         if (logger.isDebugEnabled()) {

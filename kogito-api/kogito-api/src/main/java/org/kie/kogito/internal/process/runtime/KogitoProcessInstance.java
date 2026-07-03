@@ -57,6 +57,13 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
     String getRootProcessId();
 
     /**
+     * The version of the root process definition that is related to this process instance.
+     *
+     * @return the version of the root process definition that is related to this process instance
+     */
+    String getRootProcessVersion();
+
+    /**
      * Returns current snapshot of process instance variables
      * 
      * @return non empty map of process instance variables

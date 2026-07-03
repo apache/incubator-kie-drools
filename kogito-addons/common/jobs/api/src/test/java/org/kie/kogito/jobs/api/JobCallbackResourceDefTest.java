@@ -41,7 +41,9 @@ class JobCallbackResourceDefTest {
     private static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
     private static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
     private static final String PROCESS_ID = "PROCESS_ID";
+    private static final String PROCESS_VERSION = "PROCESS_VERSION";
     private static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
+    private static final String ROOT_PROCESS_VERSION = "ROOT_PROCESS_VERSION";
     private static final Integer PRIORITY = 0;
     private static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     private static final ExpirationTime EXPIRATION_TIME = ExactExpirationTime.of("2020-03-21T10:15:30+01:00");
@@ -99,7 +101,9 @@ class JobCallbackResourceDefTest {
                 .processInstanceId(PROCESS_INSTANCE_ID)
                 .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
                 .processId(PROCESS_ID)
+                .processVersion(PROCESS_VERSION)
                 .rootProcessId(ROOT_PROCESS_ID)
+                .rootProcessVersion(ROOT_PROCESS_VERSION)
                 .nodeInstanceId(NODE_INSTANCE_ID)
                 .build();
     }

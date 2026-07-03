@@ -100,7 +100,7 @@ public abstract class AbstractProcessRuntime implements InternalProcessRuntime {
             if (startNodes != null && !startNodes.isEmpty()) {
                 for (StartNode startNode : startNodes) {
                     if (startNode != null && startNode.getTimer() != null) {
-                        jobService.scheduleJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId()));
+                        jobService.scheduleJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId(), p.getVersion()));
                     }
                 }
             }

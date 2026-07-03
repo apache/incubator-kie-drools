@@ -102,7 +102,7 @@ public class ProcessDefinitionEventRegistry {
                     .setMetadata(metadata);
             sourceFilesProvider.flatMap(provider -> provider.getProcessSourceFile(p.id())).map(this::readSourceFile).ifPresentOrElse(builder::setSource,
                     () -> LOGGER.warn("Not source found for process id {}", p.id()));
-            return new ProcessDefinitionDataEvent(builder.build());
+            return ProcessDefinitionDataEvent.builder().data(builder.build()).build();
         };
     }
 

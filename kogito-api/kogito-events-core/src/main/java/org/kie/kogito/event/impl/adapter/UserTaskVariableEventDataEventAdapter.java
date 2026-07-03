@@ -49,11 +49,13 @@ public class UserTaskVariableEventDataEventAdapter extends AbstractDataEventAdap
                 .variableType(event.getVariableType().name());
 
         UserTaskInstanceVariableEventBody body = builder.build();
-        UserTaskInstanceVariableDataEvent utEvent =
-                new UserTaskInstanceVariableDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()), getConfig().addons().toString(),
-                        event.getEventUser(), metadata, body);
-
-        return utEvent;
+        return UserTaskInstanceVariableDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventUser())
+                .metaData(metadata)
+                .data(body)
+                .build();
     }
 
 }

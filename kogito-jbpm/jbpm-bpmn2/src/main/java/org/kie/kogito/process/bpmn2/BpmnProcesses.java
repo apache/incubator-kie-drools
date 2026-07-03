@@ -18,10 +18,7 @@
  */
 package org.kie.kogito.process.bpmn2;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
@@ -54,6 +51,11 @@ public class BpmnProcesses implements Processes {
     @Override
     public Collection<String> processIds() {
         return mappedProcesses.keySet();
+    }
+
+    @Override
+    public Collection<Process<? extends Model>> processes() {
+        return Set.copyOf(mappedProcesses.values());
     }
 
     @Override

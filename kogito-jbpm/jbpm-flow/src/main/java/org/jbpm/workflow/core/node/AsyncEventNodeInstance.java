@@ -109,7 +109,9 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
                                     .processInstanceId(instance.getProcessInstance().getStringId())
                                     .rootProcessInstanceId(instance.getProcessInstance().getRootProcessInstanceId())
                                     .processId(instance.getProcessInstance().getProcessId())
+                                    .processVersion(instance.getProcessInstance().getProcessVersion())
                                     .rootProcessId(instance.getProcessInstance().getRootProcessId())
+                                    .rootProcessVersion(instance.getProcessInstance().getRootProcessVersion())
                                     .nodeInstanceId(Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null))
                                     .build();
                     JobsService jobService = processRuntime.getJobsService();

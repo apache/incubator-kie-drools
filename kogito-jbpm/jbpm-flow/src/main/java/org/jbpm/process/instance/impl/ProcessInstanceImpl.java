@@ -60,6 +60,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     private String rootProcessInstanceId;
     private String description;
     private String rootProcessId;
+    private String rootProcessVersion;
 
     private Map<String, List<String>> headers;
 
@@ -362,6 +363,16 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     @Override
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    @Override
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    @Override
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     @Override

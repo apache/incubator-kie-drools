@@ -18,10 +18,7 @@
  */
 package org.kie.kogito.persistence.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -30,21 +27,122 @@ import java.util.stream.StreamSupport;
 
 import javax.sql.DataSource;
 
+import org.kie.kogito.Model;
+import org.kie.kogito.process.Process;
+import org.kie.kogito.process.Processes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static java.util.Arrays.stream;
 
 public class GenericRepository extends Repository {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericRepository.class);
     private static final String PAYLOAD = "payload";
     private static final String VERSION = "version";
 
     private final DataSource dataSource;
+    private final Processes processes;
 
     public GenericRepository(DataSource dataSource) {
+        this(dataSource, null);
+    }
+
+    public GenericRepository(DataSource dataSource, Processes processes) {
         this.dataSource = dataSource;
+        this.processes = processes;
+    }
+
+    protected boolean isFilterByLocalProcess() {
+        Collection<Process<? extends Model>> processIds = getProcessIdsForFiltering();
+        return processIds != null && !processIds.isEmpty();
+    }
+
+    /**
+     * Gets the collection of process IDs for data isolation filtering.
+     * If Processes bean is available, returns all process IDs from it.
+     * Otherwise, returns null to skip data isolation filtering.
+     *
+     * @return Collection of process IDs for CTE filtering, or null to skip filtering
+     */
+    private Collection<Process<? extends Model>> getProcessIdsForFiltering() {
+        if (processes != null) {
+            Collection<Process<? extends Model>> processIds = processes.processes();
+            LOGGER.debug("Using process IDs from Processes bean for data isolation: {}", processIds);
+            return processIds;
+        }
+        LOGGER.debug("No Processes bean available, skipping data isolation filtering");
+        return null;
+    }
+
+    /**
+     * Wraps a base SQL query with a CTE for data isolation filtering.
+     * The CTE creates an allowed_processes table with multiple process IDs.
+     *
+     * @param baseQuery The base SQL query to wrap
+     * @param processIds Collection of process IDs to include in the CTE
+     * @return The wrapped query with CTE and data isolation filtering
+     */
+    private String buildQueryWithProcessFiltering(String baseQuery, Collection<Process<? extends Model>> processIds) {
+        if (!isFilterByLocalProcess()) {
+            return baseQuery;
+        }
+
+        String valueTuples = java.util.stream.IntStream.range(0, processIds.size())
+                .mapToObj(i -> {
+                    if (i == 0) {
+                        return "(CAST(? AS VARCHAR(255)), CAST(? AS VARCHAR(255)))";
+                    } else {
+                        return "(?, ?)";
+                    }
+                })
+                .collect(Collectors.joining(", "));
+
+        String cte = "WITH allowed_processes (process_id, process_version) AS (" +
+                "  SELECT * FROM (VALUES " + valueTuples + ") AS temp(pid, pver)" +
+                ") ";
+
+        // Determine if we need WHERE or AND
+        String whereClause = baseQuery.toLowerCase().contains(" where ") ? " AND " : " WHERE ";
+
+        // Add data isolation filter using EXISTS pattern
+        String isolationFilter = whereClause +
+                "EXISTS (SELECT 1 FROM allowed_processes ap WHERE " +
+                "process_instances.process_version IS NULL " +
+                "OR (ap.process_id = process_instances.root_process_id AND (ap.process_version IS NULL AND process_instances.root_process_version IS NULL OR ap.process_version = process_instances.root_process_version)) "
+                +
+                "OR (process_instances.root_process_id IS NULL AND ap.process_id = process_instances.process_id AND (ap.process_version IS NULL AND process_instances.process_version IS NULL OR ap.process_version = process_instances.process_version)))";
+
+        return cte + baseQuery + isolationFilter;
+    }
+
+    /**
+     * Binds process IDs to the prepared statement for CTE filtering.
+     *
+     * @param statement The prepared statement
+     * @param processIds Collection of process IDs
+     * @param startIndex Starting parameter index (1-based)
+     * @return The next available parameter index
+     */
+    private int bindProcessIds(PreparedStatement statement, Collection<Process<? extends Model>> processIds, int startIndex) throws SQLException {
+        if (!isFilterByLocalProcess()) {
+            return startIndex;
+        }
+
+        int index = startIndex;
+        for (Process<? extends Model> process : processIds) {
+            statement.setString(index++, process.id());
+            if (process.version() == null) {
+                statement.setNull(index++, Types.VARCHAR);
+            } else {
+                statement.setString(index++, process.version());
+            }
+        }
+        return index;
     }
 
     @Override
-    void insertInternal(String processId, String processVersion, UUID id, byte[] payload, String businessKey, String[] eventTypes) {
+    void insertInternal(String processId, String processVersion, String rootProcessId, String rootProcessVersion, UUID id, byte[] payload, String businessKey, String[] eventTypes) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(INSERT);
                 PreparedStatement eventStatement = connection.prepareStatement(DELETE_ALL_WAITING_FOR_EVENT_TYPE);
@@ -64,7 +162,9 @@ public class GenericRepository extends Repository {
             statement.setBytes(2, payload);
             statement.setString(3, processId);
             statement.setString(4, processVersion);
-            statement.setLong(5, 0L);
+            statement.setString(5, rootProcessId);
+            statement.setString(6, rootProcessVersion);
+            statement.setLong(7, 0L);
             statement.executeUpdate();
             if (businessKey != null) {
                 try (PreparedStatement businessKeyStmt = connection.prepareStatement(INSERT_BUSINESS_KEY)) {
@@ -164,12 +264,17 @@ public class GenericRepository extends Repository {
 
     @Override
     Optional<Record> findByIdInternal(String processId, String processVersion, UUID id) {
+        Collection<Process<? extends Model>> processIds = getProcessIdsForFiltering();
+        String baseQuery = sqlIncludingVersion(FIND_BY_ID, processVersion);
+        String query = buildQueryWithProcessFiltering(baseQuery, processIds);
+
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_BY_ID, processVersion))) {
-            statement.setString(1, processId);
-            statement.setString(2, id.toString());
+                PreparedStatement statement = connection.prepareStatement(query)) {
+            int paramIndex = bindProcessIds(statement, processIds, 1);
+            statement.setString(paramIndex++, processId);
+            statement.setString(paramIndex++, id.toString());
             if (processVersion != null) {
-                statement.setString(3, processVersion);
+                statement.setString(paramIndex, processVersion);
             }
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -184,12 +289,17 @@ public class GenericRepository extends Repository {
 
     @Override
     Stream<Record> findAllInternalWaitingFor(String processId, String processVersion, String eventType) {
+        Collection<Process<? extends Model>> processIds = getProcessIdsForFiltering();
+        String baseQuery = sqlIncludingVersion(FIND_ALL_WAITING_FOR_EVENT_TYPE, processVersion);
+        String query = buildQueryWithProcessFiltering(baseQuery, processIds);
+
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_ALL_WAITING_FOR_EVENT_TYPE, processVersion));) {
-            statement.setString(1, processId);
-            statement.setString(2, eventType);
+                PreparedStatement statement = connection.prepareStatement(query)) {
+            int paramIndex = bindProcessIds(statement, processIds, 1);
+            statement.setString(paramIndex++, processId);
+            statement.setString(paramIndex++, eventType);
             if (processVersion != null) {
-                statement.setString(3, processVersion);
+                statement.setString(paramIndex, processVersion);
             }
 
             List<Record> data = new ArrayList<>();
@@ -206,12 +316,17 @@ public class GenericRepository extends Repository {
 
     @Override
     Optional<Record> findByBusinessKey(String processId, String processVersion, String businessKey) {
+        Collection<Process<? extends Model>> processIds = getProcessIdsForFiltering();
+        String baseQuery = sqlIncludingVersion(FIND_BY_BUSINESS_KEY, processVersion);
+        String query = buildQueryWithProcessFiltering(baseQuery, processIds);
+
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_BY_BUSINESS_KEY, processVersion))) {
-            statement.setString(1, businessKey);
-            statement.setString(2, processId);
+                PreparedStatement statement = connection.prepareStatement(query)) {
+            int paramIndex = bindProcessIds(statement, processIds, 1);
+            statement.setString(paramIndex++, businessKey);
+            statement.setString(paramIndex++, processId);
             if (processVersion != null) {
-                statement.setString(3, processVersion);
+                statement.setString(paramIndex, processVersion);
             }
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next() ? Optional.of(from(resultSet)) : Optional.empty();
@@ -259,13 +374,18 @@ public class GenericRepository extends Repository {
 
     @Override
     Stream<Record> findAllInternal(String processId, String processVersion) {
+        Collection<Process<? extends Model>> processIds = getProcessIdsForFiltering();
+        String baseQuery = sqlIncludingVersion(FIND_ALL, processVersion);
+        String query = buildQueryWithProcessFiltering(baseQuery, processIds);
+
         CloseableWrapper close = new CloseableWrapper();
         try {
             Connection connection = close.nest(dataSource.getConnection());
-            PreparedStatement statement = close.nest(connection.prepareStatement(sqlIncludingVersion(FIND_ALL, processVersion)));
-            statement.setString(1, processId);
+            PreparedStatement statement = close.nest(connection.prepareStatement(query));
+            int paramIndex = bindProcessIds(statement, processIds, 1);
+            statement.setString(paramIndex++, processId);
             if (processVersion != null) {
-                statement.setString(2, processVersion);
+                statement.setString(paramIndex, processVersion);
             }
             ResultSet resultSet = close.nest(statement.executeQuery());
             return StreamSupport.stream(new Spliterators.AbstractSpliterator<Record>(Long.MAX_VALUE, Spliterator.ORDERED) {

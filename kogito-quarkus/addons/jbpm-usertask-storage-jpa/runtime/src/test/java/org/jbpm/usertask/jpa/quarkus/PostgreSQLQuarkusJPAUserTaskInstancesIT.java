@@ -19,15 +19,31 @@
 
 package org.jbpm.usertask.jpa.quarkus;
 
+import org.jbpm.usertask.jpa.AbstractJPAUserTaskInstancesIT;
+import org.jbpm.usertask.jpa.JPAUserTaskInstances;
+import org.jbpm.usertask.jpa.repository.AttachmentRepository;
+import org.jbpm.usertask.jpa.repository.CommentRepository;
+import org.jbpm.usertask.jpa.repository.UserTaskInstanceRepository;
+import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
+
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 
+import jakarta.inject.Inject;
+
 @QuarkusTest
+@QuarkusTestResource(value = PostgreSqlQuarkusTestResource.class, restrictToAnnotatedClass = true)
+@TestProfile(PostgreSQLQuarkusTestProfile.class)
 @TestTransaction
-@QuarkusTestResource(value = H2DatabaseTestResource.class, restrictToAnnotatedClass = true)
-@TestProfile(H2QuarkusTestProfile.class)
-public class H2QuarkusJPAUserTaskInstancesTest extends BaseQuarkusJPAUserTaskInstancesTest {
+public class PostgreSQLQuarkusJPAUserTaskInstancesIT extends AbstractJPAUserTaskInstancesIT {
+
+    @Inject
+    public PostgreSQLQuarkusJPAUserTaskInstancesIT(JPAUserTaskInstances userTaskInstances,
+            UserTaskInstanceRepository userTaskInstanceRepository,
+            AttachmentRepository attachmentRepository,
+            CommentRepository commentRepository) {
+        super(userTaskInstances, userTaskInstanceRepository, attachmentRepository, commentRepository);
+    }
 }

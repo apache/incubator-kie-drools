@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.persistence.jdbc;
+package org.kie.kogito.persistence.jdbc;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -32,7 +32,6 @@ import org.kie.kogito.Model;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.workitem.Policy;
-import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.WorkItem;

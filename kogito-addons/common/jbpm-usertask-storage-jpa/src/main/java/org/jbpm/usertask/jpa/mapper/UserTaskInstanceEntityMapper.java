@@ -65,6 +65,7 @@ public class UserTaskInstanceEntityMapper {
             processInfoEntity.setParentProcessInstanceId(processInfo.getParentProcessInstanceId());
             processInfoEntity.setRootProcessInstanceId(processInfo.getRootProcessInstanceId());
             processInfoEntity.setRootProcessId(processInfo.getRootProcessId());
+            processInfoEntity.setRootProcessVersion(processInfo.getRootProcessVersion());
         }
 
         entity.setActualOwner(userTaskInstance.getActualOwner());
@@ -100,6 +101,7 @@ public class UserTaskInstanceEntityMapper {
                     .withParentProcessInstanceId(processInfoEntity.getParentProcessInstanceId())
                     .withRootProcessInstanceId(processInfoEntity.getRootProcessInstanceId())
                     .withRootProcessId(processInfoEntity.getRootProcessId())
+                    .withRootProcessVersion(processInfoEntity.getRootProcessVersion())
                     .build();
 
             instance.setProcessInfo(processInfo);

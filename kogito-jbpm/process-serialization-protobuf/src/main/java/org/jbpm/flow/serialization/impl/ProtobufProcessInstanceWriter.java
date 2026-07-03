@@ -128,6 +128,9 @@ public class ProtobufProcessInstanceWriter {
         if (workFlow.getRootProcessId() != null) {
             instance.setRootProcessId(workFlow.getRootProcessId());
         }
+        if (workFlow.getRootProcessVersion() != null) {
+            instance.setRootProcessVersion(workFlow.getRootProcessVersion());
+        }
         if (workFlow.getNodeIdInError() != null) {
             instance.setErrorNodeId(workFlow.getNodeIdInError());
         }

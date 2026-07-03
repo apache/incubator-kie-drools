@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.persistence.jdbc.correlation;
+package org.kie.kogito.persistence.jdbc.correlation;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -29,7 +29,6 @@ import org.kie.flyway.initializer.KieFlywayInitializer;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.SimpleCorrelation;
-import org.kie.kogito.persistence.jdbc.correlation.JDBCCorrelationService;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.junit.jupiter.Container;

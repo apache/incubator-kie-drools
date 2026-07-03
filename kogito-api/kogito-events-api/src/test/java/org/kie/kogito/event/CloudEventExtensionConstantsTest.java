@@ -37,7 +37,7 @@ class CloudEventExtensionConstantsTest {
         assertThat(CloudEventExtensionConstants.PROCESS_TYPE).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_INSTANCE_ID).matches(nameValidation);
-        assertThat(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION).matches(nameValidation);
+        assertThat(CloudEventExtensionConstants.PROCESS_VERSION).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_INSTANCE_STATE).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_REFERENCE_ID).matches(nameValidation);
         assertThat(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID).matches(nameValidation);

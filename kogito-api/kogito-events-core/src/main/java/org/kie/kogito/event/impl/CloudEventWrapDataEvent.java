@@ -137,8 +137,18 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
+    public String getKogitoProcessVersion() {
+        return (String) getExtension(CloudEventExtensionConstants.PROCESS_VERSION);
+    }
+
+    @Override
     public String getKogitoRootProcessId() {
         return (String) getExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID);
+    }
+
+    @Override
+    public String getKogitoRootProcessVersion() {
+        return (String) getExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION);
     }
 
     @Override
@@ -169,11 +179,6 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
     @Override
     public String getKogitoStartFromNode() {
         return (String) getExtension(CloudEventExtensionConstants.PROCESS_START_FROM_NODE);
-    }
-
-    @Override
-    public String getKogitoProcessInstanceVersion() {
-        return (String) getExtension(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION);
     }
 
     @Override

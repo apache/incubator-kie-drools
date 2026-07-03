@@ -84,6 +84,16 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
 
         instance.setExternalReferenceId(workItem.getStringId());
         instance.getMetadata().put("Lifecycle", handler.getApplication().config().get(UserTaskConfig.class).userTaskLifeCycles().getDefaultUserTaskLifeCycleId());
+        ProcessInfo processInfo = ProcessInfo.builder()
+                .withProcessInstanceId(workItem.getProcessInstance().getId())
+                .withProcessId(workItem.getProcessInstance().getProcessId())
+                .withProcessVersion(workItem.getProcessInstance().getProcessVersion())
+                .withRootProcessInstanceId(workItem.getProcessInstance().getRootProcessInstanceId())
+                .withRootProcessId(workItem.getProcessInstance().getRootProcessId())
+                .withRootProcessVersion(workItem.getProcessInstance().getRootProcessVersion())
+                .withParentProcessInstanceId(workItem.getProcessInstance().getParentProcessInstanceId())
+                .build();
+        instance.setProcessInfo(processInfo);
 
         userTask.instances().create(instance);
 
@@ -92,17 +102,6 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
             task.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
             task.setTaskPriority(priority != null ? priority.toString() : null);
             task.setSlaDueDate(workItem.getNodeInstance().getSlaDueDate());
-
-            ProcessInfo processInfo = ProcessInfo.builder()
-                    .withProcessInstanceId(workItem.getProcessInstance().getId())
-                    .withProcessId(workItem.getProcessInstance().getProcessId())
-                    .withProcessVersion(workItem.getProcessInstance().getProcessVersion())
-                    .withRootProcessInstanceId(workItem.getProcessInstance().getRootProcessInstanceId())
-                    .withRootProcessId(workItem.getProcessInstance().getRootProcessId())
-                    .withParentProcessInstanceId(workItem.getProcessInstance().getParentProcessInstanceId())
-                    .build();
-
-            instance.setProcessInfo(processInfo);
 
             Map<String, Object> metadata = new HashMap<>();
             metadata.put("ProcessType", workItem.getProcessInstance().getProcess().getType());

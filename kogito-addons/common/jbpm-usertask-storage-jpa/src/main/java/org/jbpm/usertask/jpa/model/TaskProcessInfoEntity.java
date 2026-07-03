@@ -43,6 +43,9 @@ public class TaskProcessInfoEntity {
     @Column(name = "root_process_id")
     private String rootProcessId;
 
+    @Column(name = "root_process_version")
+    private String rootProcessVersion;
+
     public TaskProcessInfoEntity() {
     }
 
@@ -92,5 +95,13 @@ public class TaskProcessInfoEntity {
 
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+    }
+
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
+    public void setRootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
     }
 }

@@ -42,6 +42,7 @@ public class ProcessInstanceVariableDataEvent extends ProcessInstanceDataEvent<P
         this.setType(VAR_TYPE);
     }
 
+    @Deprecated
     public ProcessInstanceVariableDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceVariableEventBody body) {
         super(VAR_TYPE,
                 source,
@@ -84,5 +85,24 @@ public class ProcessInstanceVariableDataEvent extends ProcessInstanceDataEvent<P
     @Override
     protected boolean isInternalAttribute(String name) {
         return INTERNAL_EXTENSION_ATTRIBUTES.contains(name) || super.isInternalAttribute(name);
+    }
+
+    public ProcessInstanceVariableDataEvent(ProcessInstanceDataEventState<ProcessInstanceVariableEventBody> state) {
+        super(state);
+    }
+
+    public static ProcessInstanceVariableDataEventBuilder builder() {
+        return new ProcessInstanceVariableDataEventBuilder();
+    }
+
+    public static class ProcessInstanceVariableDataEventBuilder extends AbstractProcessInstanceDataEventBuilder<ProcessInstanceVariableDataEventBuilder, ProcessInstanceVariableEventBody> {
+
+        public ProcessInstanceVariableDataEventBuilder() {
+            this.type = VAR_TYPE;
+        }
+
+        public ProcessInstanceVariableDataEvent build() {
+            return new ProcessInstanceVariableDataEvent(this.toStateRecord());
+        }
     }
 }

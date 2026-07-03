@@ -100,7 +100,7 @@ class ProcessEventIT {
                             assertEquals("ProcessInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
-                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals("1.0", event.getKogitoProcessVersion());
                             assertEquals("BPMN", data.get("processType"));
                             assertEquals("BPMN", event.getKogitoProcessType());
                             assertEquals(username, event.getKogitoIdentity());
@@ -109,14 +109,14 @@ class ProcessEventIT {
                             assertEquals("UserTaskInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
-                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals("1.0", event.getKogitoProcessVersion());
                             assertEquals(username, event.getKogitoIdentity());
                             break;
                         case "ProcessInstanceVariableEvent":
                             assertEquals("VariableInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
-                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals("1.0", event.getKogitoProcessVersion());
                             assertEquals(username, event.getKogitoIdentity());
                             break;
                     }

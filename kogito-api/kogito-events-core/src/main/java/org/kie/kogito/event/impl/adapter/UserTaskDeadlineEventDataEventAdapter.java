@@ -46,11 +46,13 @@ public class UserTaskDeadlineEventDataEventAdapter extends AbstractDataEventAdap
                 .notification(event.getNotification());
 
         UserTaskInstanceDeadlineEventBody body = builder.build();
-        UserTaskInstanceDeadlineDataEvent utEvent =
-                new UserTaskInstanceDeadlineDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()), getConfig().addons().toString(),
-                        event.getEventUser(), metadata, body);
-
-        return utEvent;
+        return UserTaskInstanceDeadlineDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventUser())
+                .metaData(metadata)
+                .data(body)
+                .build();
     }
 
 }

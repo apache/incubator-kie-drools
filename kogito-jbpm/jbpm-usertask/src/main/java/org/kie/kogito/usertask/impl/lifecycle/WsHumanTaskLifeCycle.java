@@ -393,9 +393,11 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
                         .expirationTime(ExactExpirationTime.of(expirationTime))
                         .userTaskInstanceId(userTaskInstance.getId())
                         .processId(userTaskInstance.getProcessInfo().getProcessId())
+                        .processVersion(userTaskInstance.getProcessInfo().getProcessVersion())
                         .processInstanceId(userTaskInstance.getProcessInfo().getProcessInstanceId())
                         .rootProcessInstanceId(userTaskInstance.getProcessInfo().getRootProcessInstanceId())
                         .rootProcessId(userTaskInstance.getProcessInfo().getRootProcessId())
+                        .rootProcessVersion(userTaskInstance.getProcessInfo().getRootProcessVersion())
                         .metadata(userTaskInstance.getMetadata())
                         .build();
 

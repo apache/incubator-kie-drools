@@ -66,6 +66,8 @@ public interface ProcessInstance extends KogitoProcessInstance,
 
     void setRootProcessId(String processId);
 
+    void setRootProcessVersion(String processVersion);
+
     Map<String, Object> getMetaData();
 
     void setMetaData(String name, Object data);

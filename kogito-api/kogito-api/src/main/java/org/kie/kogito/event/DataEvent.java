@@ -53,7 +53,11 @@ public interface DataEvent<T> extends CloudEventContext {
 
     String getKogitoProcessId();
 
+    String getKogitoProcessVersion();
+
     String getKogitoRootProcessId();
+
+    String getKogitoRootProcessVersion();
 
     String getKogitoAddons();
 
@@ -66,8 +70,6 @@ public interface DataEvent<T> extends CloudEventContext {
     String getKogitoBusinessKey();
 
     String getKogitoStartFromNode();
-
-    String getKogitoProcessInstanceVersion();
 
     String getKogitoProcessType();
 

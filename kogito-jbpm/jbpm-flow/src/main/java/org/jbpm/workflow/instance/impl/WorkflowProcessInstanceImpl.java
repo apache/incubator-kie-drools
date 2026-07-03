@@ -622,8 +622,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         .expirationTime(DurationExpirationTime.after(timerInstance.getDelay()))
                         .processInstanceId(getStringId())
                         .processId(getProcessId())
+                        .processVersion(getProcessVersion())
                         .nodeInstanceId(nodeInstanceId)
                         .rootProcessId(getRootProcessId())
+                        .rootProcessVersion(getRootProcessVersion())
                         .rootProcessInstanceId(getRootProcessInstanceId())
                         .build();
         JobsService jobsService = InternalProcessRuntime.asKogitoProcessRuntime(getKnowledgeRuntime().getProcessRuntime()).getJobsService();
@@ -1465,8 +1467,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         .expirationTime(ExactExpirationTime.of(slaDueDate))
                         .processInstanceId(getStringId())
                         .processId(getProcessId())
+                        .processVersion(getProcessVersion())
                         .nodeInstanceId(nodeInstanceId)
                         .rootProcessId(getRootProcessId())
+                        .rootProcessVersion(getRootProcessVersion())
                         .rootProcessInstanceId(getRootProcessInstanceId())
                         .build();
         JobsService jobsService = InternalProcessRuntime.asKogitoProcessRuntime(getKnowledgeRuntime().getProcessRuntime()).getJobsService();

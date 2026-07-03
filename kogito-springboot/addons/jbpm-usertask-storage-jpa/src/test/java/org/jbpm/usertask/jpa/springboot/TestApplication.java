@@ -19,8 +19,21 @@
 
 package org.jbpm.usertask.jpa.springboot;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 
-@SpringBootApplication(scanBasePackages = { "org.jbpm.usertask.jpa.springboot", "org.jbpm.usertask.jpa" })
+/**
+ * Test Spring Boot application for UserTask JPA storage tests.
+ * Imports the auto-configuration to ensure all necessary beans are registered.
+ */
+@SpringBootApplication
+@ComponentScan(basePackages = { "org.jbpm.usertask.jpa.springboot" })
+@Import(SpringBootUserTaskJPAAutoConfiguration.class)
 public class TestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(TestApplication.class, args);
+    }
 }

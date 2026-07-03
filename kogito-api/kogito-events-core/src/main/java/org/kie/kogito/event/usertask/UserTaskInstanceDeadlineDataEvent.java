@@ -24,17 +24,19 @@ import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
 
 public class UserTaskInstanceDeadlineDataEvent extends UserTaskInstanceDataEvent<UserTaskInstanceDeadlineEventBody> {
 
+    public static final String USER_TASK_INSTANCE_DEADLINE_DATA_EVENT = "UserTaskInstanceDeadlineDataEvent";
+
     public UserTaskInstanceDeadlineDataEvent() {
     }
 
+    @Deprecated
     public UserTaskInstanceDeadlineDataEvent(String source, String addons, String identity, Map<String, Object> metaData, UserTaskInstanceDeadlineEventBody body) {
-        super("UserTaskInstanceDeadlineDataEvent",
+        super(USER_TASK_INSTANCE_DEADLINE_DATA_EVENT,
                 source,
                 body,
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA),
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),
-                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA),
@@ -47,4 +49,22 @@ public class UserTaskInstanceDeadlineDataEvent extends UserTaskInstanceDataEvent
 
     }
 
+    public UserTaskInstanceDeadlineDataEvent(UserTaskInstanceDataEventState<UserTaskInstanceDeadlineEventBody> state) {
+        super(state);
+    }
+
+    public static UserTaskInstanceDeadlineDataEventBuilder builder() {
+        return new UserTaskInstanceDeadlineDataEventBuilder();
+    }
+
+    public static class UserTaskInstanceDeadlineDataEventBuilder extends UserTaskInstanceDataEventBuilder<UserTaskInstanceDeadlineDataEventBuilder, UserTaskInstanceDeadlineEventBody> {
+
+        public UserTaskInstanceDeadlineDataEventBuilder() {
+            this.type = USER_TASK_INSTANCE_DEADLINE_DATA_EVENT;
+        }
+
+        public UserTaskInstanceDeadlineDataEvent build() {
+            return new UserTaskInstanceDeadlineDataEvent(this.toStateRecord());
+        }
+    }
 }

@@ -46,20 +46,20 @@ public class MessageProducer extends org.kie.kogito.event.impl.AbstractMessagePr
     }
 
     private String marshall(KogitoProcessInstance pi, $Type$ eventData) throws IOException {
-        return marshaller.marshall(useCloudEvents.orElse(true) ? new ProcessInstanceDataEvent<>(
-                "",
-                "",
-                eventData,
-                pi.getStringId(),
-                pi.getProcess().getVersion(),
-                pi.getParentProcessInstanceId(),
-                pi.getRootProcessInstanceId(),
-                pi.getProcessId(),
-                pi.getRootProcessId(),
-                String.valueOf(pi.getState()),
-                null,
-                pi.getProcess().getType(),
-                pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId(),
-                null) : eventData);
+        return marshaller.marshall(useCloudEvents.orElse(true) ? ProcessInstanceDataEvent.baseBuilder()
+                .type("")
+                .source("")
+                .data(eventData)
+                .kogitoProcessInstanceId(pi.getStringId())
+                .kogitoParentProcessInstanceId(pi.getParentProcessInstanceId())
+                .kogitoRootProcessInstanceId(pi.getRootProcessInstanceId())
+                .kogitoProcessId(pi.getProcessId())
+                .kogitoProcessVersion(pi.getProcessVersion())
+                .kogitoRootProcessId(pi.getRootProcessId())
+                .kogitoRootProcessVersion(pi.getRootProcessVersion())
+                .kogitoProcessInstanceState(String.valueOf(pi.getState()))
+                .kogitoProcessType(pi.getProcess().getType())
+                .kogitoReferenceId(pi.getReferenceId() == null || pi.getReferenceId().trim().isEmpty() ? null : pi.getReferenceId())
+                .build() : eventData);
     }
 }

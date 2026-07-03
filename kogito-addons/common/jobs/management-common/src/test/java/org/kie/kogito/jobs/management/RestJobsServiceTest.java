@@ -44,8 +44,10 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
     public static final String JOB_ID = "456";
     public static final String TIMER_ID = "123";
     public static final String PROCESS_ID = "PROCESS_ID";
+    public static final String PROCESS_VERSION = "PROCESS_VERSION";
     public static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
     public static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
+    public static final String ROOT_PROCESS_VERSION = "ROOT_PROCESS_VERSION";
     public static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
     public static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     public static final ZonedDateTime EXPIRATION_TIME = ZonedDateTime.parse("2023-01-13T10:20:30.000001+01:00[Europe/Madrid]");
@@ -68,6 +70,7 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
                 .expirationTime(ExactExpirationTime.now())
                 .processInstanceId(PROCESS_INSTANCE_ID)
                 .processId(PROCESS_ID)
+                .processVersion(PROCESS_VERSION)
                 .build();
         String callbackEndpoint = tested.getCallbackEndpoint(description);
         assertThat(callbackEndpoint)
@@ -92,7 +95,9 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
                 .processInstanceId(PROCESS_INSTANCE_ID)
                 .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
                 .processId(PROCESS_ID)
+                .processVersion(PROCESS_VERSION)
                 .rootProcessId(ROOT_PROCESS_ID)
+                .rootProcessVersion(ROOT_PROCESS_VERSION)
                 .nodeInstanceId(NODE_INSTANCE_ID)
                 .build();
     }

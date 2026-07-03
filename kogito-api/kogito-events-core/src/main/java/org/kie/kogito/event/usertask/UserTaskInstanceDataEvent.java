@@ -19,10 +19,13 @@
 package org.kie.kogito.event.usertask;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
 
 import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.DataEventState;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
+import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,13 +56,13 @@ public class UserTaskInstanceDataEvent<T> extends AbstractDataEvent<T> {
         super(type, source, body);
     }
 
+    @Deprecated
     public UserTaskInstanceDataEvent(String type,
             String source,
             T body,
             String kogitoUserTaskInstanceId,
             String kogitoUserTaskInstanceState,
             String kogitoProcessInstanceId,
-            String kogitoProcessInstanceVersion,
             String kogitoParentProcessInstanceId,
             String kogitoRootProcessInstanceId,
             String kogitoProcessId,
@@ -80,7 +83,6 @@ public class UserTaskInstanceDataEvent<T> extends AbstractDataEvent<T> {
                 kogitoIdentity);
         setKogitoUserTaskInstanceId(kogitoUserTaskInstanceId);
         setKogitoUserTaskInstanceState(kogitoUserTaskInstanceState);
-        setKogitoProcessInstanceVersion(kogitoProcessInstanceVersion);
         setKogitoParentProcessInstanceId(kogitoParentProcessInstanceId);
         setKogitoProcessInstanceState(kogitoProcessInstanceState);
         setKogitoReferenceId(kogitoReferenceId);
@@ -122,6 +124,72 @@ public class UserTaskInstanceDataEvent<T> extends AbstractDataEvent<T> {
     @Override
     protected boolean isInternalAttribute(String name) {
         return INTERNAL_EXTENSION_ATTRIBUTES.contains(name) || super.isInternalAttribute(name);
+    }
+
+    public UserTaskInstanceDataEvent(UserTaskInstanceDataEventState<T> state) {
+        super(state.baseState());
+        setKogitoUserTaskInstanceId(state.kogitoUserTaskInstanceId());
+        setKogitoUserTaskInstanceState(state.kogitoUserTaskInstanceState());
+    }
+
+    public static <T> UserTaskInstanceDataEventBuilder<?, T> builder() {
+        return new InnerUserTaskInstanceDataEventBuilder<>();
+    }
+
+    public abstract static class UserTaskInstanceDataEventBuilder<B extends UserTaskInstanceDataEventBuilder<B, T>, T> extends AbstractDataEvent.AbstractDataEventBuilder<B, T> {
+        private String kogitoUserTaskInstanceId;
+        private String kogitoUserTaskInstanceState;
+
+        public static <T> UserTaskInstanceDataEventBuilder<?, T> builder() {
+            return new InnerUserTaskInstanceDataEventBuilder<>();
+        }
+
+        public UserTaskInstanceDataEventBuilder<B, T> kogitoUserTaskInstanceId(String userTaskInstanceId) {
+            this.kogitoUserTaskInstanceId = userTaskInstanceId;
+            return self();
+        }
+
+        public UserTaskInstanceDataEventBuilder<B, T> kogitoUserTaskInstanceState(String userTaskInstanceState) {
+            this.kogitoUserTaskInstanceState = userTaskInstanceState;
+            return self();
+        }
+
+        public UserTaskInstanceDataEventBuilder<B, T> metaData(Map<String, Object> metaData) {
+            if (metaData == null) {
+                return self();
+            }
+            return this
+                    .kogitoProcessInstanceId((String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA))
+                    .kogitoParentProcessInstanceId((String) metaData.get(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA))
+                    .kogitoRootProcessInstanceId((String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA))
+                    .kogitoProcessId((String) metaData.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA))
+                    .kogitoProcessVersion((String) metaData.get(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA))
+                    .kogitoRootProcessId((String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA))
+                    .kogitoRootProcessVersion((String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA))
+                    .kogitoProcessInstanceState((String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA))
+                    .kogitoProcessType((String) metaData.get(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA))
+                    .kogitoReferenceId((String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_REFERENCE_ID_META_DATA))
+                    .kogitoUserTaskInstanceId((String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA))
+                    .kogitoUserTaskInstanceState((String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA));
+        }
+
+        protected UserTaskInstanceDataEventState<T> toStateRecord() {
+            return new UserTaskInstanceDataEventState<>(this.toCommonStateRecord(), kogitoUserTaskInstanceId, kogitoUserTaskInstanceState);
+        }
+    }
+
+    // Private helper class to fulfill the recursive generic structure
+    private static class InnerUserTaskInstanceDataEventBuilder<T>
+            extends UserTaskInstanceDataEventBuilder<InnerUserTaskInstanceDataEventBuilder<T>, T> {
+
+        public InnerUserTaskInstanceDataEventBuilder() {
+        }
+    }
+
+    public record UserTaskInstanceDataEventState<E> (
+            DataEventState<E> baseState,
+            String kogitoUserTaskInstanceId,
+            String kogitoUserTaskInstanceState) {
     }
 
 }

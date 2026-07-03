@@ -36,7 +36,8 @@ public class QuarkusJPAUserTaskInstances extends JPAUserTaskInstances {
     }
 
     @Inject
-    public QuarkusJPAUserTaskInstances(UserTaskInstanceRepository userTaskInstanceRepository, UserTaskInstanceEntityMapper userTaskInstanceEntityMapper) {
+    public QuarkusJPAUserTaskInstances(UserTaskInstanceRepository userTaskInstanceRepository,
+            UserTaskInstanceEntityMapper userTaskInstanceEntityMapper) {
         super(userTaskInstanceRepository, userTaskInstanceEntityMapper);
     }
 }

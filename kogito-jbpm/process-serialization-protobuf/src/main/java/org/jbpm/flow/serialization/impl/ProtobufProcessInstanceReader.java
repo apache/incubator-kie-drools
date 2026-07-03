@@ -151,6 +151,9 @@ public class ProtobufProcessInstanceReader {
         if (processInstanceProtobuf.hasRootProcessId()) {
             processInstance.setRootProcessId(processInstanceProtobuf.getRootProcessId());
         }
+        if (processInstanceProtobuf.hasRootProcessVersion()) {
+            processInstance.setRootProcessVersion(processInstanceProtobuf.getRootProcessVersion());
+        }
 
         if (processInstanceProtobuf.hasErrorNodeId()) {
             processInstance.internalSetErrorNodeId(processInstanceProtobuf.getErrorNodeId());

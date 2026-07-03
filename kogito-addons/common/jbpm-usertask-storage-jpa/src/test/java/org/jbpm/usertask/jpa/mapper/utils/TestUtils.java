@@ -267,6 +267,15 @@ public class TestUtils {
         instance.setTaskDescription("this is a test task description");
         instance.setTaskPriority("1");
 
+        org.kie.kogito.usertask.model.ProcessInfo processInfo = org.kie.kogito.usertask.model.ProcessInfo.builder()
+                .withProcessId("orderProcess")
+                .withRootProcessId("orderProcess")
+                .withRootProcessVersion("1.0")
+                .withProcessInstanceId("test-process-instance")
+                .withProcessVersion("1.0")
+                .build();
+        instance.setProcessInfo(processInfo);
+
         instance.setPotentialUsers(Set.of("Bart", "Liza", "Maggie"));
         instance.setPotentialGroups(Set.of("Simpson", "Family"));
         instance.setAdminUsers(Set.of("Seymour"));
@@ -348,6 +357,14 @@ public class TestUtils {
         instance.setStatus("Complete");
         instance.setTerminationType(UserTaskState.TerminationType.COMPLETED.name());
 
+        org.jbpm.usertask.jpa.model.TaskProcessInfoEntity processInfo = new org.jbpm.usertask.jpa.model.TaskProcessInfoEntity();
+        processInfo.setProcessId("orderProcess");
+        processInfo.setRootProcessId("orderProcess");
+        processInfo.setRootProcessVersion("1.0");
+        processInfo.setProcessInstanceId("test-process-instance");
+        processInfo.setProcessVersion("1.0");
+        instance.setProcessInfo(processInfo);
+
         instance.setActualOwner("Homer");
         instance.setPotentialUsers(Set.of("Bart"));
         instance.setPotentialGroups(Set.of("Simpson", "Family"));
@@ -356,6 +373,16 @@ public class TestUtils {
         instance.setExcludedUsers(Set.of("Ned"));
 
         instance.setExternalReferenceId("external-reference-id");
+
+        instance.setDeadlineTimers(new ArrayList<>());
+        instance.setInputs(new ArrayList<>());
+        instance.setOutputs(new ArrayList<>());
+        instance.setComments(new ArrayList<>());
+        instance.setAttachments(new ArrayList<>());
+        instance.setMetadata(new ArrayList<>());
+        instance.setDeadlines(new ArrayList<>());
+        instance.setReassignments(new ArrayList<>());
+        instance.setReassignmentTimers(new ArrayList<>());
 
         return instance;
     }

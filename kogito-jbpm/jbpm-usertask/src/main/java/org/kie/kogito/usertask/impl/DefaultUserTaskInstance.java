@@ -724,9 +724,11 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
                     .expirationTime(expirationTime)
                     .userTaskInstanceId(this.id)
                     .processId(this.processInfo.getProcessId())
+                    .processVersion(this.processInfo.getProcessVersion())
                     .processInstanceId(this.processInfo.getProcessInstanceId())
                     .rootProcessInstanceId(this.processInfo.getRootProcessInstanceId())
                     .rootProcessId(this.processInfo.getRootProcessId())
+                    .rootProcessVersion(this.processInfo.getRootProcessVersion())
                     .metadata(this.metadata)
                     .build());
         }

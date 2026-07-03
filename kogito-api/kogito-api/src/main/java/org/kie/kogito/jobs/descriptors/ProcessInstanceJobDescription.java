@@ -34,7 +34,9 @@ public class ProcessInstanceJobDescription implements JobDescription {
     private final String processInstanceId;
     private final String rootProcessInstanceId;
     private final String processId;
+    private final String processVersion;
     private final String rootProcessId;
+    private final String rootProcessVersion;
     private final String nodeInstanceId;
 
     public ProcessInstanceJobDescription(String id,
@@ -44,7 +46,9 @@ public class ProcessInstanceJobDescription implements JobDescription {
             String processInstanceId,
             String rootProcessInstanceId,
             String processId,
+            String processVersion,
             String rootProcessId,
+            String rootProcessVersion,
             String nodeInstanceId) {
         this.id = requireNonNull(id);
         this.timerId = requireNonNull(timerId);
@@ -53,7 +57,9 @@ public class ProcessInstanceJobDescription implements JobDescription {
         this.processInstanceId = requireNonNull(processInstanceId);
         this.rootProcessInstanceId = rootProcessInstanceId;
         this.processId = processId;
+        this.processVersion = processVersion;
         this.rootProcessId = rootProcessId;
+        this.rootProcessVersion = rootProcessVersion;
         this.nodeInstanceId = nodeInstanceId;
     }
 
@@ -88,8 +94,16 @@ public class ProcessInstanceJobDescription implements JobDescription {
         return processId;
     }
 
+    public String processVersion() {
+        return processVersion;
+    }
+
     public String rootProcessId() {
         return rootProcessId;
+    }
+
+    public String rootProcessVersion() {
+        return rootProcessVersion;
     }
 
     public String nodeInstanceId() {
@@ -121,7 +135,9 @@ public class ProcessInstanceJobDescription implements JobDescription {
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", processId='" + processId + '\'' +
+                ", processVersion='" + processVersion + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessVersion='" + rootProcessVersion + '\'' +
                 ", nodeInstanceId='" + nodeInstanceId + '\'' +
                 '}';
     }

@@ -19,9 +19,13 @@
 
 package org.jbpm.usertask.jpa.repository;
 
+import org.kie.kogito.process.Processes;
+
 import jakarta.persistence.EntityManager;
 
 public interface UserTaskJPAContext {
 
     EntityManager getEntityManager();
+
+    Processes getProcesses();
 }

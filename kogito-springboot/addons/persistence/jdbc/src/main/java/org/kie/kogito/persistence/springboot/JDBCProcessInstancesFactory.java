@@ -24,22 +24,29 @@ import javax.sql.DataSource;
 
 import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
+import org.kie.kogito.process.Processes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JDBCProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
+    @Value("${kogito.persistence.data-isolation-enabled:false}")
+    private Boolean dataIsolationEnabled;
+
     @Autowired
     public JDBCProcessInstancesFactory(DataSource dataSource,
             @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock,
             @Value("${kogito.persistence.headers.enabled:false}") Boolean headersEnabled,
-            @Value("${kogito.persistence.headers.excluded:}") List<String> headersExcluded) {
+            @Value("${kogito.persistence.headers.excluded:}") List<String> headersExcluded,
+            @Nullable Processes processes,
+            @Value("${kogito.persistence.data-isolation.enabled:false}") Boolean dataIsolationEnabled) {
 
         // Wrap the original DataSource so operations use the transactional Connection
-        super(new TransactionAwareDataSourceProxy(dataSource), lock, new HeadersPersistentConfig(headersEnabled, headersExcluded));
+        super(new TransactionAwareDataSourceProxy(dataSource), lock, new HeadersPersistentConfig(headersEnabled, headersExcluded), dataIsolationEnabled ? processes : null);
     }
 
 }

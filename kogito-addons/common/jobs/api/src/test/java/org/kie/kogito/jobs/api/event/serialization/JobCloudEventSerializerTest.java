@@ -126,7 +126,7 @@ class JobCloudEventSerializerTest {
         assertHasProcessContextFields(jsonNode);
         JsonNode dataJsonNode = jsonNode.get("data");
         assertThat(dataJsonNode).isNotNull();
-        assertHasTotalFields(dataJsonNode, 11);
+        assertHasTotalFields(dataJsonNode, 13);
         assertHasFieldWithValue(dataJsonNode, "id", JOB_ID);
         assertHasFieldWithValue(dataJsonNode, "expirationTime", EXPIRATION_TIME.toString());
         assertHasFieldWithValue(dataJsonNode, "priority", Integer.toString(PRIORITY));

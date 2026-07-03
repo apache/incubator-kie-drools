@@ -40,6 +40,8 @@ public interface Processes extends KogitoEngine {
 
     Collection<String> processIds();
 
+    Collection<Process<? extends Model>> processes();
+
     default void activate() {
 
     }

@@ -82,6 +82,7 @@ class ProcessInstanceDataEventCodecTest {
                 .processId("testKogitoProcessId")
                 .processType("testKogitoProcessType")
                 .rootProcessId("testKogitoRootProcessId")
+                .rootProcessVersion("testKogitoRootProcessVersion")
                 .processName("testProcessName")
                 .eventUser(identity)
                 .eventDate(new Date())
@@ -90,7 +91,7 @@ class ProcessInstanceDataEventCodecTest {
                 .roles("testRole")
                 .build();
 
-        event = new ProcessInstanceStateDataEvent(source, kogitoAddons, identity, metaData, body);
+        event = ProcessInstanceStateDataEvent.builder().source(source).kogitoAddons(kogitoAddons).kogitoIdentity(identity).metaData(metaData).data(body).build();
     }
 
     @Test
@@ -135,7 +136,7 @@ class ProcessInstanceDataEventCodecTest {
                     .containsEntry("type", event.getType())
                     .containsEntry("datacontenttype", event.getDataContentType())
                     .containsEntry("kogitoprocinstanceid", event.getKogitoProcessInstanceId())
-                    .containsEntry("kogitoprocversion", event.getKogitoProcessInstanceVersion())
+                    .containsEntry("kogitoprocversion", event.getKogitoProcessVersion())
                     .containsEntry("kogitorootprociid", event.getKogitoRootProcessInstanceId())
                     .containsEntry("kogitoprocid", event.getKogitoProcessId())
                     .containsEntry("kogitoproctype", event.getKogitoProcessType())

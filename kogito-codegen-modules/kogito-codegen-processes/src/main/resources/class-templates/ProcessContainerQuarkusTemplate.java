@@ -40,4 +40,6 @@ public class Processes implements org.kie.kogito.process.Processes {
     public java.util.Collection<String> processIds() {
         return mappedProcesses.keySet();
     }
+
+    public java.util.Collection<org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> processes() { return java.util.Set.copyOf(mappedProcesses.values()); }
 }

@@ -82,7 +82,7 @@ public class ProcessInstanceSLAEventBody implements KogitoMarshallEventSupport, 
     public void visit(DataEvent<?> dataEvent) {
         this.processId = dataEvent.getKogitoProcessId();
         this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
-        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
+        this.processVersion = dataEvent.getKogitoProcessVersion();
         this.eventDate = toDate(dataEvent.getTime());
         this.eventUser = dataEvent.getKogitoIdentity();
     }

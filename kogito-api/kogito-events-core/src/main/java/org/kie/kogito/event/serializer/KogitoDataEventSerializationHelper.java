@@ -60,12 +60,14 @@ class KogitoDataEventSerializationHelper {
     static void populateCloudEvent(ProcessInstanceDataEvent<?> event, ProcessInstanceDataEventExtensionRecord info) {
         event.setKogitoBusinessKey(info.getBusinessKey());
         event.setKogitoProcessId(info.getId());
+        event.setKogitoProcessVersion(info.getVersion());
         event.setKogitoProcessInstanceId(info.getInstanceId());
         event.setKogitoParentProcessInstanceId(info.getParentInstanceId());
         event.setKogitoProcessInstanceState(info.getState());
-        event.setKogitoProcessInstanceVersion(info.getVersion());
+        event.setKogitoProcessVersion(info.getVersion());
         event.setKogitoProcessType(info.getType());
         event.setKogitoRootProcessId(info.getRootId());
+        event.setKogitoRootProcessVersion(info.getRootVersion());
         event.setKogitoRootProcessInstanceId(info.getRootInstanceId());
         event.setKogitoIdentity(info.getIdentity());
         event.setSource(info.getSource());

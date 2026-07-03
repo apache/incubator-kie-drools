@@ -96,8 +96,10 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                                 .timerId(Long.toString(timer.getId()))
                                 .expirationTime(createTimerInstance(timer))
                                 .rootProcessId(getProcessInstance().getRootProcessId())
+                                .rootProcessVersion(getProcessInstance().getRootProcessVersion())
                                 .rootProcessInstanceId(getProcessInstance().getRootProcessInstanceId())
                                 .processId(getProcessInstance().getProcessId())
+                                .processVersion(getProcessInstance().getProcessVersion())
                                 .processInstanceId(getProcessInstance().getStringId())
                                 .nodeInstanceId(this.getId())
                                 .build();

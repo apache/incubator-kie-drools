@@ -36,4 +36,19 @@ public class TestCloudEvent<T> extends ProcessInstanceDataEvent<T> {
     public TestCloudEvent(T dummyEvent, String type, String source, String referenceId) {
         super(type, source == null ? "KogitoTest" : source, dummyEvent, "1", "1", "1", "1", "1", "1", "1", null, null, referenceId, null);
     }
+
+    public TestCloudEvent(ProcessInstanceDataEventState<T> state) {
+        super(state);
+    }
+
+    public static TestCloudEventBuilder builder() {
+        return new TestCloudEventBuilder();
+    }
+
+    public static class TestCloudEventBuilder extends AbstractProcessInstanceDataEventBuilder<TestCloudEventBuilder, TestCloudEvent> {
+
+        public TestCloudEvent build() {
+            return new TestCloudEvent(self().toStateRecord());
+        }
+    }
 }

@@ -33,8 +33,10 @@ public class UserTaskInstanceJobDescriptionBuilder {
     private String processInstanceId;
     private ProcessInfo processInfo;
     private String processId;
+    private String processVersion;
     private String rootProcessInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
     private Map<String, Object> metadata;
 
     public UserTaskInstanceJobDescriptionBuilder id(String id) {
@@ -71,6 +73,11 @@ public class UserTaskInstanceJobDescriptionBuilder {
         return this;
     }
 
+    public UserTaskInstanceJobDescriptionBuilder processVersion(String processVersion) {
+        this.processVersion = processVersion;
+        return this;
+    }
+
     public UserTaskInstanceJobDescriptionBuilder rootProcessInstanceId(String rootProcessInstanceId) {
         this.rootProcessInstanceId = rootProcessInstanceId;
         return this;
@@ -78,6 +85,11 @@ public class UserTaskInstanceJobDescriptionBuilder {
 
     public UserTaskInstanceJobDescriptionBuilder rootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+        return this;
+    }
+
+    public UserTaskInstanceJobDescriptionBuilder rootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
         return this;
     }
 
@@ -93,9 +105,11 @@ public class UserTaskInstanceJobDescriptionBuilder {
                 priority,
                 userTaskInstanceId,
                 processId,
+                processVersion,
                 processInstanceId,
                 (String) this.metadata.get("NodeInstanceId"),
                 rootProcessInstanceId,
-                rootProcessId);
+                rootProcessId,
+                rootProcessVersion);
     }
 }

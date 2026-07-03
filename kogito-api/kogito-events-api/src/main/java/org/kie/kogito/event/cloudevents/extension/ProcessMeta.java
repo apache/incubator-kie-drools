@@ -49,11 +49,12 @@ public class ProcessMeta extends KogitoProcessExtension {
         final ProcessMeta meta = new ProcessMeta();
         if (pi != null) {
             meta.setKogitoProcessInstanceId(pi.getStringId());
-            meta.setKogitoProcessInstanceVersion(pi.getProcess().getVersion());
             meta.setKogitoParentProcessinstanceId(pi.getParentProcessInstanceId());
             meta.setKogitoRootProcessInstanceId(pi.getRootProcessInstanceId());
             meta.setKogitoProcessId(pi.getProcessId());
+            meta.setKogitoProcessVersion(pi.getProcessVersion());
             meta.setKogitoRootProcessId(pi.getRootProcessId());
+            meta.setKogitoRootProcessVersion(pi.getRootProcessVersion());
             meta.setKogitoProcessInstanceState(fromState(pi.getState()));
             meta.setKogitoReferenceId(pi.getReferenceId());
             meta.setKogitoBusinessKey(pi.getBusinessKey());

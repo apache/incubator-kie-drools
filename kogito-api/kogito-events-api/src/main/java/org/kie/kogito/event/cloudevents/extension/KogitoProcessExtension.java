@@ -39,10 +39,11 @@ public class KogitoProcessExtension implements CloudEventExtension {
 
     private final Map<String, String> innerValues;
     private String kogitoProcessInstanceId;
-    private String kogitoProcessInstanceVersion;
     private String kogitoRootProcessInstanceId;
     private String kogitoProcessId;
+    private String kogitoProcessVersion;
     private String kogitoRootProcessId;
+    private String kogitoRootProcessVersion;
     private String kogitoAddons;
     private String kogitoParentProcessinstanceId;
     private String kogitoProcessInstanceState;
@@ -72,15 +73,6 @@ public class KogitoProcessExtension implements CloudEventExtension {
         return kogitoRootProcessInstanceId;
     }
 
-    public void setKogitoProcessInstanceVersion(String kogitoProcessInstanceVersion) {
-        this.kogitoProcessInstanceVersion = kogitoProcessInstanceVersion;
-        this.addExtension(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION, this.kogitoProcessInstanceVersion);
-    }
-
-    public String getKogitoProcessInstanceVersion() {
-        return kogitoProcessInstanceVersion;
-    }
-
     public void setKogitoRootProcessInstanceId(String kogitoRootProcessInstanceId) {
         this.kogitoRootProcessInstanceId = kogitoRootProcessInstanceId;
         this.addExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID, this.kogitoRootProcessInstanceId);
@@ -95,6 +87,15 @@ public class KogitoProcessExtension implements CloudEventExtension {
         this.addExtension(CloudEventExtensionConstants.PROCESS_ID, this.kogitoProcessId);
     }
 
+    public void setKogitoProcessVersion(String kogitoProcessVersion) {
+        this.kogitoProcessVersion = kogitoProcessVersion;
+        this.addExtension(CloudEventExtensionConstants.PROCESS_VERSION, this.kogitoProcessVersion);
+    }
+
+    public String getKogitoProcessVersion() {
+        return kogitoProcessVersion;
+    }
+
     public String getKogitoRootProcessId() {
         return kogitoRootProcessId;
     }
@@ -102,6 +103,15 @@ public class KogitoProcessExtension implements CloudEventExtension {
     public void setKogitoRootProcessId(String kogitoRootProcessId) {
         this.kogitoRootProcessId = kogitoRootProcessId;
         this.addExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID, this.kogitoRootProcessId);
+    }
+
+    public String getKogitoRootProcessVersion() {
+        return kogitoRootProcessVersion;
+    }
+
+    public void setKogitoRootProcessVersion(String kogitoRootProcessVersion) {
+        this.kogitoRootProcessVersion = kogitoRootProcessVersion;
+        this.addExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION, this.kogitoRootProcessVersion);
     }
 
     public String getKogitoAddons() {
@@ -185,11 +195,12 @@ public class KogitoProcessExtension implements CloudEventExtension {
         this.setKogitoAddons(getExtension(extensions, CloudEventExtensionConstants.ADDONS));
         this.setKogitoParentProcessinstanceId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID));
         this.setKogitoProcessId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_ID));
+        this.setKogitoProcessVersion(getExtension(extensions, CloudEventExtensionConstants.PROCESS_VERSION));
         this.setKogitoProcessInstanceId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_INSTANCE_ID));
-        this.setKogitoProcessInstanceVersion(getExtension(extensions, CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION));
         this.setKogitoProcessInstanceState(getExtension(extensions, CloudEventExtensionConstants.PROCESS_INSTANCE_STATE));
         this.setKogitoReferenceId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_REFERENCE_ID));
         this.setKogitoRootProcessId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID));
+        this.setKogitoRootProcessVersion(getExtension(extensions, CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION));
         this.setKogitoRootProcessInstanceId(getExtension(extensions, CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID));
         this.setKogitoStartFromNode(getExtension(extensions, CloudEventExtensionConstants.PROCESS_START_FROM_NODE));
         this.setKogitoBusinessKey(getExtension(extensions, CloudEventExtensionConstants.BUSINESS_KEY));
@@ -220,10 +231,11 @@ public class KogitoProcessExtension implements CloudEventExtension {
         }
         KogitoProcessExtension that = (KogitoProcessExtension) o;
         return Objects.equals(kogitoProcessInstanceId, that.kogitoProcessInstanceId) &&
-                Objects.equals(kogitoProcessInstanceVersion, that.kogitoProcessInstanceVersion) &&
                 Objects.equals(kogitoRootProcessInstanceId, that.kogitoRootProcessInstanceId) &&
                 Objects.equals(kogitoProcessId, that.kogitoProcessId) &&
+                Objects.equals(kogitoProcessVersion, that.kogitoProcessVersion) &&
                 Objects.equals(kogitoRootProcessId, that.kogitoRootProcessId) &&
+                Objects.equals(kogitoRootProcessVersion, that.kogitoRootProcessVersion) &&
                 Objects.equals(kogitoAddons, that.kogitoAddons) &&
                 Objects.equals(kogitoParentProcessinstanceId, that.kogitoParentProcessinstanceId) &&
                 Objects.equals(kogitoProcessInstanceState, that.kogitoProcessInstanceState) &&
@@ -235,7 +247,8 @@ public class KogitoProcessExtension implements CloudEventExtension {
 
     @Override
     public int hashCode() {
-        return Objects.hash(kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessInstanceVersion, kogitoProcessId, kogitoRootProcessId, kogitoAddons, kogitoParentProcessinstanceId,
+        return Objects.hash(kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId, kogitoProcessVersion, kogitoRootProcessId, kogitoRootProcessVersion,
+                kogitoAddons, kogitoParentProcessinstanceId,
                 kogitoProcessInstanceState,
                 kogitoReferenceId, kogitoStartFromNode, kogitoBusinessKey, kogitoProcessType);
     }
@@ -245,6 +258,7 @@ public class KogitoProcessExtension implements CloudEventExtension {
         return "KogitoProcessExtension{" +
                 "procInstanceId='" + kogitoProcessInstanceId + '\'' +
                 ", processId='" + kogitoProcessId + '\'' +
+                ", processVersion='" + kogitoProcessVersion + '\'' +
                 ", referenceId='" + kogitoReferenceId + '\'' +
                 '}';
     }

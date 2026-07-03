@@ -72,8 +72,9 @@ class ProcessEventsTest {
             CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID,
             CloudEventExtensionConstants.PROCESS_ID,
             CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID,
+            CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION,
             CloudEventExtensionConstants.ADDONS,
-            CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION,
+            CloudEventExtensionConstants.PROCESS_VERSION,
             CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID,
             CloudEventExtensionConstants.PROCESS_INSTANCE_STATE,
             CloudEventExtensionConstants.BUSINESS_KEY,
@@ -94,9 +95,10 @@ class ProcessEventsTest {
 
     private static final String PROCESS_ID = "PROCESS_ID";
     private static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
-    private static final String PROCESS_INSTANCE_VERSION = "PROCESS_INSTANCE_VERSION";
+    private static final String PROCESS_VERSION = "PROCESS_VERSION";
     private static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
     private static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
+    private static final String ROOT_PROCESS_VERSION = "ROOT_PROCESS_VERSION";
     private static final String PROCESS_PARENT_PROCESS_INSTANCE_ID = "PROCESS_PARENT_PROCESS_INSTANCE_ID";
     private static final String PROCESS_INSTANCE_STATE = "PROCESS_INSTANCE_STATE";
     private static final String BUSINESS_KEY = "BUSINESS_KEY";
@@ -123,8 +125,10 @@ class ProcessEventsTest {
 
     @Test
     void processInstanceDataEvent() throws Exception {
-        ProcessInstanceStateDataEvent event = new ProcessInstanceStateDataEvent();
-        setBaseEventValues(event, PROCESS_INSTANCE_EVENT_TYPE);
+
+        ProcessInstanceDataEvent.ProcessInstanceDataEventBuilder<?> builder = ProcessInstanceDataEvent.baseBuilder();
+        setBaseEventValues(builder, PROCESS_INSTANCE_EVENT_TYPE);
+        ProcessInstanceDataEvent<?> event = builder.build();
         setAdditionalExtensions(event);
 
         assertExtensionNames(event, BASE_EXTENSION_NAMES, EXTENSION_1, EXTENSION_2);
@@ -240,42 +244,47 @@ class ProcessEventsTest {
     }
 
     private void processMultipleInstanceDataEvent(JsonNode expectedVarValue, boolean binary, boolean compress, CheckedUnaryOperator<MultipleProcessInstanceDataEvent> operator) throws IOException {
-        ProcessInstanceStateDataEvent stateEvent = new ProcessInstanceStateDataEvent();
-        setBaseEventValues(stateEvent, ProcessInstanceStateDataEvent.STATE_TYPE);
+        ProcessInstanceStateDataEvent.ProcessInstanceStateDataEventBuilder builder = ProcessInstanceStateDataEvent.builder();
+        setBaseEventValues(builder, ProcessInstanceStateDataEvent.STATE_TYPE);
+        ProcessInstanceStateDataEvent stateEvent = builder.build();
         stateEvent.setData(ProcessInstanceStateEventBody.create().eventDate(toDate(TIME)).eventType(EVENT_TYPE).eventUser(SUBJECT)
                 .businessKey(BUSINESS_KEY).processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).state(PROCESS_STATE)
-                .processVersion(PROCESS_INSTANCE_VERSION).parentInstanceId(PROCESS_PARENT_PROCESS_INSTANCE_ID).processName(PROCESS_ID)
-                .processType(PROCESS_TYPE).rootProcessId(ROOT_PROCESS_ID).rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID).build());
+                .processVersion(PROCESS_VERSION).parentInstanceId(PROCESS_PARENT_PROCESS_INSTANCE_ID).processName(PROCESS_ID)
+                .processType(PROCESS_TYPE).rootProcessId(ROOT_PROCESS_ID).rootProcessVersion(ROOT_PROCESS_VERSION).rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID).build());
 
-        ProcessInstanceVariableDataEvent varEvent = new ProcessInstanceVariableDataEvent();
-        setBaseEventValues(varEvent, ProcessInstanceVariableDataEvent.VAR_TYPE);
+        ProcessInstanceVariableDataEvent.ProcessInstanceVariableDataEventBuilder varBuilder = ProcessInstanceVariableDataEvent.builder();
+        setBaseEventValues(varBuilder, ProcessInstanceVariableDataEvent.VAR_TYPE);
+        ProcessInstanceVariableDataEvent varEvent = varBuilder.build();
         varEvent.addExtensionAttribute(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME, VARIABLE_NAME);
         varEvent.setData(ProcessInstanceVariableEventBody.create().eventDate(toDate(TIME)).eventUser(SUBJECT)
-                .processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_INSTANCE_VERSION)
+                .processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_VERSION)
                 .nodeContainerDefinitionId(NODE_CONTAINER_ID).nodeContainerInstanceId(NODE_CONTAINER_INSTANCEID)
                 .variableName(VARIABLE_NAME)
                 .variableId(VARIABLE_NAME)
                 .variableValue(expectedVarValue)
                 .build());
 
-        ProcessInstanceErrorDataEvent errorEvent = new ProcessInstanceErrorDataEvent();
-        setBaseEventValues(errorEvent, ProcessInstanceErrorDataEvent.ERROR_TYPE);
+        ProcessInstanceErrorDataEvent.ProcessInstanceErrorDataEventBuilder errorBuilder = ProcessInstanceErrorDataEvent.builder();
+        setBaseEventValues(errorBuilder, ProcessInstanceErrorDataEvent.ERROR_TYPE);
+        ProcessInstanceErrorDataEvent errorEvent = errorBuilder.build();
         errorEvent.setData(ProcessInstanceErrorEventBody.create().errorMessage(ERROR_MESSAGE).eventDate(toDate(TIME)).eventUser(SUBJECT)
-                .processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_INSTANCE_VERSION).nodeDefinitionId(NODE_CONTAINER_ID)
+                .processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_VERSION).nodeDefinitionId(NODE_CONTAINER_ID)
                 .nodeInstanceId(NODE_CONTAINER_INSTANCEID).build());
 
-        ProcessInstanceNodeDataEvent nodeEvent = new ProcessInstanceNodeDataEvent();
-        setBaseEventValues(nodeEvent, ProcessInstanceNodeDataEvent.NODE_TYPE);
+        ProcessInstanceNodeDataEvent.ProcessInstanceNodeDataEventBuilder nodeBuilder = ProcessInstanceNodeDataEvent.builder();
+        setBaseEventValues(nodeBuilder, ProcessInstanceNodeDataEvent.NODE_TYPE);
+        ProcessInstanceNodeDataEvent nodeEvent = nodeBuilder.build();
         nodeEvent
-                .setData(ProcessInstanceNodeEventBody.create().processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_INSTANCE_VERSION).nodeDefinitionId(NODE_CONTAINER_ID)
+                .setData(ProcessInstanceNodeEventBody.create().processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_VERSION).nodeDefinitionId(NODE_CONTAINER_ID)
                         .nodeInstanceId(NODE_CONTAINER_INSTANCEID).eventDate(toDate(TIME)).eventUser(SUBJECT).connectionNodeDefinitionId(NODE_CONTAINER_ID).workItemId(NODE_CONTAINER_ID)
                         .nodeType(NODE_TYPE).nodeName(NODE_NAME)
                         .eventType(EVENT_TYPE).slaDueDate(toDate(TIME)).build());
 
-        ProcessInstanceSLADataEvent slaEvent = new ProcessInstanceSLADataEvent();
-        setBaseEventValues(slaEvent, ProcessInstanceSLADataEvent.SLA_TYPE);
+        ProcessInstanceSLADataEvent.ProcessInstanceSLADataEventBuilder slaBuilder = ProcessInstanceSLADataEvent.builder();
+        setBaseEventValues(slaBuilder, ProcessInstanceSLADataEvent.SLA_TYPE);
+        ProcessInstanceSLADataEvent slaEvent = slaBuilder.build();
         slaEvent
-                .setData(ProcessInstanceSLAEventBody.create().processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_INSTANCE_VERSION).nodeDefinitionId(NODE_CONTAINER_ID)
+                .setData(ProcessInstanceSLAEventBody.create().processId(PROCESS_ID).processInstanceId(PROCESS_INSTANCE_ID).processVersion(PROCESS_VERSION).nodeDefinitionId(NODE_CONTAINER_ID)
                         .nodeInstanceId(NODE_CONTAINER_INSTANCEID).eventDate(toDate(TIME)).eventUser(SUBJECT)
                         .nodeType(NODE_TYPE).nodeName(NODE_NAME).slaDueDate(toDate(TIME)).build());
 
@@ -290,10 +299,10 @@ class ProcessEventsTest {
 
         MultipleProcessInstanceDataEvent deserializedEvent = operator.apply(event);
         assertThat(deserializedEvent.getData()).hasSize(event.getData().size());
-        assertMultipleIntance(deserializedEvent, expectedVarValue);
+        assertMultipleInstance(deserializedEvent, expectedVarValue);
     }
 
-    private void assertMultipleIntance(MultipleProcessInstanceDataEvent deserializedEvent, JsonNode expectedVarValue) {
+    private void assertMultipleInstance(MultipleProcessInstanceDataEvent deserializedEvent, JsonNode expectedVarValue) {
 
         Iterator<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> iter = deserializedEvent.getData().iterator();
         ProcessInstanceStateDataEvent deserializedStateEvent = (ProcessInstanceStateDataEvent) iter.next();
@@ -328,7 +337,7 @@ class ProcessEventsTest {
         assertThat(data.getNodeInstanceId()).isEqualTo(NODE_CONTAINER_INSTANCEID);
         assertThat(data.getProcessId()).isEqualTo(PROCESS_ID);
         assertThat(data.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
-        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_INSTANCE_VERSION);
+        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(data.getEventUser()).isEqualTo(SUBJECT);
         assertThat(data.getEventDate()).isEqualTo(toDate(TIME));
         assertThat(data.getSlaDueDate()).isEqualTo(toDate(TIME));
@@ -341,7 +350,7 @@ class ProcessEventsTest {
         assertThat(data.getNodeInstanceId()).isEqualTo(NODE_CONTAINER_INSTANCEID);
         assertThat(data.getProcessId()).isEqualTo(PROCESS_ID);
         assertThat(data.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
-        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_INSTANCE_VERSION);
+        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(data.getEventUser()).isEqualTo(SUBJECT);
         assertThat(data.getEventDate()).isEqualTo(toDate(TIME));
         assertThat(data.getEventType()).isEqualTo(EVENT_TYPE);
@@ -358,7 +367,7 @@ class ProcessEventsTest {
         assertThat(data.getErrorMessage()).isEqualTo(ERROR_MESSAGE);
         assertThat(data.getProcessId()).isEqualTo(PROCESS_ID);
         assertThat(data.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
-        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_INSTANCE_VERSION);
+        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(data.getEventUser()).isEqualTo(SUBJECT);
         assertThat(data.getEventDate()).isEqualTo(toDate(TIME));
     }
@@ -371,7 +380,7 @@ class ProcessEventsTest {
         assertThat(data.getNodeContainerInstanceId()).isEqualTo(NODE_CONTAINER_INSTANCEID);
         assertThat(data.getProcessId()).isEqualTo(PROCESS_ID);
         assertThat(data.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
-        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_INSTANCE_VERSION);
+        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(data.getEventUser()).isEqualTo(SUBJECT);
         assertThat(data.getEventDate()).isEqualTo(toDate(TIME));
     }
@@ -386,15 +395,16 @@ class ProcessEventsTest {
         assertThat(data.getEventType()).isEqualTo(EVENT_TYPE);
         assertThat(data.getProcessId()).isEqualTo(PROCESS_ID);
         assertThat(data.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
-        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_INSTANCE_VERSION);
+        assertThat(data.getProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(data.getEventUser()).isEqualTo(SUBJECT);
         assertThat(data.getEventDate()).isEqualTo(toDate(TIME));
     }
 
     @Test
     void userTaskInstanceDataEvent() throws Exception {
-        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent();
-        setBaseEventValues(event, USER_TASK_INSTANCE_EVENT_TYPE);
+        UserTaskInstanceStateDataEvent.UserTaskInstanceStateDataEventBuilder builder = UserTaskInstanceStateDataEvent.builder();
+        setBaseEventValues(builder, USER_TASK_INSTANCE_EVENT_TYPE);
+        UserTaskInstanceStateDataEvent event = builder.build();
         event.addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID, PROCESS_USER_TASK_INSTANCE_ID);
         event.addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE, PROCESS_USER_TASK_INSTANCE_STATE);
         setAdditionalExtensions(event);
@@ -419,8 +429,9 @@ class ProcessEventsTest {
 
     @Test
     void variableInstanceDataEvent() throws Exception {
-        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent();
-        setBaseEventValues(event, VARIABLE_INSTANCE_EVENT_TYPE);
+        ProcessInstanceVariableDataEvent.ProcessInstanceVariableDataEventBuilder builder = ProcessInstanceVariableDataEvent.builder();
+        setBaseEventValues(builder, VARIABLE_INSTANCE_EVENT_TYPE);
+        ProcessInstanceVariableDataEvent event = builder.build();
         event.addExtensionAttribute(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME, VARIABLE_NAME);
         setAdditionalExtensions(event);
 
@@ -437,27 +448,28 @@ class ProcessEventsTest {
         assertExtensionNames(event, BASE_EXTENSION_NAMES, CloudEventExtensionConstants.KOGITO_VARIABLE_NAME, EXTENSION_1, EXTENSION_2);
     }
 
-    private static void setBaseEventValues(AbstractDataEvent<?> event, String eventType) {
-        event.setType(eventType);
-        event.setId(ID);
-        event.setSpecVersion(SPEC_VERSION);
-        event.setSource(SOURCE);
-        event.setTime(TIME);
-        event.setSubject(SUBJECT);
-        event.setDataContentType(DATA_CONTENT_TYPE);
-        event.setDataSchema(DATA_SCHEMA);
+    private static void setBaseEventValues(AbstractDataEvent.AbstractDataEventBuilder<?, ?> event, String eventType) {
+        event.type(eventType);
+        event.id(ID);
+        event.specVersion(SPEC_VERSION);
+        event.source(SOURCE);
+        event.time(TIME);
+        event.subject(SUBJECT);
+        event.dataContentType(DATA_CONTENT_TYPE);
+        event.dataSchema(DATA_SCHEMA);
 
-        event.setKogitoProcessInstanceId(PROCESS_INSTANCE_ID);
-        event.setKogitoProcessInstanceVersion(PROCESS_INSTANCE_VERSION);
-        event.setKogitoProcessId(PROCESS_ID);
-        event.setKogitoRootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID);
-        event.setKogitoRootProcessId(ROOT_PROCESS_ID);
-        event.setKogitoParentProcessInstanceId(PROCESS_PARENT_PROCESS_INSTANCE_ID);
-        event.setKogitoProcessInstanceState(PROCESS_INSTANCE_STATE);
-        event.setKogitoBusinessKey(BUSINESS_KEY);
-        event.setKogitoProcessType(PROCESS_TYPE);
-        event.setKogitoAddons(ADDONS);
-        event.setKogitoIdentity(SUBJECT);
+        event.kogitoProcessInstanceId(PROCESS_INSTANCE_ID);
+        event.kogitoProcessVersion(PROCESS_VERSION);
+        event.kogitoProcessId(PROCESS_ID);
+        event.kogitoRootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID);
+        event.kogitoRootProcessId(ROOT_PROCESS_ID);
+        event.kogitoRootProcessVersion(ROOT_PROCESS_VERSION);
+        event.kogitoParentProcessInstanceId(PROCESS_PARENT_PROCESS_INSTANCE_ID);
+        event.kogitoProcessInstanceState(PROCESS_INSTANCE_STATE);
+        event.kogitoBusinessKey(BUSINESS_KEY);
+        event.kogitoProcessType(PROCESS_TYPE);
+        event.kogitoAddons(ADDONS);
+        event.kogitoIdentity(SUBJECT);
     }
 
     private static void setAdditionalExtensions(AbstractDataEvent<?> event) {
@@ -476,8 +488,10 @@ class ProcessEventsTest {
         assertThat(deserializedEvent.getDataSchema()).isEqualTo(DATA_SCHEMA);
         assertThat(deserializedEvent.getKogitoProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
         assertThat(deserializedEvent.getKogitoProcessId()).isEqualTo(PROCESS_ID);
+        assertThat(deserializedEvent.getKogitoProcessVersion()).isEqualTo(PROCESS_VERSION);
         assertThat(deserializedEvent.getKogitoRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
         assertThat(deserializedEvent.getKogitoRootProcessId()).isEqualTo(ROOT_PROCESS_ID);
+        assertThat(deserializedEvent.getKogitoRootProcessVersion()).isEqualTo(ROOT_PROCESS_VERSION);
         assertThat(deserializedEvent.getKogitoParentProcessInstanceId()).isEqualTo(PROCESS_PARENT_PROCESS_INSTANCE_ID);
         assertThat(deserializedEvent.getKogitoProcessInstanceState()).isEqualTo(PROCESS_INSTANCE_STATE);
         assertThat(deserializedEvent.getKogitoBusinessKey()).isEqualTo(BUSINESS_KEY);

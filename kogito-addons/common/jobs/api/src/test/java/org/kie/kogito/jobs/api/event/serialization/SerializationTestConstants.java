@@ -30,8 +30,10 @@ class SerializationTestConstants {
     static final String JOB_ID = "JOB_ID";
     static final String PROCESS_INSTANCE_ID_VALUE = "PROCESS_INSTANCE_ID";
     static final String PROCESS_ID_VALUE = "PROCESS_ID";
+    static final String PROCESS_VERSION_VALUE = "PROCESS_VERSION";
     static final String ROOT_PROCESS_INSTANCE_ID_VALUE = "ROOT_PROCESS_INSTANCE_ID";
     static final String ROOT_PROCESS_ID_VALUE = "ROOT_PROCESS_ID";
+    static final String ROOT_PROCESS_VERSION_VALUE = "ROOT_PROCESS_VERSION";
     static final String KOGITO_ADDONS_VALUE = "KOGITO_ADDONS";
     static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     static final long REPEAT_INTERVAL = 6000;

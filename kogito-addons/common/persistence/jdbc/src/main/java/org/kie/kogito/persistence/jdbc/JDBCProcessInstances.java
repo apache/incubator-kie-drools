@@ -35,6 +35,7 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,15 +50,19 @@ public class JDBCProcessInstances<T extends Model> implements MutableProcessInst
     private final Repository repository;
 
     public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock) {
-        this(process, dataSource, lock, null);
+        this(process, dataSource, lock, null, null);
     }
 
     public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock, HeadersPersistentConfig headersConfig) {
+        this(process, dataSource, lock, headersConfig, null);
+    }
+
+    public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock, HeadersPersistentConfig headersConfig, Processes processes) {
         this.process = process;
         this.lock = lock;
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners()
                 .withContextEntry(MarshallerContextName.MARSHALLER_HEADERS_CONFIG, headersConfig).build();
-        this.repository = new GenericRepository(dataSource);
+        this.repository = new GenericRepository(dataSource, processes);
     }
 
     @Override
@@ -74,7 +79,10 @@ public class JDBCProcessInstances<T extends Model> implements MutableProcessInst
         LOGGER.debug("Creating process instance id: {}, processId: {}, processVersion: {}", id, process.id(), process.version());
         if (isActive(instance) || instance.status() == ProcessInstance.STATE_PENDING) {
             String[] eventTypes = getUniqueEvents(instance);
-            repository.insertInternal(process.id(), process.version(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.businessKey(), eventTypes);
+            String rootProcessId = ((AbstractProcessInstance<T>) instance).internalGetProcessInstance().getRootProcessId();
+            String rootProcessVersion = ((AbstractProcessInstance<T>) instance).internalGetProcessInstance().getRootProcessVersion();
+            repository.insertInternal(process.id(), process.version(), rootProcessId, rootProcessVersion, UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.businessKey(),
+                    eventTypes);
             connectInstance(instance);
         } else {
             LOGGER.warn("Skipping create of process instance id: {}, state: {}", id, instance.status());

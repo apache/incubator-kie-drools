@@ -30,6 +30,8 @@ public class JobBuilder {
     private String rootProcessInstanceId;
     private String processId;
     private String rootProcessId;
+    private String processVersion;
+    private String rootProcessVersion;
     private Long repeatInterval;
     private Integer repeatLimit;
     private String nodeInstanceId;
@@ -74,6 +76,16 @@ public class JobBuilder {
         return this;
     }
 
+    public JobBuilder processVersion(String processVersion) {
+        this.processVersion = processVersion;
+        return this;
+    }
+
+    public JobBuilder rootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
+        return this;
+    }
+
     public JobBuilder repeatInterval(Long repeatInterval) {
         this.repeatInterval = repeatInterval;
         return this;
@@ -91,7 +103,7 @@ public class JobBuilder {
 
     public Job build() {
         return new Job(id, expirationTime, priority, callbackEndpoint, processInstanceId, rootProcessInstanceId,
-                processId, rootProcessId, repeatInterval, repeatLimit, nodeInstanceId);
+                processId, processVersion, rootProcessId, rootProcessVersion, repeatInterval, repeatLimit, nodeInstanceId);
     }
 
     public static JobBuilder builder() {

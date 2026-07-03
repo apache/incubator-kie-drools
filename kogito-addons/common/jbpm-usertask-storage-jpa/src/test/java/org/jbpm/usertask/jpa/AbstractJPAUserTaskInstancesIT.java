@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.jbpm.usertask.jpa.quarkus;
+package org.jbpm.usertask.jpa;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,10 +24,10 @@ import java.util.*;
 import java.util.function.Function;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.usertask.jpa.JPAUserTaskInstances;
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
-import org.jbpm.usertask.jpa.quarkus.repository.QuarkusUserTaskJPAContext;
-import org.jbpm.usertask.jpa.repository.*;
+import org.jbpm.usertask.jpa.repository.AttachmentRepository;
+import org.jbpm.usertask.jpa.repository.CommentRepository;
+import org.jbpm.usertask.jpa.repository.UserTaskInstanceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.auth.IdentityProviders;
@@ -38,33 +37,45 @@ import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
 import org.mockito.Mockito;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityExistsException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.*;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityAdminUserAndGroups;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityAttachments;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityComments;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityData;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityExcludedUsers;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityInputs;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityMetadata;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityOutputs;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.assertUserTaskEntityPotentialUserAndGroups;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.createActiveUserTaskInstance;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.createCompletedUserTaskInstance;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.createReservedUserTaskInstance;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public abstract class BaseQuarkusJPAUserTaskInstancesTest {
+public abstract class AbstractJPAUserTaskInstancesIT {
 
-    @Inject
-    QuarkusUserTaskJPAContext context;
-
-    @Inject
-    JPAUserTaskInstances userTaskInstances;
-
-    @Inject
-    UserTaskInstanceRepository userTaskInstanceRepository;
-
-    @Inject
-    AttachmentRepository attachmentRepository;
-
-    @Inject
-    CommentRepository commentRepository;
+    protected final JPAUserTaskInstances userTaskInstances;
+    protected final UserTaskInstanceRepository userTaskInstanceRepository;
+    protected final AttachmentRepository attachmentRepository;
+    protected final CommentRepository commentRepository;
 
     private Function<UserTaskInstance, UserTaskInstance> connect;
     private Function<UserTaskInstance, UserTaskInstance> disconnect;
+
+    protected AbstractJPAUserTaskInstancesIT(JPAUserTaskInstances userTaskInstances,
+            UserTaskInstanceRepository userTaskInstanceRepository,
+            AttachmentRepository attachmentRepository,
+            CommentRepository commentRepository) {
+        this.userTaskInstances = userTaskInstances;
+        this.userTaskInstanceRepository = userTaskInstanceRepository;
+        this.attachmentRepository = attachmentRepository;
+        this.commentRepository = commentRepository;
+    }
 
     @BeforeEach
     public void init() {
@@ -117,7 +128,11 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
         UserTaskInstance instance = getReservedUserTaskInstance();
 
         Assertions.assertThatThrownBy(() -> userTaskInstances.create(instance))
-                .isInstanceOf(EntityExistsException.class);
+                .satisfiesAnyOf(
+                        // Quarkus throws EntityExistsException directly
+                        ex -> Assertions.assertThat(ex).isInstanceOf(EntityExistsException.class),
+                        // Spring Boot wraps it in DataIntegrityViolationException with ConstraintViolationException cause
+                        ex -> Assertions.assertThat(ex.getClass().getName()).contains("DataIntegrityViolationException"));
     }
 
     @Test
@@ -138,7 +153,6 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         assertThat(entity.getOutputs())
                 .hasSize(instance.getOutputs().size());
-
         instance.getInputs().clear();
         instance.setInput("new_input", "this is a new input");
 
@@ -162,7 +176,6 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
-
     }
 
     @Test

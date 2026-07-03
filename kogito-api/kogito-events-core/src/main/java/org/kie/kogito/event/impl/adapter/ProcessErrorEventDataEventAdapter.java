@@ -19,7 +19,6 @@
 package org.kie.kogito.event.impl.adapter;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.kie.api.event.process.ErrorEvent;
 import org.kie.kogito.event.DataEvent;
@@ -47,12 +46,14 @@ public class ProcessErrorEventDataEventAdapter extends AbstractDataEventAdapter 
                 .nodeInstanceId(pi.getNodeInstanceIdInError())
                 .errorMessage(pi.getErrorMessage())
                 .build();
-        Map<String, Object> metadata = AdapterHelper.buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
-        ProcessInstanceErrorDataEvent piEvent =
-                new ProcessInstanceErrorDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()), getConfig().addons().toString(),
-                        event.getEventIdentity(), metadata, errorBody);
-        piEvent.setKogitoBusinessKey(pi.getBusinessKey());
-        return piEvent;
+        return ProcessInstanceErrorDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventIdentity())
+                .metaData(AdapterHelper.buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()))
+                .data(errorBody)
+                .kogitoBusinessKey(pi.getBusinessKey())
+                .build();
     }
 
 }

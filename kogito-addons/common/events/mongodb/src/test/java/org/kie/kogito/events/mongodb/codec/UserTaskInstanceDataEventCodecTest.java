@@ -87,7 +87,13 @@ class UserTaskInstanceDataEventCodecTest {
                 .eventUser(identity)
                 .build();
 
-        event = new UserTaskInstanceStateDataEvent(source, kogitoAddons, identity, metaData, body);
+        event = UserTaskInstanceStateDataEvent.builder()
+                .source(source)
+                .kogitoAddons(kogitoAddons)
+                .kogitoIdentity(identity)
+                .metaData(metaData)
+                .data(body)
+                .build();
     }
 
     @Test
@@ -133,7 +139,7 @@ class UserTaskInstanceDataEventCodecTest {
                     .containsEntry("type", event.getType())
                     .containsEntry("datacontenttype", event.getDataContentType())
                     .containsEntry("kogitoprocinstanceid", event.getKogitoProcessInstanceId())
-                    .containsEntry("kogitoprocversion", event.getKogitoProcessInstanceVersion())
+                    .containsEntry("kogitoprocversion", event.getKogitoProcessVersion())
                     .containsEntry("kogitorootprociid", event.getKogitoRootProcessInstanceId())
                     .containsEntry("kogitoprocid", event.getKogitoProcessId())
                     .containsEntry("kogitorootprocid", event.getKogitoRootProcessId())

@@ -75,6 +75,8 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
 
     private String rootProcessId;
 
+    private String rootProcessVersion;
+
     private String rootProcessInstanceId;
 
     private Integer state;
@@ -114,12 +116,13 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
     @Override
     public void visit(DataEvent<?> dataEvent) {
         this.processId = dataEvent.getKogitoProcessId();
+        this.processVersion = dataEvent.getKogitoProcessVersion();
         this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
-        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
         this.eventDate = toDate(dataEvent.getTime());
         this.eventUser = dataEvent.getKogitoIdentity();
         this.parentInstanceId = dataEvent.getKogitoParentProcessInstanceId();
         this.rootProcessId = dataEvent.getKogitoRootProcessId();
+        this.rootProcessVersion = dataEvent.getKogitoRootProcessVersion();
         this.rootProcessInstanceId = dataEvent.getKogitoRootProcessInstanceId();
         this.processType = dataEvent.getKogitoProcessType();
         this.businessKey = dataEvent.getKogitoBusinessKey();
@@ -174,6 +177,10 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
         return rootProcessId;
     }
 
+    public String getRootProcessVersion() {
+        return rootProcessVersion;
+    }
+
     public String getCloudEventId() {
         return cloudEventId;
     }
@@ -201,12 +208,13 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
     public Map<String, Object> metaData() {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, processInstanceId);
-        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, processVersion);
         metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, parentInstanceId);
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, rootProcessInstanceId);
         metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, processId);
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, processVersion);
         metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, processType);
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, rootProcessId);
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_VERSION_META_DATA, rootProcessVersion);
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, String.valueOf(state));
         return metadata;
     }
@@ -215,7 +223,8 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
     public String toString() {
         return "ProcessInstanceStateEventBody [eventDate=" + eventDate + ", eventUser=" + eventUser + ", eventType=" + eventType + ", processId=" + processId + ", processVersion=" + processVersion
                 + ", processType=" + processType + ", processInstanceId=" + processInstanceId + ", businessKey=" + businessKey + ", processName=" + processName + ", parentInstanceId="
-                + parentInstanceId + ", rootProcessId=" + rootProcessId + ", rootProcessInstanceId=" + rootProcessInstanceId + ", state=" + state + ", roles=" + roles
+                + parentInstanceId + ", rootProcessId=" + rootProcessId + ", rootProcessVersion=" + rootProcessVersion + ", rootProcessInstanceId=" + rootProcessInstanceId + ", state=" + state
+                + ", roles=" + roles
                 + ", cloudEventId=" + cloudEventId + " ,cloudEventSource=" + cloudEventSource + "]";
     }
 
@@ -304,6 +313,11 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
 
         public Builder rootProcessId(String rootProcessId) {
             this.instance.rootProcessId = rootProcessId;
+            return this;
+        }
+
+        public Builder rootProcessVersion(String rootProcessVersion) {
+            this.instance.rootProcessVersion = rootProcessVersion;
             return this;
         }
 

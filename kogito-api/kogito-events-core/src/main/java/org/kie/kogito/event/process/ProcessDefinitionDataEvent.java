@@ -19,6 +19,7 @@
 package org.kie.kogito.event.process;
 
 import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.DataEventState;
 
 public class ProcessDefinitionDataEvent extends AbstractDataEvent<ProcessDefinitionEventBody> {
 
@@ -28,6 +29,7 @@ public class ProcessDefinitionDataEvent extends AbstractDataEvent<ProcessDefinit
 
     }
 
+    @Deprecated
     public ProcessDefinitionDataEvent(ProcessDefinitionEventBody body) {
         super(PROCESS_DEFINITION_EVENT,
                 body.getEndpoint(),
@@ -41,5 +43,30 @@ public class ProcessDefinitionDataEvent extends AbstractDataEvent<ProcessDefinit
                 null,
                 DATA_CONTENT_TYPE,
                 null);
+    }
+
+    public ProcessDefinitionDataEvent(DataEventState<ProcessDefinitionEventBody> state) {
+        super(state);
+    }
+
+    public static ProcessDefinitionDataEventBuilder builder() {
+        return new ProcessDefinitionDataEventBuilder().type(PROCESS_DEFINITION_EVENT);
+    }
+
+    public static class ProcessDefinitionDataEventBuilder
+            extends AbstractDataEventBuilder<ProcessDefinitionDataEventBuilder, ProcessDefinitionEventBody> {
+        @Override
+        public ProcessDefinitionDataEventBuilder data(ProcessDefinitionEventBody data) {
+            super.data(data)
+                    .source(data.getEndpoint())
+                    .kogitoProcessId(data.getId())
+                    .kogitoProcessVersion(data.getVersion())
+                    .dataContentType(DATA_CONTENT_TYPE);
+            return this;
+        }
+
+        public ProcessDefinitionDataEvent build() {
+            return new ProcessDefinitionDataEvent(this.toCommonStateRecord());
+        }
     }
 }

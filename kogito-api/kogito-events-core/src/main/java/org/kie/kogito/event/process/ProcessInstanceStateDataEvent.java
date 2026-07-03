@@ -28,6 +28,7 @@ public class ProcessInstanceStateDataEvent extends ProcessInstanceDataEvent<Proc
         this.setType(STATE_TYPE);
     }
 
+    @Deprecated
     public ProcessInstanceStateDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceStateEventBody body) {
         super(STATE_TYPE,
                 source,
@@ -43,5 +44,24 @@ public class ProcessInstanceStateDataEvent extends ProcessInstanceDataEvent<Proc
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA),
                 null,
                 identity);
+    }
+
+    public ProcessInstanceStateDataEvent(ProcessInstanceDataEventState<ProcessInstanceStateEventBody> state) {
+        super(state);
+    }
+
+    public static ProcessInstanceStateDataEventBuilder builder() {
+        return new ProcessInstanceStateDataEventBuilder();
+    }
+
+    public static class ProcessInstanceStateDataEventBuilder extends AbstractProcessInstanceDataEventBuilder<ProcessInstanceStateDataEventBuilder, ProcessInstanceStateEventBody> {
+
+        public ProcessInstanceStateDataEventBuilder() {
+            this.type = STATE_TYPE;
+        }
+
+        public ProcessInstanceStateDataEvent build() {
+            return new ProcessInstanceStateDataEvent(this.toStateRecord());
+        }
     }
 }

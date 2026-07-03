@@ -47,11 +47,13 @@ public class UserTaskAssignmentEventDataEventAdapter extends AbstractDataEventAd
                 .users(event.getNewUsersId());
 
         UserTaskInstanceAssignmentEventBody body = builder.build();
-        UserTaskInstanceAssignmentDataEvent utEvent =
-                new UserTaskInstanceAssignmentDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()), getConfig().addons().toString(),
-                        event.getEventUser(), metadata, body);
-
-        return utEvent;
+        return UserTaskInstanceAssignmentDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventUser())
+                .metaData(metadata)
+                .data(body)
+                .build();
     }
 
 }

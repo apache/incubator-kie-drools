@@ -31,6 +31,7 @@ public final class ProcessInstanceEventMetadata {
 
     public static final String ROOT_PROCESS_INSTANCE_ID_META_DATA = "kogito.processinstance.rootInstanceId";
     public static final String ROOT_PROCESS_ID_META_DATA = "kogito.processinstance.rootProcessId";
+    public static final String ROOT_PROCESS_VERSION_META_DATA = "kogito.processinstance.rootProcessVersion";
 
     private ProcessInstanceEventMetadata() {
         // nothing to comment

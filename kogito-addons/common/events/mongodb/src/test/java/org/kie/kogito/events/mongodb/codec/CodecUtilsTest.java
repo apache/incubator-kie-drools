@@ -52,7 +52,13 @@ class CodecUtilsTest {
         metaData.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, kogitoProcessId);
         metaData.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, kogitoRootProcessId);
 
-        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent(source, kogitoAddons, identity, metaData, mock(ProcessInstanceVariableEventBody.class));
+        ProcessInstanceVariableDataEvent event = ProcessInstanceVariableDataEvent.builder()
+                .source(source)
+                .kogitoAddons(kogitoAddons)
+                .kogitoIdentity(identity)
+                .metaData(metaData)
+                .data(mock(ProcessInstanceVariableEventBody.class))
+                .build();
         Document doc = new Document();
 
         CodecUtils.encodeDataEvent(doc, event);

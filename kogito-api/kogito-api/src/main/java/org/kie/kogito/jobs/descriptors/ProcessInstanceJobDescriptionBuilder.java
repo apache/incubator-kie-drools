@@ -31,7 +31,9 @@ public class ProcessInstanceJobDescriptionBuilder {
     private String processInstanceId;
     private String rootProcessInstanceId;
     private String processId;
+    private String processVersion;
     private String rootProcessId;
+    private String rootProcessVersion;
     private String nodeInstanceId;
 
     public ProcessInstanceJobDescriptionBuilder id(String id) {
@@ -73,8 +75,18 @@ public class ProcessInstanceJobDescriptionBuilder {
         return this;
     }
 
+    public ProcessInstanceJobDescriptionBuilder processVersion(String processVersion) {
+        this.processVersion = processVersion;
+        return this;
+    }
+
     public ProcessInstanceJobDescriptionBuilder rootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
+        return this;
+    }
+
+    public ProcessInstanceJobDescriptionBuilder rootProcessVersion(String rootProcessVersion) {
+        this.rootProcessVersion = rootProcessVersion;
         return this;
     }
 
@@ -84,6 +96,7 @@ public class ProcessInstanceJobDescriptionBuilder {
     }
 
     public ProcessInstanceJobDescription build() {
-        return new ProcessInstanceJobDescription(id, timerId, expirationTime, priority, processInstanceId, rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
+        return new ProcessInstanceJobDescription(id, timerId, expirationTime, priority, processInstanceId, rootProcessInstanceId, processId, processVersion, rootProcessId, rootProcessVersion,
+                nodeInstanceId);
     }
 }

@@ -64,7 +64,9 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
     protected static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
     protected static final String PROCESS_ID = "PROCESS_ID";
+    protected static final String PROCESS_VERSION = "PROCESS_VERSION";
     protected static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
+    protected static final String ROOT_PROCESS_VERSION = "ROOT_PROCESS_VERSION";
     protected static final Integer PRIORITY = 0;
     protected static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     protected static final ExpirationTime EXPIRATION_TIME = ExactExpirationTime.of("2020-03-21T10:15:30+01:00");
@@ -284,7 +286,9 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
                 .processInstanceId(PROCESS_INSTANCE_ID)
                 .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
                 .processId(PROCESS_ID)
+                .processVersion(PROCESS_VERSION)
                 .rootProcessId(ROOT_PROCESS_ID)
+                .rootProcessVersion(ROOT_PROCESS_VERSION)
                 .nodeInstanceId(NODE_INSTANCE_ID)
                 .build();
     }

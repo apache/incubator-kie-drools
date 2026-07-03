@@ -125,12 +125,16 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     private String kogitoRootProcessId;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION)
+    private String kogitoRootProcessVersion;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty(CloudEventExtensionConstants.ADDONS)
     private String kogitoAddons;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonProperty(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION)
-    protected String kogitoProcessInstanceVersion;
+    @JsonProperty(CloudEventExtensionConstants.PROCESS_VERSION)
+    protected String kogitoProcessVersion;
 
     @JsonProperty(CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -165,8 +169,9 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID,
             CloudEventExtensionConstants.PROCESS_ID,
             CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID,
+            CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION,
             CloudEventExtensionConstants.ADDONS,
-            CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION,
+            CloudEventExtensionConstants.PROCESS_VERSION,
             CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID,
             CloudEventExtensionConstants.PROCESS_INSTANCE_STATE,
             CloudEventExtensionConstants.PROCESS_REFERENCE_ID,
@@ -223,6 +228,35 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         this.subject = subject;
         this.dataContentType = dataContentType;
         this.dataSchema = dataSchema != null ? URI.create(dataSchema) : null;
+        ensureRequiredFields();
+    }
+
+    protected AbstractDataEvent(DataEventState<T> state) {
+        setSpecVersion(state.specVersion() != null ? state.specVersion() : SpecVersion.parse(SPEC_VERSION));
+        setId(state.id() != null ? state.id() : UUID.randomUUID().toString());
+        setSource(state.source());
+        setType(state.type());
+        setTime(state.time() != null ? state.time() : ZonedDateTime.now().toOffsetDateTime());
+        setData(state.data());
+        setSubject(state.subject());
+        setDataContentType(state.dataContentType() != null ? state.dataContentType() : DATA_CONTENT_TYPE);
+        setDataSchema(state.dataSchema());
+
+        setKogitoProcessInstanceId(state.kogitoProcessInstanceId());
+        setKogitoRootProcessInstanceId(state.kogitoRootProcessInstanceId());
+        setKogitoProcessId(state.kogitoProcessId());
+        setKogitoProcessVersion(state.kogitoProcessVersion());
+        setKogitoRootProcessId(state.kogitoRootProcessId());
+        setKogitoRootProcessVersion(state.kogitoRootProcessVersion());
+
+        setKogitoAddons(state.kogitoAddons());
+        setKogitoIdentity(state.kogitoIdentity());
+        setKogitoParentProcessInstanceId(state.kogitoParentProcessInstanceId());
+        setKogitoProcessInstanceState(state.kogitoProcessInstanceState());
+        setKogitoReferenceId(state.kogitoReferenceId());
+        setKogitoStartFromNode(state.kogitoStartFromNode());
+        setKogitoBusinessKey(state.kogitoBusinessKey());
+        setKogitoProcessType(state.kogitoProcessType());
         ensureRequiredFields();
     }
 
@@ -298,6 +332,11 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     @Override
     public String getKogitoRootProcessId() {
         return kogitoRootProcessId;
+    }
+
+    @Override
+    public String getKogitoRootProcessVersion() {
+        return kogitoRootProcessVersion;
     }
 
     @Override
@@ -430,8 +469,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
-    public String getKogitoProcessInstanceVersion() {
-        return kogitoProcessInstanceVersion;
+    public String getKogitoProcessVersion() {
+        return kogitoProcessVersion;
     }
 
     @Override
@@ -455,6 +494,10 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         addExtensionAttribute(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID, kogitoRootProcessId);
     }
 
+    public void setKogitoRootProcessVersion(String kogitoRootProcessVersion) {
+        addExtensionAttribute(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION, kogitoRootProcessVersion);
+    }
+
     public void setKogitoAddons(String kogitoAddons) {
         addExtensionAttribute(CloudEventExtensionConstants.ADDONS, kogitoAddons);
     }
@@ -467,8 +510,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
         addExtensionAttribute(CloudEventExtensionConstants.PROCESS_START_FROM_NODE, kogitoStartFromNode);
     }
 
-    public void setKogitoProcessInstanceVersion(String kogitoProcessInstanceVersion) {
-        addExtensionAttribute(CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION, kogitoProcessInstanceVersion);
+    public void setKogitoProcessVersion(String kogitoProcessVersion) {
+        addExtensionAttribute(CloudEventExtensionConstants.PROCESS_VERSION, kogitoProcessVersion);
     }
 
     public void setKogitoParentProcessInstanceId(String kogitoParentProcessInstanceId) {
@@ -498,8 +541,14 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
                 case CloudEventExtensionConstants.PROCESS_INSTANCE_ID:
                     kogitoProcessInstanceId = (String) value;
                     break;
+                case CloudEventExtensionConstants.PROCESS_VERSION:
+                    this.kogitoProcessVersion = (String) value;
+                    break;
                 case CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID:
                     kogitoRootProcessId = (String) value;
+                    break;
+                case CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_VERSION:
+                    kogitoRootProcessVersion = (String) value;
                     break;
                 case CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_INSTANCE_ID:
                     kogitoRootProcessInstanceId = (String) value;
@@ -512,9 +561,6 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
                     break;
                 case CloudEventExtensionConstants.PROCESS_REFERENCE_ID:
                     this.kogitoReferenceId = (String) value;
-                    break;
-                case CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION:
-                    this.kogitoProcessInstanceVersion = (String) value;
                     break;
                 case CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID:
                     this.kogitoParentProcessInstanceId = (String) value;
@@ -579,10 +625,174 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
                 ", kogitoProcessInstanceId='" + kogitoProcessInstanceId + '\'' +
                 ", kogitoRootProcessInstanceId='" + kogitoRootProcessInstanceId + '\'' +
                 ", kogitoProcessId='" + kogitoProcessId + '\'' +
+                ", kogitoProcessVersion='" + kogitoProcessVersion + '\'' +
                 ", kogitoRootProcessId='" + kogitoRootProcessId + '\'' +
+                ", kogitoRootProcessVersion='" + kogitoRootProcessVersion + '\'' +
                 ", kogitoAddons='" + kogitoAddons + '\'' +
                 ", kogitoIdentity='" + kogitoIdentity + '\'' +
                 ", extensionAttributes=" + extensionAttributes +
                 '}';
     }
+
+    public static abstract class AbstractDataEventBuilder<B extends AbstractDataEventBuilder<B, T>, T> {
+        protected T data;
+        protected String dataContentType;
+        protected URI dataSchema;
+        protected String id;
+        protected String kogitoAddons;
+        protected String kogitoBusinessKey;
+        protected String kogitoIdentity;
+        protected String kogitoParentProcessInstanceId;
+        protected String kogitoProcessId;
+        protected String kogitoProcessInstanceId;
+        protected String kogitoProcessInstanceState;
+        protected String kogitoProcessType;
+        protected String kogitoProcessVersion;
+        protected String kogitoReferenceId;
+        protected String kogitoRootProcessId;
+        protected String kogitoRootProcessInstanceId;
+        protected String kogitoRootProcessVersion;
+        protected String kogitoStartFromNode;
+        protected URI source;
+        protected SpecVersion specVersion;
+        protected String subject;
+        protected OffsetDateTime time;
+        protected String type;
+
+        @SuppressWarnings("unchecked")
+        protected B self() {
+            return (B) this;
+        }
+
+        public B data(T data) {
+            this.data = data;
+            return self();
+        }
+
+        public B dataContentType(String dataContentType) {
+            this.dataContentType = dataContentType;
+            return self();
+        }
+
+        public B dataSchema(URI dataSchema) {
+            this.dataSchema = dataSchema;
+            return self();
+        }
+
+        public B id(String id) {
+            this.id = id;
+            return self();
+        }
+
+        public B kogitoAddons(String kogitoAddons) {
+            this.kogitoAddons = kogitoAddons;
+            return self();
+        }
+
+        public B kogitoBusinessKey(String kogitoBusinessKey) {
+            this.kogitoBusinessKey = kogitoBusinessKey;
+            return self();
+        }
+
+        public B kogitoIdentity(String kogitoIdentity) {
+            this.kogitoIdentity = kogitoIdentity;
+            return self();
+        }
+
+        public B kogitoParentProcessInstanceId(String id) {
+            this.kogitoParentProcessInstanceId = id;
+            return self();
+        }
+
+        public B kogitoProcessId(String id) {
+            this.kogitoProcessId = id;
+            return self();
+        }
+
+        public B kogitoProcessInstanceId(String id) {
+            this.kogitoProcessInstanceId = id;
+            return self();
+        }
+
+        public B kogitoProcessInstanceState(String state) {
+            this.kogitoProcessInstanceState = state;
+            return self();
+        }
+
+        public B kogitoProcessType(String type) {
+            this.kogitoProcessType = type;
+            return self();
+        }
+
+        public B kogitoProcessVersion(String version) {
+            this.kogitoProcessVersion = version;
+            return self();
+        }
+
+        public B kogitoReferenceId(String id) {
+            this.kogitoReferenceId = id;
+            return self();
+        }
+
+        public B kogitoRootProcessId(String id) {
+            this.kogitoRootProcessId = id;
+            return self();
+        }
+
+        public B kogitoRootProcessInstanceId(String id) {
+            this.kogitoRootProcessInstanceId = id;
+            return self();
+        }
+
+        public B kogitoRootProcessVersion(String version) {
+            this.kogitoRootProcessVersion = version;
+            return self();
+        }
+
+        public B kogitoStartFromNode(String node) {
+            this.kogitoStartFromNode = node;
+            return self();
+        }
+
+        public B source(URI source) {
+            this.source = source;
+            return self();
+        }
+
+        public B source(String source) {
+            this.source = source != null ? java.net.URI.create(source) : null;
+            return self();
+        }
+
+        public B specVersion(SpecVersion specVersion) {
+            this.specVersion = specVersion;
+            return self();
+        }
+
+        public B subject(String subject) {
+            this.subject = subject;
+            return self();
+        }
+
+        public B time(OffsetDateTime time) {
+            this.time = time;
+            return self();
+        }
+
+        public B type(String type) {
+            this.type = type;
+            return self();
+        }
+
+        protected DataEventState<T> toCommonStateRecord() {
+            return new DataEventState<>(
+                    data, dataContentType, dataSchema, id, kogitoAddons, kogitoBusinessKey,
+                    kogitoIdentity, kogitoParentProcessInstanceId, kogitoProcessId,
+                    kogitoProcessInstanceId, kogitoProcessInstanceState, kogitoProcessType,
+                    kogitoProcessVersion, kogitoReferenceId, kogitoRootProcessId,
+                    kogitoRootProcessInstanceId, kogitoRootProcessVersion, kogitoStartFromNode,
+                    source, specVersion, subject, time, type);
+        }
+    }
+
 }

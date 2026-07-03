@@ -61,14 +61,13 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
                 .slaDueDate(event.getUserTaskInstance().getSlaDueDate());
 
         UserTaskInstanceStateEventBody body = builder.build();
-        UserTaskInstanceStateDataEvent utEvent =
-                new UserTaskInstanceStateDataEvent(
-                        AdapterHelper.buildSource(getConfig().service(), Optional.ofNullable(event.getUserTaskInstance().getProcessInfo()).map(ProcessInfo::getProcessId).orElse(null)),
-                        getConfig().addons().toString(),
-                        event.getEventUser(),
-                        metadata, body);
-
-        return utEvent;
+        return UserTaskInstanceStateDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), Optional.ofNullable(event.getUserTaskInstance().getProcessInfo()).map(ProcessInfo::getProcessId).orElse(null)))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(event.getEventUser())
+                .metaData(metadata)
+                .data(body)
+                .build();
     }
 
     private boolean isTransition(UserTaskStateEvent event) {

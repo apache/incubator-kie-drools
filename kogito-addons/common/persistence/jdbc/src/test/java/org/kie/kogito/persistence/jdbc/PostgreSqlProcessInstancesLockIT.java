@@ -16,25 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.persistence.jdbc;
+package org.kie.kogito.persistence.jdbc;
 
-import javax.sql.DataSource;
-
-import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
-import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
-import org.kie.kogito.process.Process;
-
-import static org.mockito.Mockito.spy;
-
-public class TestProcessInstancesFactory extends AbstractProcessInstancesFactory {
-
-    public TestProcessInstancesFactory(DataSource dataSource, boolean lock) {
-        super(dataSource, lock);
-    }
+public class PostgreSqlProcessInstancesLockIT extends PostgreSqlProcessInstancesIT {
 
     @Override
-    public JDBCProcessInstances createProcessInstances(Process<?> process) {
-        return spy(super.createProcessInstances(process));
+    boolean lock() {
+        return true;
     }
-
 }

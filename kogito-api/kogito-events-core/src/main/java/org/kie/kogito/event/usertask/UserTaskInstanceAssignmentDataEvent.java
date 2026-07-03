@@ -24,17 +24,19 @@ import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
 
 public class UserTaskInstanceAssignmentDataEvent extends UserTaskInstanceDataEvent<UserTaskInstanceAssignmentEventBody> {
 
+    public static final String USER_TASK_INSTANCE_ASSIGNMENT_DATA_EVENT = "UserTaskInstanceAssignmentDataEvent";
+
     public UserTaskInstanceAssignmentDataEvent() {
     }
 
+    @Deprecated
     public UserTaskInstanceAssignmentDataEvent(String source, String addons, String identity, Map<String, Object> metaData, UserTaskInstanceAssignmentEventBody body) {
-        super("UserTaskInstanceAssignmentDataEvent",
+        super(USER_TASK_INSTANCE_ASSIGNMENT_DATA_EVENT,
                 source,
                 body,
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA),
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),
-                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA),
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA),
@@ -45,6 +47,25 @@ public class UserTaskInstanceAssignmentDataEvent extends UserTaskInstanceDataEve
                 (String) metaData.get(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_REFERENCE_ID_META_DATA),
                 identity);
 
+    }
+
+    public UserTaskInstanceAssignmentDataEvent(UserTaskInstanceDataEventState<UserTaskInstanceAssignmentEventBody> state) {
+        super(state);
+    }
+
+    public static UserTaskInstanceAssignmentDataEventBuilder builder() {
+        return new UserTaskInstanceAssignmentDataEventBuilder();
+    }
+
+    public static class UserTaskInstanceAssignmentDataEventBuilder extends UserTaskInstanceDataEventBuilder<UserTaskInstanceAssignmentDataEventBuilder, UserTaskInstanceAssignmentEventBody> {
+
+        public UserTaskInstanceAssignmentDataEventBuilder() {
+            this.type = USER_TASK_INSTANCE_ASSIGNMENT_DATA_EVENT;
+        }
+
+        public UserTaskInstanceAssignmentDataEvent build() {
+            return new UserTaskInstanceAssignmentDataEvent(this.toStateRecord());
+        }
     }
 
 }

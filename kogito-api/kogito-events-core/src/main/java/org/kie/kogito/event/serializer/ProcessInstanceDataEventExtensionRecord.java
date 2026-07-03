@@ -44,6 +44,7 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
     private String type;
     private String parentInstanceId;
     private String rootId;
+    private String rootVersion;
     private String rootInstanceId;
     private String businessKey;
     private String identity;
@@ -59,11 +60,12 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
         this.ordinal = ordinal;
         id = dataEvent.getKogitoProcessId();
         instanceId = dataEvent.getKogitoProcessInstanceId();
-        version = dataEvent.getKogitoProcessInstanceVersion();
+        version = dataEvent.getKogitoProcessVersion();
         state = dataEvent.getKogitoProcessInstanceState();
         type = dataEvent.getKogitoProcessType();
         parentInstanceId = dataEvent.getKogitoParentProcessInstanceId();
         rootId = dataEvent.getKogitoRootProcessId();
+        rootVersion = dataEvent.getKogitoRootProcessVersion();
         rootInstanceId = dataEvent.getKogitoRootProcessInstanceId();
         businessKey = dataEvent.getKogitoBusinessKey();
         identity = dataEvent.getKogitoIdentity();
@@ -108,6 +110,10 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
         return rootId;
     }
 
+    public String getRootVersion() {
+        return rootVersion;
+    }
+
     public String getRootInstanceId() {
         return rootInstanceId;
     }
@@ -137,6 +143,7 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
         writeUTF(out, type);
         writeUTF(out, parentInstanceId);
         writeUTF(out, rootId);
+        writeUTF(out, rootVersion);
         writeUTF(out, rootInstanceId);
         writeUTF(out, businessKey);
         writeUTF(out, identity);
@@ -154,6 +161,7 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
         type = readUTF(in);
         parentInstanceId = readUTF(in);
         rootId = readUTF(in);
+        rootVersion = readUTF(in);
         rootInstanceId = readUTF(in);
         businessKey = readUTF(in);
         identity = readUTF(in);
@@ -166,7 +174,7 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
     public String toString() {
         return "ProcessInstanceDataEventExtensionRecord [id=" + id + ", instanceId=" + instanceId + ", version="
                 + version + ", state=" + state + ", type=" + type + ", parentInstanceId=" + parentInstanceId
-                + ", rootId=" + rootId + ", rootInstanceId=" + rootInstanceId + ", businessKey=" + businessKey
+                + ", rootId=" + rootId + ", rootVersion=" + rootVersion + ", rootInstanceId=" + rootInstanceId + ", businessKey=" + businessKey
                 + ", identity=" + identity + ", source=" + source + ", time=" + time + ", addons=" + addons + "]";
     }
 

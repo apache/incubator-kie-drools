@@ -91,7 +91,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(event).isInstanceOf(ProcessInstanceStateDataEvent.class);
         ProcessInstanceStateDataEvent processDataEvent = (ProcessInstanceStateDataEvent) event;
         assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
-        assertThat(processDataEvent.getKogitoProcessInstanceVersion()).isEqualTo("1.0");
+        assertThat(processDataEvent.getKogitoProcessVersion()).isEqualTo("1.0");
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("TestCase.SimpleMilestone");
@@ -136,7 +136,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(event).as("There is no process instance event being published").isPresent();
         ProcessInstanceStateDataEvent processDataEvent = (ProcessInstanceStateDataEvent) event.orElseThrow();
         assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
-        assertThat(processDataEvent.getKogitoProcessInstanceVersion()).isEqualTo("1.0");
+        assertThat(processDataEvent.getKogitoProcessVersion()).isEqualTo("1.0");
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("compensateAll");
@@ -442,7 +442,7 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         ProcessInstanceStateDataEvent processDataEvent = processInstanceStateEvents.stream().filter(e -> e.getData().getState() == 2).findFirst().orElseThrow();
         assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
-        assertThat(processDataEvent.getKogitoProcessInstanceVersion()).isEqualTo("1.0");
+        assertThat(processDataEvent.getKogitoProcessVersion()).isEqualTo("1.0");
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("ExclusiveSplit");

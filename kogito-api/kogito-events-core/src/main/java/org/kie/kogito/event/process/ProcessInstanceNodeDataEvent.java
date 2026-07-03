@@ -28,6 +28,7 @@ public class ProcessInstanceNodeDataEvent extends ProcessInstanceDataEvent<Proce
         this.setType(NODE_TYPE);
     }
 
+    @Deprecated
     public ProcessInstanceNodeDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceNodeEventBody body) {
         super(NODE_TYPE,
                 source,
@@ -45,4 +46,22 @@ public class ProcessInstanceNodeDataEvent extends ProcessInstanceDataEvent<Proce
                 identity);
     }
 
+    public ProcessInstanceNodeDataEvent(ProcessInstanceDataEventState<ProcessInstanceNodeEventBody> state) {
+        super(state);
+    }
+
+    public static ProcessInstanceNodeDataEventBuilder builder() {
+        return new ProcessInstanceNodeDataEventBuilder();
+    }
+
+    public static class ProcessInstanceNodeDataEventBuilder extends AbstractProcessInstanceDataEventBuilder<ProcessInstanceNodeDataEventBuilder, ProcessInstanceNodeEventBody> {
+
+        public ProcessInstanceNodeDataEventBuilder() {
+            this.type = NODE_TYPE;
+        }
+
+        public ProcessInstanceNodeDataEvent build() {
+            return new ProcessInstanceNodeDataEvent(this.toStateRecord());
+        }
+    }
 }

@@ -28,10 +28,12 @@ public class UserTaskInstanceJobDescription implements JobDescription {
     private Integer priority = ProcessInstanceJobDescription.DEFAULT_PRIORITY;
     private String userTaskInstanceId;
     private String processId;
+    private String processVersion;
     private String processInstanceId;
     private String nodeInstanceId;
     private String rootProcessInstanceId;
     private String rootProcessId;
+    private String rootProcessVersion;
 
     public UserTaskInstanceJobDescription() {
         // do nothing
@@ -43,19 +45,23 @@ public class UserTaskInstanceJobDescription implements JobDescription {
             Integer priority,
             String userTaskInstanceId,
             String processId,
+            String processVersion,
             String processInstanceId,
             String nodeInstanceId,
             String rootProcessInstanceId,
-            String rootProcessId) {
+            String rootProcessId,
+            String rootProcessVersion) {
         this.id = id;
         this.expirationTime = expirationTime;
         this.priority = priority;
         this.userTaskInstanceId = userTaskInstanceId;
         this.processId = processId;
+        this.processVersion = processVersion;
         this.processInstanceId = processInstanceId;
         this.nodeInstanceId = nodeInstanceId;
         this.rootProcessInstanceId = rootProcessInstanceId;
         this.rootProcessId = rootProcessId;
+        this.rootProcessVersion = rootProcessVersion;
     }
 
     @Override
@@ -86,6 +92,10 @@ public class UserTaskInstanceJobDescription implements JobDescription {
         return processId;
     }
 
+    public String processVersion() {
+        return processVersion;
+    }
+
     public String processInstanceId() {
         return processInstanceId;
     }
@@ -100,6 +110,10 @@ public class UserTaskInstanceJobDescription implements JobDescription {
 
     public String rootProcessId() {
         return rootProcessId;
+    }
+
+    public String rootProcessVersion() {
+        return rootProcessVersion;
     }
 
     public static UserTaskInstanceJobDescriptionBuilder newUserTaskInstanceJobDescriptionBuilder() {

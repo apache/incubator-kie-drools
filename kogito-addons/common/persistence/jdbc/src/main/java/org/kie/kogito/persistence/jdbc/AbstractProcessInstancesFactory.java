@@ -23,12 +23,14 @@ import javax.sql.DataSource;
 import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
+import org.kie.kogito.process.Processes;
 
 public abstract class AbstractProcessInstancesFactory implements ProcessInstancesFactory {
 
     private final DataSource dataSource;
     private final Boolean lock;
     private final HeadersPersistentConfig headersConfig;
+    private Processes processes;
 
     protected AbstractProcessInstancesFactory() {
         this(null, false);
@@ -39,13 +41,22 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
     }
 
     public AbstractProcessInstancesFactory(DataSource dataSource, Boolean lock, HeadersPersistentConfig headersConfig) {
+        this(dataSource, lock, headersConfig, null);
+    }
+
+    public AbstractProcessInstancesFactory(DataSource dataSource, Boolean lock, HeadersPersistentConfig headersConfig, Processes processes) {
         this.dataSource = dataSource;
         this.lock = lock;
         this.headersConfig = headersConfig;
+        this.processes = processes;
+    }
+
+    public void setProcesses(Processes processes) {
+        this.processes = processes;
     }
 
     @Override
     public JDBCProcessInstances createProcessInstances(Process<?> process) {
-        return new JDBCProcessInstances(process, dataSource, lock, headersConfig);
+        return new JDBCProcessInstances(process, dataSource, lock, headersConfig, processes);
     }
 }

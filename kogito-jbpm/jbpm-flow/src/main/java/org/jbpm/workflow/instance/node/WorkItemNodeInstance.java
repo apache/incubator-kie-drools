@@ -131,7 +131,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public void internalRemoveWorkItem() {
-        ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalRemoveWorkItem(workItem.getStringId());
+        InternalKogitoWorkItem wi = getWorkItem();
+        if (wi != null) {
+            ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalRemoveWorkItem(wi.getStringId());
+        }
     }
 
     @Override

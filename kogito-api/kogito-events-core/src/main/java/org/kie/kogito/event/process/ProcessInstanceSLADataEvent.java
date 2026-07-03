@@ -28,6 +28,7 @@ public class ProcessInstanceSLADataEvent extends ProcessInstanceDataEvent<Proces
         this.setType(SLA_TYPE);
     }
 
+    @Deprecated
     public ProcessInstanceSLADataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceSLAEventBody body) {
         super(SLA_TYPE,
                 source,
@@ -43,5 +44,24 @@ public class ProcessInstanceSLADataEvent extends ProcessInstanceDataEvent<Proces
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA),
                 null,
                 identity);
+    }
+
+    public ProcessInstanceSLADataEvent(ProcessInstanceDataEventState<ProcessInstanceSLAEventBody> state) {
+        super(state);
+    }
+
+    public static ProcessInstanceSLADataEventBuilder builder() {
+        return new ProcessInstanceSLADataEventBuilder();
+    }
+
+    public static class ProcessInstanceSLADataEventBuilder extends AbstractProcessInstanceDataEventBuilder<ProcessInstanceSLADataEventBuilder, ProcessInstanceSLAEventBody> {
+
+        public ProcessInstanceSLADataEventBuilder() {
+            this.type = SLA_TYPE;
+        }
+
+        public ProcessInstanceSLADataEvent build() {
+            return new ProcessInstanceSLADataEvent(this.toStateRecord());
+        }
     }
 }

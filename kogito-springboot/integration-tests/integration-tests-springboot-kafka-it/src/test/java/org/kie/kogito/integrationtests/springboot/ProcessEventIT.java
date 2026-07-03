@@ -89,7 +89,7 @@ class ProcessEventIT extends BaseRestTest {
                             assertEquals("ProcessInstanceStateDataEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
-                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals("1.0", event.getKogitoProcessVersion());
                             assertEquals("BPMN", data.get("processType"));
                             assertEquals("BPMN", event.getKogitoProcessType());
                             break;
@@ -97,13 +97,13 @@ class ProcessEventIT extends BaseRestTest {
                             assertEquals("UserTaskInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
-                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals("1.0", event.getKogitoProcessVersion());
                             break;
                         case "ProcessInstanceVariableDataEvent":
                             assertEquals("ProcessInstanceVariableDataEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
-                            assertEquals("1.0", event.getKogitoProcessInstanceVersion());
+                            assertEquals("1.0", event.getKogitoProcessVersion());
                             break;
                     }
                 }

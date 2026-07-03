@@ -70,10 +70,14 @@ public class UserTastAttachmentEventDataEventAdapter extends AbstractDataEventAd
         }
 
         UserTaskInstanceAttachmentEventBody body = builder.build();
-        UserTaskInstanceAttachmentDataEvent utEvent = new UserTaskInstanceAttachmentDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()),
-                getConfig().addons().toString(), updatedBy, metadata, body);
 
-        return utEvent;
+        return UserTaskInstanceAttachmentDataEvent.builder()
+                .source(AdapterHelper.buildSource(getConfig().service(), event.getUserTaskInstance().getExternalReferenceId()))
+                .kogitoAddons(getConfig().addons().toString())
+                .kogitoIdentity(updatedBy)
+                .metaData(metadata)
+                .data(body)
+                .build();
     }
 
 }
