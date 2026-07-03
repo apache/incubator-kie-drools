@@ -662,6 +662,26 @@ public class DeclaredTypesTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
+    public void testGlobalReferencedInConstraintFromDifferentPackage(RUN_TYPE runType) {
+        // A global declared in one DRL package must be resolvable from a pattern constraint compiled
+        // from a different package in the same KieBase, matching the classic compiler where globals are
+        // KieBase-wide and visible without a wildcard import. Here a BigDecimal global 'threshold' is
+        // declared in com.test.globals and referenced from a Person constraint in com.test.rules.
+        String globalDrl =
+                "package com.test.globals;\n" +
+                "global java.math.BigDecimal threshold;\n";
+        String ruleDrl =
+                "package com.test.rules;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  Person( money.compareTo(threshold) < 0 )\n" +
+                "then end";
+        KieSession ksession = getKieSession(runType, globalDrl, ruleDrl);
+        ksession.fireAllRules();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
     void testNonDefinedCustomAnnotation(RUN_TYPE runType) {
         String str = "package org.example.custom; \n" +
                 "import " + Date.class.getCanonicalName() + ";\n" +

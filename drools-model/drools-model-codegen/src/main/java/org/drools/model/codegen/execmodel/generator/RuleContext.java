@@ -316,15 +316,15 @@ public class RuleContext {
     public void addGlobalDeclarations() {
         Map<String, java.lang.reflect.Type> globals = getGlobals();
 
-        // also takes globals defined in different packages imported with a wildcard
-        packageModel.getImports().stream()
-                .filter( imp -> imp.endsWith(".*") )
-                .map( imp -> imp.substring(0, imp.length()-2) )
-                .map( imp -> typeDeclarationContext.getPackageRegistry(imp) )
+        // Globals are kbase-wide: include globals declared in any package of the kbase, not only
+        // those in the current package or in packages imported with a wildcard. This matches the
+        // classic (non-executable-model) behavior where a global is visible from every package, so
+        // a constraint can reference a global declared in another DRL without a wildcard import.
+        typeDeclarationContext.getPackageRegistry().values().stream()
                 .filter( Objects::nonNull )
-                .map( pkgRegistry -> pkgRegistry.getPackage().getGlobals() )
-                .forEach( globals::putAll );
-        
+                .filter( pkgRegistry -> pkgRegistry.getPackage() != null )
+                .forEach( pkgRegistry -> globals.putAll( pkgRegistry.getPackage().getGlobals() ) );
+
         for (Map.Entry<String, java.lang.reflect.Type> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new TypedDeclarationSpec(ks.getKey(), ks.getValue(), true));
