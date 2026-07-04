@@ -175,10 +175,11 @@ public class DescrTypeDefinition implements TypeDefinition {
     /**
      * Collects the positional fields of a resolved Java superclass, walking the class hierarchy.
      * A field participates only when it carries {@link Position} (explicit opt-in), ordered by its
-     * position value; this deterministically excludes non-positional members (and keeps the
-     * generated {@code super(...)} call aligned with a positional constructor on the superclass).
-     * When the superclass declares no {@link Position} at all, fall back to all non-static instance
-     * fields in declaration order (top-most ancestor first).
+     * position value; this deterministically excludes non-positional members and keeps the generated
+     * {@code super(...)} call aligned with a positional constructor on the superclass. When the
+     * superclass declares no {@link Position} field, the result is empty so the generated constructor
+     * uses a no-arg {@code super()} rather than guessing a signature from all instance fields (which
+     * would not match any superclass constructor and would fail to compile).
      */
     private List<FieldDefinition> inheritedFieldsFromSuperClass(Class<?> superClass) {
         List<Class<?>> hierarchy = new ArrayList<>();
@@ -195,13 +196,12 @@ public class DescrTypeDefinition implements TypeDefinition {
             }
         }
 
-        List<Field> positioned = instanceFields.stream()
+        // Only fields explicitly opted-in with @Position are inherited into the generated
+        // constructor. When the superclass declares none, return empty (no fallback to all instance
+        // fields) so the constructor uses a no-arg super() instead of an unmatched super(...) call.
+        return instanceFields.stream()
                 .filter(f -> f.getAnnotation(Position.class) != null)
                 .sorted(Comparator.comparingInt(f -> f.getAnnotation(Position.class).value()))
-                .collect(Collectors.toList());
-
-        List<Field> chosen = positioned.isEmpty() ? instanceFields : positioned;
-        return chosen.stream()
                 .map(f -> (FieldDefinition) new DescrFieldDefinition(f.getName(), f.getType().getCanonicalName(), null))
                 .collect(Collectors.toList());
     }

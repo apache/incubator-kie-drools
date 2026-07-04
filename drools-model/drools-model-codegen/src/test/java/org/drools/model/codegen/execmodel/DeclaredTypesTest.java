@@ -41,6 +41,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
+import org.drools.model.codegen.execmodel.domain.PlainParent;
 import org.drools.model.codegen.execmodel.domain.PositionalParent;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -613,6 +614,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "package org.test;\n" +
                 "import " + PositionalParent.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare PositionalParent end\n" +
                 "declare Child extends PositionalParent\n" +
                 "    dept : String\n" +
                 "end\n" +
@@ -632,6 +634,41 @@ public class DeclaredTypesTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results).hasSize(1);
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersPatternOnly")
+    public void testExtendPojoWithoutPositionUsesNoArgSuper(RUN_TYPE runType) {
+        // Executable-model regression for #6779: a declared type extending a Java class that has NO
+        // @Position fields must not pull the superclass's instance fields into the generated
+        // constructor - doing so would emit a super(...) call with no matching superclass constructor
+        // and fail to compile ("The constructor Child(String) is undefined"). Only the declared type's
+        // own fields are constructor parameters, and a no-arg super() is used. PlainParent has a single
+        // (unannotated) field and only a no-arg constructor. (Exec-model codegen only; the classic
+        // compiler handles declared-extends-POJO via a different path.)
+        String str =
+                "package org.test;\n" +
+                "import " + PlainParent.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Child extends PlainParent\n" +
+                "    dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "    insert( new Child(\"Sales\") );\n" +
+                "end\n" +
+                "rule Check when\n" +
+                "    $c : Child( dept == \"Sales\" )\n" +
+                "then\n" +
+                "    insert( new Result($c.getDept()) );\n" +
+                "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).hasSize(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Sales");
     }
 
     @ParameterizedTest
