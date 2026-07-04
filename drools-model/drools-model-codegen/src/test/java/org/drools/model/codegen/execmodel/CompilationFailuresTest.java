@@ -20,6 +20,7 @@ package org.drools.model.codegen.execmodel;
 
 import java.math.BigDecimal;
 
+import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,6 +29,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CompilationFailuresTest extends BaseModelTest {
 
@@ -65,6 +67,27 @@ public class CompilationFailuresTest extends BaseModelTest {
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         assertThat(results.getMessages().get(0).getLine()).isEqualTo(3);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersPatternOnly")
+    public void testUnparseableConstraintInUnnamedPatternFailsWithContext(RUN_TYPE runType) {
+        // When the pattern auto-naming pre-pass (ClassPatternDSL.findFirstInnerBinding) cannot parse a
+        // constraint of an unnamed pattern, the build must fail with an actionable error naming the rule
+        // and the offending expression - not a bare "unexpected token" and not a silently skipped
+        // constraint. 'class == X.class' is rejected by the executable-model DRLX grammar, so it triggers
+        // that path. Executable-model only: the classic compiler accepts 'class ==' and never reaches it.
+        String drl =
+                "package org.test;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    Person( class == Child.class )\n" +
+                "then end";
+
+        assertThatThrownBy(() -> createKieBuilder(runType, drl))
+                .hasStackTraceContaining("rule 'R'")
+                .hasStackTraceContaining("class == Child.class");
     }
 
     private Results getCompilationResults(RUN_TYPE runType, String drl ) {
