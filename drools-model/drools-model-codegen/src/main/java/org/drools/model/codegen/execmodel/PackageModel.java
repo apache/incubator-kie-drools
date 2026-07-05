@@ -224,7 +224,7 @@ public class PackageModel {
         packageModel.addImports( pkg.getImports().keySet());
         packageModel.addStaticImports( pkg.getStaticImports());
         packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());
-        packageModel.addGlobals( pkg );
+        packageModel.addGlobals( typeDeclarationContext.getGlobals() ); // register globals from all packages in context
         packageModel.setAccumulateFunctions( pkg.getAccumulateFunctions());
         packageModel.setInternalKnowledgePackage( pkg );
         new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( typeDeclarationContext, results, packageDescr.getWindowDeclarations());
@@ -387,6 +387,10 @@ public class PackageModel {
 
     public void addGlobals(InternalKnowledgePackage pkg) {
         globals.putAll( pkg.getGlobals() );
+    }
+
+    public void addGlobals(Map<String, java.lang.reflect.Type> globals) {
+        this.globals.putAll( globals );
     }
 
     public Map<String, java.lang.reflect.Type> getGlobals() {

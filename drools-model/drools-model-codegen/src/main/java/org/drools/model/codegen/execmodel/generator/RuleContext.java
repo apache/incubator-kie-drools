@@ -31,7 +31,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -314,35 +313,19 @@ public class RuleContext {
     }
 
     public void addGlobalDeclarations() {
-        Map<String, java.lang.reflect.Type> globals = getGlobals();
-
-        // Globals are kbase-wide: include globals declared in any package of the kbase, not only
-        // those in the current package or in packages imported with a wildcard. This matches the
-        // classic (non-executable-model) behavior where a global is visible from every package, so
-        // a constraint can reference a global declared in another DRL without a wildcard import.
-        typeDeclarationContext.getPackageRegistry().values().stream()
-                .filter( Objects::nonNull )
-                .filter( pkgRegistry -> pkgRegistry.getPackage() != null )
-                .forEach( pkgRegistry -> globals.putAll( pkgRegistry.getPackage().getGlobals() ) );
-
-        for (Map.Entry<String, java.lang.reflect.Type> ks : globals.entrySet()) {
+        // Globals are KieBase-wide (see getGlobals()); register each as a declaration for this rule.
+        for (Map.Entry<String, java.lang.reflect.Type> ks : getGlobals().entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new TypedDeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
     }
 
     public Map<String, java.lang.reflect.Type> getGlobals() {
-        Map<String, java.lang.reflect.Type> pkgGlobals = packageModel.getGlobals();
-        if (ruleUnitDescr == null) {
-            return pkgGlobals;
+        // KieBase-wide globals (declared in any package of the build); the current rule unit's globals, if any, are layered on top
+        Map<String, java.lang.reflect.Type> globals = new HashMap<>(typeDeclarationContext.getGlobals());
+        if (ruleUnitDescr != null) {
+            globals.putAll(packageModel.getGlobalsForUnit(ruleUnitDescr.getSimpleName()));
         }
-        Map<String, java.lang.reflect.Type> ruleUnitGlobals = packageModel.getGlobalsForUnit(ruleUnitDescr.getSimpleName());
-        if (pkgGlobals.isEmpty()) {
-            return ruleUnitGlobals;
-        }
-        Map<String, java.lang.reflect.Type> globals = new HashMap<>();
-        globals.putAll(pkgGlobals);
-        globals.putAll(ruleUnitGlobals);
         return globals;
     }
 
