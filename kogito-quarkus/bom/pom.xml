@@ -1182,6 +1182,12 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-deployment</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-jobs-common-messaging</artifactId>
         <version>${project.version}</version>
       </dependency>
