@@ -18,20 +18,20 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
+import org.kie.kogito.usertask.lifecycle.UserTaskTransitionException;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class UserTaskTransitionExceptionMapper extends BaseExceptionMapper<UserTaskInstanceNotFoundException> {
+public class UserTaskTransitionExceptionMapper extends BaseExceptionMapper<UserTaskTransitionException> {
 
     @Inject
     ExceptionsHandler exceptionsHandler;
 
     @Override
-    public Response toResponse(UserTaskInstanceNotFoundException e) {
+    public Response toResponse(UserTaskTransitionException e) {
         return exceptionsHandler.mapException(e);
     }
 }

@@ -36,6 +36,7 @@ import org.kie.kogito.resource.exceptions.AbstractExceptionsHandler;
 import org.kie.kogito.resource.exceptions.ExceptionBodyMessage;
 import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
 import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
+import org.kie.kogito.usertask.lifecycle.UserTaskTransitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -161,6 +162,11 @@ public class ExceptionsHandler extends AbstractExceptionsHandler<ResponseEntity<
 
     @ExceptionHandler(VariableViolationException.class)
     public ResponseEntity<Map<String, String>> toResponse(VariableViolationException exception) {
+        return mapException(exception);
+    }
+
+    @ExceptionHandler(UserTaskTransitionException.class)
+    public ResponseEntity<Map<String, String>> toResponse(UserTaskTransitionException exception) {
         return mapException(exception);
     }
 
