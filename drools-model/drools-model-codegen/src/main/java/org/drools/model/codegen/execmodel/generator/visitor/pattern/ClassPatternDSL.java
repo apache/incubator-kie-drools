@@ -27,9 +27,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -168,12 +170,28 @@ public class ClassPatternDSL extends PatternDSL {
     }
 
     private Optional<String> findFirstInnerBinding(List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
-        return constraintDescrs.stream()
-                .map( constraint -> ConstraintExpression.createConstraintExpression( context, patternType, constraint, isPositional(constraint) ).getExpression() )
-                .map( DrlxParseUtil::parseExpression )
-                .filter( drlx -> drlx.getBind() != null )
-                .map( drlx -> drlx.getBind().asString() )
-                .findFirst();
+        for ( BaseDescr constraint : constraintDescrs ) {
+            ConstraintExpression constraintExpression =
+                    ConstraintExpression.createConstraintExpression( context, patternType, constraint, isPositional( constraint ) );
+            if ( constraintExpression == null ) {
+                continue;
+            }
+            String expression = constraintExpression.getExpression();
+            if ( expression == null || expression.trim().isEmpty() ) {
+                continue;
+            }
+            DrlxExpression drlx;
+            try {
+                drlx = DrlxParseUtil.parseExpression( expression );
+            } catch ( ParseProblemException e ) {
+                throw new RuntimeException( "Unable to parse constraint [" + expression + "] while deriving an " +
+                        "identifier for an unnamed pattern of type " + patternType + " in rule '" + context.getRuleName() + "'", e );
+            }
+            if ( drlx.getBind() != null ) {
+                return Optional.of( drlx.getBind().asString() );
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
