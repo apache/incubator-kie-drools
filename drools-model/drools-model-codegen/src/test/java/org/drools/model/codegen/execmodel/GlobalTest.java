@@ -31,6 +31,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
@@ -121,6 +123,40 @@ public class GlobalTest extends BaseModelTest {
         ksession.insert(new Person("Rich", new BigDecimal("150")));  // 150 < 100 -> no match
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testRemovingDeclaringPackageCleansUpGlobal(RUN_TYPE runType) {
+        // A global declared in com.test.globals and referenced from com.test.rules must be
+        // removed from the KieBase when com.test.globals is removed, because no remaining
+        // package declares it. If the executable model incorrectly seeds all globals into every
+        // PackageModel, the global survives removal because the non-declaring package still
+        // "owns" it — breaking the package-removal contract.
+        String globalDrl =
+                "package com.test.globals;\n" +
+                "global java.math.BigDecimal threshold;\n";
+        String ruleDrl =
+                "package com.test.rules;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  Person( money.compareTo(threshold) < 0 )\n" +
+                "then end";
+
+        KieSession ksession = getKieSession(runType, globalDrl, ruleDrl);
+        KieBase kieBase = ksession.getKieBase();
+
+        assertThat(kieBase.getKiePackage("com.test.globals").getGlobalVariables())
+                .extracting(Global::getName).contains("threshold");
+
+        kieBase.removeKiePackage("com.test.globals");
+
+        assertThat(kieBase.getKiePackage("com.test.globals")).isNull();
+        KiePackage rulesPkg = kieBase.getKiePackage("com.test.rules");
+        assertThat(rulesPkg).isNotNull();
+        assertThat(rulesPkg.getGlobalVariables())
+                .as("Global must be removed after its declaring package is removed")
+                .extracting(Global::getName).doesNotContain("threshold");
     }
 
     public static class Functions {

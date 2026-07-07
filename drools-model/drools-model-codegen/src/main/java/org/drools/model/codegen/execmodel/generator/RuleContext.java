@@ -46,6 +46,7 @@ import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.base.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
@@ -313,11 +314,34 @@ public class RuleContext {
     }
 
     public void addGlobalDeclarations() {
-        // Globals are KieBase-wide (see getGlobals()); register each as a declaration for this rule.
-        for (Map.Entry<String, java.lang.reflect.Type> ks : getGlobals().entrySet()) {
+        Map<String, java.lang.reflect.Type> globals = getGlobals();
+        for (Map.Entry<String, java.lang.reflect.Type> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new TypedDeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
+        registerExternalGlobals(globals);
+    }
+
+    private void registerExternalGlobals(Map<String, java.lang.reflect.Type> globals) {
+        Map<String, java.lang.reflect.Type> pkgGlobals = packageModel.getGlobals();
+        for (Map.Entry<String, java.lang.reflect.Type> entry : globals.entrySet()) {
+            if (!pkgGlobals.containsKey(entry.getKey())) {
+                String originatingPackage = findGlobalPackage(entry.getKey());
+                if (originatingPackage != null) {
+                    packageModel.addExternalGlobal(entry.getKey(), originatingPackage, entry.getValue());
+                }
+            }
+        }
+    }
+
+    private String findGlobalPackage(String globalName) {
+        for (Map.Entry<String, PackageRegistry> entry : typeDeclarationContext.getPackageRegistry().entrySet()) {
+            PackageRegistry reg = entry.getValue();
+            if (reg != null && reg.getPackage() != null && reg.getPackage().getGlobals().containsKey(globalName)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public Map<String, java.lang.reflect.Type> getGlobals() {
