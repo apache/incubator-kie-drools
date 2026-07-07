@@ -127,6 +127,20 @@ public class CiComputeBuildScopes {
             }
         }
 
+        // 3b. Quarkus extension pairing: the extension-descriptor goal on a
+        //     runtime module resolves its -deployment counterpart at build time.
+        //     Inject a synthetic edge so both land in the same build set.
+        //     This matches any <ga> / <ga>-deployment pair, not just Quarkus
+        //     extensions — that is safe: the worst case is a non-extension pair
+        //     gets pulled into the same set, which is conservative, not wrong.
+        for (String ga : List.copyOf(gaToDir.keySet())) {
+            String deploymentGa = ga + "-deployment";
+            if (gaToDir.containsKey(deploymentGa)) {
+                upstreamOf.computeIfAbsent(ga, k -> new HashSet<>()).add(deploymentGa);
+                downstreamOf.computeIfAbsent(deploymentGa, k -> new HashSet<>()).add(ga);
+            }
+        }
+
         // 4. resolve changed dirs -> GA
         Map<Path, String> dirToGa = gaToDir.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
