@@ -41,3 +41,7 @@ github:
         - root
       restrict_deletion: true
       restrict_force_push: true
+  enabled_merge_buttons:
+    squash: true
+    merge: true
+    rebase: false
