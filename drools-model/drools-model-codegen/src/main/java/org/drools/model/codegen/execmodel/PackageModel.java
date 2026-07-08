@@ -140,6 +140,7 @@ public class PackageModel {
     private Map<String, Method> staticMethods;
 
     private final Map<String, java.lang.reflect.Type> globals = new HashMap<>();
+    private final Map<String, Map.Entry<String, java.lang.reflect.Type>> externalGlobals = new ConcurrentHashMap<>();
 
     private final Map<String, RuleUnitMembers> ruleUnitMembers = new ConcurrentHashMap<>();
 
@@ -224,7 +225,7 @@ public class PackageModel {
         packageModel.addImports( pkg.getImports().keySet());
         packageModel.addStaticImports( pkg.getStaticImports());
         packageModel.addEntryPoints( packageDescr.getEntryPointDeclarations());
-        packageModel.addGlobals( typeDeclarationContext.getGlobals() ); // register globals from all packages in context
+        packageModel.addGlobals( pkg );
         packageModel.setAccumulateFunctions( pkg.getAccumulateFunctions());
         packageModel.setInternalKnowledgePackage( pkg );
         new WindowReferenceGenerator( packageModel, typeResolver ).addWindowReferences( typeDeclarationContext, results, packageDescr.getWindowDeclarations());
@@ -389,8 +390,10 @@ public class PackageModel {
         globals.putAll( pkg.getGlobals() );
     }
 
-    public void addGlobals(Map<String, java.lang.reflect.Type> globals) {
-        this.globals.putAll( globals );
+    public void addExternalGlobal(String globalName, String originatingPackage, java.lang.reflect.Type type) {
+        if (!globals.containsKey(globalName)) {
+            externalGlobals.putIfAbsent(globalName, Map.entry(originatingPackage, type));
+        }
     }
 
     public Map<String, java.lang.reflect.Type> getGlobals() {
@@ -620,6 +623,10 @@ public class PackageModel {
 
         for ( Map.Entry<String, java.lang.reflect.Type> g : globals.entrySet() ) {
             addGlobalField(rulesClass, rulesListInitializerBody, getName(), g.getKey(), g.getValue());
+        }
+
+        for ( Map.Entry<String, Map.Entry<String, java.lang.reflect.Type>> ext : externalGlobals.entrySet() ) {
+            addGlobalFieldDeclaration(rulesClass, ext.getValue().getKey(), ext.getKey(), ext.getValue().getValue());
         }
 
         rulesClass.addMember( generateListField("org.drools.model.Global", "globals", globals.isEmpty() && !hasRuleUnit) );
@@ -907,6 +914,11 @@ public class PackageModel {
     }
 
     private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, BlockStmt rulesListInitializerBody, String packageName, String globalName, java.lang.reflect.Type globalType) {
+        addGlobalFieldDeclaration(classDeclaration, packageName, globalName, globalType);
+        addInitStatement( rulesListInitializerBody, new NameExpr( toVar(globalName) ), "globals" );
+    }
+
+    private static void addGlobalFieldDeclaration(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, java.lang.reflect.Type globalType) {
         ClassOrInterfaceType varType = toClassOrInterfaceType(Global.class);
         MethodCallExpr declarationOfCall = createDslTopLevelMethod(GLOBAL_OF_CALL);
 
@@ -929,8 +941,6 @@ public class PackageModel {
         FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
-
-        addInitStatement( rulesListInitializerBody, new NameExpr( toVar(globalName) ), "globals" );
     }
 
     public void setAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
