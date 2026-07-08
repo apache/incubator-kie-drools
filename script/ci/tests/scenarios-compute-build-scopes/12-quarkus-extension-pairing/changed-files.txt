@@ -1,0 +1,1 @@
+drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/quarkus/util/deployment/AbstractDroolsAssetsProcessor.java
