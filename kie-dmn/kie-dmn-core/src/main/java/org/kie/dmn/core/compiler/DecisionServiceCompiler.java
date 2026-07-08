@@ -40,19 +40,17 @@ import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.DMNRuntimeUtils;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
-import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.core.util.NamespaceUtil;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.dmn.typesafe.DMNTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -278,7 +276,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         QName functionReturnTypeRef = functionItem.getOutputTypeRef();
         if (decisionServiceNode.getDecisionService().getOutputDecision().size() == 1) {
             QName outputDecisionReturnTypeRef = outputDecisions.get(0).getDecision().getVariable().getTypeRef();
-            if (functionReturnTypeRef != null && outputDecisionReturnTypeRef != null && !functionReturnTypeRef.equals(outputDecisionReturnTypeRef) && !isReturnTypeCollectionCompatible(functionReturnTypeRef, outputDecisionReturnTypeRef, model)) {
+            if (functionReturnTypeRef != null && outputDecisionReturnTypeRef != null && !functionReturnTypeRef.equals(outputDecisionReturnTypeRef) && !DMNRuntimeUtils.isReturnTypeCollectionCompatible(functionReturnTypeRef, outputDecisionReturnTypeRef, model)) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       decisionServiceNode.getDecisionService(),
@@ -329,56 +327,4 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             }
         }
     }
-
-    static boolean isReturnTypeCollectionCompatible(QName functionReturnTypeRef,  QName outputDecisionReturnTypeRef, DMNModelImpl model) {
-        DMNType decisionServiceOutputType = resolveDMNType(functionReturnTypeRef, model);
-        DMNType decisionOutputType = resolveDMNType(outputDecisionReturnTypeRef, model);
-
-        if (!decisionServiceOutputType.isCollection() && decisionOutputType.isCollection()) {
-            DMNType outputDecisionElementType = decisionOutputType.getBaseType();
-            return outputDecisionElementType == null || DMNTypeUtils.getFEELBuiltInType(outputDecisionElementType)
-                    == DMNTypeUtils.getFEELBuiltInType(decisionServiceOutputType);
-        }
-        if (decisionServiceOutputType.isCollection() && !decisionOutputType.isCollection()) {
-            DMNType decisionServiceElementType = decisionServiceOutputType.getBaseType();
-            return decisionServiceElementType != null && DMNTypeUtils.getFEELBuiltInType(decisionServiceElementType)
-                    == DMNTypeUtils.getFEELBuiltInType(decisionOutputType);
-        }
-        return decisionServiceOutputType instanceof SimpleTypeImpl decisionServiceSimpleType && decisionServiceSimpleType.getFeelType() == BuiltInType.DATE_TIME &&
-                decisionOutputType instanceof SimpleTypeImpl decisionOutputSimpleType && decisionOutputSimpleType.getFeelType() == BuiltInType.DATE;
-    }
-
-    static DMNType resolveDMNType(QName typeRef, DMNModelImpl model) {
-        DMNType type = model.getTypeRegistry().resolveType(model.getNamespace(), typeRef.getLocalPart());
-        if (type == null) {
-            BuiltInType builtInType = resolveBuiltInType(typeRef.getLocalPart());
-            if (builtInType != null) {
-                boolean isCollection = (builtInType == BuiltInType.LIST);
-                type = new SimpleTypeImpl(
-                        model.getNamespace(),
-                        builtInType.getName(),
-                        null,
-                        isCollection,
-                        null,
-                        null,
-                        null,
-                        builtInType
-                );
-            }
-        }
-        return type;
-    }
-
-    static BuiltInType resolveBuiltInType(String name) {
-        if (name == null) return null;
-        for (BuiltInType builtInType : BuiltInType.values()) {
-            for (String typeName : builtInType.getNames()) {
-                if (typeName.equalsIgnoreCase(name)) {
-                    return builtInType;
-                }
-            }
-        }
-        return null;
-    }
-
 }

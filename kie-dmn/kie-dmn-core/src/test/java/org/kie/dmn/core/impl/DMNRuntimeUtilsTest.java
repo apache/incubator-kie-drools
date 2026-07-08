@@ -27,12 +27,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
+import javax.xml.namespace.QName;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV16;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.InputData;
 
@@ -443,6 +446,93 @@ class DMNRuntimeUtilsTest {
         assertThat(DMNRuntimeUtils.getIdentifier(dmnNode)).isEqualTo(id);
         when(dmnNode.getName()).thenReturn(name);
         assertThat(DMNRuntimeUtils.getIdentifier(dmnNode)).isEqualTo(name);
+    }
+
+    // decisionServiceOutputType=scalar "string", decisionOutputType=collection "tDateList" (base=date) — bases differ → false
+    @Test
+    void isReturnTypeCollectionCompatible_incompatible() {
+        final String ns = "ns";
+        DMNTypeRegistryV16 registry = new DMNTypeRegistryV16(null);
+        SimpleTypeImpl dateType = new SimpleTypeImpl(ns, "date", null, false, null, null, null, BuiltInType.DATE);
+        SimpleTypeImpl tDateList = new SimpleTypeImpl(ns, "tDateList", null, true, null, null, dateType, BuiltInType.DATE);
+        registry.registerType(tDateList);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn(ns);
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DMNRuntimeUtils.isReturnTypeCollectionCompatible(
+                new QName(ns, "string"), new QName(ns, "tDateList"), model)).isFalse();
+    }
+
+    // decisionServiceOutputType=scalar "date", decisionOutputType=collection "tDateList" (base=date) — same base → true
+    @Test
+    void isReturnTypeCollectionCompatible_scalarFiCollectionFd() {
+        final String ns = "ns";
+        DMNTypeRegistryV16 registry = new DMNTypeRegistryV16(null);
+        SimpleTypeImpl dateType = new SimpleTypeImpl(ns, "date", null, false, null, null, null, BuiltInType.DATE);
+        SimpleTypeImpl tDateList = new SimpleTypeImpl(ns, "tDateList", null, true, null, null, dateType, BuiltInType.DATE);
+        registry.registerType(tDateList);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn(ns);
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DMNRuntimeUtils.isReturnTypeCollectionCompatible(
+                new QName(ns, "date"), new QName(ns, "tDateList"), model)).isTrue();
+    }
+
+    // decisionServiceOutputType=collection "tDateList" (base=date), decisionOutputType=scalar "date" — compatible → true
+    @Test
+    void isReturnTypeCollectionCompatible_collectionFiScalarFd() {
+        final String ns = "ns";
+        DMNTypeRegistryV16 registry = new DMNTypeRegistryV16(null);
+        SimpleTypeImpl dateType = new SimpleTypeImpl(ns, "date", null, false, null, null, null, BuiltInType.DATE);
+        SimpleTypeImpl tDateList = new SimpleTypeImpl(ns, "tDateList", null, true, null, null, dateType, BuiltInType.DATE);
+        registry.registerType(tDateList);
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn(ns);
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DMNRuntimeUtils.isReturnTypeCollectionCompatible(
+                new QName(ns, "tDateList"), new QName(ns, "date"), model)).isTrue();
+    }
+
+    // decisionServiceOutputType="date and time", decisionOutputType="date" — date-to-dateTime coercion pattern → true
+    @Test
+    void isReturnTypeCollectionCompatible_dateTimeAndDateCompatible() {
+        DMNTypeRegistryV16 registry = new DMNTypeRegistryV16(null);
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DMNRuntimeUtils.isReturnTypeCollectionCompatible(
+                new QName("", "date and time"), new QName("", "date"), model)).isTrue();
+    }
+
+    // decisionServiceOutputType="date", decisionOutputType="date and time" — order matters → false
+    @Test
+    void isReturnTypeCollectionCompatible_dateAndDateTimeIncompatible() {
+        DMNTypeRegistryV16 registry = new DMNTypeRegistryV16(null);
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DMNRuntimeUtils.isReturnTypeCollectionCompatible(
+                new QName("", "date"), new QName("", "date and time"), model)).isFalse();
+    }
+
+    // either typeRef is unknown — resolveDMNType returns null → false
+    @Test
+    void isReturnTypeCollectionCompatible_unknownTypeRef() {
+        DMNTypeRegistryV16 registry = new DMNTypeRegistryV16(null);
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("ns");
+        when(model.getTypeRegistry()).thenReturn(registry);
+
+        assertThat(DMNRuntimeUtils.isReturnTypeCollectionCompatible(
+                new QName("", "not-a-type"), new QName("", "date"), model)).isFalse();
     }
 
     private static class OverflowingObject {

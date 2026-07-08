@@ -157,7 +157,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
 
         private Object performTypeCheckIfNeeded(Object param, int paramIndex) {
             DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
-            Object result = DMNRuntimeUtils.coerceUsingType(param,
+            Object result = DMNRuntimeUtils.coerceSingletonCollectionItemToValue(param,
                                                             dsFormalParameter.type,
                                                             typeCheck,
                                                             (rx, tx) -> MsgUtil.reportMessage(LOG,

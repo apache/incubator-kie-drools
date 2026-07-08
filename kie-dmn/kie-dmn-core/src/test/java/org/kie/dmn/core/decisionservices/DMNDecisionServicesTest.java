@@ -750,7 +750,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     private static final String NS = "https://kie.org/dmn/_F9BB5760-8BCA-4216-AAD9-8BD4FB70802D";
     private static final String NAME = "1157-implicit-conversions-DS";
-    private static final String FILE_NAME = "DecisionServiceImplicitConversions.dmn";
+    private static final String FILE_NAME = "valid_models/DMNv1_6/DecisionService/DecisionServiceImplicitConversions.dmn";
 
     @ParameterizedTest
     @MethodSource("params")
