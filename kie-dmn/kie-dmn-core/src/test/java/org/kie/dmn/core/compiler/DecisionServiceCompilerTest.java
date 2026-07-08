@@ -18,12 +18,6 @@
  */
 package org.kie.dmn.core.compiler;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.xml.namespace.QName;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNMessage;
@@ -37,6 +31,10 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamedElement;
 import org.mockito.MockedStatic;
+
+import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
