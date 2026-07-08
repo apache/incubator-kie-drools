@@ -112,7 +112,7 @@
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.com.networknt>1.0.86</version.com.networknt>
     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
-    <version.com.ongres.scram>3.2</version.com.ongres.scram>
+    <version.com.ongres.scram>3.3</version.com.ongres.scram>
     <version.com.squareup.okhttp3>4.12.0</version.com.squareup.okhttp3>
     <version.com.sun.activation>2.0.2</version.com.sun.activation>
     <version.com.sun.xml.bind>4.0.5</version.com.sun.xml.bind>
