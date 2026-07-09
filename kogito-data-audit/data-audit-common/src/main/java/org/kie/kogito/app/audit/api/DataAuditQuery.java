@@ -53,12 +53,19 @@ public class DataAuditQuery {
     @Override
     public String toString() {
         return "DataAuditQuery [identifier="
-                + identifier.replace('\n', '_').replace('\r', '_')
+                + sanitize(identifier)
                 + ", graphQLDefinition="
-                + graphQLDefinition.replace('\n', '_').replace('\r', '_')
+                + sanitize(graphQLDefinition)
                 + ", query="
-                + query.replace('\n', '_').replace('\r', '_')
+                + sanitize(query)
                 + "]";
+    }
+
+    private static String sanitize(String value) {
+        if (value == null) {
+            return null;
+        }
+        return value.replaceAll("\\R+", "_");
     }
 
 }
