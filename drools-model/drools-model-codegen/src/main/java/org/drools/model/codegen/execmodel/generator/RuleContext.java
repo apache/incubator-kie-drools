@@ -31,7 +31,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -47,6 +46,7 @@ import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.base.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
@@ -315,34 +315,41 @@ public class RuleContext {
 
     public void addGlobalDeclarations() {
         Map<String, java.lang.reflect.Type> globals = getGlobals();
-
-        // also takes globals defined in different packages imported with a wildcard
-        packageModel.getImports().stream()
-                .filter( imp -> imp.endsWith(".*") )
-                .map( imp -> imp.substring(0, imp.length()-2) )
-                .map( imp -> typeDeclarationContext.getPackageRegistry(imp) )
-                .filter( Objects::nonNull )
-                .map( pkgRegistry -> pkgRegistry.getPackage().getGlobals() )
-                .forEach( globals::putAll );
-        
         for (Map.Entry<String, java.lang.reflect.Type> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new TypedDeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
+        registerExternalGlobals(globals);
+    }
+
+    private void registerExternalGlobals(Map<String, java.lang.reflect.Type> globals) {
+        Map<String, java.lang.reflect.Type> pkgGlobals = packageModel.getGlobals();
+        for (Map.Entry<String, java.lang.reflect.Type> entry : globals.entrySet()) {
+            if (!pkgGlobals.containsKey(entry.getKey())) {
+                String originatingPackage = findGlobalPackage(entry.getKey());
+                if (originatingPackage != null) {
+                    packageModel.addExternalGlobal(entry.getKey(), originatingPackage, entry.getValue());
+                }
+            }
+        }
+    }
+
+    private String findGlobalPackage(String globalName) {
+        for (Map.Entry<String, PackageRegistry> entry : typeDeclarationContext.getPackageRegistry().entrySet()) {
+            PackageRegistry reg = entry.getValue();
+            if (reg != null && reg.getPackage() != null && reg.getPackage().getGlobals().containsKey(globalName)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public Map<String, java.lang.reflect.Type> getGlobals() {
-        Map<String, java.lang.reflect.Type> pkgGlobals = packageModel.getGlobals();
-        if (ruleUnitDescr == null) {
-            return pkgGlobals;
+        // KieBase-wide globals (declared in any package of the build); the current rule unit's globals, if any, are layered on top
+        Map<String, java.lang.reflect.Type> globals = new HashMap<>(typeDeclarationContext.getGlobals());
+        if (ruleUnitDescr != null) {
+            globals.putAll(packageModel.getGlobalsForUnit(ruleUnitDescr.getSimpleName()));
         }
-        Map<String, java.lang.reflect.Type> ruleUnitGlobals = packageModel.getGlobalsForUnit(ruleUnitDescr.getSimpleName());
-        if (pkgGlobals.isEmpty()) {
-            return ruleUnitGlobals;
-        }
-        Map<String, java.lang.reflect.Type> globals = new HashMap<>();
-        globals.putAll(pkgGlobals);
-        globals.putAll(ruleUnitGlobals);
         return globals;
     }
 
