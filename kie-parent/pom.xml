@@ -169,7 +169,7 @@
     <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
     <version.jakarta.enterprise.cdi-api>4.1.0</version.jakarta.enterprise.cdi-api>
     <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
-    <version.jakarta.json>1.1.7</version.jakarta.json>
+    <version.jakarta.json>1.1.8</version.jakarta.json>
     <version.jakarta.json-api>2.1.3</version.jakarta.json-api>
     <version.jakarta.json.bind-api>3.0.1</version.jakarta.json.bind-api>
     <version.jakarta.persistence-api>3.2.0</version.jakarta.persistence-api>
