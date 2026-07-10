@@ -280,7 +280,7 @@
     <version.org.mvel>2.5.2.Final</version.org.mvel>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
-    <version.org.postgresql>42.7.11</version.org.postgresql>
+    <version.org.postgresql>42.7.12</version.org.postgresql>
     <version.org.powermock>2.0.9</version.org.powermock>
     <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
     <version.org.reflections>0.10.2</version.org.reflections>
