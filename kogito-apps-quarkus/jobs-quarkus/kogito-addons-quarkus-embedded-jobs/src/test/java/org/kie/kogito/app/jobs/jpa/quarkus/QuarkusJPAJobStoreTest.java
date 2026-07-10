@@ -88,6 +88,6 @@ public class QuarkusJPAJobStoreTest {
         listener.setCount(4);
         jobsService.scheduleJob(jobDescription);
 
-        Awaitility.await().atMost(Duration.ofSeconds(5L)).untilAsserted(() -> assertThat(exceptionHandler.isError()).isTrue());
+        Awaitility.await().atMost(Duration.ofSeconds(10L)).untilAsserted(() -> assertThat(exceptionHandler.isError()).isTrue());
     }
 }

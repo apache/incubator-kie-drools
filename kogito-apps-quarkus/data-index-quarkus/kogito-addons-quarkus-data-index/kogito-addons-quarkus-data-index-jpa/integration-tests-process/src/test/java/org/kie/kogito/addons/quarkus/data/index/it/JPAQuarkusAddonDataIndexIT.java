@@ -25,8 +25,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 @QuarkusIntegrationTest
@@ -39,13 +38,14 @@ class JPAQuarkusAddonDataIndexIT {
     @Test
     void testDataIndexAddon() {
         String processDefId = "hello";
+        String processDefVersion = "1.0";
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions(where: { id: {equal: \\\"" + processDefId +
                 "\\\"}}){ id, version, name } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessDefinitions.size()", is(1))
-                .body("data.ProcessDefinitions[0].id", is("hello"))
-                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].id", is(processDefId))
+                .body("data.ProcessDefinitions[0].version", is(processDefVersion))
                 .body("data.ProcessDefinitions[0].name", is("hello"));
 
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
@@ -63,7 +63,8 @@ class JPAQuarkusAddonDataIndexIT {
                 .extract().path("id");
 
         given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ProcessInstances(where: { id: {equal: \\\"" + processInstanceId + "\\\"}}){ id, state, diagram, source, nodeDefinitions { name } } }\" }")
+                .body("{ \"query\" : \"{ProcessInstances(where: { id: {equal: \\\"" + processInstanceId
+                        + "\\\"}}){ id, state, diagram, source, nodeDefinitions { name }, processId, processVersion } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessInstances.size()", is(1))
@@ -71,7 +72,72 @@ class JPAQuarkusAddonDataIndexIT {
                 .body("data.ProcessInstances[0].state", is("COMPLETED"))
                 .body("data.ProcessInstances[0].diagram", is(notNullValue()))
                 .body("data.ProcessInstances[0].source", is(notNullValue()))
-                .body("data.ProcessInstances[0].nodeDefinitions.size()", is(2));
+                .body("data.ProcessInstances[0].nodeDefinitions.size()", is(2))
+                .body("data.ProcessInstances[0].processId", is(processDefId))
+                .body("data.ProcessInstances[0].processVersion", is(processDefVersion));
+    }
+
+    @Test
+    void testProcessRelevantInformationAcrossSchema() {
+        String parentDefId = "parent";
+        String parentDefVersion = "1.0";
+        String childDefId = "child";
+        String childDefVersion = "1.0";
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions(where: { id: {equal: \\\"" + parentDefId +
+                "\\\"}}){ id, version, name } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(1))
+                .body("data.ProcessDefinitions[0].id", is(parentDefId))
+                .body("data.ProcessDefinitions[0].version", is(parentDefVersion))
+                .body("data.ProcessDefinitions[0].name", is(parentDefId));
+
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessInstances.size()", is(greaterThanOrEqualTo(0)));
+
+        String parentInstanceId = given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/" + parentDefId)
+                .then()
+                .statusCode(201)
+                .body("id", is(notNullValue()))
+                .extract().path("id");
+
+        given().contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ProcessInstances(where: { id: {equal: \\\"" + parentInstanceId
+                        + "\\\"}}){ id, state, diagram, source, nodeDefinitions { name }, processId, processVersion } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessInstances.size()", is(1))
+                .body("data.ProcessInstances[0].id", is(parentInstanceId))
+                .body("data.ProcessInstances[0].processId", is(parentDefId))
+                .body("data.ProcessInstances[0].processVersion", is(parentDefVersion));
+
+        given().contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{UserTaskInstances(where: { and: { processId: {equal: \\\"" + parentDefId
+                        + "\\\"}, processVersion:{equal: \\\"" + parentDefVersion + "\\\"}}}){ id, processId, processVersion, rootProcessId, rootProcessVersion } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.UserTaskInstances.size()", is(1))
+                .body("data.UserTaskInstances[0].id", is(notNullValue()))
+                .body("data.UserTaskInstances[0].processId", is(parentDefId))
+                .body("data.UserTaskInstances[0].processVersion", is(parentDefVersion))
+                .body("data.UserTaskInstances[0].rootProcessId", is(nullValue()))
+                .body("data.UserTaskInstances[0].rootProcessVersion", is(nullValue()));
+        given().contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{UserTaskInstances(where: { and: {rootProcessId: {equal: \\\"" + parentDefId
+                        + "\\\"}, rootProcessVersion:{equal: \\\"" + parentDefVersion + "\\\"}}}){ id, processId, processVersion, rootProcessId, rootProcessVersion } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.UserTaskInstances.size()", is(1))
+                .body("data.UserTaskInstances[0].id", is(notNullValue()))
+                .body("data.UserTaskInstances[0].processId", is(childDefId))
+                .body("data.UserTaskInstances[0].processVersion", is(childDefVersion))
+                .body("data.UserTaskInstances[0].rootProcessId", is(parentDefId))
+                .body("data.UserTaskInstances[0].rootProcessVersion", is(parentDefVersion));
     }
 
     @Test

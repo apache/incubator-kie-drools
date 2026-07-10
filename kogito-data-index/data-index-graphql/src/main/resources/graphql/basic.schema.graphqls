@@ -84,11 +84,13 @@ type TimerInstance {
 type ProcessInstance {
     id: String!
     processId: String!
-    version: String
+    processVersion: String
+    version: String @deprecated(reason: "Use 'processVersion' instead.")
     processName: String
     parentProcessInstanceId: String
     rootProcessInstanceId: String
     rootProcessId: String
+    rootProcessVersion: String
     roles: [String!]
     state: ProcessInstanceState
     endpoint: String!
@@ -185,8 +187,10 @@ type Milestone {
 
 input ProcessInstanceOrderBy {
     processId: OrderBy
+    processVersion: OrderBy
     processName: OrderBy
     rootProcessId: OrderBy
+    rootProcessVersion: OrderBy
     state: OrderBy
     start: OrderBy
     end: OrderBy
@@ -208,10 +212,12 @@ input ProcessInstanceArgument {
     not: ProcessInstanceArgument
     id: IdArgument
     processId: StringArgument
+    processVersion: StringArgument
     processName: StringArgument
     parentProcessInstanceId: IdArgument
     rootProcessInstanceId: IdArgument
     rootProcessId: StringArgument
+    rootProcessVersion: StringArgument
     state: ProcessInstanceStateArgument
     error: ProcessInstanceErrorArgument
     nodes: NodeInstanceArrayArgument
@@ -430,8 +436,10 @@ type UserTaskInstance {
     priority: String
     processInstanceId: String!
     processId: String
+    processVersion: String
     rootProcessInstanceId: String
     rootProcessId: String
+    rootProcessVersion: String
     state: String
     actualOwner: String
     adminGroups: [String!]
@@ -462,6 +470,7 @@ input UserTaskInstanceArgument {
     name: StringArgument
     priority: StringArgument
     processId: StringArgument
+    processVersion: StringArgument
     processInstanceId: IdArgument
     actualOwner: StringArgument
     potentialUsers: StringArrayArgument
@@ -478,6 +487,7 @@ input UserTaskInstanceArgument {
     slaDueDate: DateArgument
     rootProcessInstanceId: StringArgument
     rootProcessId: StringArgument
+    rootProcessVersion: StringArgument
     externalReferenceId: StringArgument
     endpoint: StringArgument
 }
@@ -533,6 +543,9 @@ input UserTaskInstanceOrderBy {
     name: OrderBy
     priority: OrderBy
     processId: OrderBy
+    processVersion: OrderBy
+    rootProcessId: OrderBy
+    rootProcessVersion: OrderBy
     completed: OrderBy
     started: OrderBy
     referenceName: OrderBy
@@ -552,10 +565,12 @@ input Pagination {
 type Job {
     id: String!
     processId: String
+    processVersion: String
     processInstanceId: String
     nodeInstanceId: String
     rootProcessInstanceId: String
     rootProcessId: String
+    rootProcessVersion: String
     status: JobStatus!
     expirationTime: DateTime
     priority: Int
@@ -591,10 +606,12 @@ input JobArgument {
     not: JobArgument
     id: IdArgument
     processId: StringArgument
+    processVersion: StringArgument
     processInstanceId: IdArgument
     nodeInstanceId: IdArgument
     rootProcessInstanceId: IdArgument
     rootProcessId: StringArgument
+    rootProcessVersion: StringArgument
     status: JobStatusArgument
     expirationTime: DateArgument
     priority: NumericArgument
@@ -605,7 +622,9 @@ input JobArgument {
 
 input JobOrderBy {
     processId: OrderBy
+    processVersion: OrderBy
     rootProcessId: OrderBy
+    rootProcessVersion: OrderBy
     status: OrderBy
     expirationTime: OrderBy
     priority: OrderBy

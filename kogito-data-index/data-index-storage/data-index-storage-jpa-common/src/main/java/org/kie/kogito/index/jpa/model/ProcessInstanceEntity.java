@@ -51,6 +51,8 @@ public class ProcessInstanceEntity extends AbstractEntity {
     private String id;
     private String processId;
     private String version;
+    @Column(name = "version", insertable = false, updatable = false)
+    private String processVersion;
     private String processName;
     private Integer state;
     private String businessKey;
