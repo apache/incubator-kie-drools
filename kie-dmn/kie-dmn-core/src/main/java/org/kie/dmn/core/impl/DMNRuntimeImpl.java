@@ -66,7 +66,7 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EV
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SKIPPED;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
-import static org.kie.dmn.core.impl.DMNRuntimeUtils.coerceUsingType;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.coerceSingletonCollectionItemToValue;
 import static org.kie.dmn.core.impl.DMNRuntimeUtils.getDependencyIdentifier;
 import static org.kie.dmn.core.impl.DMNRuntimeUtils.getIdentifier;
 import static org.kie.dmn.core.impl.DMNRuntimeUtils.getObjectString;
@@ -316,7 +316,7 @@ public class DMNRuntimeImpl
                     } else if (dep instanceof DecisionNode) {
                         depType = ((DecisionNode) dep).getResultType();
                     }
-                    Object c = coerceUsingType(originalValue,
+                    Object c = coerceSingletonCollectionItemToValue(originalValue,
                                                depType,
                                                typeCheck,
                                                (r, t) -> MsgUtil.reportMessage(logger,
