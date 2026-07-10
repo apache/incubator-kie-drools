@@ -1,0 +1,1015 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner-parent</artifactId>
+    <version>999-SNAPSHOT</version>
+    <relativePath>../../optaplanner-parent/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>optaplanner-build-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>OptaPlanner build parent</name>
+
+  <properties>
+    <!-- ************************************************************************ -->
+    <!-- Dependencies -->
+    <!-- ************************************************************************ -->
+    <!-- SNAPSHOT and KIE dependency versions -->
+    <version.org.drools>${project.version}</version.org.drools>
+
+    <!-- Normal dependency versions -->
+    <version.ch.qos.logback>1.5.34</version.ch.qos.logback>
+    <version.org.apache.logging.log4j>2.22.1</version.org.apache.logging.log4j>
+    <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
+    <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk>
+    <version.io.quarkus>3.27.4</version.io.quarkus>
+    <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
+    <version.org.apache.commons.text>1.14.0</version.org.apache.commons.text>
+    <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
+    <version.org.apache.poi>5.4.1</version.org.apache.poi>
+    <version.org.assertj>3.27.7</version.org.assertj>
+    <version.org.freemarker>2.3.34</version.org.freemarker>
+    <version.org.jdom2>2.0.6.1</version.org.jdom2>
+    <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
+    <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
+    <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
+    <version.org.springframework>7.0.7</version.org.springframework>
+    <version.org.springframework.boot>4.0.7</version.org.springframework.boot>
+
+    <!-- ************************************************************************ -->
+    <!-- Plugins -->
+    <!-- ************************************************************************ -->
+
+    <!-- Plugin version properties -->
+
+    <version.asciidoctor.plugin>2.2.3</version.asciidoctor.plugin>
+    <version.assembly.plugin>3.4.2</version.assembly.plugin>
+    <version.dependency.plugin>3.5.0</version.dependency.plugin>
+    <version.formatter.plugin>2.29.0</version.formatter.plugin>
+    <version.impsort.plugin>1.13.0</version.impsort.plugin>
+    <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
+    <!--
+      Do not upgrade unless prepared to deal with JPMS issues.
+      If upgrading, ensure build still passes with the full profile (-Dfull).
+    -->
+    <version.jaxb2.plugin>3.1.0</version.jaxb2.plugin>
+    <version.pitest.plugin>1.14.4</version.pitest.plugin>
+    <version.revapi.plugin>0.15.0</version.revapi.plugin>
+    <version.sniffer.plugin>1.23</version.sniffer.plugin>
+    <version.surefire.plugin>3.3.1</version.surefire.plugin>
+    <version.versions.plugin>2.21.0</version.versions.plugin>
+
+    <!-- Plugin configuration properties -->
+    <maven.min.version>3.8.1</maven.min.version>
+    <maven.compiler.release>17</maven.compiler.release>
+    <!-- This property needs to be defined in all modules that use the packaging 'jar'.
+         It is used by different plugins to make sure the module/bundle names are consistent. -->
+    <java.module.name/>
+    <formatter.skip>false</formatter.skip>
+    <formatter.goal>format</formatter.goal>
+    <!-- TODO name impsort should indicate it's related to formatting -->
+    <impsort.goal>sort</impsort.goal>
+    <!-- JaCoCo coverage data file location -->
+    <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
+    <jacoco.agent.argLine/>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+    <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
+    <revapi.oldOptaplannerVersion>8.29.0.Final</revapi.oldOptaplannerVersion>
+    <!--suppress UnresolvedMavenProperty-->
+    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
+    <!-- See https://cwiki.apache.org/confluence/display/MAVEN/Maven+3.x+Compatibility+Notes#Maven3.xCompatibilityNotes-AutomaticPluginVersionResolution-->
+    <version.maven-exec-plugin>3.1.0</version.maven-exec-plugin>
+
+    <schema.filename.benchmark>benchmark-with-import.xsd</schema.filename.benchmark>
+    <schema.filename.solver>solver.xsd</schema.filename.solver>
+    <sonar.coverage.exclusions>**/swingui/**/*.java</sonar.coverage.exclusions>
+
+    <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- SNAPSHOT and KIE dependencies -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-bom</artifactId>
+        <version>${version.org.drools}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Normal dependencies versions-->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${version.org.apache.logging.log4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${version.org.apache.commons.math3}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreechart</artifactId>
+        <version>${version.org.jfree.jfreechart}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+        <version>${version.org.apache.openjpa}</version>
+      </dependency>
+        
+      <!-- OpenRewrite -->
+      <dependency>
+        <groupId>org.openrewrite.recipe</groupId>
+        <artifactId>rewrite-recipe-bom</artifactId>
+        <version>${version.org.openrewrite.recipe}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+      <!-- Spring Boot persistence module: hosts @EntityScan, EntityScanPackages, EntityScanner -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-persistence</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${version.io.quarkus}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-analysis</artifactId>
+              <version>9.5</version>
+            </dependency>
+            <dependency>
+              <groupId>com.redhat.victims</groupId>
+              <artifactId>enforce-victims-rule</artifactId>
+              <version>1.3.4</version>
+            </dependency>
+            <dependency>
+              <groupId>org.commonjava.maven.enforcer</groupId>
+              <artifactId>enforce-managed-deps-rule</artifactId>
+              <version>1.3</version>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>1.0</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>enforce-no-logback-test-in-main</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireFilesDontExist>
+                    <files>
+                      <file>${project.basedir}/src/main/resources/logback-test.xml</file>
+                      <file>${project.basedir}/src/main/filtered-resources/logback-test.xml</file>
+                    </files>
+                  </requireFilesDontExist>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-managed-deps</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                    <checkProfiles>true</checkProfiles>
+                    <failOnViolation>true</failOnViolation>
+                  </requireManagedDeps>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-forbidden-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <bannedDependencies>
+                    <excludes combine.children="append">
+                      <!-- Ban forbidden logging deps (we only use SLF4J + Logback) -->
+                      <!-- EXCEPTION: Spring Framework depends on commons-logging directly -->
+                      <!-- In case of transitive dependency from non-Spring sources, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                      <exclude>commons-logging:commons-log*</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.apache.logging.log4j:log4j-to-slf4j' instead -->
+                      <exclude>log4j:log4j</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                      <exclude>javassist:javassist</exclude>
+                      <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
+                      <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
+                    </excludes>
+                    <includes>
+                      <!-- Allow commons-logging from Spring Framework (required dependency) -->
+                      <include>commons-logging:commons-logging:*:*:compile</include>
+                    </includes>
+                  </bannedDependencies>
+                </rules>
+                <fail>true</fail>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <!-- Currently disabled as it fails the build. See https://issues.redhat.com/browse/PLANNER-2261. -->
+              <phase>none</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <ignoreClasses>
+                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
+                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
+                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
+                      <!-- Bundled by both com.sun:tools and com.sun.xml.bind:jaxb-xjc. No easy way to exclude one of them. -->
+                      <ignoreClass>org.relaxng.datatype.*</ignoreClass>
+                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
+                           and there is very little chance this will get ever fixed. -->
+                      <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
+                      <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
+                      <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
+                           These annotations do not influence the actual behavior of the code, so it's reasonable to
+                           ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
+                           and 'com.google.code.findbugs:annotations'. -->
+                      <ignoreClass>javax.annotation.*</ignoreClass>
+                      <!-- ignoring java 9 compatible class for modules -->
+                      <ignoreClass>module-info</ignoreClass>
+                      <!-- ignoring multirelease jar classes -->
+                      <ignoreClass>META-INF/versions/*</ignoreClass>
+                    </ignoreClasses>
+                    <dependencies>
+                      <dependency>
+                        <!-- quarkus-ide-launcher is a dependency of quarkus-core that they auto exclude during the build -->
+                        <groupId>io.quarkus</groupId>
+                        <artifactId>quarkus-ide-launcher</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                    <findAllDuplicates>true</findAllDuplicates>
+                  </banDuplicateClasses>
+                </rules>
+                <fail>${enforcer.failOnDuplicatedClasses}</fail>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-duplicate-declared-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicatePomDependencyVersions/>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.revapi</groupId>
+          <artifactId>revapi-maven-plugin</artifactId>
+          <version>${version.revapi.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.revapi</groupId>
+              <artifactId>revapi-java</artifactId>
+              <version>0.28.1</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <checkDependencies>false</checkDependencies>
+            <oldArtifacts>
+              <artifact>${project.groupId}:${project.artifactId}:${revapi.oldOptaplannerVersion}</artifact>
+            </oldArtifacts>
+            <newArtifacts>
+              <artifact>${project.groupId}:${project.artifactId}:${project.version}</artifact>
+            </newArtifacts>
+            <!-- By default revapi will check the oldArtifact against the currently executed build -->
+            <analysisConfigurationFiles>
+              <configurationFile>
+                <path>src/build/revapi-config.json</path>
+                <roots>
+                  <root>filters</root>
+                  <root>ignores</root>
+                </roots>
+              </configurationFile>
+            </analysisConfigurationFiles>
+            <failSeverity>potentiallyBreaking</failSeverity>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+          <executions>
+            <execution>
+              <!-- Copy schemagen-generated XSDs from the staging dir into target/classes so they
+                   end up in the JAR. This is needed because jaxb2-maven-plugin's outputDirectory
+                   is no longer target/classes (to avoid it registering that dir as a source root). -->
+              <id>copy-schemagen-xsds</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                <resources>
+                  <resource>
+                    <directory>${project.build.directory}/generated-resources/schemagen</directory>
+                    <includes>
+                      <include>**/*.xsd</include>
+                    </includes>
+                  </resource>
+                </resources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Packaging -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries combine.children="append">
+                    <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>test-jar</id>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+              <configuration>
+                <skipIfEmpty>true</skipIfEmpty>
+                <excludes>
+                  <exclude>**/logback-test.xml</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+            <excludes>
+              <!-- Remove unnecessary metadata generated by the jaxb2-maven-plugin. -->
+              <exclude>META-INF/JAXB/</exclude>
+              <!-- Remove the intermediate benchmark XSD that is later merged with the solver XSD. -->
+              <exclude>${schema.filename.benchmark}</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <configuration>
+            <excludes>
+              <!-- The JAXB nor XSD artifacts should not appear in the sources JAR either (see the maven-jar-plugin). -->
+              <exclude>META-INF/JAXB/</exclude>
+              <exclude>${schema.filename.benchmark}</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>${version.asciidoctor.plugin}</version>
+          <dependencies>
+            <dependency>
+              <!-- Required to generate the PDF file -->
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj-pdf</artifactId>
+              <version>2.3.7</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${version.versions.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.maven-javadoc-plugin.override}</version>
+          <configuration>
+            <author>false</author>
+            <failOnError>true</failOnError>
+            <failOnWarnings>true</failOnWarnings>
+            <quiet>true</quiet>
+            <doclint>none</doclint>
+            <legacyMode>true</legacyMode>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <compilerArgs>
+              <!-- Visit https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
+                   to learn more about javac warnings -->
+              <arg>-Xmaxwarns</arg>
+              <arg>100</arg>
+              <arg>-Xlint</arg>
+              <arg>-Xlint:-rawtypes</arg>
+              <arg>-Xlint:-serial</arg>
+              <arg>-Xlint:-unchecked</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${version.jacoco.plugin}</version>
+          <configuration>
+            <excludes>
+              <exclude>**/swingui/**/*</exclude>
+            </excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <id>jacoco-prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <append>true</append>
+                <destFile>${jacoco.exec.file}</destFile>
+                <propertyName>jacoco.agent.argLine</propertyName>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>net.revelc.code.formatter</groupId>
+          <artifactId>formatter-maven-plugin</artifactId>
+          <version>${version.formatter.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.optaplanner</groupId>
+              <artifactId>optaplanner-ide-config</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <configFile>eclipse-format.xml</configFile>
+            <lineEnding>LF</lineEnding>
+            <skip>${formatter.skip}</skip>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>${formatter.goal}</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>net.revelc.code</groupId>
+          <artifactId>impsort-maven-plugin</artifactId>
+          <version>${version.impsort.plugin}</version>
+          <configuration>
+            <groups>java.,jakarta.,javax.,org.,com.</groups>
+            <staticGroups>*</staticGroups>
+            <!-- keep in sync with the formatter-maven-plugin -->
+            <skip>${formatter.skip}</skip>
+            <removeUnused>true</removeUnused>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>${impsort.goal}</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jaxb2-maven-plugin</artifactId>
+          <version>${version.jaxb2.plugin}</version>
+          <executions>
+            <execution>
+              <id>schemagen</id>
+              <goals>
+                <goal>schemagen</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <clearOutputDir>false</clearOutputDir>
+            <createJavaDocAnnotations>false</createJavaDocAnnotations>
+            <!-- Use a separate staging directory so that jaxb2-maven-plugin does not register
+                 target/classes as a compile source root, which would cause the generated .class
+                 files to be bundled into the sources JAR and trigger split-package errors. -->
+            <outputDirectory>${project.build.directory}/generated-resources/schemagen</outputDirectory>
+            <transformSchemas>
+              <transformSchema>
+                <uri>https://www.optaplanner.org/xsd/solver</uri>
+                <toFile>solver.xsd</toFile>
+              </transformSchema>
+              <transformSchema>
+                <uri>https://www.optaplanner.org/xsd/benchmark</uri>
+                <toFile>${schema.filename.benchmark}</toFile>
+              </transformSchema>
+            </transformSchemas>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>${version.sniffer.plugin}</version>
+          <configuration>
+            <signature>
+              <groupId>net.sf.androidscents.signature</groupId>
+              <artifactId>android-api-level-32</artifactId>
+              <version>12_r1</version>
+            </signature>
+            <ignores>
+              <ignore>java.lang.invoke.LambdaMetafactory</ignore>
+              <ignore>java.lang.invoke.MethodHandle</ignore>
+            </ignores>
+          </configuration>
+          <executions>
+            <execution>
+              <id>animal-sniffer</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${version.assembly.plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>net.revelc.code</groupId>
+        <artifactId>impsort-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.surefire.plugin}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${version.surefire.plugin}</version>
+      </plugin>
+      <!-- Do not move to full profile. Otherwise upstream dependency changes can break our build without CI catching it. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>analyze-only</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoreNonCompile>true</ignoreNonCompile>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+
+    <profile>
+      <id>run-code-coverage</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
+                <argLine>@{jacoco.agent.argLine}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- Fail the build in CI if code does not follow the standards. -->
+      <id>validate-formatting-ci</id>
+      <activation>
+        <property>
+          <name>env.CI</name>
+        </property>
+      </activation>
+      <properties>
+        <formatter.goal>validate</formatter.goal>
+        <impsort.goal>check</impsort.goal>
+      </properties>
+    </profile>
+    <profile>
+      <!-- Mutation coverage disabled by default (use -Dmutation-coverage to activate it) -->
+      <id>mutation-coverage</id>
+      <activation>
+        <property>
+          <name>mutation-coverage</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.pitest</groupId>
+              <artifactId>pitest-maven</artifactId>
+              <version>${version.pitest.plugin}</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <executions>
+              <execution>
+                <id>default-pitest</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+                <configuration>
+                  <reportsDirectory>local/pit-reports</reportsDirectory>
+                  <timestampedReports>true</timestampedReports>
+                  <timeoutConstant>1000</timeoutConstant>
+                  <mutators>
+                    <!--
+                    <mutator>CONDITIONALS_BOUNDARY</mutator>
+                    <mutator>NEGATE_CONDITIONALS</mutator>
+                    <mutator>MATH</mutator>
+                    <mutator>INCREMENTS</mutator>
+                    <mutator>INVERT_NEGS</mutator>
+                    <mutator>RETURN_VALS</mutator>
+                    <mutator>VOID_METHOD_CALLS</mutator>
+                    -->
+                    <mutator>DEFAULTS</mutator>
+                    <mutator>NON_VOID_METHOD_CALLS</mutator>
+                    <mutator>REMOVE_CONDITIONALS</mutator>
+                  </mutators>
+                  <avoidCallsTo>java.lang.StringBuilder</avoidCallsTo>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!--
+      Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
+    -->
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>apache</sonar.organization>
+        <sonar.java.source>${maven.compiler.release}</sonar.java.source>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-aggregated-jacoco-report</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <!--
+                    Jacoco ant "report" task provides control over scope of the generated report. The report task
+                    requires access to sources, classes and .exec file containing coverage data. The configuration
+                    below uses sources and classes of the entire project (each of its modules) and a single jacoco.exec
+                    file placed in project root directory.
+                    Jacoco maven plugin does not provide such a level of control and requires an artificial module that
+                    depends on all modules in the project to generate an aggregated report for all the modules.
+                    This necessity of creating a reporting module in every project is rather intrusive.
+                    See:
+                    https://www.jacoco.org/jacoco/trunk/doc/report-aggregate-mojo.html and
+                    https://groups.google.com/forum/#!topic/jacoco/oMxNZs_DNII
+                  -->
+                  <target>
+                    <echo message="Generating JaCoCo Reports"/>
+                    <taskdef name="report" classname="org.jacoco.ant.ReportTask"/>
+                    <mkdir dir="${project.reporting.outputDirectory}/jacoco"/>
+                    <report>
+                      <executiondata>
+                        <fileset dir="${project.root.dir}/target">
+                          <!--
+                            Include a single jacoco.exec file, which should be used in append mode by every module.
+                          -->
+                          <include name="jacoco.exec"/>
+                        </fileset>
+                      </executiondata>
+                      <structure name="Coverage Report">
+                        <group name="${project.artifactId}">
+                          <classfiles>
+                            <fileset dir="${project.root.dir}">
+                              <!--
+                                Include class files from every module.
+                              -->
+                              <include name="**/target/classes/**/*.class"/>
+                            </fileset>
+                          </classfiles>
+                          <sourcefiles encoding="UTF-8">
+                            <fileset dir="${project.root.dir}">
+                              <!--
+                                Include source files from every module.
+                              -->
+                              <include name="**/src/main/**/*.java"/>
+                            </fileset>
+                          </sourcefiles>
+                        </group>
+                      </structure>
+                      <!-- The same report is generated in each module -->
+                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml"/>
+                    </report>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.ant</artifactId>
+                <!-- Keep the version in sync with jacoco-maven-plugin -->
+                <version>${version.jacoco.plugin}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.9.1.2184</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sonar</goal>
+                </goals>
+                <phase>validate</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>sonarcloud-analysis-pull-request</id>
+      <activation>
+        <property>
+          <name>env.ghprbPullId</name>
+        </property>
+      </activation>
+      <properties>
+        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>quickProfile</id>
+      <activation>
+        <property>
+          <name>quickly</name>
+        </property>
+      </activation>
+      <properties>
+        <enforcer.skip>true</enforcer.skip>
+        <revapi.skip>true</revapi.skip>
+        <skipTests>true</skipTests>
+        <skipITs>true</skipITs>
+        <formatter.skip>true</formatter.skip>
+        <animal.sniffer.skip>true</animal.sniffer.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-javadoc-jar</id>
+                <!-- TODO Workaround switch back to "package" phase after fix https://issues.apache.org/jira/browse/MJAVADOC-747 -->
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>test-with-custom-binaries</id>
+      <activation>
+        <property>
+          <name>unpackbuild.version</name>
+        </property>
+        <file>
+          <exists>src/main/java</exists>
+        </file>
+      </activation>
+      <properties>
+        <maven.main.skip>true</maven.main.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${unpackbuild.version}</version>
+                  <type>${project.packaging}</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>target/classes</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+            <executions>
+              <execution>
+                <id>unpack-jar</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

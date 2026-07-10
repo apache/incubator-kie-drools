@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver xmlns="https://www.optaplanner.org/xsd/solver">
+  <environmentMode>FULL_ASSERT</environmentMode>
+  <moveThreadCount>AUTO</moveThreadCount>
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+  <scoreDirectorFactory>
+    <constraintProviderClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyConstraintProvider</constraintProviderClass>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <localSearchType>TABU_SEARCH</localSearchType>
+  </localSearch>
+</solver>

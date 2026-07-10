@@ -1,0 +1,30 @@
+NAME: incompleteConstraints-n8-k4
+COMMENT: If there is 1 special (nuclear enabled) vehicle and the west 2 locations require it, the optimal solution is very different.
+TYPE: CVRP
+DIMENSION: 9
+EDGE_WEIGHT_TYPE: EUC_2D
+CAPACITY: 100
+NODE_COORD_SECTION
+0 0 0
+1 30 -2
+2 30 2
+3 10 30
+4 -10 30
+5 -30 2
+6 -30 -2
+7 -20 -30
+8 20 -30
+DEMAND_SECTION
+0 0
+1 30
+2 30
+3 40
+4 40
+5 30
+6 30
+7 40
+8 40
+DEPOT_SECTION
+0
+-1
+EOF

@@ -1,0 +1,555 @@
+Name: Ing0304-1
+Courses: 72
+Rooms: 16
+Days: 5
+Periods_per_day: 5
+Curricula: 68
+Constraints: 382
+
+COURSES:
+ChiGenAn t000 3 3 150
+GeoAn t001 3 3 160
+CamEleAn t002 3 3 24
+FonChiAn t003 3 3 49
+IngConAn t004 3 3 100
+StrIndAn t005 3 3 24
+TecCosAn t006 3 3 20
+Mat1Cn t007 5 4 170
+MecRazCn t008 3 3 150
+DisCn t009 3 3 150
+TecMatCn t010 3 3 110
+ArcTecCn t011 3 3 80
+DisEdiCn t009 3 3 44
+Idr2Cn t012 3 3 64
+Mat1En t013 5 4 100
+ChiStaEn t014 3 3 130
+ConAutEn t015 3 3 130
+RetLogEn t016 3 2 92
+TeoRetEn t017 3 3 130
+ComEleEn t018 3 3 130
+EleSis1En t019 3 2 105
+MetMatEn t008 3 3 32
+RetCal1G1n t020 3 3 205
+Mat1G2n t021 5 4 170
+ChiG2n t000 3 3 210
+DisComEsG2n t022 1 1 100
+FonMecG2n t023 3 3 210
+TerAppG2n t024 3 3 100
+CalProG2n t025 3 3 48
+Mat1Mn t026 5 4 100
+DisIndMn t022 2 2 210
+DisIndEsMn t022 1 1 110
+FluMn t027 3 3 110
+ComMecMn t028 3 3 110
+CosMacMn t029 3 3 110
+TecMec1Mn t030 3 3 325
+Mat1Ar t031 3 3 150
+FonInfAr t032 3 3 150
+LabEle1Ar t033 7 1 50
+LabEle2Ar t034 7 1 50
+LabEle3Ar t035 7 1 50
+GeoAppAns t036 3 3 12
+IdrNumAns t037 3 3 12
+MecSuoAns t001 3 3 4
+PriIngAns t038 3 3 4
+StaPenAns t004 3 3 8
+StaAns t025 3 3 12
+ArcTecCns t011 3 3 16
+EleTel1Ens t039 3 3 73
+SisTel1Ens t040 3 3 23
+AppIndGns t041 3 3 122
+RetCal2Gns t020 3 2 12
+TecCos1Cv t042 3 3 180
+StoArcCv t043 5 4 48
+TeoStr1Cv t044 3 3 28
+MecCom1Cv t045 3 3 32
+ArcComCv t046 3 3 70
+CalAut1Cv t047 3 3 35
+CosZonCv t042 3 3 30
+ImpTec1Cv t048 3 3 98
+IdrAppCv t049 5 4 30
+RivSpeCv t050 5 4 30
+CalEle1Ev t051 3 3 93
+CamEle1Ev t052 3 3 110
+EleIndEv t053 5 4 82
+GesAziGv t054 5 4 224
+ChiInd1Gv t055 5 4 44
+OrgPro1Gv t056 3 2 210
+Mac1Mv t057 5 4 120
+TerAppMv t058 5 4 64
+DisAssMv t059 5 4 65
+MecVibMn t060 5 5 65
+
+ROOMS:
+36	42
+37	42
+38	48
+31	50
+27	100
+B	216
+D	216
+E	216
+F	216
+G	216
+A	312
+L	336
+50	80
+52	90
+DS1	90
+DS2	90
+
+CURRICULA:
+q000  3 Mat1Ar FonInfAr LabEle1Ar 
+q001  3 Mat1Ar FonInfAr LabEle2Ar 
+q002  3 Mat1Ar FonInfAr LabEle3Ar 
+q003  1 Mat1Cn 
+q004  4 ChiGenAn DisCn GeoAn MecRazCn 
+q005  5 TecCosAn FonChiAn StrIndAn ChiInd1Gv CamEleAn 
+q006  3 TecCos1Cv Idr2Cn IngConAn 
+q008  4 ChiGenAn MecRazCn DisCn TecMatCn 
+q009  4 TecCos1Cv ArcTecCn Idr2Cn GeoAn 
+q010  4 TecCos1Cv ArcTecCn DisEdiCn ArcComCv 
+q011  1 Mat1En 
+q012  4 ChiStaEn RetLogEn TeoRetEn ConAutEn 
+q013  4 CamEle1Ev ComEleEn EleSis1En EleIndEv 
+q014  4 CamEle1Ev ComEleEn EleSis1En RetCal1G1n 
+q015  4 CamEle1Ev ComEleEn EleSis1En MetMatEn 
+q016  1 Mat1G2n 
+q017  3 TeoRetEn ChiStaEn ConAutEn 
+q018  4 GesAziGv RetCal1G1n OrgPro1Gv CalEle1Ev 
+q019  4 GesAziGv RetCal1G1n OrgPro1Gv EleTel1Ens 
+q020  4 GesAziGv RetCal1G1n OrgPro1Gv CalProG2n 
+q022  5 ChiG2n DisIndMn DisComEsG2n FonMecG2n TerAppG2n 
+q023  4 GesAziGv TecMec1Mn OrgPro1Gv FonChiAn 
+q024  4 GesAziGv TecMec1Mn OrgPro1Gv ImpTec1Cv 
+q025  4 GesAziGv TecMec1Mn OrgPro1Gv CalProG2n 
+q026  1 Mat1Mn 
+q027  5 ChiG2n FonMecG2n FluMn DisIndMn DisIndEsMn 
+q028  4 ComMecMn CosMacMn TecMec1Mn AppIndGns 
+q029  4 GeoAppAns IdrNumAns StaAns StaPenAns 
+q030  5 GeoAppAns MecSuoAns StaAns IdrNumAns StaPenAns 
+q031  7 IdrNumAns PriIngAns StaAns CamEleAn StrIndAn ChiInd1Gv GeoAppAns 
+q032  3 MecCom1Cv TeoStr1Cv DisEdiCn 
+q033  3 MecCom1Cv TeoStr1Cv CalAut1Cv 
+q034  3 ArcTecCns CalAut1Cv Idr2Cn 
+q035  3 ArcTecCns CalAut1Cv MecCom1Cv 
+q036  3 ArcTecCns CalAut1Cv StoArcCv 
+q038  3 EleTel1Ens CalEle1Ev EleIndEv 
+q039  3 EleTel1Ens CalEle1Ev MetMatEn 
+q040  4 EleTel1Ens CalEle1Ev EleIndEv MetMatEn 
+q041  4 EleTel1Ens CalEle1Ev EleIndEv RetCal1G1n 
+q042  4 EleTel1Ens CalEle1Ev SisTel1Ens RetCal1G1n 
+q043  4 EleTel1Ens CalEle1Ev SisTel1Ens MetMatEn 
+q044  4 GesAziGv RetLogEn RetCal2Gns EleTel1Ens 
+q045  4 GesAziGv RetLogEn RetCal2Gns CalEle1Ev 
+q046  4 GesAziGv RetLogEn RetCal2Gns CalProG2n 
+q047  4 AppIndGns GesAziGv RetCal1G1n ImpTec1Cv 
+q048  4 AppIndGns GesAziGv RetCal1G1n FonChiAn 
+q049  4 AppIndGns GesAziGv RetCal1G1n CalProG2n 
+q050  2 TerAppMv ImpTec1Cv 
+q051  6 TecCos1Cv GeoAn IngConAn StoArcCv TeoStr1Cv MecCom1Cv 
+q052  4 TecCos1Cv GeoAn IngConAn StoArcCv 
+q053  3 TecCos1Cv GeoAn IngConAn 
+q054  3 CalAut1Cv CosZonCv ArcComCv 
+q055  2 ArcComCv ImpTec1Cv 
+q056  3 RivSpeCv IdrAppCv CosZonCv 
+q057  3 IdrAppCv RivSpeCv ImpTec1Cv 
+q058  3 CalEle1Ev ComEleEn CamEle1Ev 
+q059  2 EleSis1En EleIndEv 
+q060  4 EleSis1En EleIndEv EleTel1Ens RetCal1G1n 
+q061  4 EleSis1En EleTel1Ens SisTel1Ens RetCal1G1n 
+q062  4 GesAziGv TecMec1Mn Mac1Mv ChiInd1Gv 
+q063  3 GesAziGv TecMec1Mn Mac1Mv 
+q064  3 GesAziGv TecMec1Mn ComEleEn 
+q065  2 OrgPro1Gv RetCal1G1n 
+q066  3 OrgPro1Gv RetCal1G1n ImpTec1Cv 
+q067  3 OrgPro1Gv RetCal1G1n EleIndEv 
+q068  3 Mac1Mv TerAppMv TecMec1Mn 
+q069  2 DisAssMv MecVibMn 
+q070  3 DisAssMv MecVibMn ImpTec1Cv 
+
+UNAVAILABILITY_CONSTRAINTS:
+ChiGenAn 0 0
+ChiGenAn 0 4
+ChiGenAn 4 4
+CamEleAn 0 0
+CamEleAn 0 1
+CamEleAn 0 2
+CamEleAn 0 3
+CamEleAn 4 1
+CamEleAn 4 2
+CamEleAn 4 3
+CamEleAn 4 4
+FonChiAn 0 0
+FonChiAn 0 1
+FonChiAn 4 3
+FonChiAn 4 4
+StrIndAn 0 2
+StrIndAn 1 2
+StrIndAn 2 2
+StrIndAn 3 2
+StrIndAn 4 2
+TecCosAn 1 0
+TecCosAn 1 1
+TecCosAn 1 2
+TecCosAn 1 3
+TecCosAn 1 4
+TecCosAn 4 2
+TecCosAn 4 3
+TecCosAn 4 4
+Mat1Cn 0 2
+Mat1Cn 0 3
+Mat1Cn 0 4
+Mat1Cn 1 2
+Mat1Cn 1 3
+Mat1Cn 1 4
+Mat1Cn 2 2
+Mat1Cn 2 3
+Mat1Cn 2 4
+Mat1Cn 3 2
+Mat1Cn 3 3
+Mat1Cn 3 4
+Mat1Cn 4 2
+Mat1Cn 4 3
+Mat1Cn 4 4
+MecRazCn 0 4
+MecRazCn 1 4
+MecRazCn 2 4
+MecRazCn 3 4
+MecRazCn 4 4
+TecMatCn 0 0
+TecMatCn 0 4
+TecMatCn 1 0
+TecMatCn 1 4
+TecMatCn 2 0
+TecMatCn 2 4
+TecMatCn 3 0
+TecMatCn 3 4
+ArcTecCn 0 0
+ArcTecCn 0 1
+ArcTecCn 0 2
+ArcTecCn 4 0
+ArcTecCn 4 1
+ArcTecCn 4 2
+ArcTecCn 4 3
+ArcTecCn 4 4
+Idr2Cn 0 2
+Idr2Cn 1 2
+Idr2Cn 2 2
+Idr2Cn 3 2
+Idr2Cn 4 2
+Mat1En 0 2
+Mat1En 0 3
+Mat1En 0 4
+Mat1En 1 2
+Mat1En 1 3
+Mat1En 1 4
+Mat1En 2 2
+Mat1En 2 3
+Mat1En 2 4
+Mat1En 3 2
+Mat1En 3 3
+Mat1En 3 4
+Mat1En 4 2
+Mat1En 4 3
+Mat1En 4 4
+RetLogEn 1 2
+RetLogEn 1 3
+RetLogEn 1 4
+RetLogEn 2 0
+RetLogEn 2 1
+RetLogEn 2 2
+RetLogEn 2 3
+RetLogEn 2 4
+RetLogEn 3 0
+RetLogEn 3 1
+RetLogEn 3 2
+RetLogEn 3 3
+RetLogEn 3 4
+RetLogEn 4 0
+RetLogEn 4 1
+RetLogEn 4 2
+RetLogEn 4 3
+RetLogEn 4 4
+ComEleEn 0 0
+ComEleEn 0 1
+ComEleEn 0 2
+ComEleEn 1 2
+ComEleEn 3 2
+ComEleEn 4 2
+ComEleEn 4 3
+ComEleEn 4 4
+EleSis1En 1 0
+EleSis1En 1 1
+EleSis1En 1 2
+EleSis1En 1 3
+EleSis1En 1 4
+EleSis1En 3 0
+EleSis1En 3 1
+EleSis1En 3 2
+MetMatEn 0 4
+MetMatEn 1 4
+MetMatEn 2 4
+MetMatEn 3 4
+MetMatEn 4 4
+RetCal1G1n 3 0
+RetCal1G1n 3 1
+RetCal1G1n 3 2
+RetCal1G1n 3 3
+RetCal1G1n 3 4
+RetCal1G1n 4 2
+RetCal1G1n 4 3
+RetCal1G1n 4 4
+Mat1G2n 0 2
+Mat1G2n 0 3
+Mat1G2n 0 4
+Mat1G2n 1 2
+Mat1G2n 1 3
+Mat1G2n 1 4
+Mat1G2n 2 2
+Mat1G2n 2 3
+Mat1G2n 2 4
+Mat1G2n 3 2
+Mat1G2n 3 3
+Mat1G2n 3 4
+Mat1G2n 4 2
+Mat1G2n 4 3
+Mat1G2n 4 4
+ChiG2n 0 0
+ChiG2n 0 4
+ChiG2n 4 4
+TerAppG2n 0 2
+TerAppG2n 1 2
+TerAppG2n 2 2
+TerAppG2n 4 0
+TerAppG2n 4 1
+TerAppG2n 4 2
+TerAppG2n 4 3
+TerAppG2n 4 4
+CalProG2n 0 2
+CalProG2n 1 2
+CalProG2n 2 2
+CalProG2n 3 2
+CalProG2n 4 0
+CalProG2n 4 1
+CalProG2n 4 2
+CalProG2n 4 3
+CalProG2n 4 4
+Mat1Mn 0 2
+Mat1Mn 0 3
+Mat1Mn 0 4
+Mat1Mn 1 2
+Mat1Mn 1 3
+Mat1Mn 1 4
+Mat1Mn 2 2
+Mat1Mn 2 3
+Mat1Mn 2 4
+Mat1Mn 3 2
+Mat1Mn 3 3
+Mat1Mn 3 4
+Mat1Mn 4 2
+Mat1Mn 4 3
+Mat1Mn 4 4
+DisIndMn 0 0
+DisIndMn 0 1
+DisIndMn 0 2
+DisIndMn 0 3
+DisIndMn 0 4
+DisIndMn 1 0
+DisIndMn 1 1
+DisIndMn 4 3
+DisIndMn 4 4
+ComMecMn 0 2
+ComMecMn 0 3
+ComMecMn 1 2
+ComMecMn 2 2
+ComMecMn 3 2
+ComMecMn 4 2
+ComMecMn 4 3
+ComMecMn 4 4
+CosMacMn 0 0
+CosMacMn 0 1
+CosMacMn 0 2
+CosMacMn 0 3
+CosMacMn 0 4
+CosMacMn 4 2
+CosMacMn 4 3
+CosMacMn 4 4
+TecMec1Mn 0 0
+TecMec1Mn 0 1
+TecMec1Mn 0 2
+TecMec1Mn 4 0
+TecMec1Mn 4 1
+TecMec1Mn 4 2
+TecMec1Mn 4 3
+TecMec1Mn 4 4
+IdrNumAns 0 0
+IdrNumAns 0 1
+IdrNumAns 0 2
+IdrNumAns 3 1
+IdrNumAns 3 2
+IdrNumAns 4 0
+IdrNumAns 4 1
+IdrNumAns 4 2
+PriIngAns 0 0
+PriIngAns 0 2
+PriIngAns 1 0
+PriIngAns 1 2
+PriIngAns 2 0
+PriIngAns 3 0
+PriIngAns 4 0
+StaAns 0 2
+StaAns 1 2
+StaAns 2 2
+StaAns 3 2
+StaAns 4 0
+StaAns 4 1
+StaAns 4 2
+StaAns 4 3
+StaAns 4 4
+ArcTecCns 0 0
+ArcTecCns 0 1
+ArcTecCns 0 2
+ArcTecCns 4 0
+ArcTecCns 4 1
+ArcTecCns 4 2
+ArcTecCns 4 3
+ArcTecCns 4 4
+EleTel1Ens 0 0
+EleTel1Ens 0 1
+EleTel1Ens 0 2
+EleTel1Ens 0 3
+EleTel1Ens 0 4
+EleTel1Ens 4 2
+EleTel1Ens 4 3
+EleTel1Ens 4 4
+AppIndGns 0 0
+AppIndGns 0 1
+AppIndGns 0 2
+AppIndGns 0 3
+AppIndGns 0 4
+AppIndGns 1 0
+AppIndGns 1 2
+AppIndGns 2 2
+AppIndGns 2 3
+AppIndGns 2 4
+AppIndGns 3 2
+AppIndGns 3 4
+AppIndGns 4 0
+AppIndGns 4 1
+AppIndGns 4 2
+AppIndGns 4 3
+AppIndGns 4 4
+RetCal2Gns 3 0
+RetCal2Gns 3 1
+RetCal2Gns 3 2
+RetCal2Gns 3 3
+RetCal2Gns 3 4
+RetCal2Gns 4 2
+RetCal2Gns 4 3
+RetCal2Gns 4 4
+TecCos1Cv 0 2
+TecCos1Cv 1 2
+TecCos1Cv 2 2
+TecCos1Cv 3 2
+TecCos1Cv 4 2
+StoArcCv 0 0
+StoArcCv 0 1
+StoArcCv 0 2
+StoArcCv 0 3
+StoArcCv 0 4
+TeoStr1Cv 0 0
+TeoStr1Cv 0 1
+TeoStr1Cv 0 2
+TeoStr1Cv 1 0
+TeoStr1Cv 1 1
+TeoStr1Cv 1 2
+TeoStr1Cv 2 3
+TeoStr1Cv 2 4
+ArcComCv 0 2
+ArcComCv 1 2
+ArcComCv 2 1
+ArcComCv 2 2
+ArcComCv 2 3
+ArcComCv 3 2
+CalAut1Cv 0 0
+CalAut1Cv 0 1
+CalAut1Cv 0 2
+CalAut1Cv 0 3
+CalAut1Cv 0 4
+CalAut1Cv 1 0
+CalAut1Cv 1 1
+CalAut1Cv 1 2
+CosZonCv 0 2
+CosZonCv 1 2
+CosZonCv 2 2
+CosZonCv 3 2
+CosZonCv 4 2
+CosZonCv 4 4
+ImpTec1Cv 4 4
+IdrAppCv 0 2
+IdrAppCv 0 4
+IdrAppCv 2 2
+IdrAppCv 2 4
+IdrAppCv 4 4
+CalEle1Ev 0 4
+CalEle1Ev 1 4
+CalEle1Ev 2 4
+CalEle1Ev 3 4
+CalEle1Ev 4 4
+CamEle1Ev 0 0
+CamEle1Ev 0 1
+CamEle1Ev 0 2
+CamEle1Ev 0 3
+CamEle1Ev 4 1
+CamEle1Ev 4 2
+CamEle1Ev 4 3
+CamEle1Ev 4 4
+EleIndEv 3 3
+EleIndEv 3 4
+EleIndEv 4 0
+EleIndEv 4 1
+EleIndEv 4 2
+EleIndEv 4 3
+EleIndEv 4 4
+GesAziGv 4 0
+GesAziGv 4 1
+GesAziGv 4 2
+GesAziGv 4 3
+GesAziGv 4 4
+ChiInd1Gv 0 0
+ChiInd1Gv 0 1
+ChiInd1Gv 4 0
+ChiInd1Gv 4 1
+ChiInd1Gv 4 2
+ChiInd1Gv 4 3
+ChiInd1Gv 4 4
+OrgPro1Gv 0 0
+OrgPro1Gv 0 1
+OrgPro1Gv 0 2
+OrgPro1Gv 0 3
+OrgPro1Gv 0 4
+OrgPro1Gv 4 2
+OrgPro1Gv 4 3
+OrgPro1Gv 4 4
+Mac1Mv 0 2
+Mac1Mv 1 2
+Mac1Mv 2 2
+Mac1Mv 3 2
+Mac1Mv 4 2
+TerAppMv 0 0
+TerAppMv 0 1
+TerAppMv 0 2
+TerAppMv 4 4
+DisAssMv 0 0
+DisAssMv 0 1
+DisAssMv 0 2
+DisAssMv 4 3
+DisAssMv 4 4
+MecVibMn 0 2
+MecVibMn 1 2
+MecVibMn 2 2
+MecVibMn 3 2
+MecVibMn 4 2
+
+END.

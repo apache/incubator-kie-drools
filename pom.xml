@@ -114,8 +114,26 @@
 
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <version.maven.artifact.plugin>3.5.1</version.maven.artifact.plugin>
   </properties>
+
+  <!-- Block apache.snapshots inherited from org.apache:apache parent -->
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <url>https://repository.apache.org/snapshots/</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <url>https://repository.apache.org/snapshots/</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>false</enabled></snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <build>
     <pluginManagement>
@@ -189,6 +207,19 @@
     <module>drools-quarkus-extension</module>
     <module>drools-reliability</module>
     <module>drools-drlonyaml-parent</module>
+    <!-- BEGIN optaplanner modules (auto) -->
+    <module>optaplanner-parent</module>
+    <module>optaplanner-build/optaplanner-bom</module>
+    <module>optaplanner-build/optaplanner-ide-config</module>
+    <module>optaplanner-build/optaplanner-build-parent</module>
+    <module>optaplanner-core</module>
+    <module>optaplanner-persistence</module>
+    <module>optaplanner-benchmark</module>
+    <module>optaplanner-test</module>
+    <module>optaplanner-spring-integration</module>
+    <module>optaplanner-quarkus-integration</module>
+    <module>optaplanner-examples</module>
+    <!-- END optaplanner modules (auto) -->
   </modules>
 
   <profiles>
@@ -201,6 +232,8 @@
       </activation>
       <modules>
         <module>drools-distribution</module>
+        <module>optaplanner-build/optaplanner-javadoc</module>
+        <module>optaplanner-build/optaplanner-distribution-internal</module>
       </modules>
     </profile>
     <profile>

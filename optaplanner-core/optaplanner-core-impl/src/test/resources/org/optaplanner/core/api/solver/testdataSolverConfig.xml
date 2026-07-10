@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <incrementalScoreCalculatorClass>org.optaplanner.core.impl.testdata.domain.TestdataIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+  </scoreDirectorFactory>
+</solver>

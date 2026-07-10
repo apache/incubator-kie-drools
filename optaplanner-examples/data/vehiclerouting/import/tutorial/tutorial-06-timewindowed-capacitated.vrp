@@ -1,0 +1,17 @@
+tutorial-06-timewindowed-uncapacitated
+
+VEHICLE
+NUMBER     CAPACITY
+  2         100
+
+CUSTOMER
+CUST NO.  XCOORD.   YCOORD.    DEMAND   READY TIME  DUE DATE   SERVICE   TIME
+ 
+    0      50         50          0          0        720          0
+    1      45         100        33         60        360         60
+    2      30         80         25         60        360         60
+    3      70         85         33         60        360         60
+    4      60         60         33         60        360         60
+    5      35         10         25         60        120         60
+    6      30         30         25        120        180         60
+    7      45         20         25        180        240         60

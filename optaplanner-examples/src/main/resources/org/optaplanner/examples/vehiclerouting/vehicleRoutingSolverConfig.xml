@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+  <!-- To slowly prove there are no bugs in this code -->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+  <!-- To solve faster by saturating multiple CPU cores -->
+  <!--<moveThreadCount>AUTO</moveThreadCount>-->
+
+  <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+  <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
+
+  <scoreDirectorFactory>
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
+  <constructionHeuristic>
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <listChangeMoveSelector>
+        <valueSelector id="1"/>
+        <destinationSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="1"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </destinationSelector>
+      </listChangeMoveSelector>
+      <listSwapMoveSelector>
+        <valueSelector id="2"/>
+        <secondaryValueSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="2"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondaryValueSelector>
+      </listSwapMoveSelector>
+      <subListChangeMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+        <subListSelector id="3"/>
+        <destinationSelector>
+          <nearbySelection>
+            <originSubListSelector mimicSelectorRef="3"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </destinationSelector>
+      </subListChangeMoveSelector>
+      <subListSwapMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+        <subListSelector id="4"/>
+        <secondarySubListSelector>
+          <nearbySelection>
+            <originSubListSelector mimicSelectorRef="4"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondarySubListSelector>
+      </subListSwapMoveSelector>
+      <kOptListMoveSelector>
+        <originSelector id="5"/>
+        <valueSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="5"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </kOptListMoveSelector>
+    </unionMoveSelector>
+    <acceptor>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+</solver>
