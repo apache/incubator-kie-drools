@@ -33,12 +33,16 @@ public class PositionalParent {
     @Position(1)
     private int age;
 
+    @Position(2)
+    private long salary;
+
     public PositionalParent() {
     }
 
-    public PositionalParent(String name, int age) {
+    public PositionalParent(String name, int age, long salary) {
         this.name = name;
         this.age = age;
+        this.salary = salary;
     }
 
     public String getName() {
@@ -55,5 +59,13 @@ public class PositionalParent {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public long getSalary() {
+        return salary;
+    }
+
+    public void setSalary(long salary) {
+        this.salary = salary;
     }
 }
