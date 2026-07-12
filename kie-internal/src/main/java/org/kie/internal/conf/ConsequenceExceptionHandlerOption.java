@@ -21,6 +21,7 @@ package org.kie.internal.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the consequence exception handler configuration configuration.
@@ -32,6 +33,7 @@ public class ConsequenceExceptionHandlerOption implements SingleValueRuleBaseOpt
     /**
      * The property name for consequence exception handler configuration
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.consequenceExceptionHandler";
 
     public static OptionKey<ConsequenceExceptionHandlerOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

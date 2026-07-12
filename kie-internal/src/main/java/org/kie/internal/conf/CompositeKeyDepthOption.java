@@ -20,6 +20,7 @@ package org.kie.internal.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the composite key depth configuration.
@@ -31,6 +32,7 @@ public class CompositeKeyDepthOption implements SingleValueRuleBaseOption {
     /**
      * The property name for the default DIALECT
      */
+    @KieProperty(type = "int")
     public static final String PROPERTY_NAME = "drools.compositeKeyDepth";
 
     public static OptionKey<CompositeKeyDepthOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

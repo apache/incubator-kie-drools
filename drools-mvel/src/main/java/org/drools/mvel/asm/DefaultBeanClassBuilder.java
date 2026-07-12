@@ -110,7 +110,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             buildFieldTMS( cw, classDef );
         }
 
-        buildConstructors( cw, classDef );
+        buildConstructors( cw, classDef, classLoader );
         buildGettersAndSetters( cw, classDef );
         buildEqualityMethods( cw, classDef );
         buildToString( cw, classDef );
@@ -453,11 +453,12 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    protected void buildConstructors(ClassWriter cw, ClassDefinition classDef) {
+    protected void buildConstructors(ClassWriter cw, ClassDefinition classDef, ClassLoader classLoader) {
         // Building default constructor
         try {
             this.buildDefaultConstructor( cw,
-                                          classDef );
+                                          classDef,
+                                          classLoader );
         } catch (Exception e) {
             LOG.error("Exception", e);
         }
@@ -466,7 +467,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         if (classDef.getFieldsDefinitions().size() > 0 && classDef.getFieldsDefinitions().size() < 120) {
             this.buildConstructorWithFields( cw,
                                              classDef,
-                                             classDef.getFieldsDefinitions() );
+                                             classDef.getFieldsDefinitions(),
+                                             classLoader );
         }
 
         // Building constructor with key fields only
@@ -479,7 +481,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         if ( !keys.isEmpty() && keys.size() != classDef.getFieldsDefinitions().size() ) {
             this.buildConstructorWithFields( cw,
                                              classDef,
-                                             keys );
+                                             keys,
+                                             classLoader );
         }
     }
 
@@ -925,7 +928,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      * @param cw
      */
     protected void buildDefaultConstructor(ClassVisitor cw,
-                                           ClassDefinition classDef) {
+                                           ClassDefinition classDef,
+                                           ClassLoader classLoader) {
 
 
         MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
@@ -942,7 +946,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitLabel( l0 );
         }
 
-        boolean hasObjects = defaultConstructorStart( mv, classDef );
+        boolean hasObjects = defaultConstructorStart( mv, classDef, classLoader );
 
         mv.visitInsn(Opcodes.RETURN);
         Label l1;
@@ -962,7 +966,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    protected boolean defaultConstructorStart( MethodVisitor mv, ClassDefinition classDef ) {
+    protected boolean defaultConstructorStart( MethodVisitor mv, ClassDefinition classDef, ClassLoader classLoader ) {
         // Building default constructor
 
         mv.visitVarInsn( Opcodes.ALOAD,
@@ -983,7 +987,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         boolean hasObjects = false;
         for (FieldDefinition field : classDef.getFieldsDefinitions()) {
 
-            hasObjects = hasObjects || initFieldWithDefaultValue( mv, classDef, field );
+            hasObjects = hasObjects || initFieldWithDefaultValue( mv, classDef, field, classLoader );
         }
 
 
@@ -995,7 +999,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    protected boolean initFieldWithDefaultValue( MethodVisitor mv, ClassDefinition classDef, FieldDefinition field ) {
+    protected boolean initFieldWithDefaultValue( MethodVisitor mv, ClassDefinition classDef, FieldDefinition field, ClassLoader classLoader ) {
         if ( field.getInitExpr() == null && field.isInherited() ) {
             return false;
         }
@@ -1030,12 +1034,14 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             // there's a complex init expression
             if ( field.getInitExpr() != null ) {
                 mv.visitVarInsn( ALOAD, 0 );
-                mv.visitLdcInsn( field.getInitExpr() );
-                mv.visitMethodInsn( INVOKESTATIC,
-                                    "org/mvel2/MVEL",
-                                    "eval",
-                                    "(Ljava/lang/String;)Ljava/lang/Object;");
-                mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
+                if ( !EnumLiteralEmitter.tryEmit( mv, field.getInitExpr(), field.getTypeName(), classLoader ) ) {
+                    mv.visitLdcInsn( field.getInitExpr() );
+                    mv.visitMethodInsn( INVOKESTATIC,
+                                        "org/mvel2/MVEL",
+                                        "eval",
+                                        "(Ljava/lang/String;)Ljava/lang/Object;");
+                    mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
+                }
                 val = field.getInitExpr();
             }
         }
@@ -1120,7 +1126,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      */
     protected void buildConstructorWithFields(ClassVisitor cw,
                                               ClassDefinition classDef,
-                                              Collection<FieldDefinition> fieldDefs) {
+                                              Collection<FieldDefinition> fieldDefs,
+                                              ClassLoader classLoader) {
 
 
         Type[] params = new Type[fieldDefs.size()];
@@ -1142,7 +1149,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitLabel( l0 );
         }
 
-        fieldConstructorStart( mv, classDef, fieldDefs );
+        fieldConstructorStart( mv, classDef, fieldDefs, classLoader );
 
         mv.visitInsn( Opcodes.RETURN );
         Label l1;
@@ -1172,7 +1179,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
     }
 
-    protected void fieldConstructorStart(MethodVisitor mv, ClassDefinition classDef, Collection<FieldDefinition> fieldDefs) {
+    protected void fieldConstructorStart(MethodVisitor mv, ClassDefinition classDef, Collection<FieldDefinition> fieldDefs, ClassLoader classLoader) {
         mv.visitVarInsn( Opcodes.ALOAD,
                          0 );
 
@@ -1224,7 +1231,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
             if ( ! fieldDefs.contains( field ) && field.getInitExpr() != null && ! "".equals( field.getInitExpr().trim() ) ) {
 
-                initFieldWithDefaultValue( mv, classDef, field );
+                initFieldWithDefaultValue( mv, classDef, field, classLoader );
 
             }
         }

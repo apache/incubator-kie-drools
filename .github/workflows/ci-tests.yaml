@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "SETUP :: Checkout to load local actions"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "SETUP :: Checkout @ Simulated squashed-merge if PR, else checkout current commit"
         id: checkout_pr

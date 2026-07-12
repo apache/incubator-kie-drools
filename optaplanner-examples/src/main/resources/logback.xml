@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<configuration>
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %L lowers performance, %C and %c break indentation and therefore reduce readability, normal %t is verbose -->
+      <pattern>%d{HH:mm:ss.SSS} [%-12.12t] %-5p %m%n</pattern>
+    </encoder>
+  </appender>
+  <!--<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--<file>local/log/optaplanner.log</file>-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+      <!--<fileNamePattern>local/log/optaplanner.%i.log.zip</fileNamePattern>-->
+      <!--<minIndex>1</minIndex>-->
+      <!--<maxIndex>3</maxIndex>-->
+    <!--</rollingPolicy>-->
+    <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+      <!--<maxFileSize>5MB</maxFileSize>-->
+    <!--</triggeringPolicy>-->
+    <!--<encoder>-->
+      <!--<pattern>%d{HH:mm:ss.SSS} [%t] %-5p %m%n</pattern>-->
+    <!--</encoder>-->
+  <!--</appender>-->
+
+  <!-- To override the debug log level from the command line, use the VM option "-Dlogback.level.org.optaplanner=trace" -->
+  <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-debug}"/>
+
+  <root level="warn">
+    <appender-ref ref="consoleAppender" />
+    <!--<appender-ref ref="fileAppender" />-->
+  </root>
+
+</configuration>

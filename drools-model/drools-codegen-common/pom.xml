@@ -39,6 +39,11 @@
     </properties>
 
     <dependencies>
+      <!-- Required for KieProperty -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-api</artifactId>
+      </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-util</artifactId>

@@ -41,6 +41,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
+import org.drools.model.codegen.execmodel.domain.PlainParent;
 import org.drools.model.codegen.execmodel.domain.PositionalParent;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -517,6 +518,67 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnumWithMisspelledConstantFailsAtCompileTime(RUN_TYPE runType) {
+        // Diagnostic experience: a typo in a cross-enum reference must fail at
+        // compile time (with KieBuilder error messages), not at runtime via a
+        // mysterious ExceptionInInitializerError on first enum access.
+        String str =
+                "package org.example;\n" +
+                "declare enum Color\n" +
+                "    RED, GREEN, BLUE;\n" +
+                "end\n" +
+                "declare enum Light\n" +
+                "    STOP( Color.RED ),\n" +
+                "    GO(   Color.GRENE );\n" +  // typo
+                "    color: Color\n" +
+                "end\n";
+
+        Results results = createKieBuilder(runType, str).getResults();
+        List<Message> errors = results.getMessages(Message.Level.ERROR);
+        assertThat(errors).as("expected a compile error naming the bad constant").isNotEmpty();
+        assertThat(errors.toString()).contains("GRENE");
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnumWithDeclaredEnumField(RUN_TYPE runType) {
+        String str =
+                "package org.example;\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "declare enum Category\n" +
+                "    TARGET(\"target\"),\n" +
+                "    NON_TARGET(\"non-target\"),\n" +
+                "    NEW_LESION(\"new\");\n" +
+                "\n" +
+                "    code: String\n" +
+                "end\n" +
+                "\n" +
+                "declare enum LesionState\n" +
+                "    TARGET_PRESENT(    org.example.Category.TARGET, \"present\" ),\n" +    // fully-qualified
+                "    NON_TARGET_ABSENT( Category.NON_TARGET,          \"absent\"  ),\n" +   // simple (same package)
+                "    NEW_PRESENT(       Category.NEW_LESION,          \"present\" );\n" +   // simple (same package)
+                "\n" +
+                "    category: org.example.Category\n" +
+                "    nominal: String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"emit\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        insert(new Result(LesionState.TARGET_PRESENT.getCategory().getCode()));\n" +
+                "        insert(new Result(LesionState.NON_TARGET_ABSENT.getCategory() == Category.NON_TARGET));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).extracting(Result::getValue).contains("target", true);
+    }
+
+    @ParameterizedTest
 	@MethodSource("parameters")
     public void testDeclaredSlidingWindowOnEventInTypeDeclaration(RUN_TYPE runType) throws Exception {
         String str =
@@ -613,6 +675,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "package org.test;\n" +
                 "import " + PositionalParent.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare PositionalParent end\n" +
                 "declare Child extends PositionalParent\n" +
                 "    dept : String\n" +
                 "end\n" +
@@ -661,6 +724,41 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "then insert( new Result(\"ok\") ); end";
         KieSession ksession = getKieSession(runType, parentDrl, childDrl);
         assertThat(ksession.fireAllRules()).isEqualTo(2);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersPatternOnly")
+    public void testExtendPojoWithoutPositionUsesNoArgSuper(RUN_TYPE runType) {
+        // Executable-model regression for #6779: a declared type extending a Java class that has NO
+        // @Position fields must not pull the superclass's instance fields into the generated
+        // constructor - doing so would emit a super(...) call with no matching superclass constructor
+        // and fail to compile ("The constructor Child(String) is undefined"). Only the declared type's
+        // own fields are constructor parameters, and a no-arg super() is used. PlainParent has a single
+        // (unannotated) field and only a no-arg constructor. (Exec-model codegen only; the classic
+        // compiler handles declared-extends-POJO via a different path.)
+        String str =
+                "package org.test;\n" +
+                "import " + PlainParent.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Child extends PlainParent\n" +
+                "    dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "    insert( new Child(\"Sales\") );\n" +
+                "end\n" +
+                "rule Check when\n" +
+                "    $c : Child( dept == \"Sales\" )\n" +
+                "then\n" +
+                "    insert( new Result($c.getDept()) );\n" +
+                "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).hasSize(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo("Sales");
     }
 
     @ParameterizedTest

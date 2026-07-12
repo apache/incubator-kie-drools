@@ -1,0 +1,29 @@
+NAME: clockwise5
+COMMENT: 5 locations that can only be traveled in clockwise direction efficiently. Test to check if from and to distance aren't swapped.
+TYPE: CVRP
+DIMENSION: 5
+EDGE_WEIGHT_TYPE: EXPLICIT
+EDGE_WEIGHT_FORMAT: FULL_MATRIX
+CAPACITY: 10
+NODE_COORD_SECTION
+1   10   10
+2    0   10
+3  -10    0
+4    0  -10
+5   10    0
+EDGE_WEIGHT_SECTION
+  0  10  25  40  55
+ 55   0  15  30  45
+ 40  45   0  15  30
+ 25  30  45   0  15
+ 10  15  30  45   0
+DEMAND_SECTION
+1 0
+2 1
+3 1
+4 1
+5 1
+DEPOT_SECTION
+ 1
+ -1
+EOF

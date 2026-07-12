@@ -92,7 +92,36 @@ public class ForExpressionNode
         }
     }
 
-    private void populateToReturn(int k, EvaluationContext ctx, List<Object> toPopulate) {
+    static void setValueIntoContext(EvaluationContext ctx, String name, Object value) {
+        ctx.setValue(name, value);
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.LIST;
+    }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        ASTNode[] children = new ASTNode[iterationContexts.size() + 1];
+        System.arraycopy(iterationContexts.toArray(new ASTNode[]{}), 0, children, 0, iterationContexts.size());
+        children[children.length - 1] = expression;
+        return children;
+    }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
+    /**
+     * Populate the given <code>List&lt;Object&gt;</code> with the result of evaluating the expressions retrieved from the
+     * <code>IterationContextNode</code> at the <b>k</b> index of <code>iterationContexts</code>.
+     * @param k
+     * @param ctx
+     * @param toPopulate
+     */
+    void populateToReturn(int k, EvaluationContext ctx, List<Object> toPopulate) {
         LOG.trace("populateToReturn at index {}", k);
         if (k > iterationContexts.size() - 1) {
             LOG.trace("Index {} out of range, returning", k);
@@ -114,20 +143,18 @@ public class ForExpressionNode
             } else if (k < iterationContexts.size() - 1) {
                 populateToReturn(k + 1, ctx, toPopulate);
             }
+            ctx.exitFrame();
         }
-        ctx.exitFrame();
     }
 
-    static void setValueIntoContext(EvaluationContext ctx, String name, Object value) {
-        ctx.setValue(name, value);
-    }
-
-    @Override
-    public Type getResultType() {
-        return BuiltInType.LIST;
-    }
-
-    private ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) throws NullContentInsideForIterationException {
+    /**
+     * Instantiate a <code>ForIteration</code> object based on the evaluation of the given <code>IterationContextNode</code>.
+     * @param ctx
+     * @param iterationContextNode
+     * @return
+     * @throws NullContentInsideForIterationException
+     */
+    static ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) throws NullContentInsideForIterationException {
         LOG.trace("Creating ForIteration for {}", iterationContextNode);
         ForIteration toReturn = null;
         String name = iterationContextNode.evaluateName(ctx);
@@ -147,18 +174,5 @@ public class ForExpressionNode
             toReturn = getForIteration(ctx, name, result, rangeEnd);
         }
         return toReturn;
-    }
-
-    @Override
-    public ASTNode[] getChildrenNode() {
-        ASTNode[] children = new ASTNode[iterationContexts.size() + 1];
-        System.arraycopy(iterationContexts.toArray(new ASTNode[]{}), 0, children, 0, iterationContexts.size());
-        children[children.length - 1] = expression;
-        return children;
-    }
-
-    @Override
-    public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
     }
 }

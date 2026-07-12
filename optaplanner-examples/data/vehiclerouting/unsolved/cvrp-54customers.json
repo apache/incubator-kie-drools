@@ -1,0 +1,941 @@
+{
+  "id" : 0,
+  "name" : "A-n55-k9",
+  "distanceType" : "AIR_DISTANCE",
+  "distanceUnitOfMeasurement" : "distance",
+  "locationList" : [ {
+    "@type" : "air",
+    "@id" : "AirLocation#1",
+    "id" : 1,
+    "name" : null,
+    "latitude" : 36.0,
+    "longitude" : 64.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#2",
+    "id" : 2,
+    "name" : null,
+    "latitude" : 94.0,
+    "longitude" : 47.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#3",
+    "id" : 3,
+    "name" : null,
+    "latitude" : 10.0,
+    "longitude" : 23.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#4",
+    "id" : 4,
+    "name" : null,
+    "latitude" : 16.0,
+    "longitude" : 46.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#5",
+    "id" : 5,
+    "name" : null,
+    "latitude" : 25.0,
+    "longitude" : 79.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#6",
+    "id" : 6,
+    "name" : null,
+    "latitude" : 41.0,
+    "longitude" : 30.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#7",
+    "id" : 7,
+    "name" : null,
+    "latitude" : 81.0,
+    "longitude" : 45.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#8",
+    "id" : 8,
+    "name" : null,
+    "latitude" : 14.0,
+    "longitude" : 79.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#9",
+    "id" : 9,
+    "name" : null,
+    "latitude" : 42.0,
+    "longitude" : 56.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#10",
+    "id" : 10,
+    "name" : null,
+    "latitude" : 90.0,
+    "longitude" : 17.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#11",
+    "id" : 11,
+    "name" : null,
+    "latitude" : 41.0,
+    "longitude" : 39.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#12",
+    "id" : 12,
+    "name" : null,
+    "latitude" : 21.0,
+    "longitude" : 14.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#13",
+    "id" : 13,
+    "name" : null,
+    "latitude" : 41.0,
+    "longitude" : 46.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#14",
+    "id" : 14,
+    "name" : null,
+    "latitude" : 65.0,
+    "longitude" : 96.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#15",
+    "id" : 15,
+    "name" : null,
+    "latitude" : 13.0,
+    "longitude" : 49.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#16",
+    "id" : 16,
+    "name" : null,
+    "latitude" : 21.0,
+    "longitude" : 14.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#17",
+    "id" : 17,
+    "name" : null,
+    "latitude" : 57.0,
+    "longitude" : 2.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#18",
+    "id" : 18,
+    "name" : null,
+    "latitude" : 14.0,
+    "longitude" : 42.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#19",
+    "id" : 19,
+    "name" : null,
+    "latitude" : 66.0,
+    "longitude" : 62.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#20",
+    "id" : 20,
+    "name" : null,
+    "latitude" : 58.0,
+    "longitude" : 96.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#21",
+    "id" : 21,
+    "name" : null,
+    "latitude" : 5.0,
+    "longitude" : 51.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#22",
+    "id" : 22,
+    "name" : null,
+    "latitude" : 41.0,
+    "longitude" : 50.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#23",
+    "id" : 23,
+    "name" : null,
+    "latitude" : 50.0,
+    "longitude" : 99.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#24",
+    "id" : 24,
+    "name" : null,
+    "latitude" : 84.0,
+    "longitude" : 85.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#25",
+    "id" : 25,
+    "name" : null,
+    "latitude" : 97.0,
+    "longitude" : 90.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#26",
+    "id" : 26,
+    "name" : null,
+    "latitude" : 47.0,
+    "longitude" : 76.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#27",
+    "id" : 27,
+    "name" : null,
+    "latitude" : 11.0,
+    "longitude" : 54.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#28",
+    "id" : 28,
+    "name" : null,
+    "latitude" : 60.0,
+    "longitude" : 97.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#29",
+    "id" : 29,
+    "name" : null,
+    "latitude" : 60.0,
+    "longitude" : 89.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#30",
+    "id" : 30,
+    "name" : null,
+    "latitude" : 58.0,
+    "longitude" : 68.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#31",
+    "id" : 31,
+    "name" : null,
+    "latitude" : 30.0,
+    "longitude" : 93.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#32",
+    "id" : 32,
+    "name" : null,
+    "latitude" : 9.0,
+    "longitude" : 60.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#33",
+    "id" : 33,
+    "name" : null,
+    "latitude" : 47.0,
+    "longitude" : 44.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#34",
+    "id" : 34,
+    "name" : null,
+    "latitude" : 19.0,
+    "longitude" : 40.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#35",
+    "id" : 35,
+    "name" : null,
+    "latitude" : 15.0,
+    "longitude" : 40.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#36",
+    "id" : 36,
+    "name" : null,
+    "latitude" : 88.0,
+    "longitude" : 21.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#37",
+    "id" : 37,
+    "name" : null,
+    "latitude" : 33.0,
+    "longitude" : 58.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#38",
+    "id" : 38,
+    "name" : null,
+    "latitude" : 21.0,
+    "longitude" : 51.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#39",
+    "id" : 39,
+    "name" : null,
+    "latitude" : 57.0,
+    "longitude" : 7.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#40",
+    "id" : 40,
+    "name" : null,
+    "latitude" : 81.0,
+    "longitude" : 6.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#41",
+    "id" : 41,
+    "name" : null,
+    "latitude" : 49.0,
+    "longitude" : 6.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#42",
+    "id" : 42,
+    "name" : null,
+    "latitude" : 51.0,
+    "longitude" : 78.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#43",
+    "id" : 43,
+    "name" : null,
+    "latitude" : 9.0,
+    "longitude" : 62.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#44",
+    "id" : 44,
+    "name" : null,
+    "latitude" : 84.0,
+    "longitude" : 36.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#45",
+    "id" : 45,
+    "name" : null,
+    "latitude" : 95.0,
+    "longitude" : 76.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#46",
+    "id" : 46,
+    "name" : null,
+    "latitude" : 89.0,
+    "longitude" : 44.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#47",
+    "id" : 47,
+    "name" : null,
+    "latitude" : 10.0,
+    "longitude" : 49.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#48",
+    "id" : 48,
+    "name" : null,
+    "latitude" : 69.0,
+    "longitude" : 16.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#49",
+    "id" : 49,
+    "name" : null,
+    "latitude" : 75.0,
+    "longitude" : 66.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#50",
+    "id" : 50,
+    "name" : null,
+    "latitude" : 97.0,
+    "longitude" : 11.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#51",
+    "id" : 51,
+    "name" : null,
+    "latitude" : 74.0,
+    "longitude" : 69.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#52",
+    "id" : 52,
+    "name" : null,
+    "latitude" : 1.0,
+    "longitude" : 14.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#53",
+    "id" : 53,
+    "name" : null,
+    "latitude" : 96.0,
+    "longitude" : 91.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#54",
+    "id" : 54,
+    "name" : null,
+    "latitude" : 46.0,
+    "longitude" : 22.0
+  }, {
+    "@type" : "air",
+    "@id" : "AirLocation#55",
+    "id" : 55,
+    "name" : null,
+    "latitude" : 74.0,
+    "longitude" : 92.0
+  } ],
+  "depotList" : [ {
+    "@type" : "Depot",
+    "@id" : "Depot#1",
+    "id" : 1,
+    "location" : "AirLocation#1"
+  } ],
+  "vehicleList" : [ {
+    "@id" : "Vehicle#0",
+    "id" : 0,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#1",
+    "id" : 1,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#2",
+    "id" : 2,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#3",
+    "id" : 3,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#4",
+    "id" : 4,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#5",
+    "id" : 5,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#6",
+    "id" : 6,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#7",
+    "id" : 7,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  }, {
+    "@id" : "Vehicle#8",
+    "id" : 8,
+    "capacity" : 100,
+    "depot" : "Depot#1",
+    "customers" : [ ]
+  } ],
+  "customerList" : [ {
+    "@type" : "Customer",
+    "@id" : "Customer#2",
+    "id" : 2,
+    "location" : "AirLocation#2",
+    "demand" : 3,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#3",
+    "id" : 3,
+    "location" : "AirLocation#3",
+    "demand" : 12,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#4",
+    "id" : 4,
+    "location" : "AirLocation#4",
+    "demand" : 25,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#5",
+    "id" : 5,
+    "location" : "AirLocation#5",
+    "demand" : 4,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#6",
+    "id" : 6,
+    "location" : "AirLocation#6",
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#7",
+    "id" : 7,
+    "location" : "AirLocation#7",
+    "demand" : 20,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#8",
+    "id" : 8,
+    "location" : "AirLocation#8",
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#9",
+    "id" : 9,
+    "location" : "AirLocation#9",
+    "demand" : 10,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#10",
+    "id" : 10,
+    "location" : "AirLocation#10",
+    "demand" : 20,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#11",
+    "id" : 11,
+    "location" : "AirLocation#11",
+    "demand" : 13,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#12",
+    "id" : 12,
+    "location" : "AirLocation#12",
+    "demand" : 14,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#13",
+    "id" : 13,
+    "location" : "AirLocation#13",
+    "demand" : 16,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#14",
+    "id" : 14,
+    "location" : "AirLocation#14",
+    "demand" : 17,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#15",
+    "id" : 15,
+    "location" : "AirLocation#15",
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#16",
+    "id" : 16,
+    "location" : "AirLocation#16",
+    "demand" : 36,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#17",
+    "id" : 17,
+    "location" : "AirLocation#17",
+    "demand" : 6,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#18",
+    "id" : 18,
+    "location" : "AirLocation#18",
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#19",
+    "id" : 19,
+    "location" : "AirLocation#19",
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#20",
+    "id" : 20,
+    "location" : "AirLocation#20",
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#21",
+    "id" : 21,
+    "location" : "AirLocation#21",
+    "demand" : 17,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#22",
+    "id" : 22,
+    "location" : "AirLocation#22",
+    "demand" : 22,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#23",
+    "id" : 23,
+    "location" : "AirLocation#23",
+    "demand" : 10,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#24",
+    "id" : 24,
+    "location" : "AirLocation#24",
+    "demand" : 19,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#25",
+    "id" : 25,
+    "location" : "AirLocation#25",
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#26",
+    "id" : 26,
+    "location" : "AirLocation#26",
+    "demand" : 23,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#27",
+    "id" : 27,
+    "location" : "AirLocation#27",
+    "demand" : 19,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#28",
+    "id" : 28,
+    "location" : "AirLocation#28",
+    "demand" : 15,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#29",
+    "id" : 29,
+    "location" : "AirLocation#29",
+    "demand" : 22,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#30",
+    "id" : 30,
+    "location" : "AirLocation#30",
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#31",
+    "id" : 31,
+    "location" : "AirLocation#31",
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#32",
+    "id" : 32,
+    "location" : "AirLocation#32",
+    "demand" : 15,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#33",
+    "id" : 33,
+    "location" : "AirLocation#33",
+    "demand" : 22,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#34",
+    "id" : 34,
+    "location" : "AirLocation#34",
+    "demand" : 12,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#35",
+    "id" : 35,
+    "location" : "AirLocation#35",
+    "demand" : 24,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#36",
+    "id" : 36,
+    "location" : "AirLocation#36",
+    "demand" : 25,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#37",
+    "id" : 37,
+    "location" : "AirLocation#37",
+    "demand" : 2,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#38",
+    "id" : 38,
+    "location" : "AirLocation#38",
+    "demand" : 15,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#39",
+    "id" : 39,
+    "location" : "AirLocation#39",
+    "demand" : 18,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#40",
+    "id" : 40,
+    "location" : "AirLocation#40",
+    "demand" : 13,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#41",
+    "id" : 41,
+    "location" : "AirLocation#41",
+    "demand" : 3,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#42",
+    "id" : 42,
+    "location" : "AirLocation#42",
+    "demand" : 20,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#43",
+    "id" : 43,
+    "location" : "AirLocation#43",
+    "demand" : 14,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#44",
+    "id" : 44,
+    "location" : "AirLocation#44",
+    "demand" : 10,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#45",
+    "id" : 45,
+    "location" : "AirLocation#45",
+    "demand" : 10,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#46",
+    "id" : 46,
+    "location" : "AirLocation#46",
+    "demand" : 66,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#47",
+    "id" : 47,
+    "location" : "AirLocation#47",
+    "demand" : 10,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#48",
+    "id" : 48,
+    "location" : "AirLocation#48",
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#49",
+    "id" : 49,
+    "location" : "AirLocation#49",
+    "demand" : 12,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#50",
+    "id" : 50,
+    "location" : "AirLocation#50",
+    "demand" : 24,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#51",
+    "id" : 51,
+    "location" : "AirLocation#51",
+    "demand" : 5,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#52",
+    "id" : 52,
+    "location" : "AirLocation#52",
+    "demand" : 18,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#53",
+    "id" : 53,
+    "location" : "AirLocation#53",
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#54",
+    "id" : 54,
+    "location" : "AirLocation#54",
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "@id" : "Customer#55",
+    "id" : 55,
+    "location" : "AirLocation#55",
+    "demand" : 12,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  } ],
+  "score" : null
+}

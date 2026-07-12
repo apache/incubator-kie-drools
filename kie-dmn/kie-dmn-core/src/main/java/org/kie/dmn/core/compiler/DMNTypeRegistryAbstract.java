@@ -72,7 +72,7 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
         feelTypesScope.define(new TypeSymbol(name, type));
     }
 
-    static DMNType getFeelPrimitiveType(String name, BuiltInType type, String feelNamespace, DMNType unknownType) {
+     public static DMNType getFeelPrimitiveType(String name, BuiltInType type, String feelNamespace, DMNType unknownType) {
         DMNType feelPrimitiveType;
         if( type == BuiltInType.LIST ) {
             feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, true, null, null, unknownType, type);
@@ -151,6 +151,5 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
         }
         return null;
     }
-
 
 }

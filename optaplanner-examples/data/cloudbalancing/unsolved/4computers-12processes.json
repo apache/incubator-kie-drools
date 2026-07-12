@@ -1,0 +1,102 @@
+{
+  "id" : 0,
+  "computerList" : [ {
+    "id" : 0,
+    "cpuPower" : 24,
+    "memory" : 96,
+    "networkBandwidth" : 16,
+    "cost" : 4800
+  }, {
+    "id" : 1,
+    "cpuPower" : 6,
+    "memory" : 4,
+    "networkBandwidth" : 6,
+    "cost" : 660
+  }, {
+    "id" : 2,
+    "cpuPower" : 6,
+    "memory" : 16,
+    "networkBandwidth" : 4,
+    "cost" : 680
+  }, {
+    "id" : 3,
+    "cpuPower" : 8,
+    "memory" : 32,
+    "networkBandwidth" : 12,
+    "cost" : 1270
+  } ],
+  "processList" : [ {
+    "id" : 0,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 1,
+    "requiredCpuPower" : 3,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 2,
+    "requiredCpuPower" : 11,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 3,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 4,
+    "requiredCpuPower" : 5,
+    "requiredMemory" : 4,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 5,
+    "requiredCpuPower" : 5,
+    "requiredMemory" : 2,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 6,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 2,
+    "computer" : null
+  }, {
+    "id" : 7,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 7,
+    "computer" : null
+  }, {
+    "id" : 8,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 5,
+    "computer" : null
+  }, {
+    "id" : 9,
+    "requiredCpuPower" : 7,
+    "requiredMemory" : 5,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 10,
+    "requiredCpuPower" : 3,
+    "requiredMemory" : 3,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 11,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  } ],
+  "score" : null
+}

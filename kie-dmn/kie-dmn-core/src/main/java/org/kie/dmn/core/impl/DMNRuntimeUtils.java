@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.core.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,11 +27,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import javax.xml.namespace.QName;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.compiler.DMNTypeRegistryAbstract;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.typesafe.DMNTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +51,13 @@ public class DMNRuntimeUtils {
     }
 
 
-    public static Object coerceUsingType(Object value, DMNType type, boolean typeCheck,
+    /**
+     * When type-checking is enabled, verifies that {@code value} is assignable to {@code type} and, if the type is
+     * a non-collection type and {@code value} is a single-item Collection, unwraps the sole element.
+     * When type-checking is disabled, unconditionally attempts the single-item unwrap.
+     *
+     */
+    public static Object coerceSingletonCollectionItemToValue(Object value, DMNType type, boolean typeCheck,
                                          BiConsumer<Object, DMNType> nullCallback) {
         if (typeCheck) {
             if (type.isAssignableValue(value)) {
@@ -273,4 +284,59 @@ public class DMNRuntimeUtils {
     static String getIdentifier(DMNNode node) {
         return node.getName() != null ? node.getName() : node.getId();
     }
+
+    /**
+     * Determines whether a function return-type reference and an output-decision return-type reference are
+     * compatible under DMN collection-coercion rules (e.g. a scalar type is compatible with a single-element
+     * collection of the same base type, and {@code date and time} is compatible with {@code date}).
+     *
+     * @param functionReturnTypeRef        the {@link QName} declared as the function's output type
+     * @param outputDecisionReturnTypeRef  the {@link QName} declared as the output decision's variable type
+     * @param model                        the DMN model used to resolve both type references
+     * @return {@code true} when the two types are collection-coercion compatible
+     */
+    public static boolean isReturnTypeCollectionCompatible(QName functionReturnTypeRef, QName outputDecisionReturnTypeRef, DMNModelImpl model) {
+        DMNType decisionServiceOutputType = resolveDMNType(functionReturnTypeRef, model);
+        DMNType decisionOutputType = resolveDMNType(outputDecisionReturnTypeRef, model);
+
+        if (decisionServiceOutputType == null || decisionOutputType == null) {
+            return false;
+        }
+        if (!decisionServiceOutputType.isCollection() && decisionOutputType.isCollection()) {
+            DMNType outputDecisionElementType = decisionOutputType.getBaseType();
+            return outputDecisionElementType == null || DMNTypeUtils.getFEELBuiltInType(outputDecisionElementType)
+                    == DMNTypeUtils.getFEELBuiltInType(decisionServiceOutputType);
+        }
+        if (decisionServiceOutputType.isCollection() && !decisionOutputType.isCollection()) {
+            DMNType decisionServiceElementType = decisionServiceOutputType.getBaseType();
+            return decisionServiceElementType != null && DMNTypeUtils.getFEELBuiltInType(decisionServiceElementType)
+                    == DMNTypeUtils.getFEELBuiltInType(decisionOutputType);
+        }
+        return decisionServiceOutputType instanceof SimpleTypeImpl decisionServiceSimpleType
+                && decisionServiceSimpleType.getFeelType() == BuiltInType.DATE_TIME
+                && decisionOutputType instanceof SimpleTypeImpl decisionOutputSimpleType
+                && decisionOutputSimpleType.getFeelType() == BuiltInType.DATE;
+    }
+
+    /**
+     * Resolves a {@link DMNType} from a {@link QName} by first consulting the model's type registry, then falling
+     * back to {@link DMNTypeRegistryAbstract#getFeelPrimitiveType} for built-in FEEL types.
+     *
+     * @param typeRef the qualified type reference to resolve
+     * @param model the DMN model whose registry is searched first
+     * @return the resolved {@link DMNType}, or {@code null} if neither the registry nor the built-in types match
+     */
+    public static DMNType resolveDMNType(QName typeRef, DMNModelImpl model) {
+        DMNType type = model.getTypeRegistry().resolveType(model.getNamespace(), typeRef.getLocalPart());
+        if (type != null) {
+            return type;
+        }
+        // determineTypeFromName returns UNKNOWN both for a genuine no-match and for the literal "unknown"/"any"
+        return Arrays.stream(BuiltInType.values())
+                .filter(b -> Arrays.asList(b.getNames()).contains(typeRef.getLocalPart()))
+                .findFirst()
+                .map(b -> DMNTypeRegistryAbstract.getFeelPrimitiveType(b.getName(), b, model.getNamespace(), model.getTypeRegistry().unknown()))
+                .orElse(null);
+    }
+
 }

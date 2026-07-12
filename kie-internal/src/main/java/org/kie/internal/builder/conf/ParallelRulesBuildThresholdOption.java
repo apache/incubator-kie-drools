@@ -19,6 +19,7 @@
 package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * A class for the parallel rules build threshold configuration.
@@ -30,6 +31,7 @@ public class ParallelRulesBuildThresholdOption implements SingleValueRuleBuilder
     /**
      * The property name for the parallel rules build threshold option
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.parallelRulesBuildThreshold";
 
     public static OptionKey<ParallelRulesBuildThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);

@@ -31,7 +31,6 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamedElement;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import javax.xml.namespace.QName;
 import java.util.List;

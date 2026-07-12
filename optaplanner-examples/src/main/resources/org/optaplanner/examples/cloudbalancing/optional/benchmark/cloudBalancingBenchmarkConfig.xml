@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
+  <benchmarkDirectory>local/data/cloudbalancing</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+      <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
+        <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/3computers-9processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/4computers-12processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/5computers-15processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/6computers-18processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/7computers-21processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/8computers-24processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/9computers-27processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/10computers-30processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/11computers-33processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/12computers-36processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/13computers-39processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/14computers-42processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/15computers-45processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/16computers-48processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/17computers-51processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/18computers-54processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/19computers-57processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/20computers-60processes..json</inputSolutionFile>-->
+      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.json</inputSolutionFile>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
+      <!--<problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_BEST_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
+    </problemBenchmarks>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmarkBluePrint>
+    <solverBenchmarkBluePrintType>EVERY_LOCAL_SEARCH_TYPE</solverBenchmarkBluePrintType>
+  </solverBenchmarkBluePrint>
+
+  <!--<solverBenchmark>-->
+    <!--<name>First Fit</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>First Fit Decreasing</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+
+  <!--<solverBenchmark>-->
+    <!--<name>Tabu Search</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector/>-->
+          <!--<swapMoveSelector/>-->
+          <!--<pillarChangeMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<entityTabuSize>7</entityTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<acceptedCountLimit>1000</acceptedCountLimit>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>Simulated Annealing</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector/>-->
+          <!--<swapMoveSelector/>-->
+          <!--<pillarChangeMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<acceptedCountLimit>4</acceptedCountLimit>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>Late Acceptance</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector/>-->
+          <!--<swapMoveSelector/>-->
+          <!--<pillarChangeMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<lateAcceptanceSize>400</lateAcceptanceSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<acceptedCountLimit>4</acceptedCountLimit>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+
+  <!--<solverBenchmark>-->
+    <!--<name>BRANCH_AND_BOUND</name>-->
+    <!--<solver>-->
+      <!--<exhaustiveSearch>-->
+        <!--<exhaustiveSearchType>BRANCH_AND_BOUND</exhaustiveSearchType>-->
+      <!--</exhaustiveSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+</plannerBenchmark>

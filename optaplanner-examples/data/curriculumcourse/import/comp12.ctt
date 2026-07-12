@@ -1,0 +1,1634 @@
+Name: Let0506-2
+Courses: 88
+Rooms: 11
+Days: 6
+Periods_per_day: 6
+Curricula: 150
+Constraints: 1368
+
+COURSES:
+AntCul t000 2 2 170
+ArcClaCS t001 2 2 4
+ArcCla1 t002 3 3 31
+ArcCla2 t001 2 2 16
+ArcCriMed t003 2 2 24
+ArcVicOriAnt t004 3 3 13
+ArcStoArtMus t005 2 2 60
+ArcMedCS t003 2 2 4
+Archiv t006 3 3 36
+ArchivCS t006 3 3 6
+BioarcCS t007 2 2 8
+Cartog t008 3 3 5
+ChiResCS t009 2 2 4
+Codico t010 3 3 8
+CodicoCS t010 2 2 6
+EcoAzi t011 3 3 104
+EleInfSciCatBenCulM2 t012 2 2 24
+EleInfSciCatBenCulM3 t013 3 3 24
+EpiLat t014 3 3 16
+Esteti t015 3 3 74
+EtrAntIta t016 3 3 26
+FilCla2 t017 3 3 14
+FilTeo t018 3 3 33
+FonSoc t019 3 3 41
+GeoTur t020 3 3 104
+Geo1 t021 3 3 139
+Glotto t022 3 3 18
+InfDoc t023 3 3 121
+ItaScr t024 2 2 67
+LabScr t024 1 1 5
+LegBenCul2 t025 2 2 110
+LetCriAnt t026 3 3 69
+LinLetGre1 t027 3 3 14
+LinLetLatCS t028 2 2 6
+LinLetLat2 t028 3 3 27
+LinGreA t029 2 2 26
+LinLatA t030 2 2 53
+LinLatB t031 3 3 86
+LinGen t032 3 3 53
+LinIta t033 3 3 32
+LogFilMat t034 2 2 33
+MatTecAppArcM3 t035 2 2 8
+MatCarCosResEdiSto t036 3 3 56
+MetRicStoArt t037 2 2 18
+NumismCS t038 2 2 4
+OrientCS t039 2 2 4
+Paleoa t007 3 3 22
+PalLat t040 3 3 45
+PapiroCS t041 2 2 13
+ProMedCS t042 3 3 4
+PsiTur t043 3 3 104
+SocArt t019 3 3 24
+Sociol1 t019 3 3 143
+StoConCS t044 2 2 15
+StoAntStaItaCS t045 2 2 24
+StoColIstMus t046 2 2 131
+StoDisGra t047 2 2 18
+StoFriCS t048 2 2 24
+StoLibSta t049 3 3 20
+StoLibStaCSM1 t050 2 2 6
+StoLibStaCSM2 t051 2 2 6
+StoRes t052 3 3 48
+StoArc t002 3 3 14
+StoArcCon t053 2 2 63
+StoArcMed t054 2 2 33
+StoArt t055 3 3 90
+StoCriArt t056 2 2 54
+StoFilCS t057 2 2 21
+StoFilMedCS t058 2 2 23
+StoLinItaCS t033 2 2 24
+StoMus t059 2 2 51
+StoProArtCulMatMed t060 2 2 33
+StoArtCon2CS t061 2 2 6
+StoArtMod2CS t062 2 2 6
+StoBib t013 3 3 5
+StoTecArtM12 t063 3 3 36
+StoTecArtM3 t064 3 3 18
+StoTecArtCS t065 2 2 6
+StoCriCin t066 2 2 65
+StoTecFot t067 2 2 126
+StoGre t068 3 3 39
+StoMed2 t069 3 3 115
+StoModCS t070 2 2 15
+StoMod2 t048 3 3 104
+StoRom t071 2 2 76
+StoRomCS t071 2 2 15
+TedUma t072 3 3 3
+TopRilMonAnt t073 3 3 29
+
+ROOMS:
+10	130
+14	28
+15	46
+C1	28
+H	170
+L	65
+M	60
+O	30
+DTM	60
+HTM	60
+VL	40
+
+CURRICULA:
+q000  3 LinGen LinLatA Geo1 
+q001  3 LinIta ItaScr Archiv 
+q002  3 LinIta ItaScr Codico 
+q003  3 LinIta ItaScr PalLat 
+q004  3 LinIta ItaScr StoLibSta 
+q005  4 Esteti StoMus Cartog LabScr
+q006  4 LinGen LinGreA LinLatA Geo1 
+q007  5 Glotto LinLetGre1 StoGre ArcCla1 ItaScr 
+q008  4 FilCla2 LinLetLat2 LetCriAnt StoRom 
+q010  5 LinLetGre1 StoGre StoRom ArcCla1 ItaScr 
+q011  3 Glotto EpiLat LetCriAnt 
+q012  3 Glotto EpiLat TopRilMonAnt 
+q014  3 FilCla2 EpiLat LetCriAnt 
+q015  3 FilCla2 EpiLat TopRilMonAnt 
+q017  5 LinGen LinLatA Geo1 FonSoc AntCul 
+q018  3 ItaScr Sociol1 AntCul 
+q019  3 StoMus LinIta Sociol1 
+q020  3 StoMus LinIta AntCul 
+q021  3 StoCriCin LinIta Sociol1 
+q022  3 StoCriCin LinIta AntCul 
+q024  3 ItaScr Archiv PalLat 
+q025  3 StoMed2 StoMod2 StoRom 
+q026  3 StoMed2 StoMod2 LetCriAnt 
+q027  3 LetCriAnt FonSoc AntCul 
+q028  3 ItaScr Esteti ArcCriMed 
+q029  4 ItaScr FonSoc AntCul ArcCriMed 
+q030  4 Geo1 LinLatB StoArcMed StoTecArtM12 
+q031  4 Geo1 LinLatB StoArcMed StoTecArtM3 
+q032  4 Geo1 LinLatB StoProArtCulMatMed StoTecArtM12 
+q034  4 Geo1 LinLatB ArcStoArtMus StoTecArtM12 
+q035  4 Geo1 LinLatB ArcStoArtMus StoTecArtM3 
+q036  4 MetRicStoArt StoCriArt StoRes EleInfSciCatBenCulM2 
+q037  4 MetRicStoArt StoCriArt StoRes EleInfSciCatBenCulM3 
+q038  4 StoColIstMus StoCriArt StoRes EleInfSciCatBenCulM2 
+q039  4 StoColIstMus StoCriArt StoRes EleInfSciCatBenCulM3 
+q040  4 StoDisGra StoCriArt StoRes EleInfSciCatBenCulM2 
+q041  4 StoDisGra StoCriArt StoRes EleInfSciCatBenCulM3 
+q042  4 ArcStoArtMus StoCriArt StoRes EleInfSciCatBenCulM2 
+q043  4 ArcStoArtMus StoCriArt StoRes EleInfSciCatBenCulM3 
+q044  4 StoArcCon MatCarCosResEdiSto StoCriCin SocArt 
+q045  4 StoArcCon MatCarCosResEdiSto StoTecFot SocArt 
+q046  4 StoArcCon MatCarCosResEdiSto StoMus SocArt 
+q047  4 StoArcCon MatCarCosResEdiSto StoCriCin Esteti 
+q048  4 StoArcCon MatCarCosResEdiSto StoTecFot Esteti 
+q049  4 StoArcCon MatCarCosResEdiSto StoMus Esteti 
+q050  5 StoGre ArcCla1 Geo1 LinLatB Paleoa 
+q051  4 StoRom ArcCla2 TopRilMonAnt LinGreA 
+q052  4 StoRom ArcCriMed TopRilMonAnt LinGreA 
+q053  4 StoRom ArcVicOriAnt TopRilMonAnt LinGreA 
+q054  4 EtrAntIta LetCriAnt Glotto MatCarCosResEdiSto 
+q055  4 EtrAntIta AntCul Glotto MatCarCosResEdiSto 
+q056  4 EtrAntIta LetCriAnt InfDoc MatCarCosResEdiSto 
+q057  4 EtrAntIta AntCul InfDoc MatCarCosResEdiSto 
+q058  4 EtrAntIta LetCriAnt Glotto MatTecAppArcM3 
+q059  4 EtrAntIta AntCul Glotto MatTecAppArcM3 
+q060  4 EtrAntIta LetCriAnt InfDoc MatTecAppArcM3 
+q061  4 EtrAntIta AntCul InfDoc MatTecAppArcM3 
+q062  3 Archiv Geo1 LinLatB 
+q063  3 PalLat InfDoc StoMus 
+q064  3 PalLat InfDoc StoCriCin 
+q065  3 PalLat InfDoc StoTecFot 
+q066  3 PalLat LinLetGre1 StoMus 
+q067  3 PalLat LinLetGre1 StoCriCin 
+q068  3 PalLat LinLetGre1 StoTecFot 
+q069  3 PalLat StoLibSta StoMus 
+q070  3 PalLat StoLibSta StoCriCin 
+q071  3 PalLat StoLibSta StoTecFot 
+q072  3 InfDoc Codico LinLetGre1 
+q073  3 InfDoc Codico StoLibSta 
+q074  3 InfDoc Codico StoBib 
+q075  3 InfDoc LinLetGre1 StoLibSta 
+q076  3 InfDoc LinLetGre1 StoBib 
+q077  3 InfDoc StoLibSta StoBib 
+q078  3 StoLibSta Codico LinLetGre1 
+q079  3 StoLibSta Codico StoBib 
+q080  3 StoLibSta LinLetGre1 StoBib 
+q081  6 Sociol1 InfDoc PsiTur AntCul StoRom StoArc 
+q082  5 LegBenCul2 EcoAzi GeoTur StoColIstMus StoTecFot 
+q083  6 Sociol1 InfDoc PsiTur AntCul StoMed2 StoArt 
+q084  6 Sociol1 InfDoc PsiTur AntCul StoMod2 StoArt 
+q085  6 LegBenCul2 EcoAzi GeoTur StoColIstMus StoTecFot StoMed2 
+q086  6 LegBenCul2 EcoAzi GeoTur StoColIstMus StoTecFot StoMod2 
+q091  4 StoGre FilTeo LogFilMat Esteti 
+q092  4 StoRom FilTeo LogFilMat Esteti 
+q093  4 StoMed2 FilTeo LogFilMat Esteti 
+q094  5 StoLinItaCS Archiv StoModCS StoFilMedCS StoCriCin 
+q095  5 StoLinItaCS Archiv StoFriCS StoFilMedCS StoCriCin 
+q096  5 StoLinItaCS Archiv StoConCS StoFilMedCS StoCriCin 
+q097  5 StoLinItaCS Archiv StoAntStaItaCS StoFilMedCS StoCriCin 
+q098  5 StoLinItaCS PalLat StoModCS StoFilMedCS StoCriCin 
+q099  5 StoLinItaCS PalLat StoFriCS StoFilMedCS StoCriCin 
+q100  5 StoLinItaCS PalLat StoConCS StoFilMedCS StoCriCin 
+q101  5 StoLinItaCS PalLat StoAntStaItaCS StoFilMedCS StoCriCin 
+q102  5 StoLinItaCS StoLibSta StoModCS StoFilMedCS StoCriCin 
+q103  5 StoLinItaCS StoLibSta StoFriCS StoFilMedCS StoCriCin 
+q104  5 StoLinItaCS StoLibSta StoConCS StoFilMedCS StoCriCin 
+q105  5 StoLinItaCS StoLibSta StoAntStaItaCS StoFilMedCS StoCriCin 
+q106  5 StoLinItaCS Archiv StoModCS StoFilCS StoCriCin 
+q107  5 StoLinItaCS Archiv StoFriCS StoFilCS StoCriCin 
+q108  5 StoLinItaCS Archiv StoConCS StoFilCS StoCriCin 
+q109  5 StoLinItaCS Archiv StoAntStaItaCS StoFilCS StoCriCin 
+q110  5 StoLinItaCS PalLat StoModCS StoFilCS StoCriCin 
+q111  5 StoLinItaCS PalLat StoFriCS StoFilCS StoCriCin 
+q112  5 StoLinItaCS PalLat StoConCS StoFilCS StoCriCin 
+q113  5 StoLinItaCS PalLat StoAntStaItaCS StoFilCS StoCriCin 
+q114  5 StoLinItaCS StoLibSta StoModCS StoFilCS StoCriCin 
+q115  5 StoLinItaCS StoLibSta StoFriCS StoFilCS StoCriCin 
+q116  5 StoLinItaCS StoLibSta StoConCS StoFilCS StoCriCin 
+q117  5 StoLinItaCS StoLibSta StoAntStaItaCS StoFilCS StoCriCin 
+q118  1 LinLetLat2 
+q119  5 LinLetLat2 StoRomCS PalLat EpiLat FilCla2 
+q120  5 LinLetLat2 StoRomCS PalLat EpiLat LetCriAnt 
+q121  5 LinLetLat2 StoRomCS PalLat EpiLat LinLetLatCS 
+q123  6 LinLetLat2 StoRomCS PalLat EpiLat FilCla2 LetCriAnt 
+q124  6 LinLetLat2 StoRomCS PalLat EpiLat FilCla2 LinLetLatCS 
+q126  6 LinLetLat2 StoRomCS PalLat EpiLat LetCriAnt LinLetLatCS 
+q129  3 LinLetLatCS PapiroCS StoFilMedCS 
+q130  3 LinLetLatCS PapiroCS TedUma 
+q131  3 LetCriAnt PapiroCS StoFilMedCS 
+q132  3 LetCriAnt PapiroCS TedUma 
+q133  6 LinLetLat2 FilCla2 StoRom ArcCla2 ArcVicOriAnt EtrAntIta 
+q134  6 LinLetLat2 FilCla2 StoRom ArcCla2 ArcVicOriAnt TopRilMonAnt 
+q135  6 LinLetLat2 FilCla2 StoRom ArcCla2 TopRilMonAnt EtrAntIta 
+q136  6 LinLetLat2 FilCla2 StoRom ArcVicOriAnt EtrAntIta TopRilMonAnt 
+q137  6 LinLetLat2 Glotto StoRom ArcCla2 ArcVicOriAnt EtrAntIta 
+q138  6 LinLetLat2 Glotto StoRom ArcCla2 ArcVicOriAnt TopRilMonAnt 
+q139  6 LinLetLat2 Glotto StoRom ArcCla2 TopRilMonAnt EtrAntIta 
+q140  6 LinLetLat2 Glotto StoRom ArcVicOriAnt EtrAntIta TopRilMonAnt 
+q141  3 StoRomCS PapiroCS TedUma 
+q142  10 StoRom LetCriAnt ArcStoArtMus StoFriCS StoAntStaItaCS StoMus StoCriCin StoConCS StoFilMedCS StoFilCS 
+q143  9 Sociol1 AntCul StoModCS StoFriCS StoAntStaItaCS StoArcMed StoProArtCulMatMed StoColIstMus StoArcCon 
+q144A  8 StoArtMod2CS StoArtCon2CS ArcCla1 ArcCla2 ArcCriMed LegBenCul2 AntCul StoCriArt 
+q144B  8 StoTecArtCS StoArcMed StoProArtCulMatMed ArcStoArtMus MetRicStoArt StoColIstMus StoDisGra StoArcCon 
+q145A  8 StoCriCin StoTecFot StoMus StoArtMod2CS StoArtCon2CS StoCriArt StoTecArtCS StoArcMed
+q145B  7 StoArcMed StoProArtCulMatMed ArcStoArtMus  MetRicStoArt StoColIstMus StoDisGra StoArcCon 
+q146  9 EtrAntIta ArcClaCS ProMedCS ArcMedCS NumismCS OrientCS PapiroCS StoRomCS BioarcCS 
+q147  1 BioarcCS 
+q148  4 ArchivCS StoLibStaCSM1 StoLibStaCSM2 LegBenCul2 
+q149  3 ArchivCS CodicoCS LegBenCul2 
+q150  4 StoLibStaCSM1 StoLibStaCSM2 CodicoCS LegBenCul2 
+q151  3 ArchivCS StoLibStaCSM1 StoLibStaCSM2 
+q152  2 ArchivCS PapiroCS 
+q153  2 ArchivCS ChiResCS 
+q154  2 CodicoCS ArchivCS 
+q155  3 CodicoCS StoLibStaCSM1 StoLibStaCSM2 
+q156  2 CodicoCS PapiroCS 
+q157  2 CodicoCS ChiResCS 
+q158  3 StoLibStaCSM1 StoLibStaCSM2 PapiroCS 
+q159  3 StoLibStaCSM1 StoLibStaCSM2 ChiResCS 
+q160  2 PapiroCS ChiResCS 
+
+UNAVAILABILITY_CONSTRAINTS:
+AntCul 5 2
+AntCul 5 3
+AntCul 5 4
+AntCul 5 5
+ArcClaCS 0 0
+ArcClaCS 0 1
+ArcClaCS 0 2
+ArcClaCS 4 3
+ArcClaCS 4 4
+ArcClaCS 4 5
+ArcClaCS 5 0
+ArcClaCS 5 1
+ArcClaCS 5 2
+ArcClaCS 5 3
+ArcClaCS 5 4
+ArcClaCS 5 5
+ArcCla1 5 2
+ArcCla1 5 3
+ArcCla1 5 4
+ArcCla1 5 5
+ArcCla2 0 0
+ArcCla2 0 1
+ArcCla2 0 2
+ArcCla2 4 3
+ArcCla2 4 4
+ArcCla2 4 5
+ArcCla2 5 0
+ArcCla2 5 1
+ArcCla2 5 2
+ArcCla2 5 3
+ArcCla2 5 4
+ArcCla2 5 5
+ArcCriMed 0 0
+ArcCriMed 0 1
+ArcCriMed 0 2
+ArcCriMed 2 0
+ArcCriMed 2 1
+ArcCriMed 2 2
+ArcCriMed 2 3
+ArcCriMed 2 4
+ArcCriMed 2 5
+ArcCriMed 4 0
+ArcCriMed 4 1
+ArcCriMed 4 2
+ArcCriMed 4 3
+ArcCriMed 4 4
+ArcCriMed 4 5
+ArcCriMed 5 0
+ArcCriMed 5 1
+ArcCriMed 5 2
+ArcCriMed 5 3
+ArcCriMed 5 4
+ArcCriMed 5 5
+ArcVicOriAnt 0 0
+ArcVicOriAnt 0 1
+ArcVicOriAnt 0 2
+ArcVicOriAnt 0 5
+ArcVicOriAnt 1 0
+ArcVicOriAnt 1 1
+ArcVicOriAnt 1 2
+ArcVicOriAnt 1 5
+ArcVicOriAnt 2 0
+ArcVicOriAnt 2 1
+ArcVicOriAnt 2 2
+ArcVicOriAnt 2 5
+ArcVicOriAnt 3 0
+ArcVicOriAnt 3 1
+ArcVicOriAnt 3 2
+ArcVicOriAnt 3 5
+ArcVicOriAnt 4 0
+ArcVicOriAnt 4 1
+ArcVicOriAnt 4 2
+ArcVicOriAnt 4 5
+ArcVicOriAnt 5 0
+ArcVicOriAnt 5 1
+ArcVicOriAnt 5 2
+ArcVicOriAnt 5 3
+ArcVicOriAnt 5 4
+ArcVicOriAnt 5 5
+ArcStoArtMus 5 2
+ArcStoArtMus 5 3
+ArcStoArtMus 5 4
+ArcStoArtMus 5 5
+ArcMedCS 0 0
+ArcMedCS 0 1
+ArcMedCS 0 2
+ArcMedCS 2 0
+ArcMedCS 2 1
+ArcMedCS 2 2
+ArcMedCS 2 3
+ArcMedCS 2 4
+ArcMedCS 2 5
+ArcMedCS 4 0
+ArcMedCS 4 1
+ArcMedCS 4 2
+ArcMedCS 4 3
+ArcMedCS 4 4
+ArcMedCS 4 5
+ArcMedCS 5 0
+ArcMedCS 5 1
+ArcMedCS 5 2
+ArcMedCS 5 3
+ArcMedCS 5 4
+ArcMedCS 5 5
+Archiv 0 0
+Archiv 0 1
+Archiv 0 2
+Archiv 0 3
+Archiv 0 4
+Archiv 0 5
+Archiv 1 3
+Archiv 1 4
+Archiv 1 5
+Archiv 2 3
+Archiv 2 4
+Archiv 2 5
+Archiv 3 3
+Archiv 3 4
+Archiv 3 5
+Archiv 4 3
+Archiv 4 4
+Archiv 4 5
+Archiv 5 0
+Archiv 5 1
+Archiv 5 2
+Archiv 5 3
+Archiv 5 4
+Archiv 5 5
+ArchivCS 0 0
+ArchivCS 0 1
+ArchivCS 0 2
+ArchivCS 0 3
+ArchivCS 0 4
+ArchivCS 0 5
+ArchivCS 1 0
+ArchivCS 1 1
+ArchivCS 1 2
+ArchivCS 2 0
+ArchivCS 2 1
+ArchivCS 2 2
+ArchivCS 3 0
+ArchivCS 3 1
+ArchivCS 3 2
+ArchivCS 4 0
+ArchivCS 4 1
+ArchivCS 4 2
+ArchivCS 5 0
+ArchivCS 5 1
+ArchivCS 5 2
+ArchivCS 5 3
+ArchivCS 5 4
+ArchivCS 5 5
+BioarcCS 0 0
+BioarcCS 0 1
+BioarcCS 0 2
+BioarcCS 1 0
+BioarcCS 1 1
+BioarcCS 1 2
+BioarcCS 2 3
+BioarcCS 2 4
+BioarcCS 2 5
+BioarcCS 3 0
+BioarcCS 3 1
+BioarcCS 3 2
+BioarcCS 3 3
+BioarcCS 3 4
+BioarcCS 3 5
+BioarcCS 4 0
+BioarcCS 4 1
+BioarcCS 4 2
+BioarcCS 4 3
+BioarcCS 4 4
+BioarcCS 4 5
+BioarcCS 5 0
+BioarcCS 5 1
+BioarcCS 5 2
+BioarcCS 5 3
+BioarcCS 5 4
+BioarcCS 5 5
+Cartog 5 2
+Cartog 5 3
+Cartog 5 4
+Cartog 5 5
+ChiResCS 0 0
+ChiResCS 0 1
+ChiResCS 0 2
+ChiResCS 0 3
+ChiResCS 0 4
+ChiResCS 0 5
+ChiResCS 1 0
+ChiResCS 1 1
+ChiResCS 1 2
+ChiResCS 1 3
+ChiResCS 1 4
+ChiResCS 1 5
+ChiResCS 4 2
+ChiResCS 4 3
+ChiResCS 4 4
+ChiResCS 4 5
+ChiResCS 5 0
+ChiResCS 5 1
+ChiResCS 5 2
+ChiResCS 5 3
+ChiResCS 5 4
+ChiResCS 5 5
+Codico 0 0
+Codico 1 0
+Codico 2 0
+Codico 2 2
+Codico 2 3
+Codico 2 4
+Codico 2 5
+Codico 3 0
+Codico 3 1
+Codico 3 2
+Codico 3 3
+Codico 3 4
+Codico 3 5
+Codico 4 0
+Codico 4 1
+Codico 4 2
+Codico 4 3
+Codico 4 4
+Codico 4 5
+Codico 5 0
+Codico 5 1
+Codico 5 2
+Codico 5 3
+Codico 5 4
+Codico 5 5
+CodicoCS 0 0
+CodicoCS 1 0
+CodicoCS 2 0
+CodicoCS 2 2
+CodicoCS 2 3
+CodicoCS 2 4
+CodicoCS 2 5
+CodicoCS 3 0
+CodicoCS 3 1
+CodicoCS 3 2
+CodicoCS 3 3
+CodicoCS 3 4
+CodicoCS 3 5
+CodicoCS 4 0
+CodicoCS 4 1
+CodicoCS 4 2
+CodicoCS 4 3
+CodicoCS 4 4
+CodicoCS 4 5
+CodicoCS 5 0
+CodicoCS 5 1
+CodicoCS 5 2
+CodicoCS 5 3
+CodicoCS 5 4
+CodicoCS 5 5
+EcoAzi 5 2
+EcoAzi 5 3
+EcoAzi 5 4
+EcoAzi 5 5
+EleInfSciCatBenCulM2 0 0
+EleInfSciCatBenCulM2 0 1
+EleInfSciCatBenCulM2 0 2
+EleInfSciCatBenCulM2 0 3
+EleInfSciCatBenCulM2 0 4
+EleInfSciCatBenCulM2 0 5
+EleInfSciCatBenCulM2 1 0
+EleInfSciCatBenCulM2 1 1
+EleInfSciCatBenCulM2 1 2
+EleInfSciCatBenCulM2 1 3
+EleInfSciCatBenCulM2 1 4
+EleInfSciCatBenCulM2 1 5
+EleInfSciCatBenCulM2 2 0
+EleInfSciCatBenCulM2 2 1
+EleInfSciCatBenCulM2 2 2
+EleInfSciCatBenCulM2 2 3
+EleInfSciCatBenCulM2 2 4
+EleInfSciCatBenCulM2 2 5
+EleInfSciCatBenCulM2 3 0
+EleInfSciCatBenCulM2 3 1
+EleInfSciCatBenCulM2 3 2
+EleInfSciCatBenCulM2 3 3
+EleInfSciCatBenCulM2 3 4
+EleInfSciCatBenCulM2 3 5
+EleInfSciCatBenCulM2 4 0
+EleInfSciCatBenCulM2 4 1
+EleInfSciCatBenCulM2 4 2
+EleInfSciCatBenCulM2 5 2
+EleInfSciCatBenCulM2 5 3
+EleInfSciCatBenCulM2 5 4
+EleInfSciCatBenCulM2 5 5
+EleInfSciCatBenCulM3 0 0
+EleInfSciCatBenCulM3 0 1
+EleInfSciCatBenCulM3 0 2
+EleInfSciCatBenCulM3 0 3
+EleInfSciCatBenCulM3 1 0
+EleInfSciCatBenCulM3 1 1
+EleInfSciCatBenCulM3 1 4
+EleInfSciCatBenCulM3 1 5
+EleInfSciCatBenCulM3 2 0
+EleInfSciCatBenCulM3 2 1
+EleInfSciCatBenCulM3 2 4
+EleInfSciCatBenCulM3 2 5
+EleInfSciCatBenCulM3 3 0
+EleInfSciCatBenCulM3 3 1
+EleInfSciCatBenCulM3 3 4
+EleInfSciCatBenCulM3 3 5
+EleInfSciCatBenCulM3 4 0
+EleInfSciCatBenCulM3 4 1
+EleInfSciCatBenCulM3 4 2
+EleInfSciCatBenCulM3 4 3
+EleInfSciCatBenCulM3 4 4
+EleInfSciCatBenCulM3 4 5
+EleInfSciCatBenCulM3 5 0
+EleInfSciCatBenCulM3 5 1
+EleInfSciCatBenCulM3 5 2
+EleInfSciCatBenCulM3 5 3
+EleInfSciCatBenCulM3 5 4
+EleInfSciCatBenCulM3 5 5
+EpiLat 5 2
+EpiLat 5 3
+EpiLat 5 4
+EpiLat 5 5
+Esteti 0 2
+Esteti 0 3
+Esteti 1 2
+Esteti 1 3
+Esteti 4 2
+Esteti 4 3
+Esteti 5 2
+Esteti 5 3
+Esteti 5 4
+Esteti 5 5
+EtrAntIta 5 2
+EtrAntIta 5 3
+EtrAntIta 5 4
+EtrAntIta 5 5
+FilCla2 5 2
+FilCla2 5 3
+FilCla2 5 4
+FilCla2 5 5
+FilTeo 0 0
+FilTeo 0 1
+FilTeo 0 2
+FilTeo 0 3
+FilTeo 0 4
+FilTeo 0 5
+FilTeo 4 0
+FilTeo 4 1
+FilTeo 4 2
+FilTeo 5 0
+FilTeo 5 1
+FilTeo 5 2
+FilTeo 5 3
+FilTeo 5 4
+FilTeo 5 5
+FonSoc 5 2
+FonSoc 5 3
+FonSoc 5 4
+FonSoc 5 5
+GeoTur 5 2
+GeoTur 5 3
+GeoTur 5 4
+GeoTur 5 5
+Geo1 5 2
+Geo1 5 3
+Geo1 5 4
+Geo1 5 5
+Glotto 5 2
+Glotto 5 3
+Glotto 5 4
+Glotto 5 5
+InfDoc 0 0
+InfDoc 0 1
+InfDoc 0 2
+InfDoc 1 4
+InfDoc 1 5
+InfDoc 2 1
+InfDoc 2 2
+InfDoc 3 1
+InfDoc 3 2
+InfDoc 5 0
+InfDoc 5 1
+InfDoc 5 2
+InfDoc 5 3
+InfDoc 5 4
+InfDoc 5 5
+ItaScr 5 2
+ItaScr 5 3
+ItaScr 5 4
+ItaScr 5 5
+LabScr 5 2
+LabScr 5 3
+LabScr 5 4
+LabScr 5 5
+LegBenCul2 0 0
+LegBenCul2 0 1
+LegBenCul2 0 2
+LegBenCul2 1 0
+LegBenCul2 1 1
+LegBenCul2 1 2
+LegBenCul2 2 0
+LegBenCul2 2 1
+LegBenCul2 2 2
+LegBenCul2 3 0
+LegBenCul2 3 1
+LegBenCul2 3 2
+LegBenCul2 4 0
+LegBenCul2 4 1
+LegBenCul2 4 2
+LegBenCul2 5 0
+LegBenCul2 5 1
+LegBenCul2 5 2
+LegBenCul2 5 3
+LegBenCul2 5 4
+LegBenCul2 5 5
+LetCriAnt 0 0
+LetCriAnt 0 3
+LetCriAnt 0 4
+LetCriAnt 0 5
+LetCriAnt 1 0
+LetCriAnt 1 1
+LetCriAnt 1 2
+LetCriAnt 1 3
+LetCriAnt 1 4
+LetCriAnt 1 5
+LetCriAnt 2 0
+LetCriAnt 2 3
+LetCriAnt 2 4
+LetCriAnt 2 5
+LetCriAnt 3 0
+LetCriAnt 3 1
+LetCriAnt 3 2
+LetCriAnt 3 3
+LetCriAnt 3 4
+LetCriAnt 3 5
+LetCriAnt 4 0
+LetCriAnt 4 3
+LetCriAnt 4 4
+LetCriAnt 4 5
+LetCriAnt 5 0
+LetCriAnt 5 1
+LetCriAnt 5 2
+LetCriAnt 5 3
+LetCriAnt 5 4
+LetCriAnt 5 5
+LinLetGre1 0 0
+LinLetGre1 0 4
+LinLetGre1 0 5
+LinLetGre1 1 0
+LinLetGre1 1 4
+LinLetGre1 1 5
+LinLetGre1 2 0
+LinLetGre1 2 4
+LinLetGre1 2 5
+LinLetGre1 3 0
+LinLetGre1 3 4
+LinLetGre1 3 5
+LinLetGre1 4 0
+LinLetGre1 4 4
+LinLetGre1 4 5
+LinLetGre1 5 0
+LinLetGre1 5 1
+LinLetGre1 5 2
+LinLetGre1 5 3
+LinLetGre1 5 4
+LinLetGre1 5 5
+LinLetLatCS 0 0
+LinLetLatCS 0 1
+LinLetLatCS 0 2
+LinLetLatCS 0 3
+LinLetLatCS 2 3
+LinLetLatCS 2 4
+LinLetLatCS 2 5
+LinLetLatCS 3 0
+LinLetLatCS 3 1
+LinLetLatCS 3 2
+LinLetLatCS 3 3
+LinLetLatCS 3 4
+LinLetLatCS 3 5
+LinLetLatCS 4 0
+LinLetLatCS 4 1
+LinLetLatCS 4 2
+LinLetLatCS 4 3
+LinLetLatCS 4 4
+LinLetLatCS 4 5
+LinLetLatCS 5 0
+LinLetLatCS 5 1
+LinLetLatCS 5 2
+LinLetLatCS 5 3
+LinLetLatCS 5 4
+LinLetLatCS 5 5
+LinLetLat2 0 0
+LinLetLat2 0 1
+LinLetLat2 0 2
+LinLetLat2 0 3
+LinLetLat2 2 3
+LinLetLat2 2 4
+LinLetLat2 2 5
+LinLetLat2 3 0
+LinLetLat2 3 1
+LinLetLat2 3 2
+LinLetLat2 3 3
+LinLetLat2 3 4
+LinLetLat2 3 5
+LinLetLat2 4 0
+LinLetLat2 4 1
+LinLetLat2 4 2
+LinLetLat2 4 3
+LinLetLat2 4 4
+LinLetLat2 4 5
+LinLetLat2 5 0
+LinLetLat2 5 1
+LinLetLat2 5 2
+LinLetLat2 5 3
+LinLetLat2 5 4
+LinLetLat2 5 5
+LinGreA 5 2
+LinGreA 5 3
+LinGreA 5 4
+LinGreA 5 5
+LinLatA 5 2
+LinLatA 5 3
+LinLatA 5 4
+LinLatA 5 5
+LinLatB 5 2
+LinLatB 5 3
+LinLatB 5 4
+LinLatB 5 5
+LinGen 5 2
+LinGen 5 3
+LinGen 5 4
+LinGen 5 5
+LinIta 0 0
+LinIta 0 1
+LinIta 0 2
+LinIta 0 3
+LinIta 0 4
+LinIta 0 5
+LinIta 1 0
+LinIta 1 1
+LinIta 1 2
+LinIta 1 3
+LinIta 1 4
+LinIta 1 5
+LinIta 2 0
+LinIta 2 1
+LinIta 4 4
+LinIta 4 5
+LinIta 5 0
+LinIta 5 1
+LinIta 5 2
+LinIta 5 3
+LinIta 5 4
+LinIta 5 5
+LogFilMat 5 2
+LogFilMat 5 3
+LogFilMat 5 4
+LogFilMat 5 5
+MatTecAppArcM3 5 2
+MatTecAppArcM3 5 3
+MatTecAppArcM3 5 4
+MatTecAppArcM3 5 5
+MatCarCosResEdiSto 0 0
+MatCarCosResEdiSto 0 1
+MatCarCosResEdiSto 0 2
+MatCarCosResEdiSto 2 3
+MatCarCosResEdiSto 2 4
+MatCarCosResEdiSto 2 5
+MatCarCosResEdiSto 3 0
+MatCarCosResEdiSto 3 1
+MatCarCosResEdiSto 3 2
+MatCarCosResEdiSto 3 3
+MatCarCosResEdiSto 3 4
+MatCarCosResEdiSto 3 5
+MatCarCosResEdiSto 4 0
+MatCarCosResEdiSto 4 1
+MatCarCosResEdiSto 4 2
+MatCarCosResEdiSto 4 3
+MatCarCosResEdiSto 4 4
+MatCarCosResEdiSto 4 5
+MatCarCosResEdiSto 5 0
+MatCarCosResEdiSto 5 1
+MatCarCosResEdiSto 5 2
+MatCarCosResEdiSto 5 3
+MatCarCosResEdiSto 5 4
+MatCarCosResEdiSto 5 5
+MetRicStoArt 0 3
+MetRicStoArt 0 4
+MetRicStoArt 0 5
+MetRicStoArt 1 3
+MetRicStoArt 1 4
+MetRicStoArt 1 5
+MetRicStoArt 2 3
+MetRicStoArt 2 4
+MetRicStoArt 2 5
+MetRicStoArt 3 0
+MetRicStoArt 3 1
+MetRicStoArt 3 2
+MetRicStoArt 3 3
+MetRicStoArt 3 4
+MetRicStoArt 3 5
+MetRicStoArt 4 0
+MetRicStoArt 4 1
+MetRicStoArt 4 2
+MetRicStoArt 4 3
+MetRicStoArt 4 4
+MetRicStoArt 4 5
+MetRicStoArt 5 0
+MetRicStoArt 5 1
+MetRicStoArt 5 2
+MetRicStoArt 5 3
+MetRicStoArt 5 4
+MetRicStoArt 5 5
+NumismCS 0 0
+NumismCS 0 1
+NumismCS 0 2
+NumismCS 0 5
+NumismCS 1 0
+NumismCS 1 1
+NumismCS 1 2
+NumismCS 1 5
+NumismCS 2 0
+NumismCS 2 1
+NumismCS 2 2
+NumismCS 2 5
+NumismCS 3 0
+NumismCS 3 1
+NumismCS 3 2
+NumismCS 3 5
+NumismCS 4 0
+NumismCS 4 1
+NumismCS 4 2
+NumismCS 4 5
+NumismCS 5 0
+NumismCS 5 1
+NumismCS 5 2
+NumismCS 5 3
+NumismCS 5 4
+NumismCS 5 5
+OrientCS 0 0
+OrientCS 0 1
+OrientCS 0 2
+OrientCS 0 3
+OrientCS 0 4
+OrientCS 0 5
+OrientCS 1 0
+OrientCS 1 1
+OrientCS 1 2
+OrientCS 1 3
+OrientCS 1 4
+OrientCS 1 5
+OrientCS 2 0
+OrientCS 2 1
+OrientCS 2 2
+OrientCS 2 5
+OrientCS 3 0
+OrientCS 3 1
+OrientCS 3 2
+OrientCS 3 5
+OrientCS 4 0
+OrientCS 4 1
+OrientCS 4 2
+OrientCS 4 3
+OrientCS 4 4
+OrientCS 4 5
+OrientCS 5 0
+OrientCS 5 1
+OrientCS 5 2
+OrientCS 5 3
+OrientCS 5 4
+OrientCS 5 5
+Paleoa 0 0
+Paleoa 0 1
+Paleoa 0 2
+Paleoa 1 0
+Paleoa 1 1
+Paleoa 1 2
+Paleoa 2 3
+Paleoa 2 4
+Paleoa 2 5
+Paleoa 3 0
+Paleoa 3 1
+Paleoa 3 2
+Paleoa 3 3
+Paleoa 3 4
+Paleoa 3 5
+Paleoa 4 0
+Paleoa 4 1
+Paleoa 4 2
+Paleoa 4 3
+Paleoa 4 4
+Paleoa 4 5
+Paleoa 5 0
+Paleoa 5 1
+Paleoa 5 2
+Paleoa 5 3
+Paleoa 5 4
+Paleoa 5 5
+PalLat 0 0
+PalLat 0 5
+PalLat 1 0
+PalLat 1 5
+PalLat 2 0
+PalLat 2 5
+PalLat 3 0
+PalLat 3 5
+PalLat 4 0
+PalLat 4 5
+PalLat 5 0
+PalLat 5 1
+PalLat 5 2
+PalLat 5 3
+PalLat 5 4
+PalLat 5 5
+PapiroCS 0 0
+PapiroCS 0 1
+PapiroCS 0 2
+PapiroCS 0 3
+PapiroCS 2 2
+PapiroCS 2 3
+PapiroCS 2 4
+PapiroCS 2 5
+PapiroCS 3 0
+PapiroCS 3 1
+PapiroCS 3 2
+PapiroCS 3 3
+PapiroCS 3 4
+PapiroCS 3 5
+PapiroCS 4 0
+PapiroCS 4 1
+PapiroCS 4 2
+PapiroCS 4 3
+PapiroCS 4 4
+PapiroCS 4 5
+PapiroCS 5 0
+PapiroCS 5 1
+PapiroCS 5 2
+PapiroCS 5 3
+PapiroCS 5 4
+PapiroCS 5 5
+ProMedCS 0 0
+ProMedCS 0 3
+ProMedCS 0 4
+ProMedCS 0 5
+ProMedCS 1 0
+ProMedCS 1 3
+ProMedCS 1 4
+ProMedCS 1 5
+ProMedCS 2 0
+ProMedCS 2 3
+ProMedCS 2 4
+ProMedCS 2 5
+ProMedCS 3 0
+ProMedCS 3 3
+ProMedCS 3 4
+ProMedCS 3 5
+ProMedCS 4 0
+ProMedCS 4 3
+ProMedCS 4 4
+ProMedCS 4 5
+ProMedCS 5 0
+ProMedCS 5 1
+ProMedCS 5 2
+ProMedCS 5 3
+ProMedCS 5 4
+ProMedCS 5 5
+PsiTur 0 0
+PsiTur 0 1
+PsiTur 0 2
+PsiTur 0 3
+PsiTur 0 4
+PsiTur 0 5
+PsiTur 1 0
+PsiTur 2 0
+PsiTur 3 0
+PsiTur 4 0
+PsiTur 5 0
+PsiTur 5 1
+PsiTur 5 2
+PsiTur 5 3
+PsiTur 5 4
+PsiTur 5 5
+SocArt 5 2
+SocArt 5 3
+SocArt 5 4
+SocArt 5 5
+Sociol1 5 2
+Sociol1 5 3
+Sociol1 5 4
+Sociol1 5 5
+StoConCS 5 2
+StoConCS 5 3
+StoConCS 5 4
+StoConCS 5 5
+StoAntStaItaCS 0 0
+StoAntStaItaCS 0 1
+StoAntStaItaCS 0 2
+StoAntStaItaCS 2 3
+StoAntStaItaCS 2 4
+StoAntStaItaCS 2 5
+StoAntStaItaCS 3 0
+StoAntStaItaCS 3 1
+StoAntStaItaCS 3 2
+StoAntStaItaCS 3 3
+StoAntStaItaCS 3 4
+StoAntStaItaCS 3 5
+StoAntStaItaCS 4 0
+StoAntStaItaCS 4 1
+StoAntStaItaCS 4 2
+StoAntStaItaCS 4 3
+StoAntStaItaCS 4 4
+StoAntStaItaCS 4 5
+StoAntStaItaCS 5 0
+StoAntStaItaCS 5 1
+StoAntStaItaCS 5 2
+StoAntStaItaCS 5 3
+StoAntStaItaCS 5 4
+StoAntStaItaCS 5 5
+StoColIstMus 0 0
+StoColIstMus 0 5
+StoColIstMus 1 0
+StoColIstMus 1 5
+StoColIstMus 2 0
+StoColIstMus 2 5
+StoColIstMus 3 0
+StoColIstMus 3 1
+StoColIstMus 3 2
+StoColIstMus 3 3
+StoColIstMus 3 4
+StoColIstMus 3 5
+StoColIstMus 4 0
+StoColIstMus 4 1
+StoColIstMus 4 2
+StoColIstMus 4 3
+StoColIstMus 4 4
+StoColIstMus 4 5
+StoColIstMus 5 0
+StoColIstMus 5 1
+StoColIstMus 5 2
+StoColIstMus 5 3
+StoColIstMus 5 4
+StoColIstMus 5 5
+StoDisGra 0 0
+StoDisGra 0 1
+StoDisGra 0 2
+StoDisGra 2 3
+StoDisGra 2 4
+StoDisGra 2 5
+StoDisGra 3 0
+StoDisGra 3 1
+StoDisGra 3 2
+StoDisGra 3 3
+StoDisGra 3 4
+StoDisGra 3 5
+StoDisGra 4 0
+StoDisGra 4 1
+StoDisGra 4 2
+StoDisGra 4 3
+StoDisGra 4 4
+StoDisGra 4 5
+StoDisGra 5 0
+StoDisGra 5 1
+StoDisGra 5 2
+StoDisGra 5 3
+StoDisGra 5 4
+StoDisGra 5 5
+StoFriCS 0 0
+StoFriCS 0 1
+StoFriCS 0 2
+StoFriCS 0 3
+StoFriCS 0 4
+StoFriCS 0 5
+StoFriCS 1 0
+StoFriCS 1 1
+StoFriCS 1 2
+StoFriCS 1 3
+StoFriCS 1 4
+StoFriCS 1 5
+StoFriCS 2 3
+StoFriCS 2 4
+StoFriCS 2 5
+StoFriCS 3 3
+StoFriCS 3 4
+StoFriCS 3 5
+StoFriCS 4 3
+StoFriCS 4 4
+StoFriCS 4 5
+StoFriCS 5 0
+StoFriCS 5 1
+StoFriCS 5 2
+StoFriCS 5 3
+StoFriCS 5 4
+StoFriCS 5 5
+StoLibSta 0 0
+StoLibSta 0 1
+StoLibSta 0 2
+StoLibSta 2 3
+StoLibSta 2 4
+StoLibSta 2 5
+StoLibSta 3 0
+StoLibSta 3 1
+StoLibSta 3 2
+StoLibSta 3 3
+StoLibSta 3 4
+StoLibSta 3 5
+StoLibSta 4 0
+StoLibSta 4 1
+StoLibSta 4 2
+StoLibSta 4 3
+StoLibSta 4 4
+StoLibSta 4 5
+StoLibSta 5 0
+StoLibSta 5 1
+StoLibSta 5 2
+StoLibSta 5 3
+StoLibSta 5 4
+StoLibSta 5 5
+StoLibStaCSM1 5 2
+StoLibStaCSM1 5 3
+StoLibStaCSM1 5 4
+StoLibStaCSM1 5 5
+StoLibStaCSM2 5 2
+StoLibStaCSM2 5 3
+StoLibStaCSM2 5 4
+StoLibStaCSM2 5 5
+StoRes 0 0
+StoRes 0 1
+StoRes 0 2
+StoRes 0 3
+StoRes 1 0
+StoRes 1 1
+StoRes 1 2
+StoRes 1 3
+StoRes 2 0
+StoRes 2 1
+StoRes 2 2
+StoRes 2 3
+StoRes 3 0
+StoRes 3 1
+StoRes 3 2
+StoRes 3 3
+StoRes 3 4
+StoRes 3 5
+StoRes 4 0
+StoRes 4 1
+StoRes 4 2
+StoRes 4 3
+StoRes 5 0
+StoRes 5 1
+StoRes 5 2
+StoRes 5 3
+StoRes 5 4
+StoRes 5 5
+StoArc 5 2
+StoArc 5 3
+StoArc 5 4
+StoArc 5 5
+StoArcCon 1 4
+StoArcCon 1 5
+StoArcCon 2 4
+StoArcCon 2 5
+StoArcCon 5 0
+StoArcCon 5 1
+StoArcCon 5 2
+StoArcCon 5 3
+StoArcCon 5 4
+StoArcCon 5 5
+StoArcMed 5 2
+StoArcMed 5 3
+StoArcMed 5 4
+StoArcMed 5 5
+StoArt 5 2
+StoArt 5 3
+StoArt 5 4
+StoArt 5 5
+StoCriArt 0 0
+StoCriArt 0 1
+StoCriArt 0 2
+StoCriArt 0 3
+StoCriArt 2 2
+StoCriArt 2 3
+StoCriArt 2 4
+StoCriArt 2 5
+StoCriArt 3 0
+StoCriArt 3 1
+StoCriArt 3 2
+StoCriArt 3 3
+StoCriArt 3 4
+StoCriArt 3 5
+StoCriArt 4 0
+StoCriArt 4 1
+StoCriArt 4 2
+StoCriArt 4 3
+StoCriArt 4 4
+StoCriArt 4 5
+StoCriArt 5 0
+StoCriArt 5 1
+StoCriArt 5 2
+StoCriArt 5 3
+StoCriArt 5 4
+StoCriArt 5 5
+StoFilCS 0 0
+StoFilCS 0 1
+StoFilCS 0 2
+StoFilCS 0 3
+StoFilCS 2 3
+StoFilCS 2 4
+StoFilCS 2 5
+StoFilCS 3 0
+StoFilCS 3 1
+StoFilCS 3 2
+StoFilCS 3 3
+StoFilCS 3 4
+StoFilCS 3 5
+StoFilCS 4 0
+StoFilCS 4 1
+StoFilCS 4 2
+StoFilCS 4 3
+StoFilCS 4 4
+StoFilCS 4 5
+StoFilCS 5 0
+StoFilCS 5 1
+StoFilCS 5 2
+StoFilCS 5 3
+StoFilCS 5 4
+StoFilCS 5 5
+StoFilMedCS 0 0
+StoFilMedCS 0 1
+StoFilMedCS 0 2
+StoFilMedCS 0 3
+StoFilMedCS 0 4
+StoFilMedCS 0 5
+StoFilMedCS 1 0
+StoFilMedCS 1 1
+StoFilMedCS 1 2
+StoFilMedCS 1 3
+StoFilMedCS 1 4
+StoFilMedCS 1 5
+StoFilMedCS 2 0
+StoFilMedCS 2 1
+StoFilMedCS 2 2
+StoFilMedCS 4 3
+StoFilMedCS 4 4
+StoFilMedCS 4 5
+StoFilMedCS 5 0
+StoFilMedCS 5 1
+StoFilMedCS 5 2
+StoFilMedCS 5 3
+StoFilMedCS 5 4
+StoFilMedCS 5 5
+StoLinItaCS 0 0
+StoLinItaCS 0 1
+StoLinItaCS 0 2
+StoLinItaCS 0 3
+StoLinItaCS 0 4
+StoLinItaCS 0 5
+StoLinItaCS 1 0
+StoLinItaCS 1 1
+StoLinItaCS 1 2
+StoLinItaCS 1 3
+StoLinItaCS 1 4
+StoLinItaCS 1 5
+StoLinItaCS 2 0
+StoLinItaCS 2 1
+StoLinItaCS 4 4
+StoLinItaCS 4 5
+StoLinItaCS 5 0
+StoLinItaCS 5 1
+StoLinItaCS 5 2
+StoLinItaCS 5 3
+StoLinItaCS 5 4
+StoLinItaCS 5 5
+StoMus 5 2
+StoMus 5 3
+StoMus 5 4
+StoMus 5 5
+StoProArtCulMatMed 5 2
+StoProArtCulMatMed 5 3
+StoProArtCulMatMed 5 4
+StoProArtCulMatMed 5 5
+StoArtCon2CS 0 2
+StoArtCon2CS 0 3
+StoArtCon2CS 0 4
+StoArtCon2CS 0 5
+StoArtCon2CS 1 2
+StoArtCon2CS 1 3
+StoArtCon2CS 1 4
+StoArtCon2CS 1 5
+StoArtCon2CS 5 2
+StoArtCon2CS 5 3
+StoArtCon2CS 5 4
+StoArtCon2CS 5 5
+StoArtMod2CS 0 0
+StoArtMod2CS 0 1
+StoArtMod2CS 0 2
+StoArtMod2CS 0 3
+StoArtMod2CS 0 4
+StoArtMod2CS 0 5
+StoArtMod2CS 1 0
+StoArtMod2CS 1 1
+StoArtMod2CS 1 2
+StoArtMod2CS 1 3
+StoArtMod2CS 1 4
+StoArtMod2CS 1 5
+StoArtMod2CS 2 0
+StoArtMod2CS 2 1
+StoArtMod2CS 2 2
+StoArtMod2CS 4 3
+StoArtMod2CS 4 4
+StoArtMod2CS 4 5
+StoArtMod2CS 5 0
+StoArtMod2CS 5 1
+StoArtMod2CS 5 2
+StoArtMod2CS 5 3
+StoArtMod2CS 5 4
+StoArtMod2CS 5 5
+StoBib 0 0
+StoBib 0 1
+StoBib 0 2
+StoBib 0 3
+StoBib 1 0
+StoBib 1 1
+StoBib 1 4
+StoBib 1 5
+StoBib 2 0
+StoBib 2 1
+StoBib 2 4
+StoBib 2 5
+StoBib 3 0
+StoBib 3 1
+StoBib 3 4
+StoBib 3 5
+StoBib 4 0
+StoBib 4 1
+StoBib 4 2
+StoBib 4 3
+StoBib 4 4
+StoBib 4 5
+StoBib 5 0
+StoBib 5 1
+StoBib 5 2
+StoBib 5 3
+StoBib 5 4
+StoBib 5 5
+StoTecArtM12 5 0
+StoTecArtM12 5 1
+StoTecArtM12 5 2
+StoTecArtM12 5 3
+StoTecArtM12 5 4
+StoTecArtM12 5 5
+StoTecArtM3 0 1
+StoTecArtM3 0 2
+StoTecArtM3 0 3
+StoTecArtM3 0 4
+StoTecArtM3 0 5
+StoTecArtM3 1 1
+StoTecArtM3 1 2
+StoTecArtM3 1 3
+StoTecArtM3 1 4
+StoTecArtM3 1 5
+StoTecArtM3 2 1
+StoTecArtM3 2 2
+StoTecArtM3 2 3
+StoTecArtM3 2 4
+StoTecArtM3 2 5
+StoTecArtM3 3 1
+StoTecArtM3 3 2
+StoTecArtM3 3 3
+StoTecArtM3 3 4
+StoTecArtM3 3 5
+StoTecArtM3 4 0
+StoTecArtM3 4 1
+StoTecArtM3 4 2
+StoTecArtM3 4 3
+StoTecArtM3 4 4
+StoTecArtM3 4 5
+StoTecArtM3 5 0
+StoTecArtM3 5 1
+StoTecArtM3 5 2
+StoTecArtM3 5 3
+StoTecArtM3 5 4
+StoTecArtM3 5 5
+StoTecArtCS 5 2
+StoTecArtCS 5 3
+StoTecArtCS 5 4
+StoTecArtCS 5 5
+StoCriCin 0 0
+StoCriCin 0 1
+StoCriCin 0 2
+StoCriCin 0 3
+StoCriCin 0 4
+StoCriCin 0 5
+StoCriCin 1 0
+StoCriCin 1 1
+StoCriCin 1 2
+StoCriCin 1 3
+StoCriCin 1 4
+StoCriCin 1 5
+StoCriCin 2 0
+StoCriCin 2 1
+StoCriCin 2 2
+StoCriCin 2 3
+StoCriCin 2 4
+StoCriCin 2 5
+StoCriCin 3 0
+StoCriCin 3 1
+StoCriCin 3 2
+StoCriCin 3 3
+StoCriCin 4 0
+StoCriCin 4 1
+StoCriCin 4 2
+StoCriCin 5 2
+StoCriCin 5 3
+StoCriCin 5 4
+StoCriCin 5 5
+StoTecFot 0 0
+StoTecFot 0 1
+StoTecFot 0 2
+StoTecFot 0 3
+StoTecFot 1 0
+StoTecFot 1 1
+StoTecFot 1 2
+StoTecFot 1 3
+StoTecFot 2 0
+StoTecFot 2 1
+StoTecFot 2 2
+StoTecFot 2 3
+StoTecFot 3 0
+StoTecFot 3 1
+StoTecFot 3 2
+StoTecFot 3 3
+StoTecFot 4 0
+StoTecFot 4 1
+StoTecFot 4 2
+StoTecFot 4 3
+StoTecFot 5 0
+StoTecFot 5 1
+StoTecFot 5 2
+StoTecFot 5 3
+StoTecFot 5 4
+StoTecFot 5 5
+StoGre 0 2
+StoGre 0 3
+StoGre 0 4
+StoGre 0 5
+StoGre 1 2
+StoGre 1 3
+StoGre 1 4
+StoGre 1 5
+StoGre 2 2
+StoGre 2 3
+StoGre 2 4
+StoGre 2 5
+StoGre 3 0
+StoGre 3 1
+StoGre 3 2
+StoGre 3 3
+StoGre 3 4
+StoGre 3 5
+StoGre 4 0
+StoGre 4 1
+StoGre 4 2
+StoGre 4 3
+StoGre 4 4
+StoGre 4 5
+StoGre 5 0
+StoGre 5 1
+StoGre 5 2
+StoGre 5 3
+StoGre 5 4
+StoGre 5 5
+StoMed2 5 2
+StoMed2 5 3
+StoMed2 5 4
+StoMed2 5 5
+StoModCS 5 2
+StoModCS 5 3
+StoModCS 5 4
+StoModCS 5 5
+StoMod2 0 0
+StoMod2 0 1
+StoMod2 0 2
+StoMod2 0 3
+StoMod2 0 4
+StoMod2 0 5
+StoMod2 1 0
+StoMod2 1 1
+StoMod2 1 2
+StoMod2 1 3
+StoMod2 1 4
+StoMod2 1 5
+StoMod2 2 3
+StoMod2 2 4
+StoMod2 2 5
+StoMod2 3 3
+StoMod2 3 4
+StoMod2 3 5
+StoMod2 4 3
+StoMod2 4 4
+StoMod2 4 5
+StoMod2 5 0
+StoMod2 5 1
+StoMod2 5 2
+StoMod2 5 3
+StoMod2 5 4
+StoMod2 5 5
+StoRom 0 0
+StoRom 0 1
+StoRom 0 2
+StoRom 0 3
+StoRom 0 4
+StoRom 0 5
+StoRom 1 0
+StoRom 1 1
+StoRom 1 2
+StoRom 1 3
+StoRom 4 3
+StoRom 4 4
+StoRom 4 5
+StoRom 5 2
+StoRom 5 3
+StoRom 5 4
+StoRom 5 5
+StoRomCS 0 0
+StoRomCS 0 1
+StoRomCS 0 2
+StoRomCS 0 3
+StoRomCS 0 4
+StoRomCS 0 5
+StoRomCS 1 0
+StoRomCS 1 1
+StoRomCS 1 2
+StoRomCS 1 3
+StoRomCS 2 0
+StoRomCS 2 1
+StoRomCS 2 2
+StoRomCS 4 3
+StoRomCS 4 4
+StoRomCS 4 5
+StoRomCS 5 2
+StoRomCS 5 3
+StoRomCS 5 4
+StoRomCS 5 5
+TedUma 5 2
+TedUma 5 3
+TedUma 5 4
+TedUma 5 5
+TopRilMonAnt 0 0
+TopRilMonAnt 0 1
+TopRilMonAnt 0 2
+TopRilMonAnt 2 0
+TopRilMonAnt 2 1
+TopRilMonAnt 2 2
+TopRilMonAnt 2 3
+TopRilMonAnt 2 4
+TopRilMonAnt 2 5
+TopRilMonAnt 4 0
+TopRilMonAnt 4 1
+TopRilMonAnt 4 2
+TopRilMonAnt 4 3
+TopRilMonAnt 4 4
+TopRilMonAnt 4 5
+TopRilMonAnt 5 0
+TopRilMonAnt 5 1
+TopRilMonAnt 5 2
+TopRilMonAnt 5 3
+TopRilMonAnt 5 4
+TopRilMonAnt 5 5
+
+END.

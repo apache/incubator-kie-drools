@@ -19,6 +19,7 @@
 package org.kie.api.runtime.conf;
 
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.annotations.KieProperty;
 
 /**
  * WorkItemHandlers configuration option
@@ -30,6 +31,7 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
     /**
      * The prefix for the property name for work item handlers
      */
+    @KieProperty
     public static final String PROPERTY_NAME = "drools.workItemHandlers";
 
     /**

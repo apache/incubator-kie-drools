@@ -1,0 +1,30 @@
+<plannerBenchmark>
+  <benchmarkDirectory>target/benchmarkTest</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
+  <solverBenchmark>
+    <name>Entity Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.core.impl.testdata.domain.TestdataConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>0</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <changeMoveSelector>
+          <selectionOrder>ORIGINAL</selectionOrder>
+        </changeMoveSelector>
+        <acceptor>
+          <entityTabuSize>5</entityTabuSize>
+        </acceptor>
+        <forager/>
+      </localSearch>
+    </solver>
+    <subSingleCount>2</subSingleCount>
+  </solverBenchmark>
+</plannerBenchmark>

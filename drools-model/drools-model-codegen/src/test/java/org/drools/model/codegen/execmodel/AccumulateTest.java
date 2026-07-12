@@ -4392,4 +4392,36 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.iterator().next().getValue()).isEqualTo(0);
     }
+
+    @SuppressWarnings("unchecked")
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testResultConstraintReferencingInlineAccumulateBinding(RUN_TYPE runType) {
+        // An inline-binding accumulate whose result binding is used in a result constraint
+        // (e.g. "$ages : collectList($a); $ages.size > 0") must compile: the binding has to be typed
+        // against the accumulate function's result type rather than left as Object, otherwise the
+        // result-constraint lambda fails to compile.
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate(\n" +
+                        "    $p : Person( $a : age );\n" +
+                        "    $ages : collectList( $a );\n" +
+                        "    $ages.size > 0\n" +
+                        "  )\n" +
+                        "then\n" +
+                        "  insert(new Result($ages));\n" +
+                        "end";
+        KieSession ksession = getKieSession(runType, str);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Mario", 40));
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).hasSize(1);
+        assertThat((List<Integer>) results.iterator().next().getValue()).containsExactlyInAnyOrder(37, 40);
+    }
 }

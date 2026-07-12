@@ -298,6 +298,13 @@ public class TimerAndCalendarWithPseudoTimeTest {
         wrongTimerExpression(kieBaseTestConfiguration, "cron: 0/30 * * * * *");
     }
 
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    public void testLargeRangeValueInCronExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "cron: 0 99-99909990 * * * ?");
+    }
+
     private void wrongTimerExpression(KieBaseTestConfiguration kieBaseTestConfiguration, final String timer) {
         final String drl =
                 "package org.simple \n" +

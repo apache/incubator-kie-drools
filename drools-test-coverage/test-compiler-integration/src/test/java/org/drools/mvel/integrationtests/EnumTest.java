@@ -60,8 +60,40 @@ public class EnumTest {
         assertThat(list.contains(4)).isTrue();
         assertThat(list.contains(5.976e+24)).isTrue();
         assertThat(list.contains("Mercury")).isTrue();
+        assertThat(list.contains("TUESDAY")).isTrue();
+        assertThat(list.contains(true)).isTrue();
+        assertThat(list.contains("MONDAY")).isTrue();
 
         ksession.dispose();
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCrossEnumReferenceWithMisspelledConstant(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // Regression test for the diagnostic experience around the
+        // declared-enum cross-reference feature: a misspelled constant name
+        // must fail at compile time with a message that names the bad
+        // constant, not at runtime via a buried ExceptionInInitializerError
+        // on first enum access. The legacy ASM path additionally enriches the
+        // message with the list of available constants; the executable-model
+        // path relies on the underlying Java compiler (ECJ), whose default
+        // "X cannot be resolved or is not a field" wording satisfies the
+        // shared contract.
+        final String drl =
+                "package org.test;\n" +
+                "declare enum Color\n" +
+                "    RED, GREEN, BLUE;\n" +
+                "end\n" +
+                "declare enum Light\n" +
+                "    STOP( Color.RED ),\n" +
+                "    GO(   Color.GRENE );\n" +  // typo: GRENE → GREEN
+                "    color: Color\n" +
+                "end\n";
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertThat(errors).as("expected a compile error naming the bad constant").isNotEmpty();
+        assertThat(errors.toString()).contains("GRENE");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")

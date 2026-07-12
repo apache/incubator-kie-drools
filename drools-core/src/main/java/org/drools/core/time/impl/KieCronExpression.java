@@ -510,7 +510,7 @@ public class KieCronExpression implements Serializable {
                     throw new ParseException("Increment > 12 : " + incr, i);
                 }
             } else {
-                incr = 1;
+                throw new ParseException("Unexpected character after '*': " + c, i);
             }
 
             addToSet(ALL_SPEC_INT, -1, incr, type);
@@ -542,6 +542,9 @@ public class KieCronExpression implements Serializable {
                     ValueSet vs = getValue(val, s, i);
                     val = vs.value;
                     i = vs.pos;
+                }
+                if (val == ALL_SPEC_INT || val == NO_SPEC_INT) {
+                    throw new ParseException("'" + val + "' is not valid as a numeric value", i);
                 }
                 i = checkNext(i, s, val, type);
                 return i;

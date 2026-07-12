@@ -59,7 +59,7 @@ public class DMNFunctionWithReturnType extends BaseFEELFunction {
     @Override
     public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
         Object result = wrapped.invokeReflectively(ctx, params);
-        result = DMNRuntimeUtils.coerceUsingType(result,
+        result = DMNRuntimeUtils.coerceSingletonCollectionItemToValue(result,
                                                  returnType,
                                                  true, // this FN is created when typeCheck==true, hence here always true.
                                                  (r, t) -> MsgUtil.reportMessage(LOG,

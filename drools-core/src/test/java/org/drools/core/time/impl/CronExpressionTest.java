@@ -26,11 +26,14 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 
 public class CronExpressionTest extends SerializationTestSupport {
@@ -183,10 +186,52 @@ public class CronExpressionTest extends SerializationTestSupport {
         }
     }
     
-    @Test 
+    @Test
     @Disabled
     public void testSerialization() {
         // TODO as we don't want to worry about this for now
     }
 
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    public void testLargeRangeValueInMinuteField() {
+        assertThatThrownBy(() -> new CronExpression("0 99-99909990 * * * ?"))
+                .isInstanceOf(ParseException.class);
+    }
+
+    @Test
+    public void testOutOfRangeMinuteValueMatchingSentinel() {
+        assertThatThrownBy(() -> new CronExpression("0 99 * * * ?"))
+                .isInstanceOf(ParseException.class);
+    }
+
+    @Test
+    public void testOutOfRangeRangeStartMatchingSentinel() {
+        assertThatThrownBy(() -> new CronExpression("0 99-5 * * * ?"))
+                .isInstanceOf(ParseException.class);
+    }
+
+    @Test
+    public void testOutOfRangeStepBaseMatchingSentinel() {
+        assertThatThrownBy(() -> new CronExpression("0 99/5 * * * ?"))
+                .isInstanceOf(ParseException.class);
+    }
+
+    @Test
+    public void testWildcardInRange() {
+        assertThatThrownBy(() -> new CronExpression("0 *-5 * * * ?"))
+                .isInstanceOf(ParseException.class);
+    }
+
+    @Test
+    public void testValidWildcard() throws ParseException {
+        CronExpression expr = new CronExpression("0 * * * * ?");
+        assertThat(expr.getCronExpression()).isEqualTo("0 * * * * ?");
+    }
+
+    @Test
+    public void testValidWildcardWithStep() throws ParseException {
+        CronExpression expr = new CronExpression("0 */5 * * * ?");
+        assertThat(expr.getCronExpression()).isEqualTo("0 */5 * * * ?");
+    }
 }

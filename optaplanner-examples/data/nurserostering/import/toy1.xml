@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<SchedulingPeriod ID="TOY1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="competition.xsd">
+  <StartDate>2010-01-01</StartDate>
+  <EndDate>2010-01-07</EndDate>
+  <Skills>
+    <Skill>Nurse</Skill>
+  </Skills>
+  <ShiftTypes>
+    <Shift ID="E">
+      <StartTime>06:30:00</StartTime>
+      <EndTime>14:30:00</EndTime>
+      <Description>Early</Description>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Shift>
+    <Shift ID="L">
+      <StartTime>14:30:00</StartTime>
+      <EndTime>22:30:00</EndTime>
+      <Description>Late</Description>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Shift>    
+    <Shift ID="N">
+      <StartTime>22:30:00</StartTime>
+      <EndTime>06:30:00</EndTime>
+      <Description>Night</Description>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Shift>
+  </ShiftTypes>
+   <Patterns>
+    <Pattern ID="0" weight="1">
+      <PatternEntries>
+        <PatternEntry index="0">
+          <ShiftType>L</ShiftType>
+          <Day>Any</Day>
+        </PatternEntry>
+        <PatternEntry index="1">
+          <ShiftType>E</ShiftType>
+          <Day>Any</Day>
+        </PatternEntry>
+      </PatternEntries>
+    </Pattern>
+    <Pattern ID="1" weight="1">
+      <PatternEntries>
+        <PatternEntry index="0">
+          <ShiftType>None</ShiftType>
+          <Day>Friday</Day>
+        </PatternEntry>
+        <PatternEntry index="1">
+          <ShiftType>Any</ShiftType>
+          <Day>Saturday</Day>
+        </PatternEntry>
+        <PatternEntry index="2">
+          <ShiftType>Any</ShiftType>
+          <Day>Sunday</Day>
+        </PatternEntry>
+      </PatternEntries>
+    </Pattern>
+  </Patterns>
+  <Contracts>
+    <Contract ID="0">
+      <Description>uniform</Description>
+      <SingleAssignmentPerDay weight="1">true</SingleAssignmentPerDay>
+      <MaxNumAssignments on="1" weight="1">5</MaxNumAssignments>
+      <MinNumAssignments on="1" weight="1">3</MinNumAssignments>
+      <MaxConsecutiveWorkingDays on="1" weight="1">3</MaxConsecutiveWorkingDays>
+      <MinConsecutiveWorkingDays on="1" weight="1">2</MinConsecutiveWorkingDays>
+      <MaxConsecutiveFreeDays on="1" weight="1">2</MaxConsecutiveFreeDays>
+      <MinConsecutiveFreeDays on="1" weight="1">1</MinConsecutiveFreeDays>
+      <MaxConsecutiveWorkingWeekends on="0" weight="0">0</MaxConsecutiveWorkingWeekends>
+      <MinConsecutiveWorkingWeekends on="0" weight="0">0</MinConsecutiveWorkingWeekends>
+      <MaxWorkingWeekendsInFourWeeks on="0" weight="0">0</MaxWorkingWeekendsInFourWeeks>
+      <WeekendDefinition>SaturdaySunday</WeekendDefinition>
+      <CompleteWeekends weight="1">true</CompleteWeekends>
+      <IdenticalShiftTypesDuringWeekend weight="1">true</IdenticalShiftTypesDuringWeekend>
+      <NoNightShiftBeforeFreeWeekend weight="0">true</NoNightShiftBeforeFreeWeekend>
+      <AlternativeSkillCategory weight="0">false</AlternativeSkillCategory>
+      <UnwantedPatterns>
+          <Pattern>0</Pattern>
+		  <Pattern>1</Pattern>
+      </UnwantedPatterns>
+    </Contract>   
+  </Contracts>
+  <Employees>
+    <Employee ID="0">
+      <ContractID>0</ContractID>
+      <Name>0</Name>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Employee>
+    <Employee ID="1">
+      <ContractID>0</ContractID>
+      <Name>1</Name>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Employee>
+    <Employee ID="2">
+      <ContractID>0</ContractID>
+      <Name>2</Name>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Employee>
+    <Employee ID="3">
+      <ContractID>0</ContractID>
+      <Name>3</Name>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Employee>
+    <Employee ID="4">
+      <ContractID>0</ContractID>
+      <Name>4</Name>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Employee>
+    <Employee ID="5">
+      <ContractID>0</ContractID>
+      <Name>5</Name>
+      <Skills>
+        <Skill>Nurse</Skill>
+      </Skills>
+    </Employee>
+  </Employees>
+  <CoverRequirements>
+    <DayOfWeekCover>
+      <Day>Monday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+    <DayOfWeekCover>
+      <Day>Tuesday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+    <DayOfWeekCover>
+    <Day>Wednesday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+    <DayOfWeekCover>
+      <Day>Thursday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+    <DayOfWeekCover>
+      <Day>Friday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+    <DayOfWeekCover>
+      <Day>Saturday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+    <DayOfWeekCover>
+      <Day>Sunday</Day>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>E</Shift>
+        <Preferred>2</Preferred>
+      </Cover>
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>L</Shift>
+        <Preferred>2</Preferred>
+      </Cover>   
+      <Cover>
+        <Skill>Nurse</Skill>
+        <Shift>N</Shift>
+        <Preferred>1</Preferred>
+      </Cover>
+    </DayOfWeekCover>
+  </CoverRequirements>
+  <DayOffRequests />
+  <ShiftOffRequests />
+</SchedulingPeriod>

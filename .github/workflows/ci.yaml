@@ -67,7 +67,7 @@ jobs:
           reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
 
       - name: "SETUP :: Checkout to load local actions"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "SETUP :: Checkout @ Simulated squashed-merge if PR, else checkout current commit"
         id: checkout_pr

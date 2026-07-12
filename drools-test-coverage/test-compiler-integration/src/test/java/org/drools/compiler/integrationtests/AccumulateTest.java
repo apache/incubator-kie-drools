@@ -64,6 +64,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
@@ -4236,6 +4237,54 @@ public class AccumulateTest {
             assertThat(results).hasSize(2);
             assertThat(results).containsEntry("list size", 4);
             assertThat(results).containsEntry("low total", 10);
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testAccumulateMinStaleAfterLeftTupleUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        final String drl =
+                "package repro;\n" +
+                "declare P b : long end\n" +
+                "declare S v : long end\n" +
+                "declare G g : long end\n" +
+                "global java.util.List results;\n" +
+                "rule R_acc when\n" +
+                "    $p : P($b : b)\n" +
+                "    accumulate( S(v >= $b, $s : v); $m : min($s) )\n" +
+                "then\n" +
+                "    results.add($m);\n" +
+                "end\n" +
+                "rule R_low salience -5 when $g : G() $p : P()\n" +
+                "then modify($p){ setB(5) } end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<Number> results = new ArrayList<>();
+            ksession.setGlobal("results", results);
+
+            final FactType P = kbase.getFactType("repro", "P");
+            final FactType S = kbase.getFactType("repro", "S");
+            final FactType G = kbase.getFactType("repro", "G");
+
+            final Object p = P.newInstance(); P.set(p, "b", -10L);
+            final Object s12 = S.newInstance(); S.set(s12, "v", 12L);
+            final Object sm2 = S.newInstance(); S.set(sm2, "v", -2L);
+            final Object g = G.newInstance(); G.set(g, "g", 1L);
+
+            ksession.insert(p);
+            ksession.insert(s12);
+            ksession.insert(sm2);
+            ksession.insert(g);
+            ksession.fireAllRules();
+
+            assertThat(results).hasSize(2);
+            assertThat(results.get(0).longValue()).isEqualTo(-2L);
+            assertThat(results.get(1).longValue()).isEqualTo(12L);
         } finally {
             ksession.dispose();
         }

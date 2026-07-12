@@ -31,6 +31,8 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.kie.api.runtime.rule.FactHandle;
 
+import java.util.Arrays;
+
 import static org.drools.base.util.TimeIntervalParser.getTimestampFromDate;
 
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
@@ -110,7 +112,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 
     @Override
     public TemporalConstraintEvaluator clone() {
-        return new TemporalConstraintEvaluator( getDeclarations(), getPattern(), constraint );
+        return new TemporalConstraintEvaluator( Arrays.copyOf( declarations, declarations.length ), getPattern(), constraint );
     }
 
     @Override

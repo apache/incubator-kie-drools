@@ -1,0 +1,4289 @@
+{
+  "id" : 0,
+  "name" : null,
+  "teacherList" : [ {
+    "id" : 0,
+    "code" : "Amy Cole"
+  }, {
+    "id" : 1,
+    "code" : "Beth Fox"
+  }, {
+    "id" : 2,
+    "code" : "Chad Green"
+  }, {
+    "id" : 3,
+    "code" : "Dan Jones"
+  }, {
+    "id" : 4,
+    "code" : "Elsa King"
+  }, {
+    "id" : 5,
+    "code" : "Flo Li"
+  }, {
+    "id" : 6,
+    "code" : "Gus Poe"
+  }, {
+    "id" : 7,
+    "code" : "Hugo Rye"
+  }, {
+    "id" : 8,
+    "code" : "Ivy Smith"
+  }, {
+    "id" : 9,
+    "code" : "Jay Watt"
+  }, {
+    "id" : 10,
+    "code" : "Amy Fox"
+  }, {
+    "id" : 11,
+    "code" : "Beth Green"
+  }, {
+    "id" : 12,
+    "code" : "Chad Jones"
+  }, {
+    "id" : 13,
+    "code" : "Dan King"
+  }, {
+    "id" : 14,
+    "code" : "Elsa Li"
+  }, {
+    "id" : 15,
+    "code" : "Flo Poe"
+  }, {
+    "id" : 16,
+    "code" : "Gus Rye"
+  }, {
+    "id" : 17,
+    "code" : "Hugo Smith"
+  }, {
+    "id" : 18,
+    "code" : "Ivy Watt"
+  }, {
+    "id" : 19,
+    "code" : "Jay Cole"
+  }, {
+    "id" : 20,
+    "code" : "Amy Green"
+  }, {
+    "id" : 21,
+    "code" : "Beth Jones"
+  }, {
+    "id" : 22,
+    "code" : "Chad King"
+  }, {
+    "id" : 23,
+    "code" : "Dan Li"
+  }, {
+    "id" : 24,
+    "code" : "Elsa Poe"
+  }, {
+    "id" : 25,
+    "code" : "Flo Rye"
+  }, {
+    "id" : 26,
+    "code" : "Gus Smith"
+  }, {
+    "id" : 27,
+    "code" : "Hugo Watt"
+  }, {
+    "id" : 28,
+    "code" : "Ivy Cole"
+  }, {
+    "id" : 29,
+    "code" : "Jay Fox"
+  } ],
+  "curriculumList" : [ {
+    "id" : 0,
+    "code" : "Group A"
+  }, {
+    "id" : 1,
+    "code" : "Group B"
+  }, {
+    "id" : 2,
+    "code" : "Group C"
+  }, {
+    "id" : 3,
+    "code" : "Group D"
+  }, {
+    "id" : 4,
+    "code" : "Group E"
+  }, {
+    "id" : 5,
+    "code" : "Group F"
+  }, {
+    "id" : 6,
+    "code" : "Group G"
+  }, {
+    "id" : 7,
+    "code" : "Group H"
+  }, {
+    "id" : 8,
+    "code" : "Group I"
+  }, {
+    "id" : 9,
+    "code" : "Group J"
+  }, {
+    "id" : 10,
+    "code" : "Group K"
+  }, {
+    "id" : 11,
+    "code" : "Group L"
+  }, {
+    "id" : 12,
+    "code" : "Group M"
+  }, {
+    "id" : 13,
+    "code" : "Group N"
+  }, {
+    "id" : 14,
+    "code" : "Group O"
+  }, {
+    "id" : 15,
+    "code" : "Group P"
+  } ],
+  "courseList" : [ {
+    "id" : 0,
+    "code" : "MathA",
+    "teacher" : 0,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0, 10, 14 ],
+    "studentSize" : 49
+  }, {
+    "id" : 1,
+    "code" : "ChemistryA",
+    "teacher" : 1,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 2,
+    "code" : "PhysicsA",
+    "teacher" : 2,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 5 ],
+    "studentSize" : 18
+  }, {
+    "id" : 3,
+    "code" : "GeographyA",
+    "teacher" : 3,
+    "lectureSize" : 2,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 14 ],
+    "studentSize" : 14
+  }, {
+    "id" : 4,
+    "code" : "BiologyA",
+    "teacher" : 4,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 5, 15 ],
+    "studentSize" : 36
+  }, {
+    "id" : 5,
+    "code" : "HistoryA",
+    "teacher" : 5,
+    "lectureSize" : 10,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 15 ],
+    "studentSize" : 18
+  }, {
+    "id" : 6,
+    "code" : "EnglishA",
+    "teacher" : 6,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2 ],
+    "studentSize" : 14
+  }, {
+    "id" : 7,
+    "code" : "SpanishA",
+    "teacher" : 7,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 5 ],
+    "studentSize" : 18
+  }, {
+    "id" : 8,
+    "code" : "FrenchA",
+    "teacher" : 8,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 9,
+    "code" : "GermanA",
+    "teacher" : 9,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 6, 15 ],
+    "studentSize" : 36
+  }, {
+    "id" : 10,
+    "code" : "ICTA",
+    "teacher" : 10,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 9, 12 ],
+    "studentSize" : 25
+  }, {
+    "id" : 11,
+    "code" : "EconomicsA",
+    "teacher" : 11,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 12,
+    "code" : "PsychologyA",
+    "teacher" : 12,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 14 ],
+    "studentSize" : 14
+  }, {
+    "id" : 13,
+    "code" : "ArtA",
+    "teacher" : 13,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3, 8 ],
+    "studentSize" : 31
+  }, {
+    "id" : 14,
+    "code" : "MusicA",
+    "teacher" : 14,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1, 7 ],
+    "studentSize" : 23
+  }, {
+    "id" : 15,
+    "code" : "MathB",
+    "teacher" : 15,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 7 ],
+    "studentSize" : 13
+  }, {
+    "id" : 16,
+    "code" : "ChemistryB",
+    "teacher" : 16,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 9, 13, 14 ],
+    "studentSize" : 44
+  }, {
+    "id" : 17,
+    "code" : "PhysicsB",
+    "teacher" : 17,
+    "lectureSize" : 7,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 11 ],
+    "studentSize" : 14
+  }, {
+    "id" : 18,
+    "code" : "GeographyB",
+    "teacher" : 18,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 8, 10 ],
+    "studentSize" : 38
+  }, {
+    "id" : 19,
+    "code" : "BiologyB",
+    "teacher" : 19,
+    "lectureSize" : 2,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3, 14 ],
+    "studentSize" : 26
+  }, {
+    "id" : 20,
+    "code" : "HistoryB",
+    "teacher" : 20,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 4 ],
+    "studentSize" : 19
+  }, {
+    "id" : 21,
+    "code" : "EnglishB",
+    "teacher" : 21,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 11 ],
+    "studentSize" : 14
+  }, {
+    "id" : 22,
+    "code" : "SpanishB",
+    "teacher" : 22,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 23,
+    "code" : "FrenchB",
+    "teacher" : 23,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2, 3 ],
+    "studentSize" : 26
+  }, {
+    "id" : 24,
+    "code" : "GermanB",
+    "teacher" : 24,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0, 15 ],
+    "studentSize" : 34
+  }, {
+    "id" : 25,
+    "code" : "ICTB",
+    "teacher" : 25,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0, 4 ],
+    "studentSize" : 35
+  }, {
+    "id" : 26,
+    "code" : "EconomicsB",
+    "teacher" : 26,
+    "lectureSize" : 7,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 27,
+    "code" : "PsychologyB",
+    "teacher" : 27,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 11 ],
+    "studentSize" : 14
+  }, {
+    "id" : 28,
+    "code" : "ArtB",
+    "teacher" : 28,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 29,
+    "code" : "MusicB",
+    "teacher" : 29,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 9 ],
+    "studentSize" : 13
+  }, {
+    "id" : 30,
+    "code" : "HistoryC",
+    "teacher" : 0,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 7 ],
+    "studentSize" : 13
+  }, {
+    "id" : 31,
+    "code" : "GeographyC",
+    "teacher" : 1,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 8, 11, 12 ],
+    "studentSize" : 45
+  }, {
+    "id" : 32,
+    "code" : "MathC",
+    "teacher" : 2,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 33,
+    "code" : "ArtC",
+    "teacher" : 3,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2, 12 ],
+    "studentSize" : 26
+  }, {
+    "id" : 34,
+    "code" : "HistoryD",
+    "teacher" : 4,
+    "lectureSize" : 7,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 5 ],
+    "studentSize" : 18
+  }, {
+    "id" : 35,
+    "code" : "EnglishC",
+    "teacher" : 5,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0, 5 ],
+    "studentSize" : 34
+  }, {
+    "id" : 36,
+    "code" : "PhysicsC",
+    "teacher" : 6,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 12 ],
+    "studentSize" : 12
+  }, {
+    "id" : 37,
+    "code" : "ArtD",
+    "teacher" : 7,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 38,
+    "code" : "MusicC",
+    "teacher" : 8,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 10 ],
+    "studentSize" : 19
+  }, {
+    "id" : 39,
+    "code" : "ICTC",
+    "teacher" : 9,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3 ],
+    "studentSize" : 12
+  }, {
+    "id" : 40,
+    "code" : "FrenchC",
+    "teacher" : 10,
+    "lectureSize" : 7,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0 ],
+    "studentSize" : 16
+  }, {
+    "id" : 41,
+    "code" : "EnglishD",
+    "teacher" : 11,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1 ],
+    "studentSize" : 10
+  }, {
+    "id" : 42,
+    "code" : "ChemistryC",
+    "teacher" : 12,
+    "lectureSize" : 2,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1, 7 ],
+    "studentSize" : 23
+  }, {
+    "id" : 43,
+    "code" : "ChemistryD",
+    "teacher" : 13,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 44,
+    "code" : "BiologyC",
+    "teacher" : 14,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 45,
+    "code" : "BiologyD",
+    "teacher" : 15,
+    "lectureSize" : 7,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0, 6 ],
+    "studentSize" : 34
+  }, {
+    "id" : 46,
+    "code" : "FrenchD",
+    "teacher" : 16,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2 ],
+    "studentSize" : 14
+  }, {
+    "id" : 47,
+    "code" : "EconomicsC",
+    "teacher" : 17,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 4 ],
+    "studentSize" : 19
+  }, {
+    "id" : 48,
+    "code" : "GeographyD",
+    "teacher" : 18,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 49,
+    "code" : "HistoryE",
+    "teacher" : 19,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 50,
+    "code" : "SpanishC",
+    "teacher" : 20,
+    "lectureSize" : 9,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 51,
+    "code" : "SpanishD",
+    "teacher" : 21,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 6 ],
+    "studentSize" : 18
+  }, {
+    "id" : 52,
+    "code" : "MathD",
+    "teacher" : 22,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2, 9 ],
+    "studentSize" : 27
+  }, {
+    "id" : 53,
+    "code" : "EnglishE",
+    "teacher" : 23,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1, 13 ],
+    "studentSize" : 27
+  }, {
+    "id" : 54,
+    "code" : "EconomicsD",
+    "teacher" : 24,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2, 12 ],
+    "studentSize" : 26
+  }, {
+    "id" : 55,
+    "code" : "GermanC",
+    "teacher" : 25,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 14, 15 ],
+    "studentSize" : 32
+  }, {
+    "id" : 56,
+    "code" : "FrenchE",
+    "teacher" : 26,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3 ],
+    "studentSize" : 12
+  }, {
+    "id" : 57,
+    "code" : "HistoryF",
+    "teacher" : 27,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 4 ],
+    "studentSize" : 19
+  }, {
+    "id" : 58,
+    "code" : "EnglishF",
+    "teacher" : 28,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 10, 11 ],
+    "studentSize" : 33
+  }, {
+    "id" : 59,
+    "code" : "HistoryG",
+    "teacher" : 29,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 10, 14 ],
+    "studentSize" : 33
+  }, {
+    "id" : 60,
+    "code" : "EnglishG",
+    "teacher" : 7,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 61,
+    "code" : "MathE",
+    "teacher" : 6,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 7 ],
+    "studentSize" : 13
+  }, {
+    "id" : 62,
+    "code" : "PhysicsD",
+    "teacher" : 12,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 8 ],
+    "studentSize" : 19
+  }, {
+    "id" : 63,
+    "code" : "GeographyE",
+    "teacher" : 14,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 4 ],
+    "studentSize" : 19
+  }, {
+    "id" : 64,
+    "code" : "PhysicsE",
+    "teacher" : 25,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 2, 7, 9 ],
+    "studentSize" : 40
+  }, {
+    "id" : 65,
+    "code" : "ChemistryE",
+    "teacher" : 29,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 66,
+    "code" : "HistoryH",
+    "teacher" : 29,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 9, 10 ],
+    "studentSize" : 32
+  }, {
+    "id" : 67,
+    "code" : "PsychologyC",
+    "teacher" : 3,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 68,
+    "code" : "EconomicsE",
+    "teacher" : 24,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 10 ],
+    "studentSize" : 19
+  }, {
+    "id" : 69,
+    "code" : "BiologyE",
+    "teacher" : 15,
+    "lectureSize" : 2,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 70,
+    "code" : "GeographyF",
+    "teacher" : 15,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 71,
+    "code" : "GermanD",
+    "teacher" : 7,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 9, 13 ],
+    "studentSize" : 30
+  }, {
+    "id" : 72,
+    "code" : "ICTD",
+    "teacher" : 23,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 12 ],
+    "studentSize" : 12
+  }, {
+    "id" : 73,
+    "code" : "BiologyF",
+    "teacher" : 25,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 12 ],
+    "studentSize" : 12
+  }, {
+    "id" : 74,
+    "code" : "ICTE",
+    "teacher" : 26,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 4, 13 ],
+    "studentSize" : 36
+  }, {
+    "id" : 75,
+    "code" : "GermanE",
+    "teacher" : 27,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1, 5 ],
+    "studentSize" : 28
+  }, {
+    "id" : 76,
+    "code" : "EconomicsF",
+    "teacher" : 16,
+    "lectureSize" : 2,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 5, 6 ],
+    "studentSize" : 36
+  }, {
+    "id" : 77,
+    "code" : "PsychologyD",
+    "teacher" : 14,
+    "lectureSize" : 6,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1, 6, 13 ],
+    "studentSize" : 45
+  }, {
+    "id" : 78,
+    "code" : "ChemistryF",
+    "teacher" : 23,
+    "lectureSize" : 8,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 8 ],
+    "studentSize" : 19
+  }, {
+    "id" : 79,
+    "code" : "SpanishE",
+    "teacher" : 20,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1 ],
+    "studentSize" : 10
+  }, {
+    "id" : 80,
+    "code" : "EnglishH",
+    "teacher" : 17,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 6 ],
+    "studentSize" : 18
+  }, {
+    "id" : 81,
+    "code" : "PsychologyE",
+    "teacher" : 2,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3 ],
+    "studentSize" : 12
+  }, {
+    "id" : 82,
+    "code" : "PsychologyF",
+    "teacher" : 18,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3, 12 ],
+    "studentSize" : 24
+  }, {
+    "id" : 83,
+    "code" : "PhysicsF",
+    "teacher" : 21,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 3, 7 ],
+    "studentSize" : 25
+  }, {
+    "id" : 84,
+    "code" : "MathF",
+    "teacher" : 19,
+    "lectureSize" : 5,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 10 ],
+    "studentSize" : 19
+  }, {
+    "id" : 85,
+    "code" : "SpanishF",
+    "teacher" : 24,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 4 ],
+    "studentSize" : 19
+  }, {
+    "id" : 86,
+    "code" : "MathG",
+    "teacher" : 3,
+    "lectureSize" : 3,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 7, 8, 11 ],
+    "studentSize" : 46
+  }, {
+    "id" : 87,
+    "code" : "MathH",
+    "teacher" : 24,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  }, {
+    "id" : 88,
+    "code" : "MusicD",
+    "teacher" : 1,
+    "lectureSize" : 4,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ ],
+    "studentSize" : 0
+  } ],
+  "dayList" : [ {
+    "id" : 0,
+    "dayIndex" : 0,
+    "periodList" : [ {
+      "id" : 0,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 0,
+        "timeslotIndex" : 0
+      }
+    }, {
+      "id" : 1,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 1,
+        "timeslotIndex" : 1
+      }
+    }, {
+      "id" : 2,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 2,
+        "timeslotIndex" : 2
+      }
+    }, {
+      "id" : 3,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 3,
+        "timeslotIndex" : 3
+      }
+    }, {
+      "id" : 4,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 4,
+        "timeslotIndex" : 4
+      }
+    }, {
+      "id" : 5,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 5,
+        "timeslotIndex" : 5
+      }
+    }, {
+      "id" : 6,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 6,
+        "timeslotIndex" : 6
+      }
+    } ]
+  }, {
+    "id" : 1,
+    "dayIndex" : 1,
+    "periodList" : [ {
+      "id" : 7,
+      "day" : 1,
+      "timeslot" : 0
+    }, {
+      "id" : 8,
+      "day" : 1,
+      "timeslot" : 1
+    }, {
+      "id" : 9,
+      "day" : 1,
+      "timeslot" : 2
+    }, {
+      "id" : 10,
+      "day" : 1,
+      "timeslot" : 3
+    }, {
+      "id" : 11,
+      "day" : 1,
+      "timeslot" : 4
+    }, {
+      "id" : 12,
+      "day" : 1,
+      "timeslot" : 5
+    }, {
+      "id" : 13,
+      "day" : 1,
+      "timeslot" : 6
+    } ]
+  }, {
+    "id" : 2,
+    "dayIndex" : 2,
+    "periodList" : [ {
+      "id" : 14,
+      "day" : 2,
+      "timeslot" : 0
+    }, {
+      "id" : 15,
+      "day" : 2,
+      "timeslot" : 1
+    }, {
+      "id" : 16,
+      "day" : 2,
+      "timeslot" : 2
+    }, {
+      "id" : 17,
+      "day" : 2,
+      "timeslot" : 3
+    } ]
+  }, {
+    "id" : 3,
+    "dayIndex" : 3,
+    "periodList" : [ {
+      "id" : 18,
+      "day" : 3,
+      "timeslot" : 0
+    }, {
+      "id" : 19,
+      "day" : 3,
+      "timeslot" : 1
+    }, {
+      "id" : 20,
+      "day" : 3,
+      "timeslot" : 2
+    }, {
+      "id" : 21,
+      "day" : 3,
+      "timeslot" : 3
+    }, {
+      "id" : 22,
+      "day" : 3,
+      "timeslot" : 4
+    }, {
+      "id" : 23,
+      "day" : 3,
+      "timeslot" : 5
+    }, {
+      "id" : 24,
+      "day" : 3,
+      "timeslot" : 6
+    } ]
+  }, {
+    "id" : 4,
+    "dayIndex" : 4,
+    "periodList" : [ {
+      "id" : 25,
+      "day" : 4,
+      "timeslot" : 0
+    }, {
+      "id" : 26,
+      "day" : 4,
+      "timeslot" : 1
+    }, {
+      "id" : 27,
+      "day" : 4,
+      "timeslot" : 2
+    }, {
+      "id" : 28,
+      "day" : 4,
+      "timeslot" : 3
+    }, {
+      "id" : 29,
+      "day" : 4,
+      "timeslot" : 4
+    }, {
+      "id" : 30,
+      "day" : 4,
+      "timeslot" : 5
+    }, {
+      "id" : 31,
+      "day" : 4,
+      "timeslot" : 6
+    } ]
+  } ],
+  "timeslotList" : [ 0, 1, 2, 3, 4, 5, 6 ],
+  "periodList" : [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+  "roomList" : [ {
+    "id" : 0,
+    "code" : "R1",
+    "capacity" : 40
+  }, {
+    "id" : 1,
+    "code" : "R2",
+    "capacity" : 40
+  }, {
+    "id" : 2,
+    "code" : "R3",
+    "capacity" : 30
+  }, {
+    "id" : 3,
+    "code" : "R4",
+    "capacity" : 50
+  }, {
+    "id" : 4,
+    "code" : "R5",
+    "capacity" : 25
+  }, {
+    "id" : 5,
+    "code" : "R6",
+    "capacity" : 50
+  }, {
+    "id" : 6,
+    "code" : "R7",
+    "capacity" : 40
+  }, {
+    "id" : 7,
+    "code" : "R8",
+    "capacity" : 25
+  }, {
+    "id" : 8,
+    "code" : "R9",
+    "capacity" : 40
+  }, {
+    "id" : 9,
+    "code" : "R10",
+    "capacity" : 50
+  }, {
+    "id" : 10,
+    "code" : "R11",
+    "capacity" : 40
+  }, {
+    "id" : 11,
+    "code" : "R12",
+    "capacity" : 30
+  }, {
+    "id" : 12,
+    "code" : "R13",
+    "capacity" : 25
+  }, {
+    "id" : 13,
+    "code" : "R14",
+    "capacity" : 20
+  }, {
+    "id" : 14,
+    "code" : "R15",
+    "capacity" : 30
+  }, {
+    "id" : 15,
+    "code" : "R16",
+    "capacity" : 50
+  }, {
+    "id" : 16,
+    "code" : "R17",
+    "capacity" : 40
+  }, {
+    "id" : 17,
+    "code" : "R18",
+    "capacity" : 30
+  }, {
+    "id" : 18,
+    "code" : "R19",
+    "capacity" : 40
+  }, {
+    "id" : 19,
+    "code" : "R20",
+    "capacity" : 25
+  }, {
+    "id" : 20,
+    "code" : "R21",
+    "capacity" : 50
+  }, {
+    "id" : 21,
+    "code" : "R22",
+    "capacity" : 50
+  }, {
+    "id" : 22,
+    "code" : "R23",
+    "capacity" : 40
+  }, {
+    "id" : 23,
+    "code" : "R24",
+    "capacity" : 30
+  }, {
+    "id" : 24,
+    "code" : "R25",
+    "capacity" : 30
+  } ],
+  "unavailablePeriodPenaltyList" : [ {
+    "id" : 0,
+    "course" : 0,
+    "period" : 30
+  }, {
+    "id" : 1,
+    "course" : 1,
+    "period" : 7
+  }, {
+    "id" : 2,
+    "course" : 2,
+    "period" : 7
+  }, {
+    "id" : 3,
+    "course" : 3,
+    "period" : 4
+  }, {
+    "id" : 4,
+    "course" : 4,
+    "period" : 11
+  }, {
+    "id" : 5,
+    "course" : 5,
+    "period" : 21
+  }, {
+    "id" : 6,
+    "course" : 6,
+    "period" : 3
+  }, {
+    "id" : 7,
+    "course" : 7,
+    "period" : 0
+  }, {
+    "id" : 8,
+    "course" : 8,
+    "period" : 18
+  }, {
+    "id" : 9,
+    "course" : 9,
+    "period" : 3
+  }, {
+    "id" : 10,
+    "course" : 10,
+    "period" : 4
+  }, {
+    "id" : 11,
+    "course" : 11,
+    "period" : 2
+  }, {
+    "id" : 12,
+    "course" : 12,
+    "period" : 16
+  }, {
+    "id" : 13,
+    "course" : 13,
+    "period" : 5
+  }, {
+    "id" : 14,
+    "course" : 14,
+    "period" : 1
+  }, {
+    "id" : 15,
+    "course" : 15,
+    "period" : 28
+  }, {
+    "id" : 16,
+    "course" : 16,
+    "period" : 4
+  }, {
+    "id" : 17,
+    "course" : 17,
+    "period" : 26
+  }, {
+    "id" : 18,
+    "course" : 18,
+    "period" : 17
+  }, {
+    "id" : 19,
+    "course" : 19,
+    "period" : 6
+  }, {
+    "id" : 20,
+    "course" : 20,
+    "period" : 31
+  }, {
+    "id" : 21,
+    "course" : 21,
+    "period" : 9
+  }, {
+    "id" : 22,
+    "course" : 22,
+    "period" : 2
+  }, {
+    "id" : 23,
+    "course" : 23,
+    "period" : 0
+  }, {
+    "id" : 24,
+    "course" : 24,
+    "period" : 11
+  }, {
+    "id" : 25,
+    "course" : 25,
+    "period" : 23
+  }, {
+    "id" : 26,
+    "course" : 26,
+    "period" : 15
+  }, {
+    "id" : 27,
+    "course" : 27,
+    "period" : 19
+  }, {
+    "id" : 28,
+    "course" : 28,
+    "period" : 5
+  }, {
+    "id" : 29,
+    "course" : 29,
+    "period" : 21
+  }, {
+    "id" : 30,
+    "course" : 30,
+    "period" : 13
+  }, {
+    "id" : 31,
+    "course" : 31,
+    "period" : 20
+  }, {
+    "id" : 32,
+    "course" : 32,
+    "period" : 20
+  }, {
+    "id" : 33,
+    "course" : 33,
+    "period" : 7
+  }, {
+    "id" : 34,
+    "course" : 34,
+    "period" : 2
+  }, {
+    "id" : 35,
+    "course" : 35,
+    "period" : 3
+  }, {
+    "id" : 36,
+    "course" : 36,
+    "period" : 30
+  }, {
+    "id" : 37,
+    "course" : 37,
+    "period" : 30
+  }, {
+    "id" : 38,
+    "course" : 38,
+    "period" : 24
+  }, {
+    "id" : 39,
+    "course" : 39,
+    "period" : 28
+  }, {
+    "id" : 40,
+    "course" : 40,
+    "period" : 18
+  }, {
+    "id" : 41,
+    "course" : 41,
+    "period" : 15
+  }, {
+    "id" : 42,
+    "course" : 42,
+    "period" : 30
+  }, {
+    "id" : 43,
+    "course" : 43,
+    "period" : 21
+  }, {
+    "id" : 44,
+    "course" : 44,
+    "period" : 15
+  }, {
+    "id" : 45,
+    "course" : 45,
+    "period" : 14
+  }, {
+    "id" : 46,
+    "course" : 46,
+    "period" : 15
+  }, {
+    "id" : 47,
+    "course" : 47,
+    "period" : 28
+  }, {
+    "id" : 48,
+    "course" : 48,
+    "period" : 18
+  }, {
+    "id" : 49,
+    "course" : 49,
+    "period" : 12
+  }, {
+    "id" : 50,
+    "course" : 50,
+    "period" : 1
+  }, {
+    "id" : 51,
+    "course" : 51,
+    "period" : 16
+  }, {
+    "id" : 52,
+    "course" : 52,
+    "period" : 21
+  }, {
+    "id" : 53,
+    "course" : 53,
+    "period" : 25
+  }, {
+    "id" : 54,
+    "course" : 54,
+    "period" : 29
+  }, {
+    "id" : 55,
+    "course" : 55,
+    "period" : 23
+  }, {
+    "id" : 56,
+    "course" : 56,
+    "period" : 10
+  }, {
+    "id" : 57,
+    "course" : 57,
+    "period" : 6
+  }, {
+    "id" : 58,
+    "course" : 58,
+    "period" : 17
+  }, {
+    "id" : 59,
+    "course" : 59,
+    "period" : 0
+  }, {
+    "id" : 60,
+    "course" : 60,
+    "period" : 0
+  }, {
+    "id" : 61,
+    "course" : 61,
+    "period" : 11
+  }, {
+    "id" : 62,
+    "course" : 62,
+    "period" : 23
+  }, {
+    "id" : 63,
+    "course" : 63,
+    "period" : 22
+  }, {
+    "id" : 64,
+    "course" : 64,
+    "period" : 13
+  }, {
+    "id" : 65,
+    "course" : 65,
+    "period" : 30
+  }, {
+    "id" : 66,
+    "course" : 66,
+    "period" : 18
+  }, {
+    "id" : 67,
+    "course" : 67,
+    "period" : 8
+  }, {
+    "id" : 68,
+    "course" : 68,
+    "period" : 31
+  }, {
+    "id" : 69,
+    "course" : 69,
+    "period" : 19
+  }, {
+    "id" : 70,
+    "course" : 70,
+    "period" : 5
+  }, {
+    "id" : 71,
+    "course" : 71,
+    "period" : 31
+  }, {
+    "id" : 72,
+    "course" : 72,
+    "period" : 16
+  }, {
+    "id" : 73,
+    "course" : 73,
+    "period" : 11
+  }, {
+    "id" : 74,
+    "course" : 74,
+    "period" : 23
+  }, {
+    "id" : 75,
+    "course" : 75,
+    "period" : 6
+  }, {
+    "id" : 76,
+    "course" : 76,
+    "period" : 13
+  }, {
+    "id" : 77,
+    "course" : 77,
+    "period" : 23
+  }, {
+    "id" : 78,
+    "course" : 78,
+    "period" : 1
+  }, {
+    "id" : 79,
+    "course" : 79,
+    "period" : 0
+  }, {
+    "id" : 80,
+    "course" : 80,
+    "period" : 31
+  }, {
+    "id" : 81,
+    "course" : 81,
+    "period" : 1
+  }, {
+    "id" : 82,
+    "course" : 82,
+    "period" : 16
+  }, {
+    "id" : 83,
+    "course" : 83,
+    "period" : 18
+  }, {
+    "id" : 84,
+    "course" : 84,
+    "period" : 14
+  }, {
+    "id" : 85,
+    "course" : 85,
+    "period" : 15
+  }, {
+    "id" : 86,
+    "course" : 86,
+    "period" : 7
+  }, {
+    "id" : 87,
+    "course" : 87,
+    "period" : 4
+  }, {
+    "id" : 88,
+    "course" : 88,
+    "period" : 12
+  } ],
+  "lectureList" : [ {
+    "id" : 0,
+    "course" : 0,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 1,
+    "course" : 1,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 2,
+    "course" : 2,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 3,
+    "course" : 3,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 4,
+    "course" : 4,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 5,
+    "course" : 5,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 6,
+    "course" : 6,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 7,
+    "course" : 7,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 8,
+    "course" : 8,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 9,
+    "course" : 9,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 10,
+    "course" : 10,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 11,
+    "course" : 11,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 12,
+    "course" : 12,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 13,
+    "course" : 13,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 14,
+    "course" : 14,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 15,
+    "course" : 15,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 16,
+    "course" : 16,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 17,
+    "course" : 17,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 18,
+    "course" : 18,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 19,
+    "course" : 19,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 20,
+    "course" : 20,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 21,
+    "course" : 21,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 22,
+    "course" : 22,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 23,
+    "course" : 23,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 24,
+    "course" : 24,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 25,
+    "course" : 25,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 26,
+    "course" : 26,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 27,
+    "course" : 27,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 28,
+    "course" : 28,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 29,
+    "course" : 29,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 30,
+    "course" : 30,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 31,
+    "course" : 31,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 32,
+    "course" : 32,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 33,
+    "course" : 33,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 34,
+    "course" : 34,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 35,
+    "course" : 35,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 36,
+    "course" : 36,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 37,
+    "course" : 37,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 38,
+    "course" : 38,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 39,
+    "course" : 39,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 40,
+    "course" : 40,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 41,
+    "course" : 41,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 42,
+    "course" : 42,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 43,
+    "course" : 43,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 44,
+    "course" : 44,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 45,
+    "course" : 45,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 46,
+    "course" : 46,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 47,
+    "course" : 47,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 48,
+    "course" : 48,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 49,
+    "course" : 49,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 50,
+    "course" : 50,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 51,
+    "course" : 51,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 52,
+    "course" : 52,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 53,
+    "course" : 53,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 54,
+    "course" : 54,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 55,
+    "course" : 55,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 56,
+    "course" : 56,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 57,
+    "course" : 57,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 58,
+    "course" : 58,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 59,
+    "course" : 59,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 60,
+    "course" : 60,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 61,
+    "course" : 61,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 62,
+    "course" : 62,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 63,
+    "course" : 63,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 64,
+    "course" : 64,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 65,
+    "course" : 65,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 66,
+    "course" : 66,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 67,
+    "course" : 67,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 68,
+    "course" : 68,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 69,
+    "course" : 69,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 70,
+    "course" : 70,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 71,
+    "course" : 71,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 72,
+    "course" : 72,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 73,
+    "course" : 73,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 74,
+    "course" : 74,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 75,
+    "course" : 75,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 76,
+    "course" : 76,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 77,
+    "course" : 77,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 78,
+    "course" : 78,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 79,
+    "course" : 79,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 80,
+    "course" : 80,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 81,
+    "course" : 81,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 82,
+    "course" : 82,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 83,
+    "course" : 83,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 84,
+    "course" : 84,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 85,
+    "course" : 85,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 86,
+    "course" : 86,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 87,
+    "course" : 87,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 88,
+    "course" : 88,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 89,
+    "course" : 0,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 90,
+    "course" : 1,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 91,
+    "course" : 2,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 92,
+    "course" : 3,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 93,
+    "course" : 4,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 94,
+    "course" : 5,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 95,
+    "course" : 6,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 96,
+    "course" : 7,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 97,
+    "course" : 8,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 98,
+    "course" : 9,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 99,
+    "course" : 10,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 100,
+    "course" : 11,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 101,
+    "course" : 12,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 102,
+    "course" : 13,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 103,
+    "course" : 14,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 104,
+    "course" : 15,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 105,
+    "course" : 16,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 106,
+    "course" : 17,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 107,
+    "course" : 18,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 108,
+    "course" : 19,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 109,
+    "course" : 20,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 110,
+    "course" : 21,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 111,
+    "course" : 22,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 112,
+    "course" : 23,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 113,
+    "course" : 24,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 114,
+    "course" : 25,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 115,
+    "course" : 26,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 116,
+    "course" : 27,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 117,
+    "course" : 28,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 118,
+    "course" : 29,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 119,
+    "course" : 30,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 120,
+    "course" : 31,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 121,
+    "course" : 32,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 122,
+    "course" : 33,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 123,
+    "course" : 34,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 124,
+    "course" : 35,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 125,
+    "course" : 36,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 126,
+    "course" : 37,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 127,
+    "course" : 38,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 128,
+    "course" : 39,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 129,
+    "course" : 40,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 130,
+    "course" : 41,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 131,
+    "course" : 42,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 132,
+    "course" : 43,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 133,
+    "course" : 44,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 134,
+    "course" : 45,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 135,
+    "course" : 46,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 136,
+    "course" : 47,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 137,
+    "course" : 48,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 138,
+    "course" : 49,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 139,
+    "course" : 50,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 140,
+    "course" : 51,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 141,
+    "course" : 52,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 142,
+    "course" : 53,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 143,
+    "course" : 54,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 144,
+    "course" : 55,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 145,
+    "course" : 56,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 146,
+    "course" : 57,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 147,
+    "course" : 58,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 148,
+    "course" : 59,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 149,
+    "course" : 60,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 150,
+    "course" : 61,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 151,
+    "course" : 62,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 152,
+    "course" : 63,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 153,
+    "course" : 64,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 154,
+    "course" : 65,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 155,
+    "course" : 66,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 156,
+    "course" : 67,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 157,
+    "course" : 68,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 158,
+    "course" : 69,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 159,
+    "course" : 70,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 160,
+    "course" : 71,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 161,
+    "course" : 72,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 162,
+    "course" : 73,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 163,
+    "course" : 74,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 164,
+    "course" : 75,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 165,
+    "course" : 76,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 166,
+    "course" : 77,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 167,
+    "course" : 78,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 168,
+    "course" : 79,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 169,
+    "course" : 80,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 170,
+    "course" : 81,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 171,
+    "course" : 82,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 172,
+    "course" : 83,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 173,
+    "course" : 84,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 174,
+    "course" : 85,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 175,
+    "course" : 86,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 176,
+    "course" : 87,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 177,
+    "course" : 88,
+    "lectureIndexInCourse" : 2,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 178,
+    "course" : 33,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 179,
+    "course" : 51,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 180,
+    "course" : 45,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 181,
+    "course" : 64,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 182,
+    "course" : 34,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 183,
+    "course" : 17,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 184,
+    "course" : 64,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 185,
+    "course" : 45,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 186,
+    "course" : 57,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 187,
+    "course" : 81,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 188,
+    "course" : 86,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 189,
+    "course" : 40,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 190,
+    "course" : 87,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 191,
+    "course" : 34,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 192,
+    "course" : 22,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 193,
+    "course" : 25,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 194,
+    "course" : 1,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 195,
+    "course" : 61,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 196,
+    "course" : 21,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 197,
+    "course" : 35,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 198,
+    "course" : 50,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 199,
+    "course" : 27,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 200,
+    "course" : 1,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 201,
+    "course" : 37,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 202,
+    "course" : 30,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 203,
+    "course" : 4,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 204,
+    "course" : 11,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 205,
+    "course" : 14,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 206,
+    "course" : 54,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 207,
+    "course" : 55,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 208,
+    "course" : 62,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 209,
+    "course" : 14,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 210,
+    "course" : 0,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 211,
+    "course" : 27,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 212,
+    "course" : 72,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 213,
+    "course" : 70,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 214,
+    "course" : 5,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 215,
+    "course" : 9,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 216,
+    "course" : 2,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 217,
+    "course" : 0,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 218,
+    "course" : 83,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 219,
+    "course" : 26,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 220,
+    "course" : 23,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 221,
+    "course" : 48,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 222,
+    "course" : 32,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 223,
+    "course" : 71,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 224,
+    "course" : 34,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 225,
+    "course" : 39,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 226,
+    "course" : 7,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 227,
+    "course" : 29,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 228,
+    "course" : 81,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 229,
+    "course" : 59,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 230,
+    "course" : 73,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 231,
+    "course" : 6,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 232,
+    "course" : 4,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 233,
+    "course" : 52,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 234,
+    "course" : 82,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 235,
+    "course" : 29,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 236,
+    "course" : 54,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 237,
+    "course" : 14,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 238,
+    "course" : 44,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 239,
+    "course" : 33,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 240,
+    "course" : 7,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 241,
+    "course" : 47,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 242,
+    "course" : 72,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 243,
+    "course" : 82,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 244,
+    "course" : 87,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 245,
+    "course" : 60,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 246,
+    "course" : 31,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 247,
+    "course" : 30,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 248,
+    "course" : 55,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 249,
+    "course" : 8,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 250,
+    "course" : 24,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 251,
+    "course" : 34,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 252,
+    "course" : 53,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 253,
+    "course" : 37,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 254,
+    "course" : 74,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 255,
+    "course" : 78,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 256,
+    "course" : 45,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 257,
+    "course" : 12,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 258,
+    "course" : 9,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 259,
+    "course" : 26,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 260,
+    "course" : 28,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 261,
+    "course" : 75,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 262,
+    "course" : 13,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 263,
+    "course" : 40,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 264,
+    "course" : 21,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 265,
+    "course" : 49,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 266,
+    "course" : 52,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 267,
+    "course" : 36,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 268,
+    "course" : 26,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 269,
+    "course" : 68,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 270,
+    "course" : 11,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 271,
+    "course" : 77,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 272,
+    "course" : 84,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 273,
+    "course" : 15,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 274,
+    "course" : 57,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 275,
+    "course" : 80,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 276,
+    "course" : 40,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 277,
+    "course" : 8,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 278,
+    "course" : 74,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 279,
+    "course" : 26,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 280,
+    "course" : 59,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 281,
+    "course" : 50,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 282,
+    "course" : 31,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 283,
+    "course" : 44,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 284,
+    "course" : 18,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 285,
+    "course" : 52,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 286,
+    "course" : 13,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 287,
+    "course" : 24,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 288,
+    "course" : 63,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 289,
+    "course" : 5,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 290,
+    "course" : 5,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 291,
+    "course" : 53,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 292,
+    "course" : 67,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 293,
+    "course" : 61,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 294,
+    "course" : 16,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 295,
+    "course" : 13,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 296,
+    "course" : 34,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 297,
+    "course" : 29,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 298,
+    "course" : 47,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 299,
+    "course" : 47,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 300,
+    "course" : 79,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 301,
+    "course" : 55,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 302,
+    "course" : 85,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 303,
+    "course" : 5,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 304,
+    "course" : 53,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 305,
+    "course" : 70,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 306,
+    "course" : 31,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 307,
+    "course" : 10,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 308,
+    "course" : 23,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 309,
+    "course" : 48,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 310,
+    "course" : 77,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 311,
+    "course" : 17,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 312,
+    "course" : 78,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 313,
+    "course" : 71,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 314,
+    "course" : 50,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 315,
+    "course" : 50,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 316,
+    "course" : 57,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 317,
+    "course" : 37,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 318,
+    "course" : 30,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 319,
+    "course" : 58,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 320,
+    "course" : 20,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 321,
+    "course" : 44,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 322,
+    "course" : 79,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 323,
+    "course" : 51,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 324,
+    "course" : 52,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 325,
+    "course" : 49,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 326,
+    "course" : 57,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 327,
+    "course" : 80,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 328,
+    "course" : 29,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 329,
+    "course" : 23,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 330,
+    "course" : 7,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 331,
+    "course" : 84,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 332,
+    "course" : 65,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 333,
+    "course" : 65,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 334,
+    "course" : 65,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 335,
+    "course" : 15,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 336,
+    "course" : 78,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 337,
+    "course" : 80,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 338,
+    "course" : 64,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 339,
+    "course" : 1,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 340,
+    "course" : 50,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 341,
+    "course" : 43,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 342,
+    "course" : 41,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 343,
+    "course" : 9,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 344,
+    "course" : 16,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 345,
+    "course" : 88,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 346,
+    "course" : 85,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 347,
+    "course" : 78,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 348,
+    "course" : 12,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 349,
+    "course" : 77,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 350,
+    "course" : 83,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 351,
+    "course" : 63,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 352,
+    "course" : 75,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 353,
+    "course" : 84,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 354,
+    "course" : 40,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 355,
+    "course" : 66,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 356,
+    "course" : 13,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 357,
+    "course" : 58,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 358,
+    "course" : 45,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 359,
+    "course" : 77,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 360,
+    "course" : 11,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 361,
+    "course" : 8,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 362,
+    "course" : 17,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 363,
+    "course" : 28,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 364,
+    "course" : 17,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 365,
+    "course" : 5,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 366,
+    "course" : 5,
+    "lectureIndexInCourse" : 8,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 367,
+    "course" : 56,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 368,
+    "course" : 62,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 369,
+    "course" : 65,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 370,
+    "course" : 81,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 371,
+    "course" : 5,
+    "lectureIndexInCourse" : 9,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 372,
+    "course" : 78,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 373,
+    "course" : 60,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 374,
+    "course" : 45,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 375,
+    "course" : 22,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 376,
+    "course" : 1,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 377,
+    "course" : 40,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 378,
+    "course" : 38,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 379,
+    "course" : 27,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 380,
+    "course" : 75,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 381,
+    "course" : 25,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 382,
+    "course" : 46,
+    "lectureIndexInCourse" : 3,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 383,
+    "course" : 55,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 384,
+    "course" : 2,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 385,
+    "course" : 43,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 386,
+    "course" : 5,
+    "lectureIndexInCourse" : 10,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 387,
+    "course" : 26,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 388,
+    "course" : 11,
+    "lectureIndexInCourse" : 6,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 389,
+    "course" : 88,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 390,
+    "course" : 50,
+    "lectureIndexInCourse" : 8,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 391,
+    "course" : 21,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 392,
+    "course" : 78,
+    "lectureIndexInCourse" : 8,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 393,
+    "course" : 50,
+    "lectureIndexInCourse" : 9,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 394,
+    "course" : 73,
+    "lectureIndexInCourse" : 4,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 395,
+    "course" : 79,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 396,
+    "course" : 16,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 397,
+    "course" : 17,
+    "lectureIndexInCourse" : 7,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 398,
+    "course" : 25,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 399,
+    "course" : 22,
+    "lectureIndexInCourse" : 5,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  } ],
+  "score" : null
+}

@@ -113,6 +113,7 @@ public class PhreakRuleTerminalNode {
         // most recent PropagationContext is required to maintain the right recency which triggers the match
         PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
         if ( rtnNode.getRule().isNoLoop() && sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
+            executor.addDormantTuple(leftTuple);
             return;
         }
 
@@ -127,6 +128,7 @@ public class PhreakRuleTerminalNode {
             InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
             if (blockedByLockOnActive(rtnNode.getRule(), pctx, agendaGroup)) {
                 activationsManager.getAgendaEventSupport().fireActivationCancelled(leftTuple, reteEvaluator, MatchCancelledCause.FILTER );
+                executor.addDormantTuple(leftTuple);
                 return;
             }
         }
@@ -278,6 +280,8 @@ public class PhreakRuleTerminalNode {
             // Expiration propagations should not be removed from the list, as they still need to fire
             executor.removeActiveTuple( leftTuple );
         } else if ( leftTuple.getStagedType() == Tuple.DELETE && !leftTuple.isQueued() ) {
+            // if Tuple.DELETE, it's not in activeMatches nor dormantMatches. Basically, unlinked from parent nodes, so will be GC'ed.
+            // Note: there could be a case where such a tuple will be retained and activated again. (e.g., accPropCtx.getResultLeftTuple())
             executor.removeDormantTuple( leftTuple );
         }
 
