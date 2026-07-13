@@ -129,8 +129,10 @@ org.optaplanner:optaplanner-persistence-jsonb
 org.optaplanner:optaplanner-quarkus-benchmark-parent
 org.optaplanner:optaplanner-quarkus-integration
 org.optaplanner:optaplanner-quarkus-jackson
+org.optaplanner:optaplanner-quarkus-jackson-deployment
 org.optaplanner:optaplanner-quarkus-jackson-parent
 org.optaplanner:optaplanner-quarkus-jsonb
+org.optaplanner:optaplanner-quarkus-jsonb-deployment
 org.optaplanner:optaplanner-quarkus-jsonb-parent
 org.optaplanner:optaplanner-quarkus-parent
 org.optaplanner:optaplanner-spring-integration
