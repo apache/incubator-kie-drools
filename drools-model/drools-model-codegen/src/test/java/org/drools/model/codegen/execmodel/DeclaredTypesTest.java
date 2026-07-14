@@ -670,7 +670,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         // super(...). PositionalParent has @Position(0) name, @Position(1) age, and @Position(2) salary,
         // so Child should expose Child(String name, int age, long salary, String dept). The executable
         // model previously omitted the inherited fields, generating only Child(String dept), which
-        // failed to compile the 'new Child("Mario", 40, 50l, "Sales")' consequent.
+        // failed to compile the 'new Child("Mario", 40, 50L, "Sales")' consequent.
         // Note that in case of non-exec-model, a generated constructor arg order doesn't respect @Position,
         // which means non-deterministic. So this test is only for exec-model.
         String str =
@@ -683,7 +683,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "end\n" +
                 "rule Init when\n" +
                 "then\n" +
-                "    insert( new Child(\"Mario\", 40, 50l, \"Sales\") );\n" +
+                "    insert( new Child(\"Mario\", 40, 50L, \"Sales\") );\n" +
                 "end\n" +
                 "rule Check when\n" +
                 "    $c : Child( name == \"Mario\", age == 40, dept == \"Sales\" )\n" +
