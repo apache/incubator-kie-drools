@@ -37,6 +37,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -52,6 +53,10 @@ public class CodegenMessageStartEventTest {
     private static final Path MESSAGE_END_EVENT_SOURCE_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_END_EVENT_SOURCE);
     private static final String MESSAGE_START_END_EVENT_SOURCE = "messagestartevent/MessageStartAndEndEvent.bpmn2";
     private static final Path MESSAGE_START_END_EVENT_SOURCE_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_START_END_EVENT_SOURCE);
+    private static final String MESSAGE_START_EVENT_NO_MAPPING_SOURCE = "messagestartevent/MessageStartEventNoMapping.bpmn2";
+    private static final Path MESSAGE_START_EVENT_NO_MAPPING_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_START_EVENT_NO_MAPPING_SOURCE);
+    private static final String MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_SOURCE = "messagestartevent/MessageStartEventEmptyStructureRef.bpmn2";
+    private static final Path MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_SOURCE);
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
@@ -83,6 +88,66 @@ public class CodegenMessageStartEventTest {
             assertThat(resources).isEmpty();
         }
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    public void testMessageStartEventWithoutItemRef(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS), emptyList()));
+        KogitoBuildContext context = contextBuilder.build();
+        ProcessCodegen codeGenerator = ProcessCodegen.ofCollectedResources(
+                context,
+                CollectedResourceProducer.fromFiles(BASE_PATH, MESSAGE_START_EVENT_NO_MAPPING_FULL_SOURCE.toFile()));
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles).isNotEmpty();
+
+        List<GeneratedFile> processes = generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventNoMappingProcess.java"))
+                .collect(Collectors.toList());
+        assertThat(processes).hasSize(1);
+
+        CompilationUnit parsedProcess = StaticJavaParser.parse(new String(processes.get(0).contents()));
+
+        List<MethodCallExpr> correlationMessages = parsedProcess.findAll(MethodCallExpr.class,
+                methodCall -> "newCorrelationMessage".equals(methodCall.getNameAsString()));
+        assertThat(correlationMessages)
+                .withFailMessage("A message without itemRef must still be registered as a correlation message")
+                .hasSize(1);
+        assertThat(correlationMessages.get(0).getArgument(2).asStringLiteralExpr().getValue())
+                .withFailMessage("A message without itemRef carries no data, so its type must default to java.lang.Object")
+                .isEqualTo("java.lang.Object");
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    public void testMessageStartEventWithEmptyStructureRef(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS), emptyList()));
+        KogitoBuildContext context = contextBuilder.build();
+        ProcessCodegen codeGenerator = ProcessCodegen.ofCollectedResources(
+                context,
+                CollectedResourceProducer.fromFiles(BASE_PATH, MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_FULL_SOURCE.toFile()));
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles).isNotEmpty();
+
+        List<GeneratedFile> processes = generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventEmptyStructureRefProcess.java"))
+                .collect(Collectors.toList());
+        assertThat(processes).hasSize(1);
+
+        CompilationUnit parsedProcess = StaticJavaParser.parse(new String(processes.get(0).contents()));
+
+        List<MethodCallExpr> correlationMessages = parsedProcess.findAll(MethodCallExpr.class,
+                methodCall -> "newCorrelationMessage".equals(methodCall.getNameAsString()));
+        assertThat(correlationMessages)
+                .withFailMessage("A message pointing to an itemDefinition with an empty structureRef must still be registered as a correlation message")
+                .hasSize(1);
+        assertThat(correlationMessages.get(0).getArgument(2).asStringLiteralExpr().getValue())
+                .withFailMessage("An empty structureRef carries no data, so the message type must default to java.lang.Object")
+                .isEqualTo("java.lang.Object");
     }
 
     @ParameterizedTest

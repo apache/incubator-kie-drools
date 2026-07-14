@@ -68,13 +68,20 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
             name = id;
         }
 
-        Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-        if (itemDefinitions == null) {
-            throw new ProcessParsingValidationException("No item definitions found");
+        String type = null;
+        if (itemRef != null && itemRef.trim().length() > 0) {
+            Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+            if (itemDefinitions == null) {
+                throw new ProcessParsingValidationException("No item definitions found");
+            }
+            ItemDefinition itemDefinition = itemDefinitions.get(itemRef);
+            if (itemDefinition == null) {
+                throw new ProcessParsingValidationException("Could not find itemDefinition " + itemRef);
+            }
+            type = itemDefinition.getStructureRef();
         }
-        ItemDefinition itemDefinition = itemDefinitions.get(itemRef);
-        if (itemDefinition == null) {
-            throw new ProcessParsingValidationException("Could not find itemDefinition " + itemRef);
+        if (type == null || type.trim().length() == 0) {
+            type = "java.lang.Object";
         }
 
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
@@ -84,12 +91,9 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
             buildData.setMetaData("Messages", messages);
         }
         Message message = new Message(id);
-        message.setType(itemDefinition.getStructureRef());
+        message.setType(type);
         message.setName(name);
-
-        if (message.getType() != null && !message.getType().isEmpty()) {
-            messages.put(id, message);
-        }
+        messages.put(id, message);
         return message;
     }
 
