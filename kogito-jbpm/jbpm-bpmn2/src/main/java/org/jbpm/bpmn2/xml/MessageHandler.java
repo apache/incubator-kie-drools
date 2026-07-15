@@ -69,7 +69,7 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
         }
 
         String type = null;
-        if (itemRef != null && itemRef.trim().length() > 0) {
+        if (itemRef != null && !itemRef.trim().isEmpty()) {
             Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
             if (itemDefinitions == null) {
                 throw new ProcessParsingValidationException("No item definitions found");
@@ -80,8 +80,8 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
             }
             type = itemDefinition.getStructureRef();
         }
-        if (type == null || type.trim().length() == 0) {
-            type = "java.lang.Object";
+        if (type != null && type.trim().isEmpty()) {
+            type = null;
         }
 
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();

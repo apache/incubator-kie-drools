@@ -231,7 +231,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         // now we wire correlation process subscriptions
         CorrelationManager correlationManager = process.getCorrelationManager();
         for (Message message : HandlerUtil.messages(parser).values()) {
-            correlationManager.newMessage(message.getId(), message.getName(), message.getType());
+            String messageType = message.getType();
+            if (messageType == null || messageType.trim().isEmpty()) {
+                messageType = "java.lang.Object";
+            }
+            correlationManager.newMessage(message.getId(), message.getName(), messageType);
         }
 
         // only the ones this process is member of

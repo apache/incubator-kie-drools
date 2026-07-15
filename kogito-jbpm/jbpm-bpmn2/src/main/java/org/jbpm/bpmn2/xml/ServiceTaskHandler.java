@@ -76,7 +76,8 @@ public class ServiceTaskHandler extends TaskHandler {
             if (workItemNode.getWork().getParameter("Operation") == null) {
                 workItemNode.getWork().setParameter("Operation", operation.getName());
             }
-            if (workItemNode.getWork().getParameter("ParameterType") == null && operation.getMessage() != null) {
+            if (workItemNode.getWork().getParameter("ParameterType") == null && operation.getMessage() != null
+                    && operation.getMessage().getType() != null && !operation.getMessage().getType().trim().isEmpty()) {
                 workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
             }
             // parameters to support web service invocation 

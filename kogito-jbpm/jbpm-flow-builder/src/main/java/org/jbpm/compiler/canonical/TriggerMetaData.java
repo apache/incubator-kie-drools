@@ -70,12 +70,17 @@ public class TriggerMetaData {
     public static TriggerMetaData of(Node node, String mappingVariable) {
         Map<String, Object> nodeMetaData = node.getMetaData();
         String channelName = (String) nodeMetaData.getOrDefault(CHANNEL_NAME, (String) nodeMetaData.get(TRIGGER_REF));
+        TriggerType triggerType = TriggerType.valueOf((String) nodeMetaData.get(TRIGGER_TYPE));
+        String dataType = (String) nodeMetaData.get(MESSAGE_TYPE);
+        if ((TriggerType.ConsumeMessage.equals(triggerType) || TriggerType.ProduceMessage.equals(triggerType)) && StringUtils.isEmpty(dataType)) {
+            dataType = "java.lang.Object";
+        }
         return new TriggerMetaData(
                 node,
                 (String) nodeMetaData.get(TRIGGER_REF),
                 channelName,
-                TriggerType.valueOf((String) nodeMetaData.get(TRIGGER_TYPE)),
-                (String) nodeMetaData.get(MESSAGE_TYPE),
+                triggerType,
+                dataType,
                 mappingVariable,
                 getOwnerId(node),
                 (Boolean) nodeMetaData.get(DATA_ONLY),
