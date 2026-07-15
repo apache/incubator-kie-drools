@@ -40,6 +40,7 @@
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
     <version.org.drools>${project.version}</version.org.drools>
+    <version.com.fasterxml.jackson.databind>2.22.0</version.com.fasterxml.jackson.databind>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.5.34</version.ch.qos.logback>
@@ -200,6 +201,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-persistence</artifactId>
         <version>${version.org.springframework.boot}</version>
+      </dependency>
+      <!-- Override quarkus-bom jackson-databind to ensure 2.22.0 is used -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.com.fasterxml.jackson.databind}</version>
       </dependency>
 
     </dependencies>
