@@ -38,6 +38,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -57,6 +59,8 @@ public class CodegenMessageStartEventTest {
     private static final Path MESSAGE_START_EVENT_NO_MAPPING_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_START_EVENT_NO_MAPPING_SOURCE);
     private static final String MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_SOURCE = "messagestartevent/MessageStartEventEmptyStructureRef.bpmn2";
     private static final Path MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_START_EVENT_EMPTY_STRUCTURE_REF_SOURCE);
+    private static final String MESSAGE_END_EVENT_NO_MAPPING_SOURCE = "messagestartevent/MessageEndEventNoMapping.bpmn2";
+    private static final Path MESSAGE_END_EVENT_NO_MAPPING_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_END_EVENT_NO_MAPPING_SOURCE);
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
@@ -148,6 +152,68 @@ public class CodegenMessageStartEventTest {
         assertThat(correlationMessages.get(0).getArgument(2).asStringLiteralExpr().getValue())
                 .withFailMessage("An empty structureRef carries no data, so the message type must default to java.lang.Object")
                 .isEqualTo("java.lang.Object");
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    public void testMessageEndEventWithoutDataMapping(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS), emptyList()));
+        KogitoBuildContext context = contextBuilder.build();
+        ProcessCodegen codeGenerator = ProcessCodegen.ofCollectedResources(
+                context,
+                CollectedResourceProducer.fromFiles(BASE_PATH, MESSAGE_END_EVENT_NO_MAPPING_FULL_SOURCE.toFile()));
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles).isNotEmpty();
+
+        List<GeneratedFile> processes = generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageEndEventNoMappingProcess.java"))
+                .collect(Collectors.toList());
+        assertThat(processes).hasSize(1);
+
+        CompilationUnit parsedProcess = StaticJavaParser.parse(new String(processes.get(0).contents()));
+
+        List<ObjectCreationExpr> producerActions = parsedProcess.findAll(ObjectCreationExpr.class,
+                objectCreation -> objectCreation.getType().getNameAsString().equals("ProduceEventAction"));
+        assertThat(producerActions).hasSize(1);
+        assertThat(producerActions.get(0).getArgument(1))
+                .withFailMessage("A message end event without data mapping has no variable to send, so no variable name must be passed")
+                .isInstanceOf(NullLiteralExpr.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void testMessageConsumerForMessageStartEventWithoutDataMapping(KogitoBuildContext.Builder contextBuilder) {
+        Properties properties = new Properties();
+        properties.put("kogito.addon.cloudevents.kafka.kogito_outgoing_stream", "test-out");
+        properties.put("kogito.addon.cloudevents.kafka.kogito_incoming_stream", "test-in");
+        contextBuilder.withApplicationProperties(properties);
+
+        KogitoBuildContext context = contextBuilder.build();
+        ProcessCodegen codeGenerator = ProcessCodegen.ofCollectedResources(
+                context,
+                CollectedResourceProducer.fromFiles(BASE_PATH, MESSAGE_START_EVENT_NO_MAPPING_FULL_SOURCE.toFile()));
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles).isNotEmpty();
+
+        List<GeneratedFile> consumers = generatedFiles.stream()
+                .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventNoMappingMessageConsumer_StartEvent_1.java"))
+                .collect(Collectors.toList());
+        assertThat(consumers).hasSize(1);
+
+        CompilationUnit parsedConsumer = StaticJavaParser.parse(new String(consumers.get(0).contents()));
+
+        assertThat(parsedConsumer.findAll(MethodCallExpr.class, mc -> mc.getNameAsString().contains("$SetModelMethodName$")))
+                .withFailMessage("A message without data mapping has no variable to set on the model")
+                .isEmpty();
+
+        if (context.hasDI()) {
+            assertThat(parsedConsumer.findFirst(MethodDeclaration.class, md -> "getModelConverter".equals(md.getNameAsString())))
+                    .withFailMessage("The model converter must be kept, otherwise the message would not start the process")
+                    .isPresent();
+        }
     }
 
     @ParameterizedTest

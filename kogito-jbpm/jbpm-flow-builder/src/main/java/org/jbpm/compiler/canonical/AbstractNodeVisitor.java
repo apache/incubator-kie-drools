@@ -475,9 +475,10 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
 
     public static ObjectCreationExpr buildProducerAction(ClassOrInterfaceType actionClass, TriggerMetaData trigger, ProcessMetaData metadata) {
         metadata.addTrigger(trigger);
+        Expression modelRef = trigger.getModelRef() != null ? new StringLiteralExpr(trigger.getModelRef()) : new NullLiteralExpr();
         return new ObjectCreationExpr(null, actionClass, NodeList.nodeList(
                 new StringLiteralExpr(trigger.getName()),
-                new StringLiteralExpr(trigger.getModelRef()),
+                modelRef,
                 new LambdaExpr(NodeList.nodeList(),
                         new NameExpr("producer_" + trigger.getOwnerId()))));
     }

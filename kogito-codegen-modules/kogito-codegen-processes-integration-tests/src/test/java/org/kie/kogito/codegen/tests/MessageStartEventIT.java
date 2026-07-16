@@ -56,6 +56,24 @@ public class MessageStartEventIT extends AbstractCodegenIT {
     }
 
     @Test
+    public void testMessageStartEventWithoutDataMappingProcess() throws Exception {
+
+        Application app = generateCodeProcessesOnly("messagestartevent/MessageStartEventNoMapping.bpmn2");
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.get(Processes.class).processById("MessageStartEventNoMapping");
+
+        Model m = p.createModel();
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start("customers", null);
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model) processInstance.variables();
+        assertThat(result.toMap()).isEmpty();
+    }
+
+    @Test
     public void testMessageStartAndEndEventProcess() throws Exception {
 
         Application app = generateCodeProcessesOnly("messagestartevent/MessageStartAndEndEvent.bpmn2");
