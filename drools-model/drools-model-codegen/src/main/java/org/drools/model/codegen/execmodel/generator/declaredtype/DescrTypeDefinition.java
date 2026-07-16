@@ -38,6 +38,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.QualifiedName;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
@@ -200,7 +201,7 @@ public class DescrTypeDefinition implements TypeDefinition {
             return fields;
         }
 
-        Optional<DeclaredSuperType> declaredSuper = findDeclaredSuperType(superName, pkgDescr);
+        Optional<DeclaredSuperType> declaredSuper = findDeclaredSuperType(superName, td.getSuperTypeNamespace(), pkgDescr, resolver);
         if (declaredSuper.isPresent()) {
             DeclaredSuperType st = declaredSuper.get();
             // the super's own inherited fields first, then the super's own declared fields
@@ -223,28 +224,76 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     /**
-     * Locates a declared supertype by simple name, searching the current package first then every
-     * other package in the build, returning the descriptor together with its declaring package's
-     * descriptor and type resolver (needed to resolve that package's own supertypes and imports).
+     * Locates a declared supertype, disambiguating cross-package matches by the namespace the current
+     * package resolves {@code superName} to. A supertype declared in the current package always wins
+     * (a local declaration shadows imports), unless it was explicitly qualified to another package
+     * ({@code extends a.b.Super}). Otherwise the declaring package is taken from an explicit qualifier
+     * or an explicit single-type import, so a same-simple-name type declared in an unrelated package is
+     * never picked. When no such qualifier/import narrows it (a bare name with only a wildcard import,
+     * say), the remaining packages are scanned in a deterministic order (by namespace) so resolution
+     * does not depend on {@code allPackages} iteration order. The returned {@link DeclaredSuperType}
+     * carries the declaring package's own descriptor and type resolver, needed to resolve that
+     * package's supertypes and imports further up the chain.
      */
-    private Optional<DeclaredSuperType> findDeclaredSuperType(String superName, PackageDescr currentPkgDescr) {
-        Optional<TypeDeclarationDescr> inCurrent = currentPkgDescr.getTypeDeclarations().stream()
-                .filter(td -> td.getTypeName().equals(superName))
-                .findFirst();
-        if (inCurrent.isPresent()) {
-            return Optional.of(new DeclaredSuperType(inCurrent.get(), currentPkgDescr, typeResolver));
-        }
-        if (allPackages != null) {
-            for (PackageDescr pkg : allPackages) {
-                Optional<TypeDeclarationDescr> found = pkg.getTypeDeclarations().stream()
-                        .filter(td -> td.getTypeName().equals(superName))
-                        .findFirst();
-                if (found.isPresent()) {
-                    return Optional.of(new DeclaredSuperType(found.get(), pkg, resolverForPackage(pkg.getNamespace())));
-                }
+    private Optional<DeclaredSuperType> findDeclaredSuperType(String superName, String superNamespace,
+                                                              PackageDescr currentPkgDescr, TypeResolver currentResolver) {
+        boolean explicitlyOtherPackage = superNamespace != null && !superNamespace.equals(namespaceOf(currentPkgDescr));
+        if (!explicitlyOtherPackage) {
+            Optional<TypeDeclarationDescr> inCurrent = findTypeDeclaration(currentPkgDescr, superName);
+            if (inCurrent.isPresent()) {
+                return Optional.of(new DeclaredSuperType(inCurrent.get(), currentPkgDescr, currentResolver));
             }
         }
-        return Optional.empty();
+
+        if (allPackages == null) {
+            return Optional.empty();
+        }
+
+        // Resolve the declaring namespace from an explicit qualifier or the current package's explicit
+        // single-type import of superName; when known, the supertype is looked up strictly within it.
+        String targetNamespace = superNamespace != null ? superNamespace : importedNamespaceFor(superName, currentPkgDescr);
+        if (targetNamespace != null) {
+            return allPackages.stream()
+                    .filter(pkg -> targetNamespace.equals(namespaceOf(pkg)))
+                    .map(pkg -> findTypeDeclaration(pkg, superName)
+                            .map(td -> new DeclaredSuperType(td, pkg, resolverForPackage(pkg.getNamespace()))))
+                    .filter(Optional::isPresent).map(Optional::get)
+                    .findFirst();
+        }
+
+        // Bare name with nothing to disambiguate it: scan the other packages in a deterministic order
+        // (by namespace) so a same-simple-name collision resolves reproducibly across builds.
+        return allPackages.stream()
+                .sorted(Comparator.comparing(DescrTypeDefinition::namespaceOf))
+                .map(pkg -> findTypeDeclaration(pkg, superName)
+                        .map(td -> new DeclaredSuperType(td, pkg, resolverForPackage(pkg.getNamespace()))))
+                .filter(Optional::isPresent).map(Optional::get)
+                .findFirst();
+    }
+
+    private static String namespaceOf(PackageDescr pkg) {
+        return pkg.getNamespace() == null ? "" : pkg.getNamespace();
+    }
+
+    private static Optional<TypeDeclarationDescr> findTypeDeclaration(PackageDescr pkg, String simpleName) {
+        return pkg.getTypeDeclarations().stream()
+                .filter(td -> td.getTypeName().equals(simpleName))
+                .findFirst();
+    }
+
+    /**
+     * Returns the namespace an explicit single-type import binds {@code simpleName} to in the given
+     * package, or {@code null} when there is no such import (a bare name, or only a wildcard import) so
+     * the caller falls back to a deterministic cross-package scan.
+     */
+    private static String importedNamespaceFor(String simpleName, PackageDescr pkgDescr) {
+        String suffix = "." + simpleName;
+        return pkgDescr.getImports().stream()
+                .map(ImportDescr::getTarget)
+                .filter(target -> target != null && target.endsWith(suffix))
+                .map(target -> target.substring(0, target.length() - suffix.length()))
+                .findFirst()
+                .orElse(null);
     }
 
     private TypeResolver resolverForPackage(String packageName) {

@@ -729,6 +729,43 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @ParameterizedTest
+    @MethodSource("parameters")
+    public void testDeclaredExtendsAmbiguousSimpleNameResolvedByImport(RUN_TYPE runType) {
+        // Two packages declare a type with the same simple name (Base). The child explicitly imports
+        // one of them, so its 'extends Base' must resolve to that package's Base - not to another
+        // package's same-named declaration. Here Sub imports b.pkg.Base, whose only field is 'city',
+        // so the constructor is Sub(String city, String dept). Resolving to a.pkg.Base (name/age)
+        // instead would make the consequent 'new Sub("NYC", "Sales")' fail to compile. Runs under both
+        // engines: the legacy path already resolved this correctly; exec-model (#6782) previously
+        // matched the first same-named declaration found while scanning packages.
+        String aBaseDrl =
+                "package a.pkg;\n" +
+                "declare Base\n" +
+                "  name : String\n" +
+                "  age : int\n" +
+                "end\n";
+        String bBaseDrl =
+                "package b.pkg;\n" +
+                "declare Base\n" +
+                "  city : String\n" +
+                "end\n";
+        String subDrl =
+                "package sub;\n" +
+                "import b.pkg.Base;\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Sub extends Base\n" +
+                "  dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then insert( new Sub(\"NYC\", \"Sales\") ); end\n" +
+                "rule Chk when\n" +
+                "  Sub( city == \"NYC\", dept == \"Sales\" )\n" +
+                "then insert( new Result(\"ok\") ); end";
+        KieSession ksession = getKieSession(runType, aBaseDrl, bBaseDrl, subDrl);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+    }
+
+    @ParameterizedTest
     @MethodSource("parametersPatternOnly")
     public void testExtendPojoWithoutPositionUsesNoArgSuper(RUN_TYPE runType) {
         // Executable-model regression for #6779: a declared type extending a Java class that has NO
