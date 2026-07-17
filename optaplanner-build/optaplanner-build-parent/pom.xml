@@ -55,6 +55,7 @@
     <version.org.freemarker>2.3.34</version.org.freemarker>
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
+    <version.io.micrometer>1.16.6</version.io.micrometer>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.springframework>7.0.8</version.org.springframework>
@@ -137,6 +138,22 @@
         <scope>import</scope>
       </dependency>
       <!-- Normal dependencies versions-->
+      <!-- CVE fix: override micrometer version brought in by quarkus-bom 3.27.4 (1.14.7) to 1.16.6 -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-core</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-commons</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-observation</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
