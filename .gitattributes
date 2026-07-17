@@ -43,6 +43,9 @@
 *.pdf binary
 *.xls binary
 *.xlsx binary
+*.pkg binary
+*.docx binary
+*.odg binary
 
 # GitHub syntax highlighting
 ############################
