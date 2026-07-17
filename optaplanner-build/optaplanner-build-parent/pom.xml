@@ -136,7 +136,8 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- CVE fix: override micrometer version from quarkus-bom (1.14.7) to 1.16.6 -->
+      <!-- Normal dependencies versions-->
+      <!-- CVE fix: override micrometer version brought in by quarkus-bom 3.27.4 (1.14.7) to 1.16.6 -->
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-core</artifactId>
@@ -152,7 +153,6 @@
         <artifactId>micrometer-observation</artifactId>
         <version>${version.io.micrometer}</version>
       </dependency>
-      <!-- Normal dependencies versions-->
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
