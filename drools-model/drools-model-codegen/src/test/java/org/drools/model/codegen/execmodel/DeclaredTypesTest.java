@@ -700,6 +700,72 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @ParameterizedTest
+    @MethodSource("parameters")
+    public void testDeclaredTypeExtendingDeclaredTypeInDifferentPackage(RUN_TYPE runType) {
+        // A declared type that extends a declared type in a DIFFERENT package must generate a
+        // full-argument constructor that includes the inherited fields and forwards them to super(...).
+        // Here Child (com.test.childpkg) extends Parent (com.test.parentpkg), so the consequent
+        // 'new Child("Mario", 40, "Sales")' must compile and the inherited name/age must be populated.
+        String parentDrl =
+                "package com.test.parentpkg;\n" +
+                "declare Parent\n" +
+                "  name : String\n" +
+                "  age : int\n" +
+                "end\n";
+        String childDrl =
+                "package com.test.childpkg;\n" +
+                "import com.test.parentpkg.Parent;\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Child extends Parent\n" +
+                "  dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then insert( new Child(\"Mario\", 40, \"Sales\") ); end\n" +
+                "rule Chk when\n" +
+                "  Child( name == \"Mario\", age == 40, dept == \"Sales\" )\n" +
+                "then insert( new Result(\"ok\") ); end";
+        KieSession ksession = getKieSession(runType, parentDrl, childDrl);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testDeclaredExtendsAmbiguousSimpleNameResolvedByImport(RUN_TYPE runType) {
+        // Two packages declare a type with the same simple name (Base). The child explicitly imports
+        // one of them, so its 'extends Base' must resolve to that package's Base - not to another
+        // package's same-named declaration. Here Sub imports b.pkg.Base, whose only field is 'city',
+        // so the constructor is Sub(String city, String dept). Resolving to a.pkg.Base (name/age)
+        // instead would make the consequent 'new Sub("NYC", "Sales")' fail to compile. Runs under both
+        // engines: the legacy path already resolved this correctly; exec-model (#6782) previously
+        // matched the first same-named declaration found while scanning packages.
+        String aBaseDrl =
+                "package a.pkg;\n" +
+                "declare Base\n" +
+                "  name : String\n" +
+                "  age : int\n" +
+                "end\n";
+        String bBaseDrl =
+                "package b.pkg;\n" +
+                "declare Base\n" +
+                "  city : String\n" +
+                "end\n";
+        String subDrl =
+                "package sub;\n" +
+                "import b.pkg.Base;\n" +
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "declare Sub extends Base\n" +
+                "  dept : String\n" +
+                "end\n" +
+                "rule Init when\n" +
+                "then insert( new Sub(\"NYC\", \"Sales\") ); end\n" +
+                "rule Chk when\n" +
+                "  Sub( city == \"NYC\", dept == \"Sales\" )\n" +
+                "then insert( new Result(\"ok\") ); end";
+        KieSession ksession = getKieSession(runType, aBaseDrl, bBaseDrl, subDrl);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+    }
+
+    @ParameterizedTest
     @MethodSource("parametersPatternOnly")
     public void testExtendPojoWithoutPositionUsesNoArgSuper(RUN_TYPE runType) {
         // Executable-model regression for #6779: a declared type extending a Java class that has NO

@@ -61,7 +61,7 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
         List<CompilationPhase> phases = asList(
                 iteratingPhase((reg, acc) -> new DeclaredTypeRegistrationPhase(reg, acc, pkgRegistryManager)),
                 iteratingPhase((reg, acc) ->
-                        new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()))),
+                        new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()), packages, pkgRegistryManager)),
                 new GeneratedPojoCompilationPhase(
                         packageModelManager, buildContext, buildConfiguration.getClassLoader()),
                 new PojoStoragePhase(buildContext, pkgRegistryManager, packages)

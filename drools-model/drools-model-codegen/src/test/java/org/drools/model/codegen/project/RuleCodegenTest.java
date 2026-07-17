@@ -19,12 +19,14 @@
 package org.drools.model.codegen.project;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.codegen.common.DroolsModelBuildContext;
@@ -164,6 +166,37 @@ public class RuleCodegenTest {
         assertRules(2, 1, generatedFiles.size() - externalizedLambda - legacyApiFiles);
     }
 
+
+    @ParameterizedTest
+    @MethodSource("org.drools.model.codegen.project.RuleCodegenTest#contextBuilders")
+    public void generateCrossPackageDeclaredInheritanceConstructor(DroolsModelBuildContext.Builder contextBuilder) {
+        // #6782 regression on the static codegen path (RuleCodegen -> DroolsModelBuilder ->
+        // ExplicitCanonicalModelCompiler). A declared type extending a declared type in a DIFFERENT
+        // package must generate a full-argument constructor that includes the inherited fields and
+        // forwards them to super(...). This path does not go through DeclaredTypeCompilationPhase, so
+        // it must also receive the multi-package context to resolve the cross-package supertype;
+        // without the fix the generated Child(...) constructor omits the inherited name/age.
+        withLegacyApi(contextBuilder);
+
+        RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
+                contextBuilder,
+                new File(RESOURCE_PATH + "/org/drools/model/project/codegen/crosspkg").listFiles());
+
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
+
+        String childSource = generatedFiles.stream()
+                .filter(f -> f.relativePath().endsWith("Child.java"))
+                .map(f -> new String(f.contents(), StandardCharsets.UTF_8))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Generated Child.java not found among " +
+                        generatedFiles.stream().map(GeneratedFile::relativePath).collect(Collectors.toList())));
+
+        // The inherited fields (name, age) are not declared on Child, so they only appear in Child.java
+        // via the generated full-arg constructor that forwards them to super(...). Their presence is the
+        // signal that the cross-package supertype was resolved on this codegen path.
+        assertThat(childSource).contains("age");
+        assertThat(childSource).contains("super(");
+    }
 
     private void assertHasLegacyApiFiles(Collection<GeneratedFile> generatedFiles) {
         assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("/ProjectModel.java"));

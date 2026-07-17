@@ -131,7 +131,7 @@ public class ExplicitCanonicalModelCompiler<T extends PackageSources> {
 
         phases.add(iteratingPhase((reg, acc) -> new DeclaredTypeRegistrationPhase(reg, acc, pkgRegistryManager)));
         phases.add(iteratingPhase((reg, acc) ->
-                new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()))));
+                new POJOGenerator(reg.getPackage(), acc, packageModelManager.getPackageModel(acc, reg, reg.getPackage().getName()), packages, pkgRegistryManager)));
         phases.add(new GeneratedPojoCompilationPhase(
                 packageModelManager, buildContext, configuration.getClassLoader()));
         phases.add(new PojoStoragePhase(buildContext, pkgRegistryManager, packages));
