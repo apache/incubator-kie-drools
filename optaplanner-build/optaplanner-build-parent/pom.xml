@@ -59,7 +59,7 @@
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.springframework>7.0.8</version.org.springframework>
     <version.org.springframework.boot>4.0.7</version.org.springframework.boot>
-    <version.com.fasterxml.jackson.databind>2.22.0</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.databind>2.22.1</version.com.fasterxml.jackson.databind>
     <!-- ************************************************************************ -->
     <!-- Plugins -->
     <!-- ************************************************************************ -->
