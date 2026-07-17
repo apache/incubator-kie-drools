@@ -60,8 +60,7 @@
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.springframework>7.0.8</version.org.springframework>
     <version.org.springframework.boot>4.0.7</version.org.springframework.boot>
-    <version.com.fasterxml.jackson.databind>2.22.0</version.com.fasterxml.jackson.databind>
-
+    <version.com.fasterxml.jackson.databind>2.22.1</version.com.fasterxml.jackson.databind>
     <!-- ************************************************************************ -->
     <!-- Plugins -->
     <!-- ************************************************************************ -->
@@ -219,14 +218,13 @@
         <artifactId>spring-boot-persistence</artifactId>
         <version>${version.org.springframework.boot}</version>
       </dependency>
-      <!-- Override quarkus-bom jackson-databind version; transitively imported by
+ <!-- Override quarkus-bom jackson-databind version; transitively imported by
            optaplanner-persistence-jackson, optaplanner-spring-boot-autoconfigure and optaplanner-quarkus-jackson -->
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${version.com.fasterxml.jackson.databind}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
