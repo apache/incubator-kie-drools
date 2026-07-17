@@ -47,6 +47,7 @@ public class UserTaskInstanceAssignmentLog extends AbstractUserTaskInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskInstanceAssignmentLogIdSeq")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "task_name")

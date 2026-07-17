@@ -48,55 +48,92 @@ import jakarta.persistence.Table;
 public class ProcessInstanceEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "process_id")
     private String processId;
+
+    @Column(name = "version")
     private String version;
+
     @Column(name = "version", insertable = false, updatable = false)
     private String processVersion;
+
+    @Column(name = "process_name")
     private String processName;
+
+    @Column(name = "state")
     private Integer state;
+
+    @Column(name = "business_key")
     private String businessKey;
+
+    @Column(name = "endpoint")
     private String endpoint;
+
     @ElementCollection
     @CollectionTable(name = "processes_roles", joinColumns = @JoinColumn(name = "process_id", foreignKey = @ForeignKey(name = "fk_processes_roles_processes")))
     @Column(name = "role", nullable = false)
     private Set<String> roles;
-    @Column(name = "startTime")
+
+    @Column(name = "start_time")
     private ZonedDateTime start;
-    @Column(name = "endTime")
+
+    @Column(name = "end_time")
     private ZonedDateTime end;
+
+    @Column(name = "root_process_instance_id")
     private String rootProcessInstanceId;
+
+    @Column(name = "root_process_id")
     private String rootProcessId;
+
+    @Column(name = "root_process_version")
     private String rootProcessVersion;
+
+    @Column(name = "parent_process_instance_id")
     private String parentProcessInstanceId;
-    @Column(name = "lastUpdateTime")
+
+    @Column(name = "last_update_time")
     private ZonedDateTime lastUpdate;
+
+    @Column(name = "created_by")
     private String createdBy;
 
+    @Column(name = "updated_by")
     private String updatedBy;
 
+    @Column(name = "sla_due_date")
     private ZonedDateTime slaDueDate;
 
     @Convert(converter = JsonBinaryConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "variables", columnDefinition = "jsonb")
     private JsonNode variables;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
     private List<NodeInstanceEntity> nodes;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
     private List<MilestoneEntity> milestones;
+
     @ElementCollection
     @CollectionTable(name = "processes_addons", joinColumns = @JoinColumn(name = "process_id", foreignKey = @ForeignKey(name = "fk_processes_addons_processes")))
     @Column(name = "addon", nullable = false)
     private Set<String> addons;
+
     @Embedded
     private ProcessInstanceErrorEntity error;
 
     @ManyToOne(targetEntity = ProcessDefinitionEntity.class, fetch = FetchType.LAZY)
-    @JoinColumns({ @JoinColumn(name = "processId", referencedColumnName = "id", insertable = false, updatable = false),
+    @JoinColumns({ @JoinColumn(name = "process_id", referencedColumnName = "id", insertable = false, updatable = false),
             @JoinColumn(name = "version", referencedColumnName = "version", insertable = false, updatable = false) })
     private ProcessDefinitionEntity definition;
 
+    @Column(name = "cloud_event_id")
     private String cloudEventId;
+
+    @Column(name = "cloud_event_source")
     private String cloudEventSource;
 
     @Override

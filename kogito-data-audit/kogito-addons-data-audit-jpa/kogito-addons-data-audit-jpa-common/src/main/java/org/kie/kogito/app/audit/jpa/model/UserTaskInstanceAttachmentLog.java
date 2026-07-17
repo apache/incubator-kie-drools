@@ -43,6 +43,7 @@ public class UserTaskInstanceAttachmentLog extends AbstractUserTaskInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskInstanceAttachmentLogIdSeq")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "attachment_id")

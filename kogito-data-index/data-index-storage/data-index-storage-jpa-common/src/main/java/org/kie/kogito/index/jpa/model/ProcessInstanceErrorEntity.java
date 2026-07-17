@@ -20,13 +20,19 @@ package org.kie.kogito.index.jpa.model;
 
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class ProcessInstanceErrorEntity {
 
+    @Column(name = "node_definition_id")
     private String nodeDefinitionId;
+
+    @Column(name = "node_instance_id")
     private String nodeInstanceId;
+
+    @Column(name = "message")
     private String message;
 
     public String getNodeDefinitionId() {

@@ -44,9 +44,16 @@ import jakarta.persistence.Table;
 public class NodeEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "unique_id")
     private String uniqueId;
+
+    @Column(name = "type")
     private String type;
 
     @ElementCollection

@@ -45,55 +45,103 @@ import jakarta.persistence.Table;
 public class UserTaskInstanceEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "user_task_id")
     private String userTaskId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "priority")
     private String priority;
+
+    @Column(name = "process_instance_id")
     private String processInstanceId;
+
+    @Column(name = "state")
     private String state;
+
+    @Column(name = "actual_owner")
     private String actualOwner;
+
     @ElementCollection
     @CollectionTable(name = "tasks_admin_groups", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_admin_groups_tasks")))
     @Column(name = "group_id", nullable = false)
     private Set<String> adminGroups;
+
     @ElementCollection
     @CollectionTable(name = "tasks_admin_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_admin_users_tasks")))
     @Column(name = "user_id", nullable = false)
     private Set<String> adminUsers;
+
+    @Column(name = "completed")
     private ZonedDateTime completed;
+
+    @Column(name = "started")
     private ZonedDateTime started;
+
     @ElementCollection
     @CollectionTable(name = "tasks_excluded_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_excluded_users_tasks")))
     @Column(name = "user_id", nullable = false)
     private Set<String> excludedUsers;
+
     @ElementCollection
     @CollectionTable(name = "tasks_potential_groups", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_potential_groups_tasks")))
     @Column(name = "group_id", nullable = false)
     private Set<String> potentialGroups;
+
     @ElementCollection
     @CollectionTable(name = "tasks_potential_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_potential_users_tasks")))
     @Column(name = "user_id", nullable = false)
     private Set<String> potentialUsers;
+
+    @Column(name = "reference_name")
     private String referenceName;
+
+    @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
+
+    @Column(name = "process_id")
     private String processId;
+
+    @Column(name = "process_version")
     private String processVersion;
+
+    @Column(name = "root_process_id")
     private String rootProcessId;
+
+    @Column(name = "root_process_version")
     private String rootProcessVersion;
+
+    @Column(name = "root_process_instance_id")
     private String rootProcessInstanceId;
+
     @Convert(converter = JsonBinaryConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "inputs", columnDefinition = "jsonb")
     private ObjectNode inputs;
+
     @Convert(converter = JsonBinaryConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "outputs", columnDefinition = "jsonb")
     private ObjectNode outputs;
+
+    @Column(name = "endpoint")
     private String endpoint;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> comments;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttachmentEntity> attachments;
+
+    @Column(name = "external_reference_id")
     private String externalReferenceId;
+
+    @Column(name = "sla_due_date")
     private ZonedDateTime slaDueDate;
 
     public String getExternalReferenceId() {

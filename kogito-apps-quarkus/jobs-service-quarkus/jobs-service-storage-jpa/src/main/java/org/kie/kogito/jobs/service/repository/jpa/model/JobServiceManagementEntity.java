@@ -32,12 +32,14 @@ import jakarta.persistence.*;
 public class JobServiceManagementEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
 
     @Column(name = "last_heartbeat")
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime lastHeartBeat;
 
+    @Column(name = "token")
     private String token;
 
     public String getId() {

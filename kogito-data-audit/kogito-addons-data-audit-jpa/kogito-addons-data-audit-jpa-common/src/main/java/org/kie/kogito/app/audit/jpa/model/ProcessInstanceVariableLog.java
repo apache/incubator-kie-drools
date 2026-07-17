@@ -48,6 +48,7 @@ public class ProcessInstanceVariableLog extends AbstractProcessInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "processInstanceVariableLogIdSeq")
+    @Column(name = "id")
     private long id;
 
     @Column(name = "variable_id")

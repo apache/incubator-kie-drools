@@ -61,16 +61,17 @@ public class ProcessInstanceStateLog extends AbstractProcessInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "processInstanceStateLogIdSeq")
+    @Column(name = "id")
     private long id;
 
     @Column(name = "event_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private ProcessStateLogType eventType;
 
-    @Column
+    @Column(name = "outcome")
     private String outcome;
 
-    @Column
+    @Column(name = "state")
     private String state;
 
     @Temporal(TemporalType.TIMESTAMP)

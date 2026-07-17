@@ -49,6 +49,7 @@ public class ProcessInstanceErrorLog extends AbstractProcessInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "processInstanceErrorHistorySeq")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "error_message")

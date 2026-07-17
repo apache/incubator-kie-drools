@@ -45,30 +45,51 @@ import jakarta.persistence.Table;
 public class NodeInstanceEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "node_id")
     private String nodeId;
+
+    @Column(name = "type")
     private String type;
+
+    @Column(name = "enter")
     private ZonedDateTime enter;
+
+    @Column(name = "exit")
     private ZonedDateTime exit;
+
+    @Column(name = "sla_due_date")
     private ZonedDateTime slaDueDate;
+
+    @Column(name = "definition_id")
     private String definitionId;
+
+    @Column(name = "retrigger")
     private Boolean retrigger;
+
+    @Column(name = "error_message")
     private String errorMessage;
+
+    @Column(name = "cancel_type")
     @Enumerated(EnumType.STRING)
     private CancelType cancelType;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "processInstanceId", foreignKey = @ForeignKey(name = "fk_nodes_process"))
+    @JoinColumn(name = "process_instance_id", foreignKey = @ForeignKey(name = "fk_nodes_process"))
     private ProcessInstanceEntity processInstance;
 
     @Convert(converter = JsonBinaryConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "input_args", columnDefinition = "jsonb")
     private JsonNode inputArgs;
 
     @Convert(converter = JsonBinaryConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "output_args", columnDefinition = "jsonb")
     private JsonNode outputArgs;
 
     public Boolean isRetrigger() {

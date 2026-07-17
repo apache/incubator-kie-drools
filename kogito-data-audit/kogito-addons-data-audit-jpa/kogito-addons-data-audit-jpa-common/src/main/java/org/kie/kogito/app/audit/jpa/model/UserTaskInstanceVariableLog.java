@@ -48,6 +48,7 @@ public class UserTaskInstanceVariableLog extends AbstractUserTaskInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskInstanceVariableLogIdSeq")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "variable_id")

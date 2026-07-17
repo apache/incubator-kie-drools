@@ -24,6 +24,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
@@ -38,14 +39,19 @@ import jakarta.persistence.Table;
 public class MilestoneEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
 
     @Id
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "processInstanceId", foreignKey = @ForeignKey(name = "fk_milestones_process"))
+    @JoinColumn(name = "process_instance_id", foreignKey = @ForeignKey(name = "fk_milestones_process"))
     private ProcessInstanceEntity processInstance;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "status")
     private String status;
 
     @Override

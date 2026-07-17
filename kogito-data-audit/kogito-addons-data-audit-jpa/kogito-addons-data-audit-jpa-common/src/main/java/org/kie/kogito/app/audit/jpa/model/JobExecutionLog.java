@@ -44,6 +44,7 @@ public class JobExecutionLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "jobExecutionHistoryIdSeq")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "job_id")
@@ -53,6 +54,7 @@ public class JobExecutionLog {
     @Temporal(TemporalType.TIMESTAMP)
     private Date expirationTime;
 
+    @Column(name = "priority")
     private Integer priority;
 
     @Column(name = "process_instance_id")
@@ -70,8 +72,10 @@ public class JobExecutionLog {
     @Column(name = "scheduled_id")
     private String scheduledId;
 
+    @Column(name = "retries")
     private Integer retries;
 
+    @Column(name = "status")
     private String status;
 
     @Column(name = "execution_counter")

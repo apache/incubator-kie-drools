@@ -58,6 +58,7 @@ public class ProcessInstanceNodeLog extends AbstractProcessInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "processInstanceNodeLogIdSeq")
+    @Column(name = "id")
     private long id;
 
     @Column(name = "event_type")

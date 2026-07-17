@@ -41,6 +41,7 @@ public class UserTaskInstanceCommentLog extends AbstractUserTaskInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskInstanceCommentLogIdSeq")
+    @Column(name = "id")
     private Long id;
 
     // custom data fields

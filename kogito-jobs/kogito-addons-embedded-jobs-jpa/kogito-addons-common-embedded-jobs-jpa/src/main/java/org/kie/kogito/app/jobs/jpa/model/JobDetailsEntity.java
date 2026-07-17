@@ -46,6 +46,7 @@ import jakarta.persistence.TemporalType;
 public class JobDetailsEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
 
     @Column(name = "correlation_id")
@@ -63,12 +64,14 @@ public class JobDetailsEntity {
     @Column(name = "root_process_version")
     private String rootProcessVersion;
 
+    @Column(name = "status")
     private String status;
 
     @Column(name = "last_update")
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime lastUpdate;
 
+    @Column(name = "retries")
     private Integer retries;
 
     @Column(name = "execution_counter")
@@ -77,11 +80,14 @@ public class JobDetailsEntity {
     @Column(name = "scheduled_id")
     private String scheduledId;
 
+    @Column(name = "priority")
     private Integer priority;
 
+    @Column(name = "recipient")
     @Convert(converter = JsonBinaryConverter.class)
     private ObjectNode recipient;
 
+    @Column(name = "trigger")
     @Convert(converter = JsonBinaryConverter.class)
     private ObjectNode trigger;
 
@@ -95,6 +101,7 @@ public class JobDetailsEntity {
     @Column(name = "execution_timeout_unit")
     private String executionTimeoutUnit;
 
+    @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime created;
 

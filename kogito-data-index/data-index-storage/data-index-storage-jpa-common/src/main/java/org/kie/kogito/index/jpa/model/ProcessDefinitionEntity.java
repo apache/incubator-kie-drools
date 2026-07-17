@@ -46,13 +46,23 @@ import jakarta.persistence.Table;
 public class ProcessDefinitionEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
 
     @Id
+    @Column(name = "version")
     private String version;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "type")
     private String type;
+
+    @Column(name = "source")
     private byte[] source;
 
     @ElementCollection
@@ -67,6 +77,7 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     @Column(name = "addon", nullable = false)
     private Set<String> addons;
 
+    @Column(name = "endpoint")
     private String endpoint;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processDefinition")
@@ -77,7 +88,7 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     @Column(name = "annotation")
     private Set<String> annotations;
     @Convert(converter = JsonBinaryConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "metadata", columnDefinition = "jsonb")
     private JsonNode metadata;
 
     @Override

@@ -48,6 +48,7 @@ public class UserTaskInstanceDeadlineLog extends AbstractUserTaskInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskInstanceDeadlineLogIdSeq")
+    @Column(name = "id")
     private Long id;
 
     @ElementCollection

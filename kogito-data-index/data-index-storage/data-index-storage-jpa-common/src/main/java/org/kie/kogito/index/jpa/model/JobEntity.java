@@ -21,6 +21,7 @@ package org.kie.kogito.index.jpa.model;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -30,26 +31,67 @@ import jakarta.persistence.Table;
 public class JobEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "process_id")
     private String processId;
+
+    @Column(name = "process_version")
     private String processVersion;
+
+    @Column(name = "process_instance_id")
     private String processInstanceId;
+
+    @Column(name = "node_instance_id")
     private String nodeInstanceId;
+
+    @Column(name = "root_process_id")
     private String rootProcessId;
+
+    @Column(name = "root_process_version")
     private String rootProcessVersion;
+
+    @Column(name = "root_process_instance_id")
     private String rootProcessInstanceId;
+
+    @Column(name = "expiration_time")
     private ZonedDateTime expirationTime;
+
+    @Column(name = "priority")
     private Integer priority;
+
+    @Column(name = "callback_endpoint")
     private String callbackEndpoint;
+
+    @Column(name = "repeat_interval")
     private Long repeatInterval;
+
+    @Column(name = "repeat_limit")
     private Integer repeatLimit;
+
+    @Column(name = "scheduled_id")
     private String scheduledId;
+
+    @Column(name = "retries")
     private Integer retries;
+
+    @Column(name = "status")
     private String status;
+
+    @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
+
+    @Column(name = "execution_counter")
     private Integer executionCounter;
+
+    @Column(name = "endpoint")
     private String endpoint;
+
+    @Column(name = "exception_message")
     private String exceptionMessage;
+
+    @Column(name = "exception_details")
     private String exceptionDetails;
 
     @Override

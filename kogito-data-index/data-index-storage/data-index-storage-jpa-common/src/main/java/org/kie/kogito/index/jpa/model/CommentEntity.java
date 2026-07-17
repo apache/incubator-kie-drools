@@ -21,6 +21,7 @@ package org.kie.kogito.index.jpa.model;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
@@ -33,12 +34,19 @@ import jakarta.persistence.Table;
 public class CommentEntity extends AbstractEntity {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "content")
     private String content;
+
+    @Column(name = "updated_by")
     private String updatedBy;
+
+    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "taskId", foreignKey = @ForeignKey(name = "fk_comments_tasks"))
+    @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_comments_tasks"))
     private UserTaskInstanceEntity userTask;
 
     @Override
