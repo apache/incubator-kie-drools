@@ -40,7 +40,7 @@ public class NodeCreator<T extends NodeImpl> {
         try {
             this.constructor = clazz.getConstructor();
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("No public no-arg constructor found on " + clazz.getName(), e);
+            throw new IllegalStateException("No no-arg constructor found for " + clazz.getName(), e);
         }
     }
 

@@ -38,9 +38,8 @@ import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.ruleflow.core.Metadata;
-import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.node.SubProcessFactory;
+import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
@@ -48,6 +47,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.MutableProcessInstances;
+import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.slf4j.Logger;
@@ -84,12 +84,22 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
                     "A SubProcess node only accepts default incoming connections!");
         }
 
-        KogitoProcessContextImpl context = ContextFactory.fromNode(this);
-        SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
-        Object o = subProcessFactory.bind(context);
-        org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
+        String processId = resolveProcessId();
+        ProcessInstance processInstance = (ProcessInstance) getProcessInstance();
+        KogitoProcessRuntime kruntime = (KogitoProcessRuntime) processInstance.getKnowledgeRuntime();
+        Process process = kruntime.getApplication().get(Processes.class).processById(processId);
 
-        ProcessInstanceImpl pi = (ProcessInstanceImpl) ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
+        if (process == null) {
+            throw new IllegalArgumentException("Cannot find process with id " + processId);
+        }
+
+        Map<String, Object> parameters = NodeIoHelper.processInputs(this, key -> getVariable(key));
+
+        Model model = (Model) process.createModel();
+        model.update(parameters);
+        org.kie.kogito.process.ProcessInstance<?> subProcessInstance = process.createInstance(model);
+
+        ProcessInstanceImpl pi = (ProcessInstanceImpl) ((AbstractProcessInstance<?>) subProcessInstance).internalGetProcessInstance();
         pi.setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
         pi.setMetaData("ParentNodeInstanceId", getUniqueId());
         pi.setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
@@ -103,18 +113,22 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
             logger.debug("Parent headers are {}", headers != null ? headers.keySet() : Set.of());
         }
         pi.setHeaders(headers);
-        // headers parameters set to null so start does not override the ones already set
-        processInstance.start(null);
-        this.processInstanceId = processInstance.id();
-        this.asyncWaitingNodeInstance = hasAsyncNodeInstance(pi);
 
-        subProcessFactory.unbind(context, processInstance.variables());
+        subProcessInstance.start();
+
+        this.processInstanceId = subProcessInstance.id();
+        this.asyncWaitingNodeInstance = hasAsyncNodeInstance(pi);
 
         if (!getSubProcessNode().isWaitForCompletion()) {
             triggerCompleted();
-        } else if (processInstance.status() == KogitoProcessInstance.STATE_COMPLETED || processInstance.status() == KogitoProcessInstance.STATE_ABORTED) {
+        } else if (subProcessInstance.status() == KogitoProcessInstance.STATE_COMPLETED || subProcessInstance.status() == KogitoProcessInstance.STATE_ABORTED) {
+            // Subprocess completed synchronously - handle output mappings immediately
+            Map<String, Object> outputSet = new HashMap<>(((Model) subProcessInstance.variables()).toMap());
+            NodeIoHelper.processOutputs(this, varRef -> outputSet.get(varRef), varName -> this.getVariable(varName));
+
             processInstanceCompleted((ProcessInstance) pi);
         } else {
+
             addProcessListener();
         }
     }
@@ -139,8 +153,10 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         }
 
         KogitoProcessRuntime kruntime = (KogitoProcessRuntime) ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+        // Use resolved process ID to handle variable substitution
+        String processId = resolveProcessId();
         Optional<AbstractProcessInstance> pi =
-                ((MutableProcessInstances) kruntime.getApplication().get(Processes.class).processById(this.getSubProcessNode().getProcessId()).instances()).findById(processInstanceId);
+                ((MutableProcessInstances) kruntime.getApplication().get(Processes.class).processById(processId).instances()).findById(processInstanceId);
         pi.ifPresent(e -> e.abort());
     }
 
@@ -222,13 +238,8 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void handleOutMappings(ProcessInstance processInstance) {
 
-        SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
-        org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>) processInstance.unwrap());
-        if (pi != null) {
-            Model model = (Model) pi.process().createModel();
-            model.fromMap(processInstance.getVariables());
-            subProcessFactory.unbind(ContextFactory.fromNode(this), model);
-        }
+        Map<String, Object> outputSet = processInstance.getVariables();
+        NodeIoHelper.processOutputs(this, varRef -> outputSet.get(varRef), varName -> this.getVariable(varName));
     }
 
     @Override
@@ -292,6 +303,37 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     @Override
     public ContextContainer getContextContainer() {
         return getSubProcessNode();
+    }
+
+    /**
+     * Resolves the process ID from the {@code calledElement} attribute.
+     * Supports static IDs and MVEL expressions (e.g. {@code #{subprocessId}}).
+     * Throws {@link IllegalArgumentException} with a descriptive message when
+     * the expression resolves to a blank or unresolved value.
+     */
+    private String resolveProcessId() {
+        String processId = getSubProcessNode().getProcessId();
+
+        if (processId == null) {
+            return null;
+        }
+
+        String resolvedId = resolveExpression(processId);
+
+        if (logger.isDebugEnabled() && !processId.equals(resolvedId)) {
+            logger.debug("Resolved process ID from '{}' to '{}'", processId, resolvedId);
+        }
+
+        if (isExpression(processId)) {
+            if (resolvedId == null || resolvedId.trim().isEmpty() || resolvedId.contains("#{")) {
+                throw new IllegalArgumentException(
+                        "Cannot resolve subprocess ID from expression '" + processId + "': "
+                                + "Variable '" + extractFirstVariableName(processId)
+                                + "' not found in process context or is empty");
+            }
+        }
+
+        return resolvedId;
     }
 
 }

@@ -216,4 +216,61 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
                 .containsEntry("x", "a");
     }
 
+    /**
+     * Verifies that a subprocess whose process id contains hyphens (e.g.
+     * {@code "call-activity-sub-process"}) can be successfully code-generated
+     * and invoked at runtime.
+     *
+     * <p>
+     * <b>What is tested:</b>
+     * Before the fix in {@link org.kie.kogito.codegen.process.ProcessGenerator},
+     * the generated Java field name was built by concatenating {@code "process"}
+     * directly with the raw subprocess id, producing the invalid identifier
+     * {@code processCall-activity-sub-process}. The fix wraps the key with
+     * {@link org.kie.kogito.internal.utils.ConversionUtils#sanitizeClassName}
+     * which replaces every {@code -} (and any other non-{@code isJavaIdentifierPart}
+     * character) with {@code _}, yielding the valid identifier
+     * {@code processCall_activity_sub_process}.
+     *
+     * <p>
+     * <b>Assertions:</b>
+     * <ol>
+     * <li>Code generation succeeds (no compilation failure due to invalid field name).</li>
+     * <li>The generated application can look up the hyphenated subprocess by its
+     * original id ({@code "call-activity-sub-process"}).</li>
+     * <li>The parent process completes successfully after invoking the child.</li>
+     * <li>The output variable ({@code y}) is mapped back from the child to the parent.</li>
+     * </ol>
+     */
+    @Test
+    public void testCallActivityWithHyphenatedSubProcessId() throws Exception {
+
+        Application app = generateCodeProcessesOnly(
+                "subprocess/CallActivityHyphenated.bpmn2",
+                "subprocess/CallActivityHyphenatedSubProcess.bpmn2");
+        assertThat(app).isNotNull();
+
+        // The hyphenated subprocess must be reachable by its original id
+        assertThat(app.get(Processes.class).processById("call-activity-sub-process")).isNotNull();
+
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcessHyphenated");
+        assertThat(p).isNotNull();
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("x", "inputValue");
+        parameters.put("y", "");
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model) processInstance.variables();
+        // The child sets subY = "hyphenated result"; it is mapped back into parent's y
+        assertThat(result.toMap())
+                .containsEntry("y", "hyphenated result")
+                .containsEntry("x", "inputValue");
+    }
+
 }

@@ -46,7 +46,6 @@ public class SubProcessNode extends StateBasedNode implements ContextContainer {
     private boolean waitForCompletion = true;
 
     private boolean independent = true;
-    private SubProcessFactory<?> subProcessFactory;
 
     public SubProcessNode() {
         super(NodeType.SUBPROCESS);
@@ -152,14 +151,5 @@ public class SubProcessNode extends StateBasedNode implements ContextContainer {
             return true;
         }
         return Boolean.parseBoolean(abortParent);
-    }
-
-    public <T> void setSubProcessFactory(
-            SubProcessFactory<T> subProcessFactory) {
-        this.subProcessFactory = subProcessFactory;
-    }
-
-    public SubProcessFactory<?> getSubProcessFactory() {
-        return subProcessFactory;
     }
 }

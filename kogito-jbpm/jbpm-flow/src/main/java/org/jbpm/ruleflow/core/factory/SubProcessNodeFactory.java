@@ -22,10 +22,8 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
-import org.kie.kogito.Model;
 
 public class SubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends StateBasedNodeFactory<SubProcessNodeFactory<T>, T>
         implements MappableNodeFactory<SubProcessNodeFactory<T>>, ContextContainerFactory<SubProcessNodeFactory<T>> {
@@ -65,11 +63,6 @@ public class SubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>>
 
     public SubProcessNodeFactory<T> independent(boolean independent) {
         getSubProcessNode().setIndependent(independent);
-        return this;
-    }
-
-    public SubProcessNodeFactory<T> subProcessNode(SubProcessFactory<? extends Model> factory) {
-        getSubProcessNode().setSubProcessFactory(factory);
         return this;
     }
 

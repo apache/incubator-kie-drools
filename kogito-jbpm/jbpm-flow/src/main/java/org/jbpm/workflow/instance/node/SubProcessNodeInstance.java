@@ -95,6 +95,15 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         }
         String processId = resolveExpression(processIdExpression);
 
+        if (isExpression(processIdExpression)) {
+            if (processId == null || processId.trim().isEmpty() || processId.contains("#{")) {
+                throw new IllegalArgumentException(
+                        "Cannot resolve subprocess ID from expression '" + processIdExpression + "': "
+                                + "Variable '" + extractFirstVariableName(processIdExpression)
+                                + "' not found in process context or is empty");
+            }
+        }
+
         KieBase kbase = getProcessInstance().getKnowledgeRuntime().getKieBase();
         // start process instance
         Process process = kbase.getProcess(processId);
