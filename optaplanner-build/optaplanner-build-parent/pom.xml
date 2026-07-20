@@ -61,6 +61,8 @@
     <version.org.springframework>7.0.8</version.org.springframework>
     <version.org.springframework.boot>4.0.7</version.org.springframework.boot>
     <version.com.fasterxml.jackson.databind>2.22.1</version.com.fasterxml.jackson.databind>
+    <!-- CVE fix: override parsson version to 1.1.8 -->
+    <version.org.eclipse.parsson>1.1.8</version.org.eclipse.parsson>
     <!-- ************************************************************************ -->
     <!-- Plugins -->
     <!-- ************************************************************************ -->
@@ -198,7 +200,13 @@
         <artifactId>openjpa</artifactId>
         <version>${version.org.apache.openjpa}</version>
       </dependency>
-        
+      <!-- CVE fix: override parsson version brought in transitively to 1.1.8 -->
+      <dependency>
+        <groupId>org.eclipse.parsson</groupId>
+        <artifactId>parsson</artifactId>
+        <version>${version.org.eclipse.parsson}</version>
+      </dependency>
+
       <!-- OpenRewrite -->
       <dependency>
         <groupId>org.openrewrite.recipe</groupId>
