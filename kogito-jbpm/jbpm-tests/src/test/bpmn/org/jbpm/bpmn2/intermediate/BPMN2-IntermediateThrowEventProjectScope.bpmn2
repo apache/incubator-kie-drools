@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns:xsi="xsi" id="_3dQLgBaZED-2qrq4Yj5t1Q" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_outputItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__SignalEvent_dataInputXItem" structureRef="String"/>
+  <bpmn2:signal id="_99060564" name="mysignal"/>
+  <bpmn2:collaboration id="_BCACD943-50B0-46EB-BDA5-1315502B2B27" name="Default Collaboration">
+    <bpmn2:participant id="_6E436A3E-F028-4ABF-A42F-A5333F53C6B5" name="Pool Participant" processRef="IntermediateThrowEventProjectScope"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="IntermediateThrowEventProjectScope" drools:packageName="org.jbpm.bpmn2.intermediate" drools:version="1.0" drools:adHoc="false" name="intermediate-throw-event-project-scope" isExecutable="true" processType="Public">
+    <bpmn2:property id="output" itemSubjectRef="_outputItem" name="output"/>
+    <bpmn2:sequenceFlow id="_start_to_task" sourceRef="_startEvent" targetRef="_SignalEvent"/>
+    <bpmn2:sequenceFlow id="_signal_to_end" sourceRef="_SignalEvent" targetRef="_endEvent"/>
+    <bpmn2:startEvent id="_startEvent">
+      <bpmn2:outgoing>_start_to_task</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:intermediateThrowEvent id="_SignalEvent">
+      <bpmn2:extensionElements>
+        <drools:metaData name="customScope">
+          <drools:metaValue><![CDATA[project]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_start_to_task</bpmn2:incoming>
+      <bpmn2:outgoing>_signal_to_end</bpmn2:outgoing>
+      <bpmn2:dataInput id="_SignalEvent_dataInputX" drools:dtype="String" itemSubjectRef="__SignalEvent_dataInputXItem" name="data"/>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:sourceRef>output</bpmn2:sourceRef>
+        <bpmn2:targetRef>_SignalEvent_dataInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:inputSet>
+        <bpmn2:dataInputRefs>_SignalEvent_dataInputX</bpmn2:dataInputRefs>
+      </bpmn2:inputSet>
+      <bpmn2:signalEventDefinition signalRef="_99060564"/>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:endEvent id="_endEvent">
+      <bpmn2:incoming>_signal_to_end</bpmn2:incoming>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="IntermediateThrowEventProjectScope">
+      <bpmndi:BPMNShape id="shape__endEvent" bpmnElement="_endEvent">
+        <dc:Bounds height="56" width="56" x="425" y="166"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__SignalEvent" bpmnElement="_SignalEvent">
+        <dc:Bounds height="56" width="56" x="282" y="166"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__startEvent" bpmnElement="_startEvent">
+        <dc:Bounds height="56" width="56" x="120" y="165"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__SignalEvent_to_shape__endEvent" bpmnElement="_signal_to_end">
+        <di:waypoint x="297" y="181"/>
+        <di:waypoint x="439" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__startEvent_to_shape__SignalEvent" bpmnElement="_start_to_task">
+        <di:waypoint x="135" y="180"/>
+        <di:waypoint x="297" y="181"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+          <bpsim:ElementParameters elementRef="_startEvent">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_3dQLgBaZED-2qrq4Yj5t1Q</bpmn2:source>
+    <bpmn2:target>_3dQLgBaZED-2qrq4Yj5t1Q</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

@@ -180,9 +180,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                                     ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                             ]
                     ], [
-                            id: 'kogito-runtimes',
-                            repository: 'incubator-kie-kogito-runtimes'
-                    ], [
                             id: 'kogito-apps',
                             repository: 'incubator-kie-kogito-apps',
                     ], [

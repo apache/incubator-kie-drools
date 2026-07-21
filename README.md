@@ -56,7 +56,3 @@ Plugins exists to use it in different IDE:
 * [IDEA](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
 * [Eclipse](https://marketplace.eclipse.org/content/plantuml-plugin)
 * [VisualStudio](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml)
-
-
-
-

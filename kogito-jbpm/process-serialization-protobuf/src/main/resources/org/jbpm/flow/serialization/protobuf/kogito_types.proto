@@ -1,0 +1,80 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+syntax = "proto3";
+
+package org.jbpm.flow.serialization.protobuf;
+
+option java_outer_classname = "KogitoTypesProtobuf";
+
+import "google/protobuf/any.proto";
+
+message JsonNode {
+    string content = 1;
+}
+
+message Document {
+    string content = 1;
+}
+
+message Variable {
+    string name = 1;
+    string data_type = 2;
+    optional google.protobuf.Any value = 3;
+}
+
+message NodeInstance {
+    string id = 1;
+    string node_id = 2;
+    google.protobuf.Any content = 3;
+
+    optional int32 level = 4;
+    optional int64 trigger_date = 5;
+
+    optional SLAContext sla = 6;
+    optional bool retrigger= 7;
+}
+
+message WorkflowContext {
+    repeated Variable variable = 1;
+    repeated NodeInstance node_instance = 2;
+    repeated NodeInstanceGroup exclusive_group = 3;
+    repeated IterationLevel iterationLevels = 4;
+}
+
+message SwimlaneContext {
+    optional string swimlane = 1;
+    optional string actor_id = 2;
+}
+
+message SLAContext {
+    optional string sla_timer_id = 1;
+    optional int64 sla_due_date = 2;
+    optional int32 sla_compliance = 3;
+}
+
+message IterationLevel {
+    optional string id = 1;
+    optional int32 level = 2;
+}
+
+message NodeInstanceGroup {
+    repeated string group_node_instance_id = 1;
+}
+

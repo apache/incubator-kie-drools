@@ -40,7 +40,7 @@ build-quickly:
 .PHONY: build-upstream
 ## (build-chain) Build upstream projects from the same branch. If needed, you can modify the `build_chain_file`, `build_chain_group` and `build_chain_branch`. See `build_chain_file` for setting correct environment variables
 build-upstream: build-chain
-	build-chain build cross_pr -f ${build_chain_file} -o /tmp/bc -p ${build_chain_project} -b ${build_chain_branch} -g ${build_chain_group} --skipParallelCheckout --skipProjectExecution kiegroup/kogito-runtimes --skipProjectCheckout kiegroup/kogito-runtimes
+	build-chain build cross_pr -f ${build_chain_file} -o /tmp/bc -p ${build_chain_project} -b ${build_chain_branch} -g ${build_chain_group} --skipParallelCheckout
 
 .PHONY: build-pr
 pr_link=

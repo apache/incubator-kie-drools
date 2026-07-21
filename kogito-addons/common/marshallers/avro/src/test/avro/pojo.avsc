@@ -1,0 +1,18 @@
+{
+  "namespace": "org.kie.kogito.event.avro",
+  "type": "record",
+  "name": "Person",
+  "fields": [
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "age",
+      "type": "int"
+    }
+  ]
+}

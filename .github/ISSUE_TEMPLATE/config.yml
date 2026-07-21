@@ -1,0 +1,33 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+blank_issues_enabled: true
+contact_links:
+  - name: Jira 
+    url: https://issues.redhat.com/projects/KOGITO
+    about: Kogito Jira Board
+  - name: Question
+    url: https://stackoverflow.com/questions/ask?tags=kogito
+    about: I have a question about how to use Kogito.
+  - name: Kogito Zulip chat
+    url: https://kie.zulipchat.com/
+    about: If you prefer live chat with the developers, we have a Zulip chat where we all hang out.
+  - name: Kogito Development mailing list 
+    url: https://groups.google.com/g/kogito-development
+    about: You can also ask questions on our mailing list.

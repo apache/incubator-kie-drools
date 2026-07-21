@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<definitions id="Definition"
+             targetNamespace=""
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_instanceMetadataItem" structureRef="org.w3c.dom.Node" />
+
+  <process processType="Private" isExecutable="true" id="DataOutputAssociationsXmlNode" name="process" tns:packageName="org.jbpm.bpmn2.data">
+  
+<!-- process variables -->
+    <property id="instanceMetadata" itemSubjectRef="_instanceMetadataItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="" />
+    <userTask id="_2" name="Task">
+      <ioSpecification>
+        <dataOutput id='output' name='output'/>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>output</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataOutputAssociation>
+        <sourceRef>output</sourceRef>
+        <targetRef>instanceMetadata</targetRef>
+        <assignment language="XPath">
+          <from>.</from>
+          <to>.</to>
+        </assignment>
+      </dataOutputAssociation>
+    </userTask>
+    <userTask id="_3" name="Task">
+      <ioSpecification>
+        <dataInput id='coId' name='coId'/>
+        <dataOutput id='output2' name='output'/>
+        <inputSet>
+          <dataInputRefs>coId</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>output2</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>instanceMetadata</sourceRef>
+        <targetRef>coId</targetRef>
+        <assignment language="XPath">
+          <from>@hello</from>
+          <to>.</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>output2</sourceRef>
+        <targetRef>instanceMetadata</targetRef>
+      </dataOutputAssociation>
+    </userTask>
+    <endEvent id="_4" name="" />
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+
+  </process>
+
+</definitions>

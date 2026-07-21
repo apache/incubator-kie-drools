@@ -1,0 +1,13 @@
+{
+  "id": "JOB_ID",
+  "expirationTime": "2021-11-30T22:01:15.001+01:00",
+  "priority": 5,
+  "callbackEndpoint": "http://localhost:8080/management/jobs/PROCESS_ID/instances/PROCESS_INSTANCE_ID/timers/NODE_INSTANCE_ID",
+  "processInstanceId": "PROCESS_INSTANCE_ID",
+  "rootProcessInstanceId": "ROOT_PROCESS_INSTANCE_ID",
+  "processId": "PROCESS_ID",
+  "rootProcessId": "ROOT_PROCESS_ID",
+  "nodeInstanceId": "NODE_INSTANCE_ID",
+  "repeatInterval": 6000,
+  "repeatLimit": 3
+}

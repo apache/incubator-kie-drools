@@ -1,0 +1,16 @@
+{
+  "id": "ID",
+  "source": "http://localhost:8080/kogito-process",
+  "type": "CancelJobRequest",
+  "time": "2021-11-24T18:01:15.001+01:00",
+  "subject": "SUBJECT",
+  "data": {
+    "id": "JOB_ID"
+  },
+  "specversion": "1.0",
+  "kogitoprocinstanceid": "PROCESS_INSTANCE_ID",
+  "kogitoprocid": "PROCESS_ID",
+  "kogitorootprociid": "ROOT_PROCESS_INSTANCE_ID",
+  "kogitorootprocid": "ROOT_PROCESS_ID",
+  "kogitoaddons": "KOGITO_ADDONS"
+}

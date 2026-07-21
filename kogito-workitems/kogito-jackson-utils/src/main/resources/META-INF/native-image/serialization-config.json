@@ -1,0 +1,16 @@
+[
+  { "name": "org.kie.kogito.jackson.utils.ObjectNodeListenerAware" },
+  { "name": "org.kie.kogito.jackson.utils.JsonNodeFactoryListener" },
+  { "name": "com.fasterxml.jackson.databind.node.BaseJsonNode" },
+  { "name": "com.fasterxml.jackson.databind.node.ObjectNode" },
+  { "name": "com.fasterxml.jackson.databind.node.JsonNodeFactory" },
+  { "name": "com.fasterxml.jackson.databind.node.ContainerNode" },
+  { "name": "com.fasterxml.jackson.databind.node.ValueNode" },
+  { "name": "com.fasterxml.jackson.databind.JsonNode" },
+  { "name": "com.fasterxml.jackson.databind.node.TextNode" },
+  { "name": "com.fasterxml.jackson.databind.node.NodeSerialization" },
+  { "name": "java.util.Map" },
+  { "name": "java.util.LinkedHashMap" },
+  { "name": "java.util.HashMap" },
+  { "name": "java.lang.String" }
+]

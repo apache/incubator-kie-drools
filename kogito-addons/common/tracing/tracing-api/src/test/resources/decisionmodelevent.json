@@ -1,0 +1,15 @@
+{
+  "gav": {
+    "groupId": "groupId",
+    "artifactId": "artifactId",
+    "version": "version"
+  },
+  "name": "name-2",
+  "modelMetadata": {
+    "@type": "DECISION",
+    "specVersion": "specVersion-2"
+  },
+  "@type": "DECISION",
+  "namespace": "namespace-2",
+  "definition": "definition-2"
+}

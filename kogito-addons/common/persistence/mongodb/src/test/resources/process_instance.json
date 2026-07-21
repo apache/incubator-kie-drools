@@ -1,0 +1,12 @@
+{
+      "processType":"RuleFlow",
+      "id":"1edfa86a-ad23-4837-bb96-3c478dc40b2a",
+      "processId":"dealreviews",
+      "state":1,
+      "description":"Deal Review",
+      "signalCompletion":true,
+      "slaCompliance":0,
+      "rootProcessInstanceId":"216a840f-60aa-461d-a7c1-fc39ab212870",
+      "startDate":"1597104562088",
+      "rootProcessId":"deals"
+}

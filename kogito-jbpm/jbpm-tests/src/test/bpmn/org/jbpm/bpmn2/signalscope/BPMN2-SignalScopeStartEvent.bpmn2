@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_jRg54CB8ED-xvNS-GomY0Q" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_UserTask_1_SkippableInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_PriorityInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_CommentInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_DescriptionInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_CreatedByInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_TaskNameInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_GroupIdInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_ContentInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_NotStartedReassignInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_NotCompletedReassignInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_NotStartedNotifyInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_1_NotCompletedNotifyInputXItem" structureRef="Object"/>
+  <bpmn2:signal id="_1717266906" name="testSignal"/>
+  <bpmn2:collaboration id="_BBB5B85B-8B80-45C5-BF02-5E34C8AC008E" name="Default Collaboration">
+    <bpmn2:participant id="_9A62B08A-4566-4C40-B4CF-545C225E60BC" name="Pool Participant" processRef="SignalScopeStartEvent"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="SignalScopeStartEvent" drools:packageName="org.jbpm.bpmn2.signalscope" drools:version="1.0" drools:adHoc="false" name="Signal Scope Start Event" isExecutable="true" processType="Private">
+    <bpmn2:sequenceFlow id="_34F18AC9-3037-4F6C-A05E-57AE30EC0975" sourceRef="_C4B696BB-BE7E-4104-A0B5-699710A112A2" targetRef="_6F3CF17A-2B5D-4B62-BC5D-6E29667DD7D0"/>
+    <bpmn2:sequenceFlow id="_A31297C0-8A9B-411A-A505-D89EC3D51999" sourceRef="UserTask_1" targetRef="_69D0452E-FB44-4AAA-A2E3-4F08992BED06"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="_1" targetRef="UserTask_1"/>
+    <bpmn2:endEvent id="_6F3CF17A-2B5D-4B62-BC5D-6E29667DD7D0">
+      <bpmn2:incoming>_34F18AC9-3037-4F6C-A05E-57AE30EC0975</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="_69D0452E-FB44-4AAA-A2E3-4F08992BED06">
+      <bpmn2:incoming>_A31297C0-8A9B-411A-A505-D89EC3D51999</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[StartProcess]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition signalRef="_1717266906"/>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="UserTask_1" name="Wait">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Wait]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>_A31297C0-8A9B-411A-A505-D89EC3D51999</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="UserTask_1_TaskNameInputX" drools:dtype="Object" itemSubjectRef="_UserTask_1_TaskNameInputXItem" name="TaskName"/>
+        <bpmn2:dataInput id="UserTask_1_SkippableInputX" drools:dtype="Object" itemSubjectRef="_UserTask_1_SkippableInputXItem" name="Skippable"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>UserTask_1_TaskNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>UserTask_1_SkippableInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>UserTask_1_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[Task]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[UserTask_1_TaskNameInputX]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>UserTask_1_SkippableInputX</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[false]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[UserTask_1_SkippableInputX]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:boundaryEvent id="_C4B696BB-BE7E-4104-A0B5-699710A112A2" drools:dockerinfo="37.526315789473685^22|" drools:boundaryca="true" name="Boundar Timer" attachedToRef="UserTask_1">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Boundar Timer]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_34F18AC9-3037-4F6C-A05E-57AE30EC0975</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT0M20S</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:boundaryEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="SignalScopeStartEvent">
+      <bpmndi:BPMNShape id="shape_UserTask_1" bpmnElement="UserTask_1">
+        <dc:Bounds height="50" width="110" x="205" y="45"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__1" bpmnElement="_1">
+        <dc:Bounds height="56" width="56" x="80" y="42"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__69D0452E-FB44-4AAA-A2E3-4F08992BED06" bpmnElement="_69D0452E-FB44-4AAA-A2E3-4F08992BED06">
+        <dc:Bounds height="56" width="56" x="410" y="39"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__C4B696BB-BE7E-4104-A0B5-699710A112A2" bpmnElement="_C4B696BB-BE7E-4104-A0B5-699710A112A2">
+        <dc:Bounds height="56" width="56" x="242.5263157894737" y="67"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__6F3CF17A-2B5D-4B62-BC5D-6E29667DD7D0" bpmnElement="_6F3CF17A-2B5D-4B62-BC5D-6E29667DD7D0">
+        <dc:Bounds height="56" width="56" x="390" y="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__1_to_shape_UserTask_1" bpmnElement="SequenceFlow_1">
+        <di:waypoint x="128" y="66"/>
+        <di:waypoint x="205" y="70"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape_UserTask_1_to_shape__69D0452E-FB44-4AAA-A2E3-4F08992BED06" bpmnElement="_A31297C0-8A9B-411A-A505-D89EC3D51999">
+        <di:waypoint x="260" y="70"/>
+        <di:waypoint x="438" y="67"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__C4B696BB-BE7E-4104-A0B5-699710A112A2_to_shape__6F3CF17A-2B5D-4B62-BC5D-6E29667DD7D0" bpmnElement="_34F18AC9-3037-4F6C-A05E-57AE30EC0975">
+        <di:waypoint x="270.5263157894737" y="95"/>
+        <di:waypoint x="268" y="173"/>
+        <di:waypoint x="418" y="164"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+          <bpsim:ElementParameters elementRef="UserTask_1">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_jRg54CB8ED-xvNS-GomY0Q</bpmn2:source>
+    <bpmn2:target>_jRg54CB8ED-xvNS-GomY0Q</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

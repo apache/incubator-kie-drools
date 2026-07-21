@@ -1,1 +1,2 @@
 org.drools:drools-verifier-test-jar
+org.kie.kogito:kogito-ide-config

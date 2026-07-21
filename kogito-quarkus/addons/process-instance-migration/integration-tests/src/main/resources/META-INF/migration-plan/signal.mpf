@@ -1,0 +1,16 @@
+{
+    "name" : "test migration plan",
+    "processMigrationPlan" : {
+        "sourceProcessDefinition" : {
+            "processId" : "signal",
+            "processVersion" : "1.0"
+        },
+        "targetProcessDefinition" : {
+            "processId" : "signal2",
+            "processVersion" : "1.0"
+        },
+        "nodeInstanceMigrationPlan" : [
+
+        ]
+    }
+}

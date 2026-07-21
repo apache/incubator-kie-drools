@@ -1,0 +1,11 @@
+[
+  {
+    "name": "org.acme.travels.ScriptsModel",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  }
+]

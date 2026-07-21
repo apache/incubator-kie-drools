@@ -1,0 +1,96 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Known intentional split packages for incubator-kie-drools.
+# Each non-blank, non-comment line is a Java package name that is allowed to
+# appear in more than one JAR.  Add an entry here (with a comment explaining
+# why) whenever the split is confirmed to be by design rather than accidental.
+#
+# Format: one fully-qualified package name per line; # begins a comment.
+
+# ── Events API / Core ────────────────────────────────────────────────────────
+# kogito-events-api (interfaces) and kogito-events-core (implementations)
+# deliberately share the same top-level and sub-packages.
+org.kie.kogito.event
+org.kie.kogito.event.process
+org.kie.kogito.event.cloudevents
+org.kie.kogito.event.usertask
+
+# ── kogito-api / sibling modules ─────────────────────────────────────────────
+# kogito-api ships the interface; the paired module ships the implementation.
+# kogito-api + kogito-services
+org.kie.kogito.source.files
+# kogito-api + kogito-dmn
+org.kie.kogito.decision
+# kogito-api + jbpm-spring-boot-starter
+org.kie.kogito.process
+
+# ── REST / workitem ──────────────────────────────────────────────────────────
+# Shared auth helpers split across kogito-rest-utils and kogito-rest-workitem.
+org.kogito.workitem.rest.auth
+
+# ── Codegen ──────────────────────────────────────────────────────────────────
+# kogito-codegen-processes and kogito-codegen-events both contribute classes
+# to the process-events codegen package.
+org.kie.kogito.codegen.process.events
+
+# ── Spring Boot persistence backends ─────────────────────────────────────────
+# Each Spring Boot persistence addon (mongodb, postgresql, jdbc, filesystem,
+# infinispan) ships its own implementation classes in the same package.
+# Only one backend is on the classpath at runtime, so this is intentional.
+org.kie.kogito.persistence.springboot
+
+# ── Process management ───────────────────────────────────────────────────────
+# The process-management package is shared across the common addon and its
+# Quarkus / Spring Boot variants.
+org.kie.kogito.process.management
+
+# ── Mail addon ───────────────────────────────────────────────────────────────
+org.kie.kogito.mail
+
+# ── SVG addon ────────────────────────────────────────────────────────────────
+# Common, Quarkus, and Spring Boot SVG addon modules all contribute to these
+# packages.
+org.kie.kogito.svg.dataindex
+org.kie.kogito.svg.service
+org.kie.kogito.svg.rest
+
+# ── Explainability / tracing / event-driven addons ───────────────────────────
+# Common + Spring Boot variants of each addon share the same package.
+org.kie.kogito.explainability
+org.kie.kogito.tracing.decision
+org.kie.kogito.eventdriven.decision
+org.kie.kogito.events.mongodb
+org.kie.kogito.eventdriven.rules
+org.kie.kogito.eventdriven.predictions
+org.kie.kogito.addon.source.files
+
+# ── Task / process management addons ─────────────────────────────────────────
+org.kie.kogito.task.management
+org.kie.kogito.process.migration
+org.kie.kogito.resource.exceptions
+
+# ── Quarkus persistence backends ─────────────────────────────────────────────
+# Each Quarkus persistence addon implements the same package; only one is on
+# the classpath at runtime.
+org.kie.kogito.persistence.quarkus
+org.kie.kogito.persistence.quarkus.rocksdb
+
+# ── Jobs messaging (Quarkus) ─────────────────────────────────────────────────
+# kogito-addons-quarkus-jobs-common-messaging and the sibling addon modules
+# all contribute classes to this package.
+org.kie.kogito.jobs.messaging.quarkus

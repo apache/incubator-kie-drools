@@ -41,9 +41,18 @@ jobs:
       matrix:
         os:   [ubuntu-latest, macos-latest, windows-latest]
         java: [17, 21]
+        # macos and windows temporarily excluded
+        # due to Docker-dependent tests introduced by the kogito-runtimes merge
+        # failing on non-Linux runners. Re-enable once resolved.
         exclude:
           - os: windows-latest
             java: 17
+          - os: windows-latest
+            java: 21
+          - os: macos-latest
+            java: 17
+          - os: macos-latest
+            java: 21
 
     steps:
       - name: 'SETUP :: Set paths for temporary files'

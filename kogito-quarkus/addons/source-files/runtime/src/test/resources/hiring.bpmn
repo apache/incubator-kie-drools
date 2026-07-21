@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" namespace="https://kie.org/bpmn/_9F98E5A3-B97A-4D1D-A166-F387591E8562" id="_BE1C7137-E2ED-4F37-A91A-5C46B0BF0B78" name="BPMN_2F5CEF63-5ED6-4EA2-8F74-E52D041238B0" targetNamespace="https://kie.apache.org/bpmn//_AE7837B8-CEA6-49D4-8AE2-35B16057712C" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <process id="hiring" />
+  <bpmndi:BPMNDiagram id="_5A4C9C53-4CB0-43AF-B4AD-B546F8DC80B2">
+    <bpmndi:BPMNPlane id="_E8E8209A-499C-44EB-846F-79B14CFBC006">
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

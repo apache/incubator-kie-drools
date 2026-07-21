@@ -1,0 +1,80 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+@declare{"actionInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.Action, org.drools.base.rule.accessor.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public void execute(org.kie.kogito.internal.process.runtime.KogitoProcessContext context) throws Exception {
+
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) context.getKieRuntime().getGlobal( "@{identifier}" );
+        @end{}
+
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
+        @end{}
+
+        @{processClassName}.@{methodName} (
+	        context@if{globals != empty},@end{}
+	        @foreach{identifier : globals} @{identifier}
+	        @end{","}@if{variables != empty},@end{}
+	        @foreach{identifier : variables} @{identifier}
+	        @end{","} );
+    }
+    
+    public String getMethodBytecode() {
+        return null;
+    }    
+}
+@end{}
+
+@declare{"returnValueEvaluatorInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.ReturnValueEvaluator, org.drools.base.rule.accessor.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public Object evaluate(org.kie.kogito.internal.process.runtime.KogitoProcessContext processContext) {
+        try {
+
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKieRuntime().getGlobal( "@{identifier}" );
+        @end{}
+
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );
+        @end{}
+
+        return @{processClassName}.@{methodName} (
+	        processContext@if{globals != empty},@end{}
+	        @foreach{identifier : globals} @{identifier}
+	        @end{","}@if{variables != empty},@end{}
+	        @foreach{identifier : variables} @{identifier}
+	        @end{","} );
+	    } catch(Exception e) {
+	       return new RuntimeException(e);
+	    }
+    }
+
+    public String getMethodBytecode() {
+        return null;
+    }
+}
+@end{}

@@ -1,0 +1,31 @@
+package io.quarkus.it.kogito.drools;
+unit AdultUnit;
+
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
+
+declare Person
+   name:  String
+   age: int
+   adult: boolean
+end
+
+declare AdultUnit extends RuleUnitData
+   persons: DataStore<Person>
+end
+
+rule CheckAdult when
+    $p: /persons[ age >= 18 ]
+then
+    modify($p) { setAdult(true) };
+end
+
+rule CheckNotAdult when
+    $p: /persons[ age < 18 ]
+then
+    modify($p) { setAdult(false) };
+end
+
+query FindAdultNames
+    /persons[ adult, $name : name ]
+end
