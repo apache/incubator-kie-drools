@@ -33,6 +33,13 @@ import org.drools.wiring.api.util.ClassUtils;
 
 public class DynamicProjectClassLoader extends ProjectClassLoader {
 
+    static {
+        // Parallel capability is per-class, not inherited: without this registration the JVM
+        // ignores the base class' one and getClassLoadingLock falls back to locking `this`,
+        // serializing all class loading through this loader (issue #6758).
+        registerAsParallelCapable();
+    }
+
     private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
 
     protected DynamicProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
@@ -50,6 +57,10 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
     }
 
     public static class IBMDynamicClassLoader extends DynamicProjectClassLoader {
+
+        static {
+            registerAsParallelCapable();
+        }
 
         private final boolean parentImplementsFindResources;
 
