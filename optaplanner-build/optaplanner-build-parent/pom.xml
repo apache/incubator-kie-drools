@@ -58,6 +58,7 @@
     <version.io.micrometer>1.16.6</version.io.micrometer>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
+    <version.org.eclipse.parsson>1.1.8</version.org.eclipse.parsson>
     <version.org.springframework>7.0.8</version.org.springframework>
     <version.org.springframework.boot>4.0.7</version.org.springframework.boot>
     <version.com.fasterxml.jackson.databind>2.22.1</version.com.fasterxml.jackson.databind>
@@ -198,7 +199,12 @@
         <artifactId>openjpa</artifactId>
         <version>${version.org.apache.openjpa}</version>
       </dependency>
-        
+      <!-- CVE fix: override Parsson version brought in transitively by Yasson to 1.1.8 -->
+      <dependency>
+        <groupId>org.eclipse.parsson</groupId>
+        <artifactId>parsson</artifactId>
+        <version>${version.org.eclipse.parsson}</version>
+      </dependency>
       <!-- OpenRewrite -->
       <dependency>
         <groupId>org.openrewrite.recipe</groupId>
