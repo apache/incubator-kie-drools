@@ -122,6 +122,27 @@
     </testResources>
 
     <plugins>
+      <!-- The tests load test-kjar at runtime from the local Maven repo via kie-ci.
+           Always ensure it is installed before tests run. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-test-kjar</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+            <configuration>
+              <pom>${basedir}/../test-kjar/pom.xml</pom>
+              <goals>
+                <goal>install</goal>
+              </goals>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
