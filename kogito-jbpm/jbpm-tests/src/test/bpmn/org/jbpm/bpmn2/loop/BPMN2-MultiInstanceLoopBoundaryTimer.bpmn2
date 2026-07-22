@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<definitions id="Definition"
+             targetNamespace="http://www.omg.org/bpmn20"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_actorNameListItem" structureRef="java.util.List" />
+
+  <itemDefinition id="_sub_multiInstanceItemType" />
+
+  <process processType="Private" isExecutable="true" id="MultiInstanceLoopBoundaryTimer" 
+    name="BoundaryTimerMultipleInstances" tns:packageName="org.jbpm.bpmn2.loop" tns:version="1.0" >
+
+    <!-- process variables -->
+    <property id="actorNameList" itemSubjectRef="_actorNameListItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_start" name=""  isInterrupting="true"/>
+    <scriptTask id="_script" name="Prepare" scriptFormat="http://www.java.com/java" >
+      <script>java.util.ArrayList list = new java.util.ArrayList();
+list.add("john");
+list.add("mary");
+list.add("krisv");
+kcontext.setVariable("actorNameList", list);</script>
+    </scriptTask>
+    <subProcess id="_sub" name=""  >
+      <ioSpecification>
+        <dataInput id="_sub_input" name="MultiInstanceInput" />
+        <inputSet/>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>actorNameList</sourceRef>
+        <targetRef>_sub_input</targetRef>
+      </dataInputAssociation>
+      <multiInstanceLoopCharacteristics>
+        <loopDataInputRef>_sub_input</loopDataInputRef>
+        <inputDataItem id="actorName" itemSubjectRef="_sub_multiInstanceItemType"/>
+      </multiInstanceLoopCharacteristics>
+    <!-- nodes -->
+    <startEvent id="_sub.start" name=""  isInterrupting="true"/>
+    <userTask id="_sub.task" name="Task1" >
+      <ioSpecification>
+        <dataInput id="_sub.task_TaskNameInput" name="TaskName" />
+        <dataInput id="_sub.task_NodeNameInput" name="NodeName" />
+        <inputSet>
+          <dataInputRefs>_sub.task_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_sub.task_NodeNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_sub.task_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task1</from>
+          <to xsi:type="tFormalExpression">_sub.task_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_sub.task_NodeNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task1</from>
+          <to xsi:type="tFormalExpression">_sub.task_NodeNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>#{actorName}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_sub.end" name="" />
+    <boundaryEvent id="_sub.timer" name="timer" attachedToRef="_sub.task" cancelActivity="false" >
+      <timerEventDefinition>
+        <timeDuration xsi:type="tFormalExpression">500ms</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <scriptTask id="_sub.script" name="Email Notification" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("[" + (new java.util.Date()) + "] [" + java.lang.Thread.currentThread().getName() +"] Sending an email to " + kcontext.getVariable("actorName"));</script>
+    </scriptTask>
+    <endEvent id="_sub.end2" name="" />
+
+    <!-- connections -->
+    <sequenceFlow id="_sub.start-_sub.task" sourceRef="_sub.start" targetRef="_sub.task" />
+    <sequenceFlow id="_sub.task-_sub.end" sourceRef="_sub.task" targetRef="_sub.end" />
+    <sequenceFlow id="_sub.timer-_sub.script" sourceRef="_sub.timer" targetRef="_sub.script" />
+    <sequenceFlow id="_sub.script-_sub.end2" sourceRef="_sub.script" targetRef="_sub.end2" />
+    </subProcess>
+    <endEvent id="_end" name="" />
+
+    <!-- connections -->
+    <sequenceFlow id="_start-_script" sourceRef="_start" targetRef="_script" />
+    <sequenceFlow id="_script-_sub" sourceRef="_script" targetRef="_sub" />
+    <sequenceFlow id="_sub-_end" sourceRef="_sub" targetRef="_end" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="boundaryTimerMultipleInstances" >
+      <bpmndi:BPMNShape bpmnElement="_start" >
+        <dc:Bounds x="16" y="67" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_script" >
+        <dc:Bounds x="96" y="67" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub" >
+        <dc:Bounds x="208" y="16" width="200" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.start" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.task" >
+        <dc:Bounds x="208" y="16" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.end" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.timer" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.script" >
+        <dc:Bounds x="208" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.end2" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_end" >
+        <dc:Bounds x="440" y="67" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_sub.start-_sub.task" >
+        <di:waypoint x="24" y="24" />
+        <di:waypoint x="50" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub.task-_sub.end" >
+        <di:waypoint x="50" y="24" />
+        <di:waypoint x="24" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub.timer-_sub.script" >
+        <di:waypoint x="24" y="24" />
+        <di:waypoint x="40" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub.script-_sub.end2" >
+        <di:waypoint x="40" y="24" />
+        <di:waypoint x="24" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_start-_script" >
+        <di:waypoint x="40" y="91" />
+        <di:waypoint x="136" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_script-_sub" >
+        <di:waypoint x="136" y="91" />
+        <di:waypoint x="308" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub-_end" >
+        <di:waypoint x="308" y="91" />
+        <di:waypoint x="464" y="91" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

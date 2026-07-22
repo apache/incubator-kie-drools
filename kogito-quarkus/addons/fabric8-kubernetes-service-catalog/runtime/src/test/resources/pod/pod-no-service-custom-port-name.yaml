@@ -1,0 +1,70 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-no-service-custom-port
+  labels:
+    appname: pod-no-service-custom-port
+spec:
+  containers:
+  - name: pod-no-service-custom-port
+    image: docker.io/namespace/bananas:latest
+    imagePullPolicy: Never
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    - name: my-custom-port
+      containerPort: 52485
+      protocol: TCP
+status:
+  phase: Running
+  conditions:
+  - type: Initialized
+    status: 'True'
+    lastProbeTime: null
+#    lastTransitionTime: '2022-08-17T18:41:32Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+  - type: Ready
+    status: 'True'
+    lastProbeTime: null
+#    lastTransitionTime: '2022-08-17T18:41:35Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+  - type: ContainersReady
+    status: 'True'
+    lastProbeTime: null
+#    lastTransitionTime: '2022-08-17T18:41:35Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+  - type: PodScheduled
+    status: 'True'
+    lastProbeTime: null
+#    lastTransitionTime: '2022-08-17T18:41:32Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+  hostIP: 192.168.49.2
+  podIP: 172.17.0.22
+  podIPs:
+  - ip: 172.17.0.22
+  startTime: '2022-08-17T18:41:32Z'
+  containerStatuses:
+  - name: pod-no-service-custom-port
+    state:
+      running:
+        startedAt: '2022-08-17T18:41:34Z'
+    lastState: {}
+    ready: true
+    restartCount: 0
+    started: true

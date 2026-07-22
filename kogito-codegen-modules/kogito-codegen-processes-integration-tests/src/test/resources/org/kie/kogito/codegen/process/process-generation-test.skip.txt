@@ -1,0 +1,24 @@
+cases/ScriptRoleAssignmentCase.bpmn2
+cases/UserTaskWithStageCase.bpmn2
+cases/UserTaskWithStageCaseAutoStart.bpmn2
+#TODO To be removed once https://issues.redhat.com/browse/KOGITO-2067 is fixed
+cases/CaseWithRolesDefinition.bpmn2
+invalid/
+messageevent/EventNodeMalformed.bpmn2
+ruletask/BusinessRuleTaskMalformed.bpmn2
+ruletask/ExampleGenerated.bpmn
+ruletask/ExampleGeneratedWrong.bpmn
+servicetask/ServiceProcessMalformed.bpmn2
+subprocess/CallActivityWithIOexpression.bpmn2
+subprocess/CallActivity.bpmn2
+subprocess/CallActivityVarIOExpression.bpmn2
+subprocess/CallActivityWithTypeInfo.bpmn2
+subprocess/CallActivitySubProcess.bpmn2
+subprocess/CallActivityWithIOexpressionNested.bpmn2
+subprocess/CallActivityMI.bpmn2
+subprocess/ParentProcess.bpmn
+subprocess/SubProcess.bpmn
+links/DifferentLinkProcess.bpmn2
+links/EmptyLinkProcess.bpmn2
+links/MultipleCatchLinkProcess.bpmn2
+links/UnconnectedLinkProcess.bpmn2

@@ -1,0 +1,83 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.kie.kogito.dmn;
+
+import java.io.Reader;
+import java.util.Map;
+
+import org.kie.dmn.api.core.DMNRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Internal Utility class, for debugging purposes.
+ * These are internal callbacks that should occur only at Build or Init time.
+ */
+public final class DMNKogitoCallbacks {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNKogitoCallbacks.class);
+
+    private DMNKogitoCallbacks() {
+        // intentionally private.
+    }
+
+    public static void beforeCreateGenericDMNRuntime(Reader[] readers) {
+        beforeCreateGenericDMNRuntime(readers.length);
+    }
+
+    public static void beforeCreateGenericDMNRuntime(Map<String, String> modelPaths) {
+        beforeCreateGenericDMNRuntime(modelPaths.size());
+    }
+
+    public static void afterCreateGenericDMNRuntime(DMNRuntime dmnRuntime) {
+        if (isGraalVMNIRuntime()) {
+            LOG.warn("createGenericDMNRuntime done. DMNRuntime contains {} DMNModel(s).", dmnRuntime.getModels().size());
+        } else {
+            LOG.debug("createGenericDMNRuntime done. DMNRuntime contains {} DMNModel(s).", dmnRuntime.getModels().size());
+        }
+    }
+
+    public static void beforeAbstractDecisionModelsInit() {
+        if (isGraalVMNIRuntime()) {
+            LOG.warn("AbstractDecisionModels.init() called.");
+        } else {
+            LOG.debug("AbstractDecisionModels.init() called.");
+        }
+    }
+
+    public static void afterAbstractDecisionModelsInit(DMNRuntime dmnRuntime) {
+        if (isGraalVMNIRuntime()) {
+            LOG.warn("AbstractDecisionModels.init() done.");
+        } else {
+            LOG.debug("AbstractDecisionModels.init() done.");
+        }
+    }
+
+    private static void beforeCreateGenericDMNRuntime(int size) {
+        if (isGraalVMNIRuntime()) {
+            LOG.warn("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", size);
+        } else {
+            LOG.debug("createGenericDMNRuntime with {} model(s) for DMNRuntime initialization...", size);
+        }
+    }
+
+    private static boolean isGraalVMNIRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
+    }
+}

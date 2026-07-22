@@ -1,0 +1,13 @@
+[
+  {
+    "name": "org.kie.kogito.jackson.utils.ObjectNodeListenerAware",
+    "unsafeAllocated": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "[Lorg.kie.kogito.jackson.utils.ObjectNodeListenerAware;",
+    "unsafeAllocated": true
+  }
+]

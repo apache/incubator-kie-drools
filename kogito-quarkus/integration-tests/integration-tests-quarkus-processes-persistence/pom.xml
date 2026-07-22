@@ -1,0 +1,91 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-quarkus-integration-tests</artifactId>
+    <version>999-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  <artifactId>integration-tests-quarkus-processes-persistence</artifactId>
+  <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Persistence</name>
+
+  <modules>
+    <module>integration-tests-processes-persistence-common</module>
+    <module>integration-tests-quarkus-processes-postgresql</module>
+    <module>integration-tests-quarkus-processes-infinispan</module>
+    <module>integration-tests-quarkus-processes-mongodb</module>
+    <module>integration-tests-quarkus-processes-kafka-persistence</module>
+    <module>integration-tests-quarkus-processes-jdbc</module>
+    <module>integration-tests-quarkus-processes-filesystem</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables combine.children="append">
+            <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+            <container.image.kafka>${container.image.kafka}</container.image.kafka>
+            <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>native</id>
+      <activation>
+        <property>
+          <name>native</name>
+        </property>
+      </activation>
+      <properties>
+        <quarkus.native.enabled>true</quarkus.native.enabled>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration combine.self="override">
+              <useModulePath>false</useModulePath>
+              <systemPropertyVariables>
+                <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+                <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+                <container.image.kafka>${container.image.kafka}</container.image.kafka>
+                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

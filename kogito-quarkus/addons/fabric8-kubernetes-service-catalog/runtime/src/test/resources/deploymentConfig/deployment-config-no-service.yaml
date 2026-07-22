@@ -1,0 +1,68 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: example-dc-no-service
+  labels:
+    app: example-dc-no-service
+spec:
+  replicas: 1
+  selector:
+    app: example-dc-no-service
+  template:
+    metadata:
+      labels:
+        app: example-dc-no-service
+    spec:
+      containers:
+      - name: example-dc-no-service
+        image: docker.io/namespace/bananas:latest
+        ports:
+        - containerPort: 8080
+          name: web
+        - containerPort: 8009
+          name: another-http
+status:
+  observedGeneration: 1
+  details:
+    message: config change
+    causes:
+    - type: ConfigChange
+  availableReplicas: 1
+  unavailableReplicas: 0
+  latestVersion: 1
+  updatedReplicas: 1
+  conditions:
+  - type: Available
+    status: 'True'
+#    lastUpdateTime: '2022-08-22T17:30:30Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+#    lastTransitionTime: '2022-08-22T17:30:30Z'
+    message: Deployment config has minimum availability.
+  - type: Progressing
+    status: 'True'
+#    lastUpdateTime: '2022-08-22T17:30:34Z'
+#    lastTransitionTime: '2022-08-22T17:30:34Z'
+    reason: NewReplicationControllerAvailable
+    message: >-
+      replication controller "example-dc-with-service-1" successfully rolled
+      out
+  replicas: 1
+  readyReplicas: 1

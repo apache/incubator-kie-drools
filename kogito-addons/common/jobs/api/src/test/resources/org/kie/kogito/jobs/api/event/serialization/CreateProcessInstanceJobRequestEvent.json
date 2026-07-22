@@ -1,0 +1,26 @@
+{
+  "id": "ID",
+  "source": "http://localhost:8080/kogito-process",
+  "type": "CreateProcessInstanceJobRequest",
+  "time": "2021-11-24T18:01:15.001+01:00",
+  "subject": "SUBJECT",
+  "data": {
+    "id": "JOB_ID",
+    "expirationTime": "2021-11-30T22:01:15.001+01:00",
+    "priority": 5,
+    "callbackEndpoint": "http://localhost:8080/management/jobs/PROCESS_ID/instances/PROCESS_INSTANCE_ID/timers/NODE_INSTANCE_ID",
+    "processInstanceId": "PROCESS_INSTANCE_ID",
+    "rootProcessInstanceId": "ROOT_PROCESS_INSTANCE_ID",
+    "processId": "PROCESS_ID",
+    "rootProcessId": "ROOT_PROCESS_ID",
+    "nodeInstanceId": "NODE_INSTANCE_ID",
+    "repeatInterval": 6000,
+    "repeatLimit": 3
+  },
+  "specversion": "1.0",
+  "kogitoprocinstanceid": "PROCESS_INSTANCE_ID",
+  "kogitoprocid": "PROCESS_ID",
+  "kogitorootprociid": "ROOT_PROCESS_INSTANCE_ID",
+  "kogitorootprocid": "ROOT_PROCESS_ID",
+  "kogitoaddons": "KOGITO_ADDONS"
+}

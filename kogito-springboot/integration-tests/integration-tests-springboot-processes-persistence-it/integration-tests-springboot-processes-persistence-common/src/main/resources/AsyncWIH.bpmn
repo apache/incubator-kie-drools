@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_azyy4M-IEDqSC4CuQ4SJnQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="__EC4A1282-A235-4BED-85D3-949C4E9534BB_InputInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__EC4A1282-A235-4BED-85D3-949C4E9534BB_ResultOutputXItem" structureRef="String"/>
+  <bpmn2:collaboration id="_772B5798-0EDA-4EB3-BCFF-6CD25FD00B8D" name="Default Collaboration">
+    <bpmn2:participant id="_3D6C6E89-3409-4BCD-8BA9-E16B8BAE31CF" name="Pool Participant" processRef="AsyncWIH"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="AsyncWIH" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="false" name="AsyncWIH" isExecutable="true" processType="Public">
+    <bpmn2:sequenceFlow id="_00CB62AB-FF93-424B-9235-2C3865B8AC6D" sourceRef="_EC4A1282-A235-4BED-85D3-949C4E9534BB" targetRef="_3CE9C069-46F9-44EF-93FA-DD22A76B0C42">
+      <bpmn2:extensionElements>
+        <drools:metaData name="isAutoConnection.target">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="_3986C863-0746-4457-B341-B65F5C82CA17" sourceRef="_F79A1AD0-2F29-4799-8655-D12236F71128" targetRef="_EC4A1282-A235-4BED-85D3-949C4E9534BB"/>
+    <bpmn2:task id="_EC4A1282-A235-4BED-85D3-949C4E9534BB" drools:taskName="CustomTask" name="Custom Task">
+      <bpmn2:documentation><![CDATA[Basic minimal custom task.]]></bpmn2:documentation>
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Custom Task]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="customAsync">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_3986C863-0746-4457-B341-B65F5C82CA17</bpmn2:incoming>
+      <bpmn2:outgoing>_00CB62AB-FF93-424B-9235-2C3865B8AC6D</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_EC4A1282-A235-4BED-85D3-949C4E9534BB_InputInputX" drools:dtype="String" itemSubjectRef="__EC4A1282-A235-4BED-85D3-949C4E9534BB_InputInputXItem" name="Input"/>
+        <bpmn2:dataInput id="_EC4A1282-A235-4BED-85D3-949C4E9534BB_TaskNameInputX" drools:dtype="Object" name="TaskName"/>
+        <bpmn2:dataOutput id="_EC4A1282-A235-4BED-85D3-949C4E9534BB_ResultOutputX" drools:dtype="String" itemSubjectRef="__EC4A1282-A235-4BED-85D3-949C4E9534BB_ResultOutputXItem" name="Result"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_EC4A1282-A235-4BED-85D3-949C4E9534BB_InputInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_EC4A1282-A235-4BED-85D3-949C4E9534BB_TaskNameInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet>
+          <bpmn2:dataOutputRefs>_EC4A1282-A235-4BED-85D3-949C4E9534BB_ResultOutputX</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_EC4A1282-A235-4BED-85D3-949C4E9534BB_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[CustomTask]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_EC4A1282-A235-4BED-85D3-949C4E9534BB_TaskNameInputX]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:endEvent id="_3CE9C069-46F9-44EF-93FA-DD22A76B0C42">
+      <bpmn2:incoming>_00CB62AB-FF93-424B-9235-2C3865B8AC6D</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="_F79A1AD0-2F29-4799-8655-D12236F71128">
+      <bpmn2:outgoing>_3986C863-0746-4457-B341-B65F5C82CA17</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="AsyncWIH">
+      <bpmndi:BPMNShape id="shape__F79A1AD0-2F29-4799-8655-D12236F71128" bpmnElement="_F79A1AD0-2F29-4799-8655-D12236F71128">
+        <dc:Bounds height="56" width="56" x="533" y="262"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3CE9C069-46F9-44EF-93FA-DD22A76B0C42" bpmnElement="_3CE9C069-46F9-44EF-93FA-DD22A76B0C42">
+        <dc:Bounds height="56" width="56" x="909" y="262"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__EC4A1282-A235-4BED-85D3-949C4E9534BB" bpmnElement="_EC4A1282-A235-4BED-85D3-949C4E9534BB">
+        <dc:Bounds height="102" width="154" x="672" y="239"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__F79A1AD0-2F29-4799-8655-D12236F71128_to_shape__EC4A1282-A235-4BED-85D3-949C4E9534BB" bpmnElement="_3986C863-0746-4457-B341-B65F5C82CA17">
+        <di:waypoint x="561" y="290"/>
+        <di:waypoint x="672" y="290"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__EC4A1282-A235-4BED-85D3-949C4E9534BB_to_shape__3CE9C069-46F9-44EF-93FA-DD22A76B0C42" bpmnElement="_00CB62AB-FF93-424B-9235-2C3865B8AC6D">
+        <di:waypoint x="826" y="290"/>
+        <di:waypoint x="937" y="318"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+          <bpsim:ElementParameters elementRef="_F79A1AD0-2F29-4799-8655-D12236F71128">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters elementRef="_EC4A1282-A235-4BED-85D3-949C4E9534BB">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_azyy4M-IEDqSC4CuQ4SJnQ</bpmn2:source>
+    <bpmn2:target>_azyy4M-IEDqSC4CuQ4SJnQ</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

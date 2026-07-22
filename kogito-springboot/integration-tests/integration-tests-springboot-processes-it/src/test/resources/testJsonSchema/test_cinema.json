@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "definitions": {
+    "Movie": {
+      "type": "object",
+      "properties": {
+        "genre": {
+          "$ref": "#/definitions/MovieGenre"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rating": {
+          "$ref": "#/definitions/Rating"
+        },
+        "releaseYear": {
+          "type": "integer"
+        }
+      }
+    },
+    "MovieGenre": {
+      "type": "string",
+      "enum": [
+        "COMEDY",
+        "FANTASY",
+        "HORROR",
+        "SCI_FI",
+        "WESTERN"
+      ]
+    },
+    "Rating": {
+      "type": "string",
+      "enum": [
+        "G",
+        "NC_17",
+        "PG",
+        "PG_13",
+        "R",
+        "UR"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "movie": {
+      "$ref": "#/definitions/Movie"
+    },
+    "rating": {}
+  }
+}

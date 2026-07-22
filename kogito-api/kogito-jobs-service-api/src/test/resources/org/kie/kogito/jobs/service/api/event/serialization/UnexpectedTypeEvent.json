@@ -1,0 +1,9 @@
+{
+  "id": "ID",
+  "source": "http://localhost:8080/kogito-process",
+  "type": "UnexpectedType",
+  "time": "2021-11-24T18:01:15.001+01:00",
+  "subject": "SUBJECT",
+  "data": null,
+  "specversion": "1.0"
+}

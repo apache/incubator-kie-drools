@@ -1,0 +1,9 @@
+[
+  {
+    "name": "org.kie.kogito.usertask.impl.DefaultUserTaskInstance",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  }
+]

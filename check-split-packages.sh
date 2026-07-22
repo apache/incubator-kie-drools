@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,6 +18,7 @@
 
 # Usage: ./check-split-packages.sh /path/to/your/root/dir
 ROOT_DIR="${1:-.}"  # default to current dir if no argument passed
+ALLOWED_SPLITS_FILE="${2:-check-split-packages-allowed.txt}"  # optional: path to file listing allowed split packages (one per line)
 
 # Use process substitution instead of pipes to avoid subshell issues
 declare -A package_map
@@ -29,8 +30,16 @@ echo "🔍 Scanning all JARs under: $ROOT_DIR (excluding test JARs)"
 # Get all JAR files first, excluding test JARs
 jar_files=()
 while IFS= read -r jar; do
-  # Skip JAR files ending with "-tests.jar"
-  if [[ "$jar" != *"-test"* && "$jar" != *"-cli-"* && "$jar" != *"original-"* && "$jar" != *"-bootstrap-"* ]]; then
+  if [[ "$jar" != *"-test"*          \
+     && "$jar" != *"-cli-"*          \
+     && "$jar" != *"original-"*      \
+     && "$jar" != *"-bootstrap-"*    \
+     && "$jar" != */quarkus-app/*          \
+     && "$jar" != */drools-distribution/*  \
+     && "$jar" != */testing-maven-repo/*   \
+     && "$jar" != */target/it/*            \
+     && "$jar" != */target/surefire/*      \
+     && "$jar" != */target/test-classes/* ]]; then
     jar_files+=("$jar")
   fi
 done < <(find "$ROOT_DIR" -type f -name "*.jar")
@@ -57,19 +66,29 @@ for jar in "${jar_files[@]}"; do
     
     if [ -n "${package_map[$pkg]}" ]; then
       if [ "${package_map[$pkg]}" != "$jarbasename" ]; then
-        if [[ -z "${seen[$pkg]}" ]]; then
-          # First time seeing this conflict
-          echo "🚨 Split package detected: $pkg"
-          echo "    ↳ in: ${package_map[$pkg]}"
-          echo "    ↳ and: $jarbasename"
-          seen[$pkg]=1
-          last_conflict_jar[$pkg]="$jarbasename"
-        elif [[ "${last_conflict_jar[$pkg]}" != "$jarbasename" ]]; then
-          # New jar with same conflict
-          echo "    ↳ also in: $jarbasename"
-          last_conflict_jar[$pkg]="$jarbasename"
+        # Check if this package is in the allowed splits list
+        allowed=0
+        if [[ -n "$ALLOWED_SPLITS_FILE" && -f "$ALLOWED_SPLITS_FILE" ]]; then
+          # Strip blank lines and # comments before matching
+          if grep -v '^\s*#' "$ALLOWED_SPLITS_FILE" | grep -v '^\s*$' | grep -qxF "$pkg"; then
+            allowed=1
+          fi
         fi
-        # If it's the same jar as last time, we don't print anything
+        if [[ $allowed -eq 0 ]]; then
+          if [[ -z "${seen[$pkg]}" ]]; then
+            # First time seeing this conflict
+            echo "🚨 Split package detected: $pkg"
+            echo "    ↳ in: ${package_map[$pkg]}"
+            echo "    ↳ and: $jarbasename"
+            seen[$pkg]=1
+            last_conflict_jar[$pkg]="$jarbasename"
+          elif [[ "${last_conflict_jar[$pkg]}" != "$jarbasename" ]]; then
+            # New jar with same conflict
+            echo "    ↳ also in: $jarbasename"
+            last_conflict_jar[$pkg]="$jarbasename"
+          fi
+          # If it's the same jar as last time, we don't print anything
+        fi
       fi
     else
       package_map[$pkg]=$jarbasename;

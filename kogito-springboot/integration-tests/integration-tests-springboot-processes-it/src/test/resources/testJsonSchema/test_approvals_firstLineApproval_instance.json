@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "properties": {
+    "approved": {
+      "type": "boolean",
+      "output": true
+    },
+    "traveller": {
+      "input": true,
+      "$ref": "#/definitions/Traveller"
+    }
+  },
+  "definitions": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "street": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      }
+    },
+    "Traveller": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "nationality": {
+          "type": "string"
+        },
+        "processed": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "phases": [
+    "abort",
+    "claim",
+    "skip",
+    "complete"
+  ]
+}
