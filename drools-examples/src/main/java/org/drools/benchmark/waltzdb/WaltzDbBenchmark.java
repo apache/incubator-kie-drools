@@ -117,12 +117,12 @@ public class WaltzDbBenchmark {
             while ( line != null ) {
                 Matcher m = pat.matcher( line );
                 if ( m.matches() ) {
-                    Label l = new Label( m.group( 1 ),
-                                         m.group( 2 ),
-                                         m.group( 3 ),
-                                         m.group( 4 ),
-                                         m.group( 5 ),
-                                         m.group( 6 ) );
+                    Label l = new Label(m.group( 3 ),
+                                        m.group( 1 ),
+                                        m.group( 2 ),
+                                        m.group( 4 ),
+                                        m.group( 5 ),
+                                        m.group( 6 ) );
                     result.add( l );
                 }
                 line = reader.readLine();
