@@ -94,3 +94,101 @@ org.kie.kogito.persistence.quarkus.rocksdb
 # kogito-addons-quarkus-jobs-common-messaging and the sibling addon modules
 # all contribute classes to this package.
 org.kie.kogito.jobs.messaging.quarkus
+
+# ── Data Index storage ───────────────────────────────────────────────────────
+# data-index-storage-api (interfaces) and data-index-storage-common (implementations)
+# both live in the same package; common depends on api and they are always co-deployed.
+org.kie.kogito.index.storage
+
+# ── Data Audit – Spring Boot ─────────────────────────────────────────────────
+# kogito-addons-springboot-data-audit (base) and kogito-addons-springboot-data-audit-jpa
+# (JPA extension) both contribute classes to the same package; jpa depends on base.
+org.kie.kogito.app.audit.springboot
+
+# ── Data Audit – Quarkus ─────────────────────────────────────────────────────
+# kogito-addons-quarkus-data-audit (base), kogito-addons-quarkus-data-audit-jpa, and
+# data-audit-quarkus-service all contribute to this package; jpa and service depend on base.
+org.kie.kogito.app.audit.quarkus
+
+# ── Data Index addon API ──────────────────────────────────────────────────────
+# data-index-common-addons (KogitoAddonRuntimeClient interface) and
+# kogito-addons-quarkus-data-index-persistence-common-runtime
+# (QuarkusKogitoAddonRuntimeClientProducer) share this sub-package;
+# the runtime module depends on common-addons.
+org.kie.kogito.index.addon.api
+
+# ── Quarkus extension deployment – data-index-persistence ────────────────────
+# kogito-addons-quarkus-data-index-persistence-common-deployment (abstract processor)
+# and each backend-specific deployment JAR (jpa/mongodb/postgresql) all land in this
+# package.  Only one backend deployment is on the classpath at runtime.
+org.kie.kogito.addons.quarkus.data.index.persistence.deployment
+
+# ── Data Index service auth ───────────────────────────────────────────────────
+# data-index-common (DataIndexAuthTokenReader) and
+# data-index-service-quarkus-common (MultiTenantResolver) both contribute to this
+# package; both are present in every data-index service deployment.
+org.kie.kogito.index.service.auth
+
+# ── Data Index service messaging ─────────────────────────────────────────────
+# data-index-service-common (deserializers / converter helpers) and
+# data-index-service-quarkus-common (Quarkus messaging consumers) share this package;
+# data-index-service-quarkus-common depends on data-index-service-common.
+org.kie.kogito.index.service.messaging
+
+# ── Quarkus extension deployment – data-index addon ──────────────────────────
+# kogito-addons-quarkus-data-index-common-deployment (abstract processor) and each
+# backend-specific deployment JAR (inmemory/jpa/postgresql/mongodb) all land in this
+# package.  Only one backend deployment is on the classpath at runtime.
+org.kie.kogito.addons.quarkus.data.index.deployment
+
+# ── Data Index Vert.x routing ────────────────────────────────────────────────
+# data-index-service-quarkus-common (QuarkusVertxRouterSetup) and
+# data-index-graphql-quarkus (BlockingGraphqlRouterProducer, ReactiveGraphqlRouterProducer)
+# share this package; both are present in every data-index service deployment.
+org.kie.kogito.index.vertx
+
+# ── Data Index GraphQL ────────────────────────────────────────────────────────
+# data-index-graphql (schema manager, query mapper, etc.) and
+# data-index-graphql-quarkus (GraphQLProducer CDI bean) share this package;
+# data-index-graphql-quarkus depends on data-index-graphql.
+org.kie.kogito.index.graphql
+
+# ── PostgreSQL persistence ────────────────────────────────────────────────────
+# kie-addons-persistence-postgresql (process-instance storage) and
+# persistence-commons-jpa-base (cache/data-index JPA storage) both use this package.
+# The two modules serve different domains; both may appear in the build tree.
+org.kie.kogito.persistence.postgresql
+
+# ── PostgreSQL Hibernate converters ──────────────────────────────────────────
+# data-index-storage-jpa-common and persistence-commons-jpa-base each carry a
+# JsonBinaryConverter/JsonBinaryType for their respective JPA entity models.
+# The two modules are independently deployed and never share a runtime classpath.
+org.kie.kogito.persistence.postgresql.hibernate
+
+# ── PostgreSQL reporting ──────────────────────────────────────────────────────
+# persistence-commons-reporting-postgresql-base (abstract/base implementations) and
+# persistence-commons-reporting-postgresql-generic (concrete generic implementations)
+# share the same reporting sub-packages; generic depends on base.
+org.kie.kogito.persistence.postgresql.reporting.database
+org.kie.kogito.persistence.postgresql.reporting.api
+
+# ── MongoDB persistence index ─────────────────────────────────────────────────
+# persistence-commons-mongodb (MongoConfig, IndexManager, etc.) and
+# persistence-commons-mongodb-quarkus (MongoConfigProducer CDI bean) share this
+# package; the quarkus module depends on the base module.
+org.kie.kogito.persistence.mongodb.index
+
+# ── Jobs Service internal API + common ───────────────────────────────────────
+# jobs-service-internal-api (interfaces, models, base utilities) and
+# jobs-service-common (Quarkus implementations) contribute classes to these packages;
+# jobs-service-common depends on jobs-service-internal-api.
+org.kie.kogito.jobs.service.utils
+org.kie.kogito.jobs.service.json
+org.kie.kogito.jobs.service.executor
+org.kie.kogito.jobs.service.exception
+org.kie.kogito.jobs.service.validation
+
+# ── Trusty Service API + common ───────────────────────────────────────────────
+# trusty-service-api (response DTOs) and trusty-service-common (ResponseUtils helper)
+# both contribute to this package; trusty-service-common depends on trusty-service-api.
+org.kie.kogito.trusty.service.common.responses

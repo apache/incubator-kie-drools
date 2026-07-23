@@ -1,0 +1,37 @@
+{
+  "mappingDefinitions": [
+    {
+      "mappingId": "ProcessInstanceVariableMapping",
+      "sourceTableName": "processes",
+      "sourceTableJsonFieldName": "variables",
+      "sourceTableIdentityFields": [
+        {
+          "fieldName": "id"
+        }
+      ],
+      "sourceTablePartitionFields": [
+        {
+          "fieldName": "process_id",
+          "fieldValue": "process0"
+        }
+      ],
+      "targetTableName": "ProcessInstanceVariableExtract",
+      "fieldMappings": [
+        {
+          "sourceJsonPath": "traveller.firstName",
+          "targetField":{
+            "fieldName": "firstName",
+            "fieldType": "STRING"
+          }
+        },
+        {
+          "sourceJsonPath": "traveller.lastName",
+          "targetField":{
+            "fieldName": "lastName",
+            "fieldType": "STRING"
+          }
+        }
+      ]
+    }
+  ]
+}

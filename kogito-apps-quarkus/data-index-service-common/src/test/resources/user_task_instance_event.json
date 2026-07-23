@@ -1,0 +1,29 @@
+{
+  "id": "7680a3b6-2c5e-4d97-9964-5602341a1965",
+  "source": "http://localhost:8080/travels",
+  "type": "UserTaskInstanceStateDataEvent",
+  "time": "2022-03-18T15:33:05.608476+10:00",
+  "data": {
+    "eventDate": "2022-03-18T15:32:22.484+10:00",
+    "eventUser" : "my user",
+    "userTaskDefinitionId" : "123",
+    "userTaskInstanceId": "45fae435-b098-4f27-97cf-a0c107072e8b",
+   
+    "userTaskName": "VisaApplication",
+    "userTaskPriority": "1",
+    "userTaskDescription": null,
+
+    "userTaskReferenceName": "Apply for visa",
+
+    "state": "Completed",
+    "actualOwner": "henry",
+    "processInstanceId": "2308e23d-9998-47e9-a772-a078cf5b891b"
+
+  },
+  "specversion": "1.0",
+  "kogitoprocinstanceid": "2308e23d-9998-47e9-a772-a078cf5b891b",
+  "kogitoprocid": "travels",
+  "kogitoaddons": "cloudevents,process-svg,prometheus-monitoring,monitoring,infinispan-persistence,process-management",
+  "kogitousertaskiid": "45fae435-b098-4f27-97cf-a0c107072e8b",
+  "kogitousertaskist": "Completed"
+}

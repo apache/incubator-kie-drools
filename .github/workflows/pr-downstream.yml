@@ -40,14 +40,11 @@ jobs:
     strategy:
       max-parallel: 20
       matrix:
-        job_name: [ kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, kogito-gradle-examples ]
+        job_name: [ kogito-quarkus-examples, kogito-springboot-examples, kogito-gradle-examples ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.11']
         include:
-          - job_name: kogito-apps
-            repository: incubator-kie-kogito-apps
-            env_BUILD_MVN_OPTS: "-DskipUI"
           - job_name: kogito-quarkus-examples
             repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/

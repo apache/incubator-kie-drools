@@ -1,0 +1,8 @@
+type Query {
+    GetAllUserTaskInstanceState (pagination: Pagination) : [UserTaskInstanceStateLog]
+    GetAllUserTaskInstanceAssignments (userTaskInstanceId : String!, pagination: Pagination) : [UserTaskInstanceAssignmentLog]
+    GetAllUserTaskInstanceAttachments (userTaskInstanceId : String!, pagination: Pagination) : [UserTaskInstanceAttachmentLog]
+    GetAllUserTaskInstanceComments (userTaskInstanceId : String!, pagination: Pagination) : [UserTaskInstanceCommentLog]
+    GetAllUserTaskInstanceDeadlines (userTaskInstanceId : String!, pagination: Pagination) : [UserTaskInstanceDeadlineLog]
+    GetAllUserTaskInstanceVariables (userTaskInstanceId : String!, pagination: Pagination) : [UserTaskInstanceVariableLog]
+}

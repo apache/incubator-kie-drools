@@ -1,0 +1,15 @@
+{
+  "@type": "DECISION",
+  "gav": {
+    "groupId": "groupId",
+    "artifactId": "artifactId",
+    "version": "version"
+  },
+  "name": "name",
+  "namespace": "namespace",
+  "modelMetadata": {
+    "@type": "DECISION",
+    "specVersion": "http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+  },
+  "definition": "definition"
+}

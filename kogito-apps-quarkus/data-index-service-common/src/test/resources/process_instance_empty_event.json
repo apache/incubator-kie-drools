@@ -1,0 +1,19 @@
+{
+  "data": {
+    "id": " ",
+    "parentInstanceId": "",
+    "processId": "hotelBooking",
+    "processName": "HotelBooking",
+    "rootInstanceId": "          ",
+    "rootProcessId": "travels",
+    "unknownProperty": ""
+  },
+  "id": "b50a3dd4-a955-49c4-a055-f30a4d768f87",
+  "kogitoparentprociid": "  ",
+  "kogitoprocid": "hotelBooking",
+  "kogitoprocinstanceid": "",
+  "kogitoprocist": "2",
+  "kogitorootprocid": "travels",
+  "kogitorootprociid": " ",
+  "type": "ProcessInstanceEvent"
+}

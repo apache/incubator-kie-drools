@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                   xmlns:drools="http://www.jboss.org/drools" 
+                   id="_RestWIHAllValidScenarios" 
+                   targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_StringItem" structureRef="String"/>
+  <bpmn2:process id="RestWIHAllValidScenarios" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="rest-wih-all-valid-scenarios" isExecutable="true" processType="Public">
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    
+    <!-- Valid: POST with ContentData -->
+    <bpmn2:task id="_2" name="Valid POST with Body" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Valid POST with Body]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_2_MethodInput" itemSubjectRef="_StringItem" name="Method"/>
+        <bpmn2:dataInput id="_2_ContentDataInput" itemSubjectRef="_StringItem" name="ContentData"/>
+        <bpmn2:dataInput id="_2_UrlInput" itemSubjectRef="_StringItem" name="Url"/>
+        <bpmn2:dataInput id="_2_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_StringItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_2_HEADER_Content_TypeInput" itemSubjectRef="_StringItem" name="HEADER_Content-Type"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_2_MethodInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_ContentDataInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_UrlInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_HEADER_Content_TypeInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_MethodInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[POST]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_MethodInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_ContentDataInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[{"name": "John", "age": 30}]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_ContentDataInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/users]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[propagated]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_HEADER_Content_TypeInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[application/json]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_HEADER_Content_TypeInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    
+    <!-- Valid: Method with expression -->
+    <bpmn2:task id="_3" name="Valid Method Expression" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Valid Method Expression]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_3_MethodInput" itemSubjectRef="_StringItem" name="Method"/>
+        <bpmn2:dataInput id="_3_UrlInput" itemSubjectRef="_StringItem" name="Url"/>
+        <bpmn2:dataInput id="_3_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_StringItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_3_MethodInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3_UrlInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_MethodInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[#{httpMethod}]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_3_MethodInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/data]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_3_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[none]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_3_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    
+    <!-- Valid: URL with placeholders -->
+    <bpmn2:task id="_4" name="Valid URL Placeholders" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Valid URL Placeholders]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_3-_4</bpmn2:incoming>
+      <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_4_UrlInput" itemSubjectRef="_StringItem" name="Url"/>
+        <bpmn2:dataInput id="_4_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_StringItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_4_UrlInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_4_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_4_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/users/{userId}/profile]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_4_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_4_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[none]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_4_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    
+    <!-- Valid: Query and Header parameters -->
+    <bpmn2:task id="_5" name="Valid Query and Headers" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Valid Query and Headers]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_4-_5</bpmn2:incoming>
+      <bpmn2:outgoing>_5-_6</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_5_UrlInput" itemSubjectRef="_StringItem" name="Url"/>
+        <bpmn2:dataInput id="_5_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_StringItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_5_QUERY_pageInput" itemSubjectRef="_StringItem" name="QUERY_page"/>
+        <bpmn2:dataInput id="_5_QUERY_limitInput" itemSubjectRef="_StringItem" name="QUERY_limit"/>
+        <bpmn2:dataInput id="_5_HEADER_AcceptInput" itemSubjectRef="_StringItem" name="HEADER_Accept"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_5_UrlInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_QUERY_pageInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_QUERY_limitInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_HEADER_AcceptInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/users]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_5_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[none]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_5_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_QUERY_pageInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[1]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_5_QUERY_pageInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_QUERY_limitInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[10]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_5_QUERY_limitInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_5_HEADER_AcceptInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[application/json]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_5_HEADER_AcceptInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    
+    <!-- Valid: Valid RequestTimeout -->
+    <bpmn2:task id="_6" name="Valid Timeout" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Valid Timeout]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_5-_6</bpmn2:incoming>
+      <bpmn2:outgoing>_6-_7</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_6_RequestTimeoutInput" itemSubjectRef="_StringItem" name="RequestTimeout"/>
+        <bpmn2:dataInput id="_6_UrlInput" itemSubjectRef="_StringItem" name="Url"/>
+        <bpmn2:dataInput id="_6_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_StringItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_6_RequestTimeoutInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_6_UrlInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_6_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_6_RequestTimeoutInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[30000]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_6_RequestTimeoutInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_6_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/data]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_6_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_6_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[none]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_6_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    
+    <bpmn2:endEvent id="_7" name="End">
+      <bpmn2:incoming>_6-_7</bpmn2:incoming>
+    </bpmn2:endEvent>
+    
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+    <bpmn2:sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5"/>
+    <bpmn2:sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6"/>
+    <bpmn2:sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="RestWIHAllValidScenarios">
+      <bpmndi:BPMNShape id="shape__1" bpmnElement="_1">
+        <dc:Bounds height="56" width="56" x="100" y="100"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__2" bpmnElement="_2">
+        <dc:Bounds height="102" width="154" x="236" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3" bpmnElement="_3">
+        <dc:Bounds height="102" width="154" x="470" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__4" bpmnElement="_4">
+        <dc:Bounds height="102" width="154" x="704" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__5" bpmnElement="_5">
+        <dc:Bounds height="102" width="154" x="938" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__6" bpmnElement="_6">
+        <dc:Bounds height="102" width="154" x="1172" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__7" bpmnElement="_7">
+        <dc:Bounds height="56" width="56" x="1406" y="100"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

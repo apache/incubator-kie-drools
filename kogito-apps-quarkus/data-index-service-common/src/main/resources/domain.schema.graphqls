@@ -1,0 +1,108 @@
+extend schema {
+    subscription: Subscription
+}
+
+type KogitoMetadata {
+    lastUpdate: DateTime!
+    processInstances: [ProcessInstanceMeta]
+    userTasks: [UserTaskInstanceMeta]
+}
+
+input KogitoMetadataOrderBy {
+    lastUpdate: OrderBy
+}
+
+input KogitoMetadataArgument {
+    lastUpdate: DateArgument
+    processInstances: ProcessInstanceMetaArgument
+    userTasks: UserTaskInstanceMetaArgument
+}
+
+type ProcessInstanceMeta {
+    id: String!
+    processId: String!
+    version: String
+    processName: String
+    parentProcessInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    roles: [String!]
+    state: ProcessInstanceState!
+    endpoint: String!
+    serviceUrl: String
+    start: DateTime!
+    end: DateTime
+    lastUpdate: DateTime!
+    businessKey: String
+    createdBy: String
+    updatedBy: String
+}
+
+input ProcessInstanceMetaArgument {
+    id: IdArgument
+    processId: StringArgument
+    processName: StringArgument
+    parentProcessInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    state: ProcessInstanceStateArgument
+    endpoint: StringArgument
+    roles: StringArrayArgument
+    start: DateArgument
+    end: DateArgument
+    businessKey: StringArgument
+    createdBy: StringArgument
+    updatedBy: StringArgument
+}
+
+extend type UserTaskInstance {
+    schema(user: String, groups:[String]): String
+}
+
+type UserTaskInstanceMeta {
+    id: String!
+    description: String
+    name: String
+    priority: String
+    processInstanceId: String!
+    state: String!
+    actualOwner: String
+    adminGroups: [String!]
+    adminUsers: [String!]
+    completed: DateTime
+    started: DateTime!
+    excludedUsers: [String!]
+    potentialGroups: [String!]
+    potentialUsers: [String!]
+    referenceName: String
+    lastUpdate: DateTime!
+    comments: [Comment!]
+    attachments: [Attachment!]
+}
+
+input UserTaskInstanceMetaArgument {
+    state: StringArgument
+    id: IdArgument
+    description: StringArgument
+    name: StringArgument
+    priority: StringArgument
+    processInstanceId: IdArgument
+    actualOwner: StringArgument
+    potentialUsers: StringArrayArgument
+    potentialGroups: StringArrayArgument
+    excludedUsers: StringArrayArgument
+    adminGroups: StringArrayArgument
+    adminUsers: StringArrayArgument
+    completed: DateArgument
+    started: DateArgument
+    referenceName: StringArgument
+}
+
+type Subscription {
+    ProcessInstanceAdded: ProcessInstance!
+    ProcessInstanceUpdated: ProcessInstance!
+    UserTaskInstanceAdded: UserTaskInstance!
+    UserTaskInstanceUpdated: UserTaskInstance!
+    JobAdded: Job!
+    JobUpdated: Job!
+}

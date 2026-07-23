@@ -239,6 +239,22 @@
     <module>kogito-maven-plugin-test</module>
     <module>kogito-gradle-plugin-test</module>
     <!-- END kogito-runtimes modules (auto) -->
+    <!-- BEGIN kogito-apps modules (auto) -->
+    <module>kogito-apps-parent</module>
+    <module>kogito-apps-bom</module>
+    <module>kogito-apps-build-parent</module>
+    <module>kogito-persistence-commons</module>
+    <module>kogito-jobs-service</module>
+    <module>kogito-data-index</module>
+    <module>kogito-data-audit</module>
+    <module>kogito-explainability</module>
+    <module>kogito-trusty</module>
+    <module>kogito-jitexecutor</module>
+    <module>kogito-jobs</module>
+    <module>kogito-apps-integration-tests</module>
+    <module>kogito-apps-quarkus</module>
+    <module>kogito-apps-springboot</module>
+    <!-- END kogito-apps modules (auto) -->
   </modules>
 
   <profiles>
@@ -345,7 +361,7 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
+    </profile>  
   </profiles>
 
 </project>

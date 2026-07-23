@@ -1,0 +1,23 @@
+{
+  "id": "867ff7b4-2e49-49b3-882a-76f65a2c4124",
+  "source": "http://localhost:8080/travels",
+  "type": "ProcessInstanceStateDataEvent",
+  "time": "2022-03-18T15:33:05.608395+10:00",
+  "data": {
+    "processInstanceId": "2308e23d-9998-47e9-a772-a078cf5b891b",
+    "parentInstanceId": "",
+    "rootProcessInstanceId": "",
+    "processId": "travels",
+    "processVersion": "1.0",
+    "rootProcessId": "",
+    "processName": "travels",
+    "eventDate": "2022-03-18T15:32:21.887+10:00",
+    "state": 1,
+    "businessKey": "F7RTPS"
+  },
+  "specversion": "1.0",
+  "kogitoprocinstanceid": "2308e23d-9998-47e9-a772-a078cf5b891b",
+  "kogitoprocid": "travels",
+  "kogitoaddons": "cloudevents,process-svg,prometheus-monitoring,monitoring,infinispan-persistence,process-management",
+  "kogitoprocist" : "1"
+}

@@ -1,0 +1,132 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.kie.kogito.jobs.embedded;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.job.JobInstanceDataEvent;
+import org.kie.kogito.jobs.JobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
+import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
+import org.kie.kogito.jobs.service.api.Recipient;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.resource.RestApiConstants;
+import org.kie.kogito.jobs.service.stream.JobEventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
+import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.jobs.service.events.JobDataEvent.JOB_EVENT_TYPE;
+
+@ApplicationScoped
+@Alternative
+public class JobInVMEventPublisher implements JobEventPublisher {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobInVMEventPublisher.class);
+
+    private final String url;
+
+    private final List<EventPublisher> eventPublishers;
+
+    private final ObjectMapper objectMapper;
+
+    @Inject
+    Event<EmbeddedJobServiceEvent> bus;
+
+    public JobInVMEventPublisher(
+            @ConfigProperty(name = "kogito.service.url", defaultValue = "http://localhost:8080") String url,
+            Instance<EventPublisher> eventPublishers,
+            ObjectMapper objectMapper) {
+        this.url = url;
+        this.eventPublishers = eventPublishers.stream().collect(toList());
+        this.objectMapper = objectMapper;
+        LOGGER.info("JobInVMEventPublisher Started with url {}", url);
+    }
+
+    @Override
+    public JobDetails publishJobStatusChange(JobDetails jobDetails) {
+        try {
+            LOGGER.debug("publishJobStatusChange {}", jobDetails);
+            if (eventPublishers.isEmpty()) {
+                return jobDetails;
+            }
+
+            bus.fireAsync(new EmbeddedJobServiceEvent(jobDetails)).toCompletableFuture().get();
+            return jobDetails;
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void observe(@ObservesAsync EmbeddedJobServiceEvent serviceEvent) {
+        JobDetails jobDetails = serviceEvent.getJobDetails();
+        LOGGER.debug("Emmit in-vm publishJobStatusChange {}", jobDetails);
+        try {
+            ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
+            Recipient<InVMPayloadData> recipient = jobDetails.getRecipient().getRecipient();
+            JobDescription jobDescription = recipient.getPayload().getJobDescription();
+
+            if (jobDescription instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+                scheduledJob.setProcessInstanceId(processInstanceJobDescription.processInstanceId());
+                scheduledJob.setProcessId(processInstanceJobDescription.processId());
+                scheduledJob.setRootProcessInstanceId(processInstanceJobDescription.rootProcessInstanceId());
+                scheduledJob.setRootProcessId(processInstanceJobDescription.rootProcessId());
+                scheduledJob.setNodeInstanceId(processInstanceJobDescription.nodeInstanceId());
+            } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+                scheduledJob.setProcessInstanceId(userTaskInstanceJobDescription.processInstanceId());
+                scheduledJob.setProcessId(userTaskInstanceJobDescription.processId());
+                scheduledJob.setNodeInstanceId(userTaskInstanceJobDescription.nodeInstanceId());
+                scheduledJob.setRootProcessInstanceId(userTaskInstanceJobDescription.rootProcessInstanceId());
+                scheduledJob.setRootProcessId(userTaskInstanceJobDescription.rootProcessId());
+            }
+
+            byte[] jsonContent = objectMapper.writeValueAsBytes(scheduledJob);
+            JobInstanceDataEvent event = JobInstanceDataEvent.builder()
+                    .type(JOB_EVENT_TYPE)
+                    .source(url + RestApiConstants.JOBS_PATH)
+                    .data(jsonContent)
+                    .kogitoProcessInstanceId(scheduledJob.getProcessInstanceId())
+                    .kogitoRootProcessInstanceId(scheduledJob.getRootProcessInstanceId())
+                    .kogitoProcessId(scheduledJob.getProcessId())
+                    .kogitoProcessVersion(scheduledJob.getProcessVersion())
+                    .kogitoRootProcessId(scheduledJob.getRootProcessId())
+                    .kogitoRootProcessVersion(scheduledJob.getRootProcessVersion())
+                    .build();
+
+            eventPublishers.forEach(e -> e.publish(event));
+        } catch (Exception e) {
+            LOGGER.error("Job status change propagation has failed at eventPublisher: " + eventPublishers.getClass() + " execution.", e);
+        }
+    }
+}

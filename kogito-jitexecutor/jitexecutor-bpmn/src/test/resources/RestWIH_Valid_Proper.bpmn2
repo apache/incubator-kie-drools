@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                   xmlns:drools="http://www.jboss.org/drools" 
+                   xmlns:tns="http://www.jboss.org/drools"
+                   id="_RestWIHValidProperTest" 
+                   targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_AccessTokenAcquisitionStrategyItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_RestServiceCallTaskIdItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_UrlItem" structureRef="String"/>
+  <bpmn2:process id="RestWIHValidProper" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="rest-wih-valid-proper" isExecutable="true" processType="Public">
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:task id="_2" name="REST Call Propagated" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[REST Call Propagated]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_2_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_AccessTokenAcquisitionStrategyItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_2_UrlInput" itemSubjectRef="_UrlItem" name="Url"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_2_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_UrlInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[propagated]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_2_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/data]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_2_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:task id="_3" name="REST Call Configured" drools:taskName="Rest">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[REST Call Configured]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_3_AccessTokenAcquisitionStrategyInput" itemSubjectRef="_AccessTokenAcquisitionStrategyItem" name="AccessTokenAcquisitionStrategy"/>
+        <bpmn2:dataInput id="_3_RestServiceCallTaskIdInput" itemSubjectRef="_RestServiceCallTaskIdItem" name="RestServiceCallTaskId"/>
+        <bpmn2:dataInput id="_3_UrlInput" itemSubjectRef="_UrlItem" name="Url"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_3_AccessTokenAcquisitionStrategyInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3_RestServiceCallTaskIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_3_UrlInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_AccessTokenAcquisitionStrategyInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[configured]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_3_AccessTokenAcquisitionStrategyInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_RestServiceCallTaskIdInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[Valid_Task_ID_123]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_3_RestServiceCallTaskIdInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_3_UrlInput</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[https://api.example.com/secure]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_3_UrlInput]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:endEvent id="_4" name="End">
+      <bpmn2:incoming>_3-_4</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="RestWIHValidProper">
+      <bpmndi:BPMNShape id="shape__1" bpmnElement="_1">
+        <dc:Bounds height="56" width="56" x="100" y="100"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__2" bpmnElement="_2">
+        <dc:Bounds height="102" width="154" x="236" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3" bpmnElement="_3">
+        <dc:Bounds height="102" width="154" x="470" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__4" bpmnElement="_4">
+        <dc:Bounds height="56" width="56" x="704" y="100"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

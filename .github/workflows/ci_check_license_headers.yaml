@@ -47,4 +47,3 @@ jobs:
           else
             echo "✅ Apache RAT check PASSED - All files have approved licenses."
           fi
-
