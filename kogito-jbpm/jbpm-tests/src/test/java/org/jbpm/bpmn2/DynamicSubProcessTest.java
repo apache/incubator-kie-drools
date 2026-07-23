@@ -216,7 +216,7 @@ public class DynamicSubProcessTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
         assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage())
-                .contains("Cannot resolve subprocess ID from expression '#{subprocessId}'");
+                .contains("Could not find process");
     }
 
     @Test
@@ -232,7 +232,7 @@ public class DynamicSubProcessTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
         assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage())
-                .contains("Cannot resolve subprocess ID from expression '#{subprocessId}'");
+                .contains("Could not find process");
     }
 
     @Test
@@ -248,7 +248,7 @@ public class DynamicSubProcessTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
         assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage())
-                .contains("Cannot resolve subprocess ID from expression '#{subprocessId}'");
+                .contains("Could not find process");
     }
 
     @Test
@@ -261,7 +261,7 @@ public class DynamicSubProcessTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
         assertThat(((WorkflowProcessInstanceImpl) processInstance).getErrorMessage())
-                .contains("Cannot resolve subprocess ID from expression '#{missingVar}'");
+                .contains("Could not find process");
     }
 
     @Test
