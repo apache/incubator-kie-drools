@@ -445,44 +445,62 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
     @Test
     public void testSLAonCatchEventViolated() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
+        AtomicInteger processSlaCompliance = new AtomicInteger(-1);
+        AtomicInteger nodeSlaComplianceAtViolation = new AtomicInteger(-1);
+        AtomicInteger nodeSlaComplianceAfterCompletion = new AtomicInteger(-1);
+
+        KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
 
             @Override
             public void afterSLAViolated(SLAViolatedEvent event) {
+                if (event.getNodeInstance() instanceof EventNodeInstance nodeInstance) {
+                    nodeSlaComplianceAtViolation.set(nodeInstance.getSlaCompliance());
+                }
                 latch.countDown();
             }
 
-        };
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/sla/BPMN2-IntermediateCatchEventSignalWithSLAOnEvent.bpmn2");
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance() instanceof EventNodeInstance nodeInstance) {
+                    nodeSlaComplianceAfterCompletion.set(nodeInstance.getSlaCompliance());
+                }
+            }
 
-        kruntime.getProcessEventManager().addEventListener(listener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateCatchEventSignalWithSLAOnEvent");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                WorkflowProcessInstanceImpl impl = (WorkflowProcessInstanceImpl) event.getProcessInstance();
+                processSlaCompliance.set(impl.getSlaCompliance());
+            }
+
+        };
+
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<IntermediateCatchEventSignalWithSLAOnEventModel> processDefinition =
+                IntermediateCatchEventSignalWithSLAOnEventProcess.newProcess(app);
+        ProcessInstance<IntermediateCatchEventSignalWithSLAOnEventModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         boolean slaViolated = latch.await(5, TimeUnit.SECONDS);
         assertThat(slaViolated).as("SLA should be violated by timer").isTrue();
 
-        processInstance = kruntime.getProcessInstance(processInstance.getStringId());
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        processInstance = processDefinition.instances().findById(processInstance.id()).orElse(null);
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        Collection<KogitoNodeInstance> active = ((KogitoWorkflowProcessInstance) processInstance).getKogitoNodeInstances();
+        Collection<NodeInstance> active = executeInWorkflowState(processInstance, p -> p.getNodeInstances());
         assertThat(active).hasSize(1);
 
-        KogitoNodeInstance eventNode = active.iterator().next();
+        assertThat(nodeSlaComplianceAtViolation.get()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.SLA_VIOLATED);
 
-        kruntime.signalEvent("MyMessage", null, processInstance.getStringId());
+        processInstance.send(SignalFactory.of("MyMessage", null));
 
-        assertProcessInstanceFinished(processInstance, kruntime);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
-        int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
-        assertThat(slaCompliance).isEqualTo(KogitoProcessInstance.SLA_NA);
-
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getStringId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, 0);
-        assertThat(slaCompliance).isEqualTo(KogitoProcessInstance.SLA_VIOLATED);
-
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getStringId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, 1);
-        assertThat(slaCompliance).isEqualTo(KogitoProcessInstance.SLA_VIOLATED);
+        assertThat(processSlaCompliance.get()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.SLA_NA);
+        assertThat(nodeSlaComplianceAfterCompletion.get()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.SLA_VIOLATED);
 
     }
 
