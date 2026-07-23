@@ -51,7 +51,6 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
                 .notEmpty("subProcessId", subProcessId)
                 .validate();
 
-        // Note: ExpressionUtils.getLiteralExpr() properly escapes special characters in the string
         body.addStatement(getAssignedFactoryMethod(factoryField, SubProcessNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "Call Activity"))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_ID, ExpressionUtils.getLiteralExpr(subProcessId)))
@@ -59,14 +58,10 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_WAIT_FOR_COMPLETION, new BooleanLiteralExpr(node.isWaitForCompletion())))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_INDEPENDENT, new BooleanLiteralExpr(node.isIndependent())));
 
-        // Add node mappings and metadata
         addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
 
-        // Track subprocess for metadata
-        // Note: Expressions (#{...}) are resolved at runtime using resolveExpression()
-        // We only track static process IDs for metadata (no expressions)
         if (subProcessId != null && !subProcessId.contains("#{")) {
             String processId = ProcessToExecModelGenerator.extractProcessId(subProcessId);
             metadata.addSubProcess(processId, subProcessId);

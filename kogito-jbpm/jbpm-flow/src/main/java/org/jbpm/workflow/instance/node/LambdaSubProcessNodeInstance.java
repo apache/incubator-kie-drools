@@ -153,7 +153,6 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         }
 
         KogitoProcessRuntime kruntime = (KogitoProcessRuntime) ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-        // Use resolved process ID to handle variable substitution
         String processId = resolveProcessId();
         Optional<AbstractProcessInstance> pi =
                 ((MutableProcessInstances) kruntime.getApplication().get(Processes.class).processById(processId).instances()).findById(processInstanceId);
@@ -208,7 +207,6 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         processInstanceId = null;
         if (processInstance.getState() == KogitoProcessInstance.STATE_ABORTED) {
             String faultName = processInstance.getOutcome() == null ? "" : processInstance.getOutcome();
-            // handle exception as sub process failed with error code
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
             if (exceptionScopeInstance != null) {
                 KogitoProcessContextImpl context = new KogitoProcessContextImpl(this.getProcessInstance().getKnowledgeRuntime());
@@ -306,10 +304,21 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     /**
-     * Resolves the process ID from the {@code calledElement} attribute.
-     * Supports static IDs and MVEL expressions (e.g. {@code #{subprocessId}}).
-     * Throws {@link IllegalArgumentException} with a descriptive message when
-     * the expression resolves to a blank or unresolved value.
+     * Resolves the process ID, supporting variable substitution and MVEL expressions.
+     *
+     * Leverages the inherited {@link NodeInstanceImpl#resolveExpression(String)} method
+     * which supports multiple {@code #{...}} tokens in one string, e.g.:
+     * <ul>
+     * <li>Static process IDs: {@code "order-subprocess"}</li>
+     * <li>Simple variables: {@code "#{processName}"}</li>
+     * <li>Property access: {@code "#{order.type}"}</li>
+     * <li>Multiple expressions: {@code "#{prefix}-#{suffix}"}</li>
+     * <li>Mixed literals and expressions: {@code "#{order.type}-process"}</li>
+     * </ul>
+     *
+     * @return the resolved process ID
+     * @throws IllegalArgumentException if the expression contains unresolvable variables
+     * @see NodeInstanceImpl#resolveExpression(String)
      */
     private String resolveProcessId() {
         String processId = getSubProcessNode().getProcessId();
@@ -320,10 +329,6 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
         String resolvedId = resolveExpression(processId);
 
-        if (logger.isDebugEnabled() && !processId.equals(resolvedId)) {
-            logger.debug("Resolved process ID from '{}' to '{}'", processId, resolvedId);
-        }
-
         if (isExpression(processId)) {
             if (resolvedId == null || resolvedId.trim().isEmpty() || resolvedId.contains("#{")) {
                 throw new IllegalArgumentException(
@@ -331,6 +336,10 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
                                 + "Variable '" + extractFirstVariableName(processId)
                                 + "' not found in process context or is empty");
             }
+        }
+
+        if (logger.isDebugEnabled() && !processId.equals(resolvedId)) {
+            logger.debug("Resolved process ID from '{}' to '{}'", processId, resolvedId);
         }
 
         return resolvedId;

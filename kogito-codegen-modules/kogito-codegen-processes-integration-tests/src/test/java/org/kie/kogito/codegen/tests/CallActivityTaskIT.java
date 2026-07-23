@@ -217,30 +217,7 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
     }
 
     /**
-     * Verifies that a subprocess whose process id contains hyphens (e.g.
-     * {@code "call-activity-sub-process"}) can be successfully code-generated
-     * and invoked at runtime.
-     *
-     * <p>
-     * <b>What is tested:</b>
-     * Before the fix in {@link org.kie.kogito.codegen.process.ProcessGenerator},
-     * the generated Java field name was built by concatenating {@code "process"}
-     * directly with the raw subprocess id, producing the invalid identifier
-     * {@code processCall-activity-sub-process}. The fix wraps the key with
-     * {@link org.kie.kogito.internal.utils.ConversionUtils#sanitizeClassName}
-     * which replaces every {@code -} (and any other non-{@code isJavaIdentifierPart}
-     * character) with {@code _}, yielding the valid identifier
-     * {@code processCall_activity_sub_process}.
-     *
-     * <p>
-     * <b>Assertions:</b>
-     * <ol>
-     * <li>Code generation succeeds (no compilation failure due to invalid field name).</li>
-     * <li>The generated application can look up the hyphenated subprocess by its
-     * original id ({@code "call-activity-sub-process"}).</li>
-     * <li>The parent process completes successfully after invoking the child.</li>
-     * <li>The output variable ({@code y}) is mapped back from the child to the parent.</li>
-     * </ol>
+     * Verifies that a subprocess whose process id contains hyphens 
      */
     @Test
     public void testCallActivityWithHyphenatedSubProcessId() throws Exception {
