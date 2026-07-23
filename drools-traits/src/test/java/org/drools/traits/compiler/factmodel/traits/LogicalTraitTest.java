@@ -60,6 +60,21 @@ public class LogicalTraitTest extends CommonTraitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogicalTraitTest.class);
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        // Prefixes used because trait proxy class names are generated at runtime from DRL-declared
+        // types (e.g. org.drools.test.X.org.drools.test.Y_Proxy). Exact names are not practical
+        // as each test method declares different trait/core combinations.
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.test.*;" +
+                "org.drools.factmodel.traits.*");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
+    }
+
     public static Stream<VirtualPropertyMode> parameters() {
         return Stream.of(VirtualPropertyMode.MAP, VirtualPropertyMode.TRIPLES);
     }
@@ -1094,6 +1109,77 @@ public class LogicalTraitTest extends CommonTraitTest {
         for ( Object o : ks.getObjects() ) {
             LOGGER.debug( o.toString() );
         }
+    }
+
+    @ParameterizedTest()
+    @MethodSource("parameters")
+    public void testSerialWithFreshKieBase(VirtualPropertyMode mode) throws Exception {
+
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.base.factmodel.traits.*; \n" +
+                     "import org.drools.base.factmodel.traits.Trait; \n" +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare trait X end \n" +
+                     "declare trait Z end \n" +
+                     "" +
+                     "declare Y \n" +
+                     "@Traitable( ) \n" +
+                     "end \n" +
+                     "" +
+                     "rule Don \n" +
+                     "when \n" +
+                     "then \n" +
+                     "  Y y = new Y( ); \n" +
+                     "  don( y, X.class ); \n" +
+                     "  don( y, Z.class ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule CheckTraits \n" +
+                     "when \n" +
+                     "  String( this == \"go\" ) \n" +
+                     "  $x : X() \n" +
+                     "  $z : Z() \n" +
+                     "then \n" +
+                     "  list.add( \"ok\" ); \n" +
+                     "end \n" +
+                     "";
+
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
+
+        KieSession ks = kbase.newKieSession();
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        // Verify facts exist before serialization: 1 Y + 1 X proxy + 1 Z proxy = 3
+        assertThat(ks.getObjects()).hasSize(3);
+
+        byte[] serialized = SerializationHelper.serializeStatefulKnowledgeSession( ks );
+
+        ks.dispose();
+
+        // Build a fresh KieBase from the same DRL to simulate JVM restart
+        KieBase freshKbase = loadKnowledgeBaseFromString( drl );
+        TraitFactoryImpl.setMode(mode, (InternalRuleBase) freshKbase);
+
+        KieSession deserialized = SerializationHelper.deserializeStatefulKnowledgeSession( serialized, freshKbase );
+
+        // Verify facts survived serialization/deserialization
+        assertThat(deserialized.getObjects()).hasSize(3);
+
+        List freshList = new ArrayList();
+        deserialized.setGlobal( "list", freshList );
+
+        deserialized.insert( "go" );
+        deserialized.fireAllRules();
+
+        assertThat(freshList).containsExactly("ok");
+
+        deserialized.dispose();
     }
 
     @ParameterizedTest()

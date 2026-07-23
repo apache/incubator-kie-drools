@@ -111,6 +111,34 @@ import static org.drools.serialization.protobuf.SerializationHelper.getSerialise
 
 public class MarshallingTest extends CommonTestMethodBase {
 
+    private final DeserializationFilterTestSupport filterSupport = new DeserializationFilterTestSupport();
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        filterSupport.setUp("org.drools.mvel.compiler.Address",
+                "org.drools.mvel.compiler.Alarm",
+                "org.drools.mvel.compiler.Cell",
+                "org.drools.mvel.compiler.Cheese",
+                "org.drools.mvel.compiler.CheeseEqual",
+                "org.drools.mvel.compiler.FactA",
+                "org.drools.mvel.compiler.FactB",
+                "org.drools.mvel.compiler.FactC",
+                "org.drools.mvel.compiler.Message",
+                "org.drools.mvel.compiler.Person",
+                "org.drools.mvel.compiler.Primitives",
+                "org.drools.mvel.compiler.Sensor",
+                "org.drools.serialization.protobuf.MarshallingTest$A",
+                "org.drools.serialization.protobuf.MarshallingTest$B",
+                "org.drools.serialization.protobuf.MarshallingTest$C",
+                "defaultpkg.Employee",
+                "defaultpkg.Person");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        filterSupport.tearDown();
+    }
+
     @Test
     public void testSerializable() throws Exception {
         Collection<KiePackage>  kpkgs = loadKnowledgePackages("test_Serializable.drl" );

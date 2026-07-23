@@ -108,6 +108,21 @@ import static org.mockito.Mockito.verify;
 
 public class CepEspTest extends AbstractCepEspTest {
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.compiler.integrationtests.CepEspTest$EventA;" +
+                "org.drools.compiler.integrationtests.CepEspTest$SuperClass;" +
+                "org.drools.compiler.integrationtests.CepEspTest$SubClass;" +
+                "org.drools.testcoverage.common.model.OrderEvent;" +
+                "org.drools.testcoverage.common.model.StockTick");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
+    }
+
     public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }

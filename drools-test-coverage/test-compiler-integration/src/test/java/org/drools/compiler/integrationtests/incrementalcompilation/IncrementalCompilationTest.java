@@ -101,6 +101,19 @@ import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 
 public class IncrementalCompilationTest {
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.testcoverage.common.model.Message;" +
+                "org.drools.testcoverage.common.model.Person;" +
+                "org.drools.testcoverage.common.model.Address");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
+    }
+
     public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }

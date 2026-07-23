@@ -45,6 +45,17 @@ import static org.assertj.core.api.Assertions.fail;
  */
 public class EventDeserializationInPastTest {
 
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.testcoverage.regression.EventDeserializationInPastTest$Event1");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
+    }
+
     @Test
     public void testSerializationWithEventInPastBZ1205666() {
         // DROOLS-749
