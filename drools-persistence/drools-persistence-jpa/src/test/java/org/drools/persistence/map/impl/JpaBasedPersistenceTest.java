@@ -46,11 +46,12 @@ import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
-    
+
     private Map<String, Object> context;
     private EntityManagerFactory emf;
     private JtaTransactionManager txm;
     private boolean useTransactions = false;
+    private final org.drools.persistence.DeserializationFilterTestSupport filterSupport = new org.drools.persistence.DeserializationFilterTestSupport();
     
     public static Stream<String> parameters() {
         return Stream.of(OPTIMISTIC_LOCKING, PESSIMISTIC_LOCKING);
@@ -59,6 +60,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @BeforeEach
     public void setUp() throws Exception {
+        filterSupport.setUp("org.drools.persistence.map.impl.Buddy");
         context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
         
@@ -74,6 +76,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @AfterEach
     public void tearDown() throws Exception {
+        filterSupport.tearDown();
         DroolsPersistenceUtil.cleanUp(context);
     }
     

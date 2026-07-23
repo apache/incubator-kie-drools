@@ -42,6 +42,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueryTest extends CommonTestMethodBase {
 
+    private final DeserializationFilterTestSupport filterSupport = new DeserializationFilterTestSupport();
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        filterSupport.setUp("org.drools.mvel.compiler.Cheese");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        filterSupport.tearDown();
+    }
 
     private static QueryResults getQueryResults(KieSession session, String queryName, Object... arguments ) throws Exception {
         QueryResultsImpl results = (QueryResultsImpl) session.getQueryResults( queryName, arguments );

@@ -47,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MarshallerTest {
 
     private Environment env = EnvironmentFactory.newEnvironment();
+    private final DeserializationFilterTestSupport filterSupport = new DeserializationFilterTestSupport();
 
     public static Stream<ObjectMarshallingStrategy> parameters() {
         return Stream.of(new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT),
@@ -56,6 +57,19 @@ public class MarshallerTest {
     private void setupEnvironment(ObjectMarshallingStrategy strategy) {
         this.env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{ strategy } );
     }
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setUpDeserializationFilter() {
+        filterSupport.setUp("org.drools.mvel.compiler.Person",
+                "org.drools.serialization.protobuf.MarshallerTest$LongFact",
+                "org.drools.serialization.protobuf.MarshallerTest$LongFacts");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    public void clearDeserializationFilter() {
+        filterSupport.tearDown();
+    }
+
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("parameters")

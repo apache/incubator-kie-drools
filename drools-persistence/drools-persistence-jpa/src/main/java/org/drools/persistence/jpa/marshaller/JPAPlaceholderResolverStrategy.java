@@ -33,6 +33,7 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.Metamodel;
 import org.drools.base.common.DroolsObjectInputStream;
+import org.drools.core.util.DeserializationFilterHelper;
 import org.drools.persistence.api.TransactionAware;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.serialization.protobuf.ProtobufProcessMarshallerWriteContext;
@@ -122,11 +123,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     public Object read(ObjectInputStream is) throws IOException, ClassNotFoundException {
-        String canonicalName = is.readUTF();
-        Object id = is.readObject();
-
-        EntityManager em = getEntityManager();
-        return em.find(Class.forName(canonicalName), id);
+        return readEntity(is, null);
     }
 
     public byte[] marshal(Context context,
@@ -172,11 +169,19 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         }
 
         DroolsObjectInputStream is = new DroolsObjectInputStream( new ByteArrayInputStream( object ), clToUse );
+        return readEntity(is, clToUse);
+    }
+
+    private Object readEntity(ObjectInputStream is, ClassLoader classloader) throws IOException, ClassNotFoundException {
+        if (DeserializationFilterHelper.isDeserializationFilterEnabled()) {
+            is.setObjectInputFilter(DeserializationFilterHelper.createDeserializationFilter());
+        }
         String canonicalName = is.readUTF();
         Object id = is.readObject();
 
         EntityManager em = getEntityManager();
-        return em.find(Class.forName(canonicalName, true, (clToUse==null?this.getClass().getClassLoader():clToUse)), id);
+        ClassLoader cl = classloader != null ? classloader : this.getClass().getClassLoader();
+        return em.find(Class.forName(canonicalName, true, cl), id);
     }
     
     public Context createContext() {
