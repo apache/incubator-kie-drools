@@ -28,6 +28,11 @@ public class PhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFactory {
     }
 
     @Override
+    public PhreakBiLinearJoinNode createPhreakBiLinearJoinNode(ReteEvaluator reteEvaluator) {
+        return new PhreakBiLinearJoinNode(reteEvaluator);
+    }
+
+    @Override
     public PhreakEvalNode createPhreakEvalNode(ReteEvaluator reteEvaluator) {
         return new PhreakEvalNode(reteEvaluator);
     }

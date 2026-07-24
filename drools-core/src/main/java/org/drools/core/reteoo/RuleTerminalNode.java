@@ -72,7 +72,16 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             rule.setSalience( new SalienceInteger(Integer.MAX_VALUE) );
         }
 
-        setDeclarations( getSubRule().getOuterDeclarations() );
+        // For BiLinear, use offset-adjusted declarations
+        if (source.getType() == NodeTypeEnums.BiLinearJoinNode) {
+            BiLinearJoinNode biLinearNode = (BiLinearJoinNode) source;
+            setDeclarations(new BiLinearDeclarationOffsetHelper(
+                getSubRule(),
+                biLinearNode.getFirstNetworkSize()
+            ).createOffsetDeclarations(getSubRule().getOuterDeclarations()));
+        } else {
+            setDeclarations(getSubRule().getOuterDeclarations());
+        }
 
         initInferredMask();
 
@@ -174,4 +183,25 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void setFireDirect(boolean fireDirect) {
         this.fireDirect = fireDirect;
     }
+
+    /**
+     * Override to provide offset-adjusted declarations for BiLinear rules.
+     * When the source is a BiLinearJoinNode, declarations from the second network
+     * need their Pattern tupleIndex offset by the first network's size.
+     */
+    @Override
+    protected Map<String, Declaration> getDeclarationsForInit() {
+        Map<String, Declaration> decls = getSubRule().getOuterDeclarations();
+
+        if (getLeftTupleSource() != null && getLeftTupleSource().getType() == NodeTypeEnums.BiLinearJoinNode) {
+            BiLinearJoinNode biLinearNode = (BiLinearJoinNode) getLeftTupleSource();
+            return new BiLinearDeclarationOffsetHelper(
+                getSubRule(),
+                biLinearNode.getFirstNetworkSize()
+            ).createOffsetDeclarations(decls);
+        }
+
+        return decls;
+    }
+
 }

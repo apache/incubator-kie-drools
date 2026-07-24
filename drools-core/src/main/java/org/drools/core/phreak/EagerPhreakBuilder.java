@@ -836,7 +836,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         private static void deleteFactsFromRightInput(InternalWorkingMemory wm, BetaNode bn) {
-            BaseNode source = bn.getRightInput();
+            BaseNode source = bn.getRightInput().asBaseNode();
             if (source.getType() == NodeTypeEnums.WindowNode) {
                 WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemories().peekNodeMemory(source);
                 if (memory != null) {

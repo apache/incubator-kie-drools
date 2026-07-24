@@ -45,9 +45,8 @@ import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.reteoo.BetaNode.getBetaMemory;
 
-public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNode
-        implements ObjectSinkNode,
-                   RightTupleSink {
+public abstract class RightInputAdapterNode<T extends BetaNode> extends BaseNode
+        implements BetaRightInput<T> {
 
     protected static final Logger    log               = LoggerFactory.getLogger(RightInputAdapterNode.class);
     protected static final boolean   isLogTraceEnabled = log.isTraceEnabled();
@@ -249,7 +248,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
         }
     }
 
-    protected void initInferredMask() {
+    public void initInferredMask() {
         BaseNode unwrappedRight = getParent();
         if ( unwrappedRight.getType() == NodeTypeEnums.AlphaNode ) {
             AlphaNode alphaNode = (AlphaNode) unwrappedRight;
@@ -341,6 +340,11 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
 
     public boolean isRightInputPassive() {
         return inputIsPassive;
+    }
+
+    @Override
+    public BaseNode asBaseNode() {
+        return this;
     }
 
     @Override

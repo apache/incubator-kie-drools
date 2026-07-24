@@ -27,6 +27,7 @@ public class TupleFactory {
         TupleImpl peer;
         switch(n.getType()) {
             case NodeTypeEnums.JoinNode:
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
             case NodeTypeEnums.FromNode:
@@ -67,6 +68,7 @@ public class TupleFactory {
 
         switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
             case NodeTypeEnums.FromNode:
@@ -97,6 +99,7 @@ public class TupleFactory {
                                             final Sink s) {
         switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
             case NodeTypeEnums.FromNode:
@@ -128,6 +131,7 @@ public class TupleFactory {
                                             boolean leftTupleMemoryEnabled) {
         switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
             case NodeTypeEnums.FromNode:
@@ -157,6 +161,7 @@ public class TupleFactory {
                                             TupleImpl rightTuple,
                                             Sink s) {
         switch(s.getType()) {
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
@@ -190,6 +195,7 @@ public class TupleFactory {
                                             Sink s,
                                             boolean leftTupleMemoryEnabled) {
         switch(s.getType()) {
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
