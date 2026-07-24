@@ -16,13 +16,11 @@
 # under the License.
 
 target/
-!script/ci/tests/scenarios-summary/**/target/
 local/
 
 # Eclipse, Netbeans and IntelliJ files
 .*
 !.gitignore
-!script/ci/tests/scenarios-summary/**/.gitkeep
 !.github
 !.git-blame-ignore-revs
 !.openrewrite
@@ -130,3 +128,48 @@ target/
 quarkus/integration-tests/integration-tests-quarkus-gradle/integration-tests-quarkus-gradle-project/**
 /kogito-gradle-plugin-test/.gradle/
 /kogito-gradle-plugin-test/build/
+# --- merged from kogito-apps .gitignore ---
+
+node_modules/
+dist/
+dist-it/
+node/
+coverage/
+target/
+out/
+.idea
+**/.DS_Store
+*.log*
+**/stats.json
+**/junit.xml
+package-lock.json
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.github
+!.gitignore
+!.ci
+!.mvn
+/nbproject
+/*.ipr
+/*.iws
+**/*.iml
+.classpath
+.project
+.settings
+.vscode
+!.husky
+
+# Cypress - runtime artifacts and undesired dirs
+**/cypress/screenshots
+**/cypress/videos
+/packages/cypress*
+/cypress*
+
+.factorypath
+
+# Apache RAT check excludes file
+!.rat-excludes
+
+# Jobs Service ITs
+apps-integration-tests/integration-tests-jobs-service/**/src/main/resources/shared/

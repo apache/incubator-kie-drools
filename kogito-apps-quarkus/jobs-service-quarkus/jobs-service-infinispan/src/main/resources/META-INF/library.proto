@@ -1,0 +1,60 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package job.service;
+
+/* @Indexed */
+message JobDetails {
+  /* @Field(store = Store.YES)  @SortableField */
+  optional string id = 1;
+  optional string correlationId = 2;
+  /* @Field(store = Store.YES) */
+  optional string status = 3;//enum
+  optional int64 lastUpdate = 4;
+  optional int32 retries = 5;
+  /* @Field(store = Store.YES)  @SortableField */
+  optional int32 priority = 6;
+  optional int32 executionCounter = 7;
+  optional string scheduledId = 8;
+  optional string recipient = 9; //serialized as json to be generic
+  /* @Field(store = Store.YES) */
+  optional Trigger trigger = 10; //serialized as json to be generic
+  optional string type = 11;//enum
+  optional int64 executionTimeout = 12;
+  optional string executionTimeoutUnit = 13;
+  /* @Field(store = Store.YES)  @SortableField */
+  optional int64 nextFireTime = 14;
+  /* @Field(store = Store.YES)  @SortableField */
+  optional int64 created = 15;
+}
+
+/* @Indexed */
+message Trigger {
+  optional string classType = 1;//indicates the java class to instantiate
+  optional int64 startTime = 2;
+  optional int64 endTime = 3;
+  optional int32 repeatLimit = 4;
+  optional int32 repeatCount = 5;
+  /* @Field(store = Store.YES) */
+  optional int64 nextFireTime = 6;
+  optional int64 period = 7;
+  optional string periodUnit = 8;
+  optional string zoneId = 9;
+  optional int32 currentRepeatCount = 10;
+  optional bool endTimeReached = 11;
+}

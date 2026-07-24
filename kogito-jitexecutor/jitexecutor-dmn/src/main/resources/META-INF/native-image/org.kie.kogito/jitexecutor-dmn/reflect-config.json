@@ -1,0 +1,1236 @@
+[
+  {
+    "name"  :"io.smallrye.openapi.api.models.media.SchemaImpl",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
+    "name"  :"com.sun.xml.internal.stream.XMLInputFactoryImpl",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
+    "name"  :"com.sun.xml.internal.stream.XMLOutputFactoryImpl",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
+    "name":"[Ljava.lang.String;"
+  }, {
+      "name":"com.thoughtworks.xstream.converters.ConverterLookup",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.ConverterRegistry",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.basic.StringBuilderConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.basic.UUIDConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.enums.EnumConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.enums.EnumMapConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.enums.EnumSetConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.CharsetConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.CurrencyConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.DurationConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.PathConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.RegexPatternConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.StackTraceElementConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.StackTraceElementFactory15",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.SubjectConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.extended.ThrowableConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.reflection.FieldUtil15",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.reflection.LambdaConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.reflection.ReflectionProvider",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.ChronologyConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.DurationConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.HijrahDateConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.InstantConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.JapaneseDateConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.JapaneseEraConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.LocalDateConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.LocalDateTimeConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.LocalTimeConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.MinguoDateConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.MonthDayConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.OffsetDateTimeConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.OffsetTimeConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.PeriodConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.SystemClockConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.ThaiBuddhistDateConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.ValueRangeConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.WeekFieldsConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.YearConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.YearMonthConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.ZoneIdConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.converters.time.ZonedDateTimeConverter",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.core.ClassLoaderReference",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.core.JVM",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.core.JVM$Test",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true,
+      "fields":[
+        {"name":"b", "allowUnsafeAccess":true},
+        {"name":"bool", "allowUnsafeAccess":true},
+        {"name":"c", "allowUnsafeAccess":true},
+        {"name":"d", "allowUnsafeAccess":true},
+        {"name":"f", "allowUnsafeAccess":true},
+        {"name":"i", "allowUnsafeAccess":true},
+        {"name":"l", "allowUnsafeAccess":true},
+        {"name":"o", "allowUnsafeAccess":true},
+        {"name":"s", "allowUnsafeAccess":true}
+      ]
+    },
+    {
+      "name":"com.thoughtworks.xstream.core.util.Base64JavaUtilCodec",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.core.util.CustomObjectOutputStream",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.core.util.SerializationMembers$1",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.AnnotationConfiguration",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.AnnotationMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.ArrayMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.AttributeAliasingMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.AttributeMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.ClassAliasingMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.DefaultImplementationsMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.DefaultMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.DynamicProxyMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.DynamicProxyMapper$DynamicProxy",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.ElementIgnoringMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.EnumMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.FieldAliasingMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.ImmutableTypesMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.ImplicitCollectionMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.LambdaMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.LocalConversionMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.Mapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.Mapper$Null",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.MapperWrapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.OuterClassMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.PackageAliasingMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.SecurityMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.mapper.SystemAttributeAliasingMapper",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.security.AnyTypePermission",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.security.ArrayTypePermission",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.security.InterfaceTypePermission",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.security.NoTypePermission",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.thoughtworks.xstream.security.PrimitiveTypePermission",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"java.awt.Color"
+    },
+    {
+      "name":"java.awt.Font"
+    },
+    {
+      "name":"java.awt.font.TextAttribute",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.io.File"
+    },
+    {
+      "name":"java.io.InputStream"
+    },
+    {
+      "name":"java.lang.Boolean"
+    },
+    {
+      "name":"java.lang.Byte"
+    },
+    {
+      "name":"java.lang.Character"
+    },
+    {
+      "name":"java.lang.Class"
+    },
+    {
+      "name":"java.lang.Double"
+    },
+    {
+      "name":"java.lang.Enum"
+    },
+    {
+      "name":"java.lang.Exception"
+    },
+    {
+      "name":"java.lang.Float"
+    },
+    {
+      "name":"java.lang.Integer"
+    },
+    {
+      "name":"java.lang.Long"
+    },
+    {
+      "name":"java.lang.Number"
+    },
+    {
+      "name":"java.lang.Object"
+    },
+    {
+      "name":"java.lang.Short"
+    },
+    {
+      "name":"java.lang.StackTraceElement"
+    },
+    {
+      "name":"java.lang.String"
+    },
+    {
+      "name":"java.lang.StringBuffer"
+    },
+    {
+      "name":"java.lang.StringBuilder"
+    },
+    {
+      "name":"java.lang.Throwable"
+    },
+    {
+      "name":"java.lang.Void"
+    },
+    {
+      "name":"java.lang.invoke.SerializedLambda"
+    },
+    {
+      "name":"java.lang.reflect.Constructor"
+    },
+    {
+      "name":"java.lang.reflect.Field"
+    },
+    {
+      "name":"java.lang.reflect.InvocationHandler"
+    },
+    {
+      "name":"java.lang.reflect.Member"
+    },
+    {
+      "name":"java.lang.reflect.Method"
+    },
+    {
+      "name":"java.lang.reflect.Proxy",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.math.BigDecimal"
+    },
+    {
+      "name":"java.math.BigInteger"
+    },
+    {
+      "name":"java.net.URI"
+    },
+    {
+      "name":"java.net.URL"
+    },
+    {
+      "name":"java.nio.charset.Charset"
+    },
+    {
+      "name":"java.nio.file.Path"
+    },
+    {
+      "name":"java.nio.file.Paths",
+      "methods":[{"name":"get","parameterTypes":["java.lang.String","java.lang.String[]"] }]
+    },
+    {
+      "name":"java.sql.Date"
+    },
+    {
+      "name":"java.sql.Time"
+    },
+    {
+      "name":"java.sql.Timestamp"
+    },
+    {
+      "name":"java.text.AttributedCharacterIterator$Attribute",
+      "methods":[{"name":"getName","parameterTypes":[] }]
+    },
+    {
+      "name":"java.text.DecimalFormatSymbols"
+    },
+    {
+      "name":"java.time.Clock"
+    },
+    {
+      "name":"java.time.Clock$FixedClock"
+    },
+    {
+      "name":"java.time.Clock$OffsetClock"
+    },
+    {
+      "name":"java.time.Clock$SystemClock"
+    },
+    {
+      "name":"java.time.Clock$TickClock"
+    },
+    {
+      "name":"java.time.DayOfWeek"
+    },
+    {
+      "name":"java.time.Duration"
+    },
+    {
+      "name":"java.time.Instant"
+    },
+    {
+      "name":"java.time.LocalDate"
+    },
+    {
+      "name":"java.time.LocalDateTime"
+    },
+    {
+      "name":"java.time.LocalTime"
+    },
+    {
+      "name":"java.time.Month"
+    },
+    {
+      "name":"java.time.MonthDay"
+    },
+    {
+      "name":"java.time.OffsetDateTime"
+    },
+    {
+      "name":"java.time.OffsetTime"
+    },
+    {
+      "name":"java.time.Period"
+    },
+    {
+      "name":"java.time.Ser"
+    },
+    {
+      "name":"java.time.Year"
+    },
+    {
+      "name":"java.time.YearMonth"
+    },
+    {
+      "name":"java.time.ZoneId"
+    },
+    {
+      "name":"java.time.ZoneOffset"
+    },
+    {
+      "name":"java.time.ZoneRegion"
+    },
+    {
+      "name":"java.time.ZonedDateTime"
+    },
+    {
+      "name":"java.time.chrono.Chronology"
+    },
+    {
+      "name":"java.time.chrono.HijrahChronology"
+    },
+    {
+      "name":"java.time.chrono.HijrahDate"
+    },
+    {
+      "name":"java.time.chrono.HijrahEra"
+    },
+    {
+      "name":"java.time.chrono.IsoChronology"
+    },
+    {
+      "name":"java.time.chrono.JapaneseChronology"
+    },
+    {
+      "name":"java.time.chrono.JapaneseDate"
+    },
+    {
+      "name":"java.time.chrono.JapaneseEra"
+    },
+    {
+      "name":"java.time.chrono.MinguoChronology"
+    },
+    {
+      "name":"java.time.chrono.MinguoDate"
+    },
+    {
+      "name":"java.time.chrono.MinguoEra"
+    },
+    {
+      "name":"java.time.chrono.Ser"
+    },
+    {
+      "name":"java.time.chrono.ThaiBuddhistChronology"
+    },
+    {
+      "name":"java.time.chrono.ThaiBuddhistDate"
+    },
+    {
+      "name":"java.time.chrono.ThaiBuddhistEra"
+    },
+    {
+      "name":"java.time.temporal.ChronoField"
+    },
+    {
+      "name":"java.time.temporal.ChronoUnit"
+    },
+    {
+      "name":"java.time.temporal.IsoFields$Field"
+    },
+    {
+      "name":"java.time.temporal.IsoFields$Unit"
+    },
+    {
+      "name":"java.time.temporal.JulianFields$Field"
+    },
+    {
+      "name":"java.time.temporal.ValueRange"
+    },
+    {
+      "name":"java.time.temporal.WeekFields"
+    },
+    {
+      "name":"java.util.ArrayList"
+    },
+    {
+      "name":"java.util.BitSet"
+    },
+    {
+      "name":"java.util.Calendar"
+    },
+    {
+      "name":"java.util.Collection"
+    },
+    {
+      "name":"java.util.Comparator"
+    },
+    {
+      "name":"java.util.Currency"
+    },
+    {
+      "name":"java.util.Date"
+    },
+    {
+      "name":"java.util.EnumMap",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.util.EnumSet",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.util.GregorianCalendar"
+    },
+    {
+      "name":"java.util.HashMap"
+    },
+    {
+      "name":"java.util.HashSet"
+    },
+    {
+      "name":"java.util.Hashtable"
+    },
+    {
+      "name":"java.util.LinkedHashMap"
+    },
+    {
+      "name":"java.util.LinkedHashSet"
+    },
+    {
+      "name":"java.util.LinkedList"
+    },
+    {
+      "name":"java.util.List"
+    },
+    {
+      "name":"java.util.Locale"
+    },
+    {
+      "name":"java.util.Map"
+    },
+    {
+      "name":"java.util.Map$Entry"
+    },
+    {
+      "name":"java.util.Properties",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.util.Set"
+    },
+    {
+      "name":"java.util.SortedMap"
+    },
+    {
+      "name":"java.util.SortedSet"
+    },
+    {
+      "name":"java.util.TimeZone"
+    },
+    {
+      "name":"java.util.TreeMap",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.util.TreeSet",
+      "allDeclaredFields":true
+    },
+    {
+      "name":"java.util.UUID"
+    },
+    {
+      "name":"java.util.Vector"
+    },
+    {
+      "name":"java.util.concurrent.ConcurrentHashMap"
+    },
+    {
+      "name":"java.util.regex.Pattern"
+    },
+    {
+      "name":"javax.security.auth.Subject"
+    },
+    {
+      "name":"javax.swing.LookAndFeel"
+    },
+    {
+      "name":"javax.xml.datatype.Duration"
+    },
+    {
+      "name":"javax.xml.namespace.QName"
+    },
+    {
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.JITDMNDecisionResult",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.sun.xml.internal.stream.events.XMLEventFactoryImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.drools.commands.impl.CommandFactoryServiceImpl",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"org.kie.kogito.trusty.service.common.responses.SalienciesResponse",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true,
+      "allPublicClasses" : true
+    },
+    {
+      "name": "org.kie.kogito.explainability.api.SaliencyModel",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name": "org.kie.kogito.explainability.api.FeatureImportanceModel",
+      "allDeclaredConstructors" : true,
+      "allPublicConstructors" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true,
+      "allDeclaredFields" : true,
+      "allPublicFields" : true
+    },
+    {
+      "name":"sun.misc.Unsafe",
+      "fields":[{"name":"theUnsafe"}],
+      "methods":[{"name":"allocateInstance","parameterTypes":["java.lang.Class"] }]
+    }
+  ]

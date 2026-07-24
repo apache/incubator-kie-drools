@@ -2011,6 +2011,11 @@
         <artifactId>mapstruct</artifactId>
         <version>${version.org.mapstruct}</version>
       </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>${version.org.mapstruct}</version>
+      </dependency>
       <!-- Do not add mockito-all as it is uberjar! -->
       <dependency>
         <groupId>org.mockito</groupId>

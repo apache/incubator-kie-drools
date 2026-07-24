@@ -1,0 +1,107 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-apps-quarkus-bom</artifactId>
+    <version>999-SNAPSHOT</version>
+    <relativePath>../kogito-apps-quarkus-bom/pom.xml</relativePath>
+  </parent>
+  <artifactId>integration-tests-jobs-service-quarkus</artifactId>
+  <name>Kogito Apps :: Integration Tests :: Jobs Service :: Quarkus</name>
+  <packaging>pom</packaging>
+
+  <properties>
+    <failsafe.include>**/*IT.java</failsafe.include>
+    <project.build.outputTimestamp>2026-03-18T00:00:00Z</project.build.outputTimestamp>
+  </properties>
+
+  <modules>
+    <module>integration-tests-jobs-service-common-quarkus</module>
+    <module>integration-tests-jobs-service-quarkus-management</module>
+    <module>integration-tests-jobs-service-quarkus-messaging</module>
+    <module>integration-tests-jobs-service-quarkus-knative-eventing</module>
+    <module>integration-tests-jobs-service-quarkus-embedded</module>
+  </modules>
+
+  <dependencies>
+    <!-- It seems this one is needed because, somehow, the tests requires the presence of the
+org.kie.kogito/jobs-service-postgresql:999-SNAPSHOT image, which is built as part of the jobs-service-quarkus, even if it's not used directly. -->
+    <!-- ensure jobs-service module was built, but not added in the classpath -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jobs-service-quarkus</artifactId>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jobs-service-postgresql-common</artifactId>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>postgresql</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <container.image.jobs-service>org.kie.kogito/jobs-service-postgresql:${project.version}</container.image.jobs-service>
+        <container.image.data-index-service-postgresql>org.kie.kogito/data-index-service-postgresql:${project.version}</container.image.data-index-service-postgresql>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                <container.image.kafka>${container.image.kafka}</container.image.kafka>
+                <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
+                <container.image.data-index-service-postgresql>${container.image.data-index-service-postgresql}</container.image.data-index-service-postgresql>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

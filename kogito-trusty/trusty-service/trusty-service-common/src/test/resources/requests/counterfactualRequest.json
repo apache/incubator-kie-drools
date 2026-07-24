@@ -1,0 +1,59 @@
+{
+  "goals": [
+    {
+      "name": "deposit",
+      "value": {
+        "kind": "UNIT",
+        "type": "number",
+        "value": 5000
+      }
+    },
+    {
+      "name": "approved",
+      "value": {
+        "kind": "UNIT",
+        "type": "boolean",
+        "value": true
+      }
+    }
+  ],
+  "searchDomains": [
+    {
+      "name": "age",
+      "value": {
+        "kind": "UNIT",
+        "fixed": true,
+        "type": "number"
+      }
+    },
+    {
+      "name": "income",
+      "value": {
+        "kind": "UNIT",
+        "fixed": false,
+        "type": "number",
+        "domain": {
+          "type": "RANGE",
+          "lowerBound": 0,
+          "upperBound": 1000
+        }
+      }
+    },
+    {
+      "name": "taxCode",
+      "value": {
+        "kind": "UNIT",
+        "fixed": false,
+        "type": "string",
+        "domain": {
+          "type": "CATEGORICAL",
+          "categories": [
+            "A",
+            "B",
+            "C"
+          ]
+        }
+      }
+    }
+  ]
+}

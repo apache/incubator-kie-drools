@@ -1,0 +1,66 @@
+{
+  "goals": [
+    {
+      "name": "Fine",
+      "value": {
+        "kind": "STRUCTURE",
+        "type": "tFine",
+        "value": {
+          "Amount": {
+            "kind": "UNIT",
+            "type": "number",
+            "value": 100
+          },
+          "Points": {
+            "kind": "UNIT",
+            "type": "number",
+            "value": 0
+          }
+        }
+      }
+    }
+  ],
+  "searchDomains": [
+    {
+      "name": "Violation",
+      "value": {
+        "kind": "STRUCTURE",
+        "type": "tViolation",
+        "value": {
+          "Type": {
+            "kind": "UNIT",
+            "type": "string",
+            "fixed": false,
+            "domain": {
+              "type": "CATEGORICAL",
+              "categories": [
+                "speed",
+                "driving under the influence"
+              ]
+            }
+          },
+          "Actual Speed": {
+            "kind": "UNIT",
+            "type": "number",
+            "fixed": false,
+            "domain": {
+              "type": "RANGE",
+              "lowerBound": 0,
+              "upperBound": 100
+            }
+          },
+          "Speed Limit": {
+            "kind": "UNIT",
+            "type": "number",
+            "fixed": false,
+            "domain": {
+              "type": "RANGE",
+              "lowerBound": 0,
+              "upperBound": 100
+            }
+          }
+        }
+      }
+    }
+  ]
+}

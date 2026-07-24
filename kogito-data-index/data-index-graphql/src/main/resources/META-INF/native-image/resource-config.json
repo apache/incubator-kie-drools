@@ -1,0 +1,7 @@
+{
+  "resources": {
+    "includes": [
+      { "pattern": "\\QMETA-INF/services/org.kie.kogito.index.graphql.GraphQLMutationsProvider\\E" }
+    ]
+  }
+}

@@ -1,0 +1,635 @@
+scalar DateTime
+scalar BigDecimal
+scalar Long
+scalar JSON
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    ProcessDefinitions(where: ProcessDefinitionArgument, orderBy: ProcessDefinitionOrderBy, pagination: Pagination): [ProcessDefinition]
+    ProcessInstances(where: ProcessInstanceArgument, orderBy: ProcessInstanceOrderBy, pagination: Pagination): [ProcessInstance]
+    UserTaskInstances(where: UserTaskInstanceArgument, orderBy: UserTaskInstanceOrderBy, pagination: Pagination):  [UserTaskInstance]
+    Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination):  [Job]
+}
+type Mutation {
+    ProcessInstanceAbort(id: String): String
+    ProcessInstanceRetry(id: String): String
+    ProcessInstanceSkip(id: String): String
+    ProcessInstanceUpdateVariables(id: String, variables: String): String
+    ProcessInstanceRescheduleSlaTimer(id: String!, expirationTime: DateTime!): String
+    NodeInstanceRescheduleSlaTimer(processInstanceId: String!, nodeInstanceId: String!, expirationTime: DateTime!): String
+    NodeInstanceTrigger(id: String, nodeId: String): String
+    NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
+    NodeInstanceCancel(id: String, nodeInstanceId: String): String
+    JobCancel(id: String): String
+    JobReschedule(id: String, data: String): String
+    UserTaskInstanceUpdate(taskId: String, user: String, groups: [String],  description: String, priority: String,
+        actualOwner: String, adminGroups: [String!], adminUsers: [String!], excludedUsers: [String!],
+        potentialGroups: [String!], potentialUsers: [String!], inputParams: String): String
+    UserTaskInstanceCommentCreate(taskId: String, user: String, groups: [String], comment: String): String
+    UserTaskInstanceAttachmentCreate(taskId: String, user: String, groups: [String], name: String, uri: String): String
+    UserTaskInstanceCommentUpdate(user:String, groups:[String],commentId: String, comment: String): String
+    UserTaskInstanceCommentDelete(user:String, groups:[String],commentId: String): String
+    UserTaskInstanceAttachmentUpdate(user:String, groups:[String],attachmentId: String,  name: String, uri: String): String
+    UserTaskInstanceAttachmentDelete(user:String, groups:[String], attachmentId: String): String
+}
+
+type ProcessDefinition {
+    id: String!
+    name: String
+    version: String
+    nodes: [Node!]
+    source: String
+    addons: [String!]
+    roles: [String!]
+    type: String
+    endpoint: String
+    serviceUrl: String
+    description: String
+    annotations: [String]
+    metadata: JSON
+}
+
+input ProcessDefinitionOrderBy {
+    id: OrderBy
+    name: OrderBy
+    version: OrderBy
+}
+
+input ProcessDefinitionArgument {
+    and: [ProcessDefinitionArgument!]
+    or: [ProcessDefinitionArgument!]
+    not: ProcessDefinitionArgument
+    id: StringArgument
+    name: StringArgument
+    version: StringArgument
+    annotations: StringArrayArgument
+    roles: StringArrayArgument
+    serviceUrl: StringArgument
+    description: StringArgument
+    type: StringArgument
+}
+
+type TimerInstance {
+    timerId: String!
+    processId: String!
+    processInstanceId: String!
+    nodeInstanceId: String
+    description: String
+}
+
+type ProcessInstance {
+    id: String!
+    processId: String!
+    processVersion: String
+    version: String @deprecated(reason: "Use 'processVersion' instead.")
+    processName: String
+    parentProcessInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    rootProcessVersion: String
+    roles: [String!]
+    state: ProcessInstanceState
+    endpoint: String!
+    serviceUrl: String
+    nodes: [NodeInstance!]
+    milestones: [Milestone!]
+    variables: JSON
+    start: DateTime
+    end: DateTime
+    parentProcessInstance: ProcessInstance
+    childProcessInstances: [ProcessInstance!]
+    error: ProcessInstanceError
+    addons: [String!]
+    lastUpdate: DateTime!
+    businessKey: String
+    nodeDefinitions: [Node!]
+    diagram: String
+    source: String
+    definition: ProcessDefinition
+    identity: String
+    createdBy: String
+    updatedBy: String
+    executionSummary: [String]
+    slaDueDate: DateTime
+    timers: [TimerInstance]
+    cloudEventId: String
+    cloudEventSource: String
+}
+
+type ProcessInstanceError {
+    nodeDefinitionId: String!
+    nodeInstanceId: String
+    message: String
+}
+
+enum ProcessInstanceState {
+    PENDING,
+    ACTIVE,
+    COMPLETED,
+    ABORTED,
+    SUSPENDED,
+    ERROR
+}
+
+type Node {
+    id: String!
+    metadata: NodeMetadata!
+    name: String!
+    type: String!
+    uniqueId: String!
+}
+
+type NodeMetadata {
+    UniqueId: String!
+    state: String
+    branch: String
+    action: String
+}
+
+type NodeInstance {
+    id: String!
+    name: String!
+    type: String!
+    enter: DateTime!
+    exit: DateTime
+    definitionId: String!
+    nodeId: String!
+    slaDueDate: DateTime
+    retrigger: Boolean
+    errorMessage: String
+    cancelType: CancelType
+    inputArgs: JSON
+    outputArgs: JSON
+}
+
+enum CancelType {
+    ABORTED,
+    SKIPPED,
+    OBSOLETE,
+    ERROR
+}
+
+enum MilestoneStatus {
+    AVAILABLE,
+    ACTIVE,
+    COMPLETED
+}
+
+type Milestone {
+    id: String!
+    name: String!
+    status: MilestoneStatus!
+}
+
+input ProcessInstanceOrderBy {
+    processId: OrderBy
+    processVersion: OrderBy
+    processName: OrderBy
+    rootProcessId: OrderBy
+    rootProcessVersion: OrderBy
+    state: OrderBy
+    start: OrderBy
+    end: OrderBy
+    error: ProcessInstanceErrorOrderBy
+    lastUpdate: OrderBy
+    businessKey: OrderBy
+    createdBy: OrderBy
+    updatedBy: OrderBy
+}
+
+input ProcessInstanceErrorOrderBy {
+    nodeDefinitionId: OrderBy
+    message: OrderBy
+}
+
+input ProcessInstanceArgument {
+    and: [ProcessInstanceArgument!]
+    or: [ProcessInstanceArgument!]
+    not: ProcessInstanceArgument
+    id: IdArgument
+    processId: StringArgument
+    processVersion: StringArgument
+    processName: StringArgument
+    parentProcessInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    rootProcessVersion: StringArgument
+    state: ProcessInstanceStateArgument
+    error: ProcessInstanceErrorArgument
+    nodes: NodeInstanceArrayArgument
+    milestones: MilestoneArrayArgument
+    endpoint: StringArgument
+    roles: StringArrayArgument
+    start: DateArgument
+    end: DateArgument
+    addons: StringArrayArgument
+    lastUpdate: DateArgument
+    businessKey: StringArgument
+    createdBy: StringArgument
+    updatedBy: StringArgument
+    definition: ProcessDefinitionArgument
+    slaDueDate: DateArgument
+    cloudEventId: StringArgument
+    cloudEventSource: StringArgument
+}
+
+input ProcessInstanceErrorArgument {
+    nodeDefinitionId: StringArgument
+    message: StringArgument
+}
+
+input NodeInstanceArgument {
+    and: [NodeInstanceArgument!]
+    or: [NodeInstanceArgument!]
+    not: NodeInstanceArgument
+    id: IdArgument
+    name: StringArgument
+    definitionId: StringArgument
+    nodeId: StringArgument
+    type: StringArgument
+    enter: DateArgument
+    exit: DateArgument
+    errorMessage: StringArgument
+    retrigger: BooleanArgument
+    slaDueDate: DateArgument
+}
+
+input NodeInstanceArrayArgument {
+    # Array-specific operations
+    contains: NodeInstanceArgument
+    containsAll: [NodeInstanceArgument!]
+    containsAny: [NodeInstanceArgument!]
+    isNull: Boolean
+    and: [NodeInstanceArrayArgument!]
+    or: [NodeInstanceArrayArgument!]
+    not: NodeInstanceArrayArgument
+    # Backward compatibility:
+    id: IdArgument
+    name: StringArgument
+    definitionId: StringArgument
+    nodeId: StringArgument
+    type: StringArgument
+    enter: DateArgument
+    exit: DateArgument
+    errorMessage: StringArgument
+    retrigger: BooleanArgument
+    slaDueDate: DateArgument
+}
+
+input MilestoneStatusArgument {
+    equal: MilestoneStatus
+    in: [MilestoneStatus]
+}
+
+input MilestoneArgument {
+    id: IdArgument
+    name: StringArgument
+    status: MilestoneStatusArgument
+}
+
+input MilestoneArrayArgument {
+    contains: MilestoneArgument
+    containsAll: [MilestoneArgument!]
+    containsAny: [MilestoneArgument!]
+    isNull: Boolean
+    and: [MilestoneArrayArgument!]
+    or: [MilestoneArrayArgument!]
+    not: MilestoneArrayArgument
+    # Backward compatibility fields
+    id: IdArgument
+    name: StringArgument
+    status: MilestoneStatusArgument
+}
+
+input StringArrayArgument {
+    contains: String
+    containsAll: [String!]
+    containsAny: [String!]
+    isNull: Boolean
+}
+
+input IdArgument {
+    in: [String!]
+    equal: String
+    isNull: Boolean
+}
+
+input StringArgument {
+    in: [String!]
+    like: String
+    isNull: Boolean
+    equal: String
+}
+
+input BooleanArgument {
+    isNull: Boolean
+    equal: Boolean
+}
+
+input NumericArgument {
+    in: [Int!]
+    isNull: Boolean
+    equal: Int
+    greaterThan: Int
+    greaterThanEqual: Int
+    lessThan: Int
+    lessThanEqual: Int
+    between: NumericRange
+}
+
+input NumericRange {
+    from: Int!
+    to: Int!
+}
+input LongArgument {
+    in: [Long!]
+    isNull: Long
+    equal: Long
+    greaterThan: Long
+    greaterThanEqual: Long
+    lessThan: Long
+    lessThanEqual: Long
+    between: LongRange
+}
+
+input LongRange {
+    from: Long!
+    to: Long!
+}
+
+input FloatArgument {
+    in: [Float!]
+    isNull: Boolean
+    equal: Float
+    greaterThan: Float
+    greaterThanEqual: Float
+    lessThan: Float
+    lessThanEqual: Float
+    between: FloatRange
+}
+
+input FloatRange {
+    from: Float!
+    to: Float!
+}
+
+input BigDecimalArgument {
+    in: [BigDecimal!]
+    isNull: Boolean
+    equal: BigDecimal
+    greaterThan: BigDecimal
+    greaterThanEqual: BigDecimal
+    lessThan: BigDecimal
+    lessThanEqual: BigDecimal
+    between: BigDecimalRange
+}
+
+input BigDecimalRange {
+    from: BigDecimal!
+    to: BigDecimal!
+}
+
+input DateArgument {
+    isNull: Boolean
+    equal: DateTime
+    greaterThan: DateTime
+    greaterThanEqual: DateTime
+    lessThan: DateTime
+    lessThanEqual: DateTime
+    between: DateRange
+}
+
+input DateRange {
+    from: DateTime!
+    to: DateTime!
+}
+
+input ProcessInstanceStateArgument {
+    equal: ProcessInstanceState
+    in: [ProcessInstanceState]
+}
+
+type Comment {
+    id: String!
+    content: String!
+    updatedBy: String!
+    updatedAt: DateTime!
+}
+
+type Attachment {
+    id: String!
+    name: String!
+    content: String!
+    updatedBy: String!
+    updatedAt: DateTime!
+}
+
+type UserTaskInstance {
+    id: String!
+    userTaskId: String
+    description: String
+    name: String
+    priority: String
+    processInstanceId: String!
+    processId: String
+    processVersion: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    rootProcessVersion: String
+    state: String
+    actualOwner: String
+    adminGroups: [String!]
+    adminUsers: [String!]
+    completed: DateTime
+    started: DateTime
+    excludedUsers: [String!]
+    potentialGroups: [String!]
+    potentialUsers: [String!]
+    inputs: String
+    outputs: String
+    referenceName: String
+    lastUpdate: DateTime!
+    endpoint: String
+    comments: [Comment!]
+    attachments: [Attachment!]
+    externalReferenceId : String
+    slaDueDate: DateTime
+}
+
+input UserTaskInstanceArgument {
+    and: [UserTaskInstanceArgument!]
+    or: [UserTaskInstanceArgument!]
+    not: UserTaskInstanceArgument
+    state: StringArgument
+    id: IdArgument
+    description: StringArgument
+    name: StringArgument
+    priority: StringArgument
+    processId: StringArgument
+    processVersion: StringArgument
+    processInstanceId: IdArgument
+    actualOwner: StringArgument
+    potentialUsers: StringArrayArgument
+    potentialGroups: StringArrayArgument
+    excludedUsers: StringArrayArgument
+    adminGroups: StringArrayArgument
+    adminUsers: StringArrayArgument
+    completed: DateArgument
+    started: DateArgument
+    referenceName: StringArgument
+    lastUpdate: DateArgument
+    comments: CommentArrayArgument
+    attachments: AttachmentArrayArgument
+    slaDueDate: DateArgument
+    rootProcessInstanceId: StringArgument
+    rootProcessId: StringArgument
+    rootProcessVersion: StringArgument
+    externalReferenceId: StringArgument
+    endpoint: StringArgument
+}
+
+input CommentArgument {
+    id: IdArgument
+    content: StringArgument
+    updatedBy: StringArgument
+    updatedAt: DateArgument
+}
+
+input CommentArrayArgument {
+    # Array-specific operations
+    contains: CommentArgument
+    containsAll: [CommentArgument!]
+    containsAny: [CommentArgument!]
+    isNull: Boolean
+    # Logical operators
+    and: [CommentArrayArgument!]
+    or: [CommentArrayArgument!]
+    not: CommentArrayArgument
+    # Backward compatibility: direct property access (treated as 'contains')
+    id: IdArgument
+    content: StringArgument
+    updatedBy: StringArgument
+    updatedAt: DateArgument
+}
+
+input AttachmentArgument {
+    id: IdArgument
+    name: StringArgument
+}
+
+input AttachmentArrayArgument {
+    # Array-specific operations
+    contains: AttachmentArgument
+    containsAll: [AttachmentArgument!]
+    containsAny: [AttachmentArgument!]
+    isNull: Boolean
+    # Logical operators
+    and: [AttachmentArrayArgument!]
+    or: [AttachmentArrayArgument!]
+    not: AttachmentArrayArgument
+    # Backward compatibility: direct property access (treated as 'contains')
+    id: IdArgument
+    name: StringArgument
+}
+
+input UserTaskInstanceOrderBy {
+    state: OrderBy
+    actualOwner: OrderBy
+    description: OrderBy
+    name: OrderBy
+    priority: OrderBy
+    processId: OrderBy
+    processVersion: OrderBy
+    rootProcessId: OrderBy
+    rootProcessVersion: OrderBy
+    completed: OrderBy
+    started: OrderBy
+    referenceName: OrderBy
+    lastUpdate: OrderBy
+}
+
+enum OrderBy {
+    ASC,
+    DESC
+}
+
+input Pagination {
+    limit: Int
+    offset: Int
+}
+
+type Job {
+    id: String!
+    processId: String
+    processVersion: String
+    processInstanceId: String
+    nodeInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    rootProcessVersion: String
+    status: JobStatus!
+    expirationTime: DateTime
+    priority: Int
+    callbackEndpoint: String
+    repeatInterval: Int
+    repeatLimit: Int
+    scheduledId: String
+    retries: Int
+    lastUpdate: DateTime
+    executionCounter: Int
+    endpoint: String
+    exceptionMessage: String
+    exceptionDetails: String
+}
+
+enum JobStatus {
+    ERROR,
+    RUNNING,
+    EXECUTED,
+    SCHEDULED,
+    RETRY,
+    CANCELED
+}
+
+input JobStatusArgument {
+    equal: JobStatus
+    in: [JobStatus]
+}
+
+input JobArgument {
+    and: [JobArgument!]
+    or: [JobArgument!]
+    not: JobArgument
+    id: IdArgument
+    processId: StringArgument
+    processVersion: StringArgument
+    processInstanceId: IdArgument
+    nodeInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    rootProcessVersion: StringArgument
+    status: JobStatusArgument
+    expirationTime: DateArgument
+    priority: NumericArgument
+    scheduledId: IdArgument
+    lastUpdate: DateArgument
+    exceptionMessage: StringArgument
+}
+
+input JobOrderBy {
+    processId: OrderBy
+    processVersion: OrderBy
+    rootProcessId: OrderBy
+    rootProcessVersion: OrderBy
+    status: OrderBy
+    expirationTime: OrderBy
+    priority: OrderBy
+    retries: OrderBy
+    lastUpdate: OrderBy
+    executionCounter: OrderBy
+    exceptionMessage: OrderBy
+}

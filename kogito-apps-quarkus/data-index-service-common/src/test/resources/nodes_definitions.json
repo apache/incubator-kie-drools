@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "name": "Start",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-12",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-12",
+      "state": "ChooseOnLanguage"
+    }
+  },
+  {
+    "id": "2",
+    "name": "End",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-13",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-13",
+      "state": "GreetPerson"
+    }
+  },
+  {
+    "id": "3",
+    "name": "ChooseOnLanguage",
+    "type": "INTERNAL",
+    "uniqueId": "3",
+    "metadata": {
+      "UniqueId": "3",
+      "Variable": "workflowdata",
+      "state": "ChooseOnLanguage",
+      "Default": "3_12"
+    }
+  },
+  {
+    "id": "4",
+    "name": "GreetInEnglish",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-15",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-15",
+      "state": "GreetInEnglish"
+    }
+  },
+  {
+    "id": "5",
+    "name": "GreetInSpanish",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-16",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-16",
+      "state": "GreetInSpanish"
+    }
+  },
+  {
+    "id": "6",
+    "name": "GreetPerson",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-17",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-17",
+      "state": "GreetPerson"
+    }
+  },
+  {
+    "id": "7",
+    "name": "EmbeddedStart",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-18",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-18"
+    }
+  },
+  {
+    "id": "9",
+    "name": "greetFunction",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-19",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-19",
+      "action": "greetAction",
+      "state": "GreetPerson"
+    }
+  },
+  {
+    "id": "10",
+    "name": "Script",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-20",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-20"
+    }
+  },
+  {
+    "id": "11",
+    "name": "EmbeddedEnd",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-21",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-21"
+    }
+  },
+  {
+    "id": "12",
+    "name": "Join-GreetInEnglish",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-22",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-22",
+      "state": "GreetInEnglish"
+    }
+  },
+  {
+    "id": "13",
+    "name": "Join-GreetPerson",
+    "type": "INTERNAL",
+    "uniqueId": "_jbpm-unique-23",
+    "metadata": {
+      "UniqueId": "_jbpm-unique-23",
+      "state": "GreetPerson"
+    }
+  }
+]

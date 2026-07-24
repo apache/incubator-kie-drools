@@ -1,0 +1,7 @@
+{
+  "specversion":"1.0",
+  "id":"7dad3bf4-14cc-4c8e-aa3c-8f4598865142",
+  "source":"Traffic+Violation",
+  "type":"org.kie.kogito.tracing.decision.event.trace.TraceEvent",
+  "data":null
+}

@@ -1,0 +1,6 @@
+[
+  {
+    "name":"org.kie.kogito.index.addon.vertx.VertxGraphiQLSetup",
+    "fields":[{"name":"path"}, {"name":"rootPath"}]
+  }
+]
