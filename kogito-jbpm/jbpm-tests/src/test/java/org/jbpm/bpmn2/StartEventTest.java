@@ -309,6 +309,22 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testMessageStartWithoutDataMapping() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        final List<ProcessInstance> startedProcesses = new ArrayList<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                startedProcesses.add(event.getProcessInstance());
+            }
+        });
+        org.kie.kogito.process.Process<MessageStartNoMappingModel> definition = MessageStartNoMappingProcess.newProcess(app);
+        definition.send(SignalFactory.of("HelloMessage"));
+        assertThat(startedProcesses).hasSize(1);
+        assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("MessageStartNoMapping");
+    }
+
+    @Test
     public void testMultipleStartEventsRegularStart() throws Exception {
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/start/BPMN2-MultipleStartEventProcessLongInterval.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();

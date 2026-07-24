@@ -40,6 +40,7 @@ import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -52,6 +53,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
@@ -152,13 +154,16 @@ public class MessageConsumerGenerator {
     }
 
     private void generateModelMethods(ClassOrInterfaceDeclaration template) {
-        //generate setter call on eventToModel method
-        template.findAll(MethodCallExpr.class)
-                .forEach(t -> {
-                    String name = (String) trigger.getNode().getMetaData().get(Metadata.MAPPING_VARIABLE);
-                    name = Optional.ofNullable(name).orElseGet(() -> trigger.getModelRef());
-                    t.setName(t.getNameAsString().replace("$SetModelMethodName$", "set" + StringUtils.ucFirst(name)));
-                });
+        String mappedVariable = (String) trigger.getNode().getMetaData().get(Metadata.MAPPING_VARIABLE);
+        mappedVariable = Optional.ofNullable(mappedVariable).orElseGet(() -> trigger.getModelRef());
+        if (mappedVariable == null) {
+            template.findAll(MethodDeclaration.class, m -> m.getName().getIdentifier().equals("eventToModel"))
+                    .forEach(m -> m.getBody().ifPresent(body -> body.findAll(IfStmt.class).forEach(Node::remove)));
+        } else {
+            String setModelMethodName = "set" + StringUtils.ucFirst(mappedVariable);
+            template.findAll(MethodCallExpr.class)
+                    .forEach(t -> t.setName(t.getNameAsString().replace("$SetModelMethodName$", setModelMethodName)));
+        }
 
         if (!(trigger.getNode() instanceof StartNode)) {
             template.findAll(MethodDeclaration.class, m -> m.getName().getIdentifier().equals("getModelConverter")).stream().findFirst().ifPresent(template::remove);
@@ -201,8 +206,8 @@ public class MessageConsumerGenerator {
 
     private void interpolateStrings(MethodCallExpr vv) {
         String s = vv.getNameAsString();
-        String interpolated =
-                s.replace("$DataType$", StringUtils.ucFirst(trigger.getModelRef()));
-        vv.setName(interpolated);
+        if (s.contains("$DataType$")) {
+            vv.setName(s.replace("$DataType$", StringUtils.ucFirst(trigger.getModelRef())));
+        }
     }
 }
