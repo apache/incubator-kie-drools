@@ -37,7 +37,11 @@ public class NodeCreator<T extends NodeImpl> {
 
     public NodeCreator(NodeContainer nodeContainer, Class<T> clazz) {
         this.nodeContainer = nodeContainer;
-        this.constructor = (Constructor<T>) clazz.getConstructor();
+        try {
+            this.constructor = (Constructor<T>) clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("No public no-arg constructor found for " + clazz.getName(), e);
+        }
     }
 
     public T createNode(String name) throws Exception {
