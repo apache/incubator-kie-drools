@@ -37,7 +37,7 @@ public class NodeCreator<T extends NodeImpl> {
 
     public NodeCreator(NodeContainer nodeContainer, Class<T> clazz) {
         this.nodeContainer = nodeContainer;
-        this.constructor = (Constructor<T>) clazz.getConstructors()[0];
+        this.constructor = (Constructor<T>) clazz.getConstructor();
     }
 
     public T createNode(String name) throws Exception {
