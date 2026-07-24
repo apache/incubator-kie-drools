@@ -56,7 +56,7 @@ public abstract class AbstractCloudEventDataConverter<O> implements Converter<Cl
             return Optional.of(targetClass.isAssignableFrom(pojo.getClass()) ? targetClass.cast(pojo) : PojoCloudEventDataMapper.from(objectMapper, targetClass).map(value).getValue());
         } else if (value instanceof JsonCloudEventData) {
             JsonNode node = ((JsonCloudEventData) value).getNode();
-            return Optional.of(JsonNode.class.isAssignableFrom(targetClass) ? targetClass.cast(node) : objectMapper.convertValue(node, targetClass));
+            return Optional.ofNullable(JsonNode.class.isAssignableFrom(targetClass) ? targetClass.cast(node) : objectMapper.convertValue(node, targetClass));
         }
         return Optional.empty();
     }
