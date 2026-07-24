@@ -491,11 +491,10 @@ public class ProcessGenerator {
             for (Entry<String, String> subProcess : processMetaData.getSubProcesses().entrySet()) {
                 FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();
 
-                String fieldName = "process" + subProcess.getKey();
+                String fieldName = "process" + sanitizeClassName(subProcess.getKey());
+                String subProcessModelClass = packageName + "." + sanitizeClassName(subProcess.getKey() + "Model");
                 ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()),
-                        NodeList.nodeList(
-                                new ClassOrInterfaceType(null, processMetaData.getModelPackageName() != null ? processMetaData.getModelPackageName() + "." + processMetaData.getModelClassName()
-                                        : sanitizeClassName(subProcess.getKey() + "Model"))));
+                        NodeList.nodeList(new ClassOrInterfaceType(null, subProcessModelClass)));
                 if (context.hasDI()) {
                     subprocessFieldDeclaration
                             .addVariable(new VariableDeclarator(modelType, fieldName));

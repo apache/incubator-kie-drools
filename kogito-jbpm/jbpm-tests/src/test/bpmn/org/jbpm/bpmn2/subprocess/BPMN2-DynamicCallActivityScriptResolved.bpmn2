@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<!--
+  Parent process where a script task computes the subprocess ID at runtime
+  and stores it in a variable. The callActivity then resolves #{subprocessId}
+  from that script-assigned value. Tests that variable resolution sees values
+  written during the running instance, not just start-time parameters.
+-->
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_subprocessIdItem" structureRef="String"/>
+  <itemDefinition id="_yItem"            structureRef="String"/>
+
+  <process processType="Private" isExecutable="true"
+           id="DynamicCallActivityScriptResolved"
+           name="Dynamic Call Activity Script Resolved"
+           tns:version="1"
+           tns:packageName="org.jbpm.bpmn2.subprocess">
+
+    <!-- subprocessId starts null; the script task sets it before the callActivity -->
+    <property id="subprocessId" itemSubjectRef="_subprocessIdItem"/>
+    <property id="y"            itemSubjectRef="_yItem"/>
+
+    <startEvent id="_1" name="Start"/>
+
+    <!-- Script sets the subprocess ID programmatically -->
+    <scriptTask id="_2" name="ComputeSubprocessId">
+      <script>kcontext.setVariable("subprocessId", "CallActivitySubProcess");</script>
+    </scriptTask>
+
+    <callActivity id="_3" name="DynamicSubProcess" calledElement="#{subprocessId}"
+                  tns:waitForCompletion="true" tns:independent="false">
+      <ioSpecification>
+        <dataOutput id="_3_subYOutput" name="subY"/>
+        <outputSet>
+          <dataOutputRefs>_3_subYOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataOutputAssociation>
+        <sourceRef>_3_subYOutput</sourceRef>
+        <targetRef>y</targetRef>
+      </dataOutputAssociation>
+    </callActivity>
+
+    <endEvent id="_4" name="End"/>
+
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+  </process>
+
+</definitions>

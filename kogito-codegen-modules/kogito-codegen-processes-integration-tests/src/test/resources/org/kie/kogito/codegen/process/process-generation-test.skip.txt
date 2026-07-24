@@ -22,3 +22,5 @@ links/DifferentLinkProcess.bpmn2
 links/EmptyLinkProcess.bpmn2
 links/MultipleCatchLinkProcess.bpmn2
 links/UnconnectedLinkProcess.bpmn2
+subprocess/CallActivityHyphenated.bpmn2
+subprocess/CallActivityHyphenatedSubProcess.bpmn2

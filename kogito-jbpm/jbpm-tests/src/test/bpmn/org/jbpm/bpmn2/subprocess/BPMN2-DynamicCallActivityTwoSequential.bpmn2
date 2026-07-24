@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<!--
+  Parent process with two sequential callActivity nodes.
+  Both use the same variable expression #{subprocessId}, but a script task
+  between them changes the value so each invocation resolves to a different
+  child process. This tests that resolution is truly per-execution, not cached.
+-->
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_subprocessIdItem" structureRef="String"/>
+
+  <process processType="Private" isExecutable="true"
+           id="DynamicCallActivityTwoSequential"
+           name="Dynamic Call Activity Two Sequential"
+           tns:version="1"
+           tns:packageName="org.jbpm.bpmn2.subprocess">
+
+    <property id="subprocessId" itemSubjectRef="_subprocessIdItem"/>
+
+    <startEvent id="_1" name="Start"/>
+
+    <!-- First call — resolves subprocessId to whatever was passed at start -->
+    <callActivity id="_2" name="FirstCall" calledElement="#{subprocessId}"
+                  tns:waitForCompletion="true" tns:independent="false"/>
+
+    <!-- Script switches the variable to the second child process -->
+    <scriptTask id="_3" name="SwitchSubprocess">
+      <script>kcontext.setVariable("subprocessId", "DynamicSubProcessB");</script>
+    </scriptTask>
+
+    <!-- Second call — resolves subprocessId to "DynamicSubProcessB" -->
+    <callActivity id="_4" name="SecondCall" calledElement="#{subprocessId}"
+                  tns:waitForCompletion="true" tns:independent="false"/>
+
+    <endEvent id="_5" name="End"/>
+
+    <sequenceFlow id="_1-_2" sourceRef="_1"  targetRef="_2"/>
+    <sequenceFlow id="_2-_3" sourceRef="_2"  targetRef="_3"/>
+    <sequenceFlow id="_3-_4" sourceRef="_3"  targetRef="_4"/>
+    <sequenceFlow id="_4-_5" sourceRef="_4"  targetRef="_5"/>
+  </process>
+
+</definitions>

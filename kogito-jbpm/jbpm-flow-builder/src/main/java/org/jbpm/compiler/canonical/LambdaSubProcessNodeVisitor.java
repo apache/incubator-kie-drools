@@ -18,42 +18,14 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
+import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
-import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.Processes;
 
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_INDEPENDENT;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_ID;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_NAME;
@@ -72,12 +44,6 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
 
     @Override
     public void visitNode(String factoryField, SubProcessNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        Optional<Expression> retValue;
-        try (InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/SubProcessFactoryTemplate.java")) {
-            retValue = parse(resourceAsStream).findFirst(Expression.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         String name = node.getName();
         String subProcessId = node.getProcessId();
 
@@ -87,175 +53,18 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
 
         body.addStatement(getAssignedFactoryMethod(factoryField, SubProcessNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "Call Activity"))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_ID, new StringLiteralExpr(subProcessId)))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_NAME, new StringLiteralExpr(getOrDefault(node.getProcessName(), ""))))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_ID, ExpressionUtils.getLiteralExpr(subProcessId)))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_NAME, ExpressionUtils.getLiteralExpr(getOrDefault(node.getProcessName(), ""))))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_WAIT_FOR_COMPLETION, new BooleanLiteralExpr(node.isWaitForCompletion())))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_INDEPENDENT, new BooleanLiteralExpr(node.isIndependent())));
-
-        Map<String, String> inputTypes = node.getIoSpecification().getInputTypes();
-
-        String subProcessModelClassName = metadata.getModelClassName() != null ? metadata.getModelClassName() : ProcessToExecModelGenerator.extractModelClassName(subProcessId);
-
-        ModelMetaData subProcessModel = new ModelMetaData(subProcessId,
-                metadata.getModelPackageName() != null ? metadata.getModelPackageName() : metadata.getPackageName(),
-                subProcessModelClassName,
-                KogitoWorkflowProcess.PRIVATE_VISIBILITY,
-                VariableDeclarations.ofRawInfo(inputTypes),
-                false);
-
-        retValue.ifPresentOrElse(retValueExpression -> {
-
-            retValueExpression.findAll(ClassOrInterfaceType.class)
-                    .stream()
-                    .filter(t -> t.getNameAsString().equals("$Type$"))
-                    .forEach(t -> t.setName(subProcessModelClassName));
-
-            retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
-                    .ifPresent(m -> m.setBody(bind(subProcessModel)));
-            retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("createInstance"))
-                    .ifPresent(m -> m.setBody(createInstance(node, metadata)));
-            retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
-                    .ifPresent(m -> m.setBody(unbind(node)));
-            body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey(), retValueExpression));
-
-        }, () -> body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey())));
 
         addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
-    }
 
-    private BlockStmt bind(ModelMetaData subProcessModel) {
-        BlockStmt actionBody = new BlockStmt();
-        actionBody.addStatement(subProcessModel.newInstance("model"));
-
-        // process the inputs of the task
-        ClassOrInterfaceType nodeInstanceType = new ClassOrInterfaceType(null, NodeInstanceImpl.class.getCanonicalName());
-        ClassOrInterfaceType objectType = new ClassOrInterfaceType(null, Object.class.getCanonicalName());
-        ClassOrInterfaceType stringType = new ClassOrInterfaceType(null, String.class.getCanonicalName());
-        ClassOrInterfaceType type = new ClassOrInterfaceType(null, Map.class.getCanonicalName()).setTypeArguments(nodeList(stringType, objectType));
-        VariableDeclarationExpr expr = new VariableDeclarationExpr(type, "inputs");
-
-        BlockStmt lambdaBody = new BlockStmt();
-        MethodCallExpr getVariableExpr = new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getVariable").addArgument(new NameExpr("name"));
-        Expression getNodeInstance = new CastExpr(nodeInstanceType, new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getNodeInstance"));
-        lambdaBody.addStatement(new ReturnStmt(getVariableExpr));
-        Parameter varName = new Parameter(stringType, "name");
-        LambdaExpr sourceResolverExpr = new LambdaExpr(nodeList(varName), lambdaBody);
-
-        MethodCallExpr processInputsExpr = new MethodCallExpr(null, "org.jbpm.workflow.core.impl.NodeIoHelper.processInputs", nodeList(getNodeInstance, sourceResolverExpr));
-        AssignExpr inputs = new AssignExpr(expr, processInputsExpr, AssignExpr.Operator.ASSIGN);
-        actionBody.addStatement(inputs);
-
-        actionBody.addStatement(subProcessModel.callUpdateFromMap("model", "inputs"));
-        actionBody.addStatement(new ReturnStmt(new NameExpr("model")));
-        return actionBody;
-    }
-
-    private BlockStmt createInstance(SubProcessNode subProcessNode, ProcessMetaData metadata) {
-        String processId = ProcessToExecModelGenerator.extractProcessId(subProcessNode.getProcessId());
-        String subProcessModelClassName = metadata.getModelClassName() != null ? metadata.getModelClassName() : ProcessToExecModelGenerator.extractModelClassName(processId);
-        String processFieldName = "app";
-        Expression expr = new NameExpr(processFieldName);
-        ClassOrInterfaceType processesType = new ClassOrInterfaceType(null, Processes.class.getCanonicalName());
-        expr = new MethodCallExpr(expr, "get", NodeList.nodeList(new ClassExpr(processesType)));
-        expr = new MethodCallExpr(expr, "processById", NodeList.nodeList(new StringLiteralExpr(subProcessNode.getProcessId())));
-        expr = new MethodCallExpr(expr, "createInstance").addArgument("model");
-        ClassOrInterfaceType subProcessType = new ClassOrInterfaceType(null, ProcessInstance.class.getCanonicalName());
-        subProcessType.setTypeArguments(new ClassOrInterfaceType(null, subProcessModelClassName));
-        expr = new CastExpr(subProcessType, expr);
-
-        metadata.addSubProcess(processId, subProcessNode.getProcessId());
-
-        return new BlockStmt().addStatement(new ReturnStmt(expr));
-    }
-
-    private BlockStmt unbind(SubProcessNode subProcessNode) {
-        BlockStmt actionBody = new BlockStmt();
-
-        // process the outputs of the task
-        ClassOrInterfaceType nodeInstanceType = new ClassOrInterfaceType(null, NodeInstanceImpl.class.getCanonicalName());
-        ClassOrInterfaceType objectType = new ClassOrInterfaceType(null, Object.class.getCanonicalName());
-        ClassOrInterfaceType stringType = new ClassOrInterfaceType(null, String.class.getCanonicalName());
-        ClassOrInterfaceType type = new ClassOrInterfaceType(null, Map.class.getCanonicalName()).setTypeArguments(nodeList(stringType, objectType));
-        ClassOrInterfaceType hashMapType = new ClassOrInterfaceType(null, HashMap.class.getCanonicalName()).setTypeArguments(nodeList(stringType, objectType));
-
-        // we get the outputs from model
-        VariableDeclarationExpr expr = new VariableDeclarationExpr(type, "outputs");
-        actionBody.addStatement(new AssignExpr(expr, new ObjectCreationExpr(null, hashMapType, nodeList()), AssignExpr.Operator.ASSIGN));
-        // do the actual assignments
-        for (DataDefinition outputDefinition : subProcessNode.getIoSpecification().getDataOutput().values()) {
-            // remove multiinstance data. It does not belong to this model it is just for calculations with
-            // data associations
-            String collectionOutput = (String) subProcessNode.getMetaData().get("MICollectionOutput");
-            if (collectionOutput != null && collectionOutput.equals(outputDefinition.getLabel())) {
-                continue;
-            }
-            DataDefinition multiInstance = subProcessNode.getMultiInstanceSpecification().getOutputDataItem();
-            if (multiInstance != null && multiInstance.getLabel().equals(outputDefinition.getLabel())) {
-                continue;
-            }
-
-            Expression getValueExpr = new MethodCallExpr(new NameExpr("model"), "get" + ucFirst(outputDefinition.getLabel()));
-            Expression setValueExpr = new MethodCallExpr(new NameExpr("outputs"), "put", nodeList(new StringLiteralExpr(outputDefinition.getLabel()), getValueExpr));
-            actionBody.addStatement(setValueExpr);
+        if (subProcessId != null && !subProcessId.contains("#{")) {
+            String processId = ProcessToExecModelGenerator.extractProcessId(subProcessId);
+            metadata.addSubProcess(processId, subProcessId);
         }
-
-        // source resolver
-        BlockStmt lambdaSourceBody = new BlockStmt();
-        Expression getSourceVariableExpr = new MethodCallExpr(new NameExpr("outputs"), "get", nodeList(new NameExpr("name")));
-        lambdaSourceBody.addStatement(new ReturnStmt(getSourceVariableExpr));
-        LambdaExpr sourceResolverExpr = new LambdaExpr(nodeList(new Parameter(stringType, "name")), lambdaSourceBody);
-
-        // target resolver
-        BlockStmt lambdaTargetBody = new BlockStmt();
-        Expression getTargetVariableExpr = new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getVariable").addArgument(new NameExpr("name"));
-        lambdaTargetBody.addStatement(new ReturnStmt(getTargetVariableExpr));
-        LambdaExpr targetResolverExpr = new LambdaExpr(nodeList(new Parameter(stringType, "name")), lambdaTargetBody);
-
-        Expression getNodeInstance = new CastExpr(nodeInstanceType, new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getNodeInstance"));
-        MethodCallExpr processOutputsExpr = new MethodCallExpr(null, "org.jbpm.workflow.core.impl.NodeIoHelper.processOutputs", nodeList(getNodeInstance, sourceResolverExpr, targetResolverExpr));
-
-        actionBody.addStatement(processOutputsExpr);
-
-        return actionBody;
-    }
-
-    protected Expression dotNotationToSetExpression(String dotNotation, String value) {
-        String[] elements = dotNotation.split("\\.");
-        Expression scope = new NameExpr(elements[0]);
-        if (elements.length == 1) {
-            return new AssignExpr(
-                    scope,
-                    new NameExpr(value),
-                    AssignExpr.Operator.ASSIGN);
-        }
-        for (int i = 1; i < elements.length - 1; i++) {
-            scope = new MethodCallExpr()
-                    .setScope(scope)
-                    .setName("get" + ucFirst(elements[i]));
-        }
-
-        return new MethodCallExpr()
-                .setScope(scope)
-                .setName("set" + ucFirst(elements[elements.length - 1]))
-                .addArgument(value);
-    }
-
-    protected Expression dotNotationToGetExpression(String dotNotation) {
-        String[] elements = dotNotation.split("\\.");
-        Expression scope = new NameExpr(elements[0]);
-
-        if (elements.length == 1) {
-            return scope;
-        }
-
-        for (int i = 1; i < elements.length; i++) {
-            scope = new MethodCallExpr()
-                    .setScope(scope)
-                    .setName("get" + ucFirst(elements[i]));
-        }
-
-        return scope;
     }
 }

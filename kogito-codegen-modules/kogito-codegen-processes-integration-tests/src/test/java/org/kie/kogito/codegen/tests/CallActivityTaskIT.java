@@ -216,4 +216,38 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
                 .containsEntry("x", "a");
     }
 
+    /**
+     * Verifies that a subprocess whose process id contains hyphens 
+     */
+    @Test
+    public void testCallActivityWithHyphenatedSubProcessId() throws Exception {
+
+        Application app = generateCodeProcessesOnly(
+                "subprocess/CallActivityHyphenated.bpmn2",
+                "subprocess/CallActivityHyphenatedSubProcess.bpmn2");
+        assertThat(app).isNotNull();
+
+        // The hyphenated subprocess must be reachable by its original id
+        assertThat(app.get(Processes.class).processById("call-activity-sub-process")).isNotNull();
+
+        Process<? extends Model> p = app.get(Processes.class).processById("ParentProcessHyphenated");
+        assertThat(p).isNotNull();
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("x", "inputValue");
+        parameters.put("y", "");
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model) processInstance.variables();
+        // The child sets subY = "hyphenated result"; it is mapped back into parent's y
+        assertThat(result.toMap())
+                .containsEntry("y", "hyphenated result")
+                .containsEntry("x", "inputValue");
+    }
+
 }

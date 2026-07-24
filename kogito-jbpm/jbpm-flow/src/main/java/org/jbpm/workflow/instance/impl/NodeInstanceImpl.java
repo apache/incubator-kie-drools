@@ -711,6 +711,16 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return expression != null && PatternConstants.PARAMETER_MATCHER.matcher(expression).find();
     }
 
+    /**
+     * Extracts the first variable/expression name from a #{...} template.
+     * For example, {@code "#{processName}"} returns {@code "processName"} and
+     * {@code "#{a + b}-suffix"} returns {@code "a + b"}.
+     */
+    protected static String extractFirstVariableName(String expression) {
+        Matcher m = PatternConstants.PARAMETER_MATCHER.matcher(expression);
+        return m.find() ? m.group(1) : expression;
+    }
+
     public String resolveExpression(String expression) {
         return isExpression(expression) ? (String) resolveValue(expression) : expression;
     }
