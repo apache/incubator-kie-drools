@@ -36,7 +36,7 @@ jobs:
     concurrency:
       group: pr-drools_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
-    timeout-minutes: 120
+    timeout-minutes: 240
     strategy:
       matrix:
         os: [ubuntu-latest]
