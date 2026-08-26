@@ -179,28 +179,28 @@ public abstract class JPAAbstractQuery<R> {
                 })
                 .collect(Collectors.joining(" UNION ALL "));
 
-        String cte = anchorBlock + ", _allowed_processes (processId, processVersion) AS (" + unionSelects + ") ";
+        String cte = anchorBlock + ", allowed_processes (processId, processVersion) AS (" + unionSelects + ") ";
 
         String isolationPredicate;
         if (rootProcessIdColumn != null) {
             String preFilter = "("
-                    + processIdColumn + " IN (SELECT ap.processId FROM _allowed_processes ap)"
-                    + " OR " + rootProcessIdColumn + " IN (SELECT ap.processId FROM _allowed_processes ap)"
+                    + processIdColumn + " IN (SELECT ap.processId FROM allowed_processes ap)"
+                    + " OR " + rootProcessIdColumn + " IN (SELECT ap.processId FROM allowed_processes ap)"
                     + ")";
             String versionCheck = "("
                     + processVersionColumn + " IS NULL"
-                    + " OR EXISTS (SELECT 1 FROM _allowed_processes ap WHERE ap.processId = " + rootProcessIdColumn
+                    + " OR EXISTS (SELECT 1 FROM allowed_processes ap WHERE ap.processId = " + rootProcessIdColumn
                     + " AND ap.processVersion = " + rootProcessVersionColumn + ")"
                     + " OR (" + rootProcessIdColumn + " IS NULL"
-                    + " AND EXISTS (SELECT 1 FROM _allowed_processes ap WHERE ap.processId = " + processIdColumn
+                    + " AND EXISTS (SELECT 1 FROM allowed_processes ap WHERE ap.processId = " + processIdColumn
                     + " AND ap.processVersion = " + processVersionColumn + "))"
                     + ")";
             isolationPredicate = preFilter + " AND " + versionCheck;
         } else {
-            isolationPredicate = processIdColumn + " IN (SELECT ap.processId FROM _allowed_processes ap)"
+            isolationPredicate = processIdColumn + " IN (SELECT ap.processId FROM allowed_processes ap)"
                     + " AND ("
                     + processVersionColumn + " IS NULL"
-                    + " OR EXISTS (SELECT 1 FROM _allowed_processes ap WHERE ap.processId = " + processIdColumn
+                    + " OR EXISTS (SELECT 1 FROM allowed_processes ap WHERE ap.processId = " + processIdColumn
                     + " AND ap.processVersion = " + processVersionColumn + ")"
                     + ")";
         }
