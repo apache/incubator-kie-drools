@@ -84,7 +84,7 @@ public class GenericRepository extends Repository {
      * Wraps a base SQL query with a CTE for data isolation filtering.
      * The CTE creates an allowed_processes table with multiple process IDs.
      *
-     * @param baseQuery  The base SQL query to wrap
+     * @param baseQuery The base SQL query to wrap
      * @param processIds Collection of process IDs to include in the CTE
      * @return The wrapped query with CTE and data isolation filtering
      */

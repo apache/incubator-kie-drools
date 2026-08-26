@@ -172,7 +172,8 @@ public abstract class JPAAbstractQuery<R> {
         String unionSelects = java.util.stream.IntStream.range(0, allowedKeys.size())
                 .mapToObj(i -> {
                     if (i == 0) {
-                        return "SELECT CAST(:processId" + i + " AS VARCHAR(255)) AS processId, CAST(:processVersion" + i + " AS VARCHAR(255)) AS processVersion FROM " + fromTable + " WHERE id = (SELECT target_id FROM anchor_row)";
+                        return "SELECT CAST(:processId" + i + " AS VARCHAR(255)) AS processId, CAST(:processVersion" + i + " AS VARCHAR(255)) AS processVersion FROM " + fromTable
+                                + " WHERE id = (SELECT target_id FROM anchor_row)";
                     } else {
                         return "SELECT :processId" + i + ", :processVersion" + i + " FROM " + fromTable + " WHERE id = (SELECT target_id FROM anchor_row)";
                     }
