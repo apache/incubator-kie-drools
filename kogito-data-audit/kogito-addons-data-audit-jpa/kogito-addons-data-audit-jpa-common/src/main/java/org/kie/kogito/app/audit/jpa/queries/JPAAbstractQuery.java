@@ -169,7 +169,7 @@ public abstract class JPAAbstractQuery<R> {
 
         String anchorBlock = "WITH anchor_row AS (SELECT MIN(id) as target_id FROM " + fromTable + ")";
 
-        String unionSelects = java.util.stream.IntStream.range(0, allowedKeys.size())
+        String unionSelects = IntStream.range(0, allowedKeys.size())
                 .mapToObj(i -> {
                     if (i == 0) {
                         return "SELECT CAST(:processId" + i + " AS VARCHAR(255)) AS processId, CAST(:processVersion" + i + " AS VARCHAR(255)) AS processVersion FROM " + fromTable

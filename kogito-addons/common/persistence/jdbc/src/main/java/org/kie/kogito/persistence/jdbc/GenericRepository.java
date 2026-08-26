@@ -22,6 +22,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -95,7 +96,7 @@ public class GenericRepository extends Repository {
 
         String processInstancesTable = "process_instances";
         String anchorBlock = "WITH anchor_row AS (SELECT MIN(id) as target_id FROM " + processInstancesTable + ")";
-        String unionSelects = java.util.stream.IntStream.range(0, processIds.size())
+        String unionSelects = IntStream.range(0, processIds.size())
                 .mapToObj(i -> {
                     if (i == 0) {
                         return "SELECT CAST(? AS VARCHAR(255)), CAST(? AS VARCHAR(255)) FROM " + processInstancesTable + " WHERE id = (SELECT target_id FROM anchor_row)";
