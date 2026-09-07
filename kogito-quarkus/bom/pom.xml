@@ -179,7 +179,7 @@
       </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-junit5</artifactId>
+        <artifactId>quarkus-junit</artifactId>
         <version>${version.io.quarkus.quarkus-test}</version>
         <exclusions>
           <exclusion>
@@ -190,7 +190,7 @@
       </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-junit5-internal</artifactId>
+        <artifactId>quarkus-junit-internal</artifactId>
         <version>${version.io.quarkus.quarkus-test}</version>
         <exclusions>
           <exclusion>
