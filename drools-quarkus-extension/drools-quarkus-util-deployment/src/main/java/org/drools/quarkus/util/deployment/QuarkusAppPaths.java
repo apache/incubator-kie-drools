@@ -51,8 +51,8 @@ public class QuarkusAppPaths extends AppPaths {
     }
 
     protected QuarkusAppPaths(List<Path> projectPaths, Collection<Path> classesPaths, boolean isJar) {
-        // "main" = quarkus-app output subdir (formerly JarResultBuildStep.MAIN, removed in Quarkus 3.33)
-        super(projectPaths, classesPaths, isJar, AppPaths.BT, "main", false);
+        // AppPaths.MAIN_DIR replaces JarResultBuildStep.MAIN, which Quarkus 3.33 removed
+        super(projectPaths, classesPaths, isJar, AppPaths.BT, AppPaths.MAIN_DIR, false);
     }
 
     public static AppPaths from(Iterable<Path> paths) {
