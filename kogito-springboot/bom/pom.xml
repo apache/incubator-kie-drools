@@ -52,9 +52,29 @@
          spring-boot-dependencies:4.0.7 carries the vulnerable jackson-databind:3.1.4.
          Remove this pin once spring-boot-dependencies imports jackson-databind >= 3.1.5. -->
     <version.tools.jackson.core>3.1.5</version.tools.jackson.core>
-  </properties>
+    <!-- Framework-specific pins moved out of kie-parent: only this tree declares these artifacts. -->
+    <version.org.spockframework>2.2-groovy-4.0</version.org.spockframework>
+</properties>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-core</artifactId>
+        <version>${version.org.spockframework}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- Infinispan must be imported here, ahead of spring-boot-dependencies, so the Spring Boot side gets one
+           coherent Infinispan/ProtoStream stack. kie-parent pins infinispan-client-hotrod/-commons/-core and
+           protostream explicitly (the shared addons are compiled against ProtoStream 6), while spring-boot-dependencies
+           imports infinispan-bom 15.2.6.Final — without this import the two mix: protostream-types 5.0.13.Final under
+           protostream 6.0.7, infinispan-counter-api 15.2.6.Final under infinispan-client-hotrod 16.0.13. -->
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-bom</artifactId>
+        <version>${version.org.infinispan}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>tools.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
