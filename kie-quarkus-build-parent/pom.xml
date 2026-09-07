@@ -52,7 +52,6 @@
     <version.io.smallrye.jandex>3.5.3</version.io.smallrye.jandex>
     <version.io.smallrye-open-api>4.2.4</version.io.smallrye-open-api>
     <version.io.smallrye.openapi.core>4.2.4</version.io.smallrye.openapi.core>
-    <version.commons-io>2.21.0</version.commons-io>
     <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie:kie-quarkus-build-parent</allowedPomsList>
     <!-- To be overridden by poms with dependency management -->

@@ -142,7 +142,7 @@
         <scope>import</scope>
       </dependency>
       <!-- Normal dependencies versions-->
-      <!-- CVE-2026-56624: override sshd-common and sshd-core pinned at 2.12.1 by quarkus-bom -->
+      <!-- CVE-2026-56624: override sshd-common and sshd-core pinned at 2.17.1 by quarkus-bom -->
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-common</artifactId>

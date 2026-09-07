@@ -58,9 +58,7 @@
     <version.io.smallrye.openapi.core>4.2.4</version.io.smallrye.openapi.core>
     <!-- quarkus-bom alignment; must match the bson/mongodb-driver-core version quarkus-bom supplies. -->
     <version.mongodb-driver-sync>5.6.4</version.mongodb-driver-sync>
-    <!-- quarkus-bom alignment only (Quarkus 3.33 works on 2.20.0). -->
-    <version.commons-io>2.21.0</version.commons-io>
-      <!-- Framework-specific pins moved out of kie-parent: only this tree declares these artifacts. -->
+    <!-- Framework-specific pins moved out of kie-parent: only this tree declares these artifacts. -->
     <version.io.smallrye-health>4.3.0</version.io.smallrye-health>
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
