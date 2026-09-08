@@ -143,7 +143,7 @@
     <version.io.fabric8>7.3.1</version.io.fabric8>
     <version.io.fabric8.kubernetes-client>7.3.1</version.io.fabric8.kubernetes-client>
     <version.io.grpc>1.76.0</version.io.grpc>
-    <version.io.micrometer>1.16.6</version.io.micrometer>
+    <version.io.micrometer>1.16.7</version.io.micrometer>
     <version.io.netty>4.1.136.Final</version.io.netty>
     <version.io.opentelemetry>1.0.0-alpha</version.io.opentelemetry>
     <version.io.rest-assured>5.5.6</version.io.rest-assured>
@@ -322,6 +322,11 @@
     <version.tomcat.embed.core>11.0.25</version.tomcat.embed.core>
     <version.versions-maven-plugin>2.10.0</version.versions-maven-plugin>
     <version.wildfly-maven-plugin>1.2.0.Final</version.wildfly-maven-plugin>
+    <!-- CVE-2026-19611: wildfly-elytron-password-impl 2.6.2.Final (via infinispan-build-configuration-parent:15.2.6.Final)
+         and 2.6.5.Final (via quarkus-bom:3.27.5.1) are both below the minimum safe version.
+         This managed entry forces all org.wildfly.security:wildfly-elytron-* artifacts to 2.6.10.Final
+         across all modules inheriting kie-parent. -->
+    <version.org.wildfly.security.elytron>2.6.10.Final</version.org.wildfly.security.elytron>
     <version.xerces>2.12.2</version.xerces>
     <version.xml-maven-plugin>1.0</version.xml-maven-plugin>
   </properties>
@@ -788,6 +793,12 @@
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
+      <!-- CVE-2026-59296: micrometer-registry-statsd 1.16.6 (via spring-boot-dependencies/quarkus-bom) -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-statsd</artifactId>
         <version>${version.io.micrometer}</version>
       </dependency>
       <!-- Forced version of the majority of general netty dependencies. This is to enforce an aligned netty libraries version in transitive dependencies, due to possible CVEs. -->
@@ -2287,6 +2298,189 @@
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>${version.xerces}</version>
+      </dependency>
+      <!-- CVE-2026-19611: override wildfly-elytron-* family pinned at 2.6.2.Final (via
+           infinispan-build-configuration-parent:15.2.6.Final) and at 2.6.5.Final (via
+           quarkus-bom:3.27.5.1). Pinning to 2.6.10.Final (latest CVE-free same-major release). -->
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-asn1</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-auth</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-auth-server</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-base</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-credential</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-http</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-keystore</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-mechanism</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-mechanism-digest</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-mechanism-gssapi</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-mechanism-oauth2</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-mechanism-scram</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-password-impl</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-permission</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-provider-util</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-realm</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-realm-jdbc</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-realm-ldap</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-realm-token</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-digest</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-external</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-gs2</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-gssapi</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-oauth2</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-plain</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-sasl-scram</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-security-manager-action</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-ssh-util</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-ssl</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-util</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-x500</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-x500-cert</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-x500-cert-acme</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.security</groupId>
+        <artifactId>wildfly-elytron-x500-cert-util</artifactId>
+        <version>${version.org.wildfly.security.elytron}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
