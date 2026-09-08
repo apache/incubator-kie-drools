@@ -41,6 +41,10 @@
   <properties>
     <version.io.quarkus>3.33.3.2</version.io.quarkus>
     <version.io.quarkus.camel>3.33.2</version.io.quarkus.camel>
+    <!-- CVE-2026-59296: micrometer 1.16.6 is vulnerable; 1.16.7 is the fix.
+      Quarkus 3.27.x pulls in micrometer-registry-statsd 1.16.6 from quarkus-bom.
+      Override the version here (quarkus-specific BOM) rather than in kie-parent. -->
+    <version.io.micrometer>1.16.7</version.io.micrometer>
     <!-- Quarkus-platform-aligned pin. kie-parent keeps the Spring Boot / framework-neutral value;
          this tree needs the platform one (smallrye-reactive-messaging 4.33.0 requires Mutiny 3). -->
     <version.io.smallrye.mutiny>3.1.1</version.io.smallrye.mutiny>
@@ -66,6 +70,12 @@
         <version>${version.io.quarkus}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- CVE-2026-59296: micrometer-registry-statsd 1.16.6 (via Quarkus 3.27.x) -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-statsd</artifactId>
+        <version>${version.io.micrometer}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
