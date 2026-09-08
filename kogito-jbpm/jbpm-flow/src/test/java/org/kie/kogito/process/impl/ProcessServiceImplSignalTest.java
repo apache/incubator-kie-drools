@@ -19,8 +19,8 @@
 package org.kie.kogito.process.impl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,41 +30,38 @@ import org.kie.kogito.Model;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
+import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.kogito.uow.WorkUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Integration tests for ProcessServiceImpl signal handling.
- * Tests validation of signals for both traditional signal events and ad hoc nodes.
+ * Unit tests for ProcessServiceImpl.signalProcessInstance.
+ * Verifies signal routing for traditional signal events, message events, ad hoc nodes,
+ * non-existent instances, and non-matching signals.
  */
 class ProcessServiceImplSignalTest {
 
     private ProcessServiceImpl processService;
-    private Application application;
     private Process<TestModel> process;
     private ProcessInstances<TestModel> processInstances;
     private ProcessInstance<TestModel> processInstance;
-    private UnitOfWorkManager unitOfWorkManager;
-    private ConfigBean configBean;
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     void setup() {
-        application = mock(Application.class);
+        Application application = mock(Application.class);
         process = mock(Process.class);
         processInstances = mock(ProcessInstances.class);
         processInstance = mock(ProcessInstance.class);
-        unitOfWorkManager = mock(UnitOfWorkManager.class);
-        configBean = mock(ConfigBean.class);
+        UnitOfWorkManager unitOfWorkManager = mock(UnitOfWorkManager.class);
+        ConfigBean configBean = mock(ConfigBean.class);
 
         when(application.unitOfWorkManager()).thenReturn(unitOfWorkManager);
         when(application.config()).thenReturn(mock(org.kie.kogito.Config.class));
@@ -72,166 +69,152 @@ class ProcessServiceImplSignalTest {
         when(configBean.processInstanceLimit()).thenReturn((short) 100);
         when(process.instances()).thenReturn(processInstances);
 
-        // Setup UnitOfWorkManager to execute code immediately
+        // Make the UoW execute the supplied callable immediately
         org.kie.kogito.uow.UnitOfWork unitOfWork = mock(org.kie.kogito.uow.UnitOfWork.class);
         when(unitOfWorkManager.newUnitOfWork()).thenReturn(unitOfWork);
         when(unitOfWorkManager.currentUnitOfWork()).thenReturn(unitOfWork);
         doAnswer(invocation -> {
-            org.kie.kogito.uow.WorkUnit<?> workUnit = invocation.getArgument(0);
-            workUnit.perform();
+            invocation.<org.kie.kogito.uow.WorkUnit<?>> getArgument(0).perform();
             return null;
         }).when(unitOfWork).intercept(any());
 
         processService = new ProcessServiceImpl(application);
     }
 
-    @Test
-    void testSignalProcessInstance_WithTraditionalSignalEvent() {
-        // Given: Process instance waiting for a signal event
-        String processInstanceId = "test-signal-instance1";
-        String signalName = "HelloMartin";
-        Object signalData = "test-data";
-        TestModel model = new TestModel();
+    // --- helpers ---
 
-        when(processInstances.findById(eq(processInstanceId), any(ProcessInstanceReadMode.class)))
-                .thenReturn(Optional.of(processInstance));
-        when(processInstances.acceptingEventType(signalName, processInstanceId))
-                .thenReturn(Stream.of(processInstance));
+    private void givenInstanceWithEventTypes(String id, List<String> eventTypes, List<AdHocFragment> adHocFragments) {
+        when(processInstances.findById(id)).thenReturn(Optional.of(processInstance));
+        when(processInstance.eventTypes()).thenReturn(eventTypes);
+        when(processInstance.adHocFragments()).thenReturn(adHocFragments);
         when(processInstance.checkError()).thenReturn(processInstance);
-        when(processInstance.variables()).thenReturn(model);
+        when(processInstance.variables()).thenReturn(new TestModel());
+    }
 
-        // When: Signal is sent
-        Optional<TestModel> result = processService.signalProcessInstance(process, processInstanceId, signalData, signalName);
+    // --- signal event tests ---
 
-        // Then: Signal should be accepted
+    @Test
+    void signalAccepted_whenInstanceWaitingForSignalEvent() {
+        String id = "pi-1";
+        String signalName = "HelloMartin";
+
+        givenInstanceWithEventTypes(id, List.of(signalName), Collections.emptyList());
+
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
+
         assertThat(result).isPresent();
         verify(processInstance).send(any());
     }
 
     @Test
-    void testSignalProcessInstance_WithAdHocNode() {
-        // Given: Process instance with ad hoc node
-        String processInstanceId = "test-signal-instance2";
-        String adHocNodeName = "AdHocTask";
-        Object signalData = Collections.emptyMap();
-        TestModel model = new TestModel();
+    void signalAccepted_whenInstanceWaitingForMessageEvent() {
+        // Message catch events register their listener key as "Message-<name>"
+        String id = "pi-2";
+        String signalName = "MyMessage";
 
-        when(processInstances.findById(eq(processInstanceId), any(ProcessInstanceReadMode.class)))
-                .thenReturn(Optional.of(processInstance));
-        when(processInstances.acceptingEventType(adHocNodeName, processInstanceId))
-                .thenReturn(Stream.of(processInstance));
-        when(processInstance.checkError()).thenReturn(processInstance);
-        when(processInstance.variables()).thenReturn(model);
+        givenInstanceWithEventTypes(id, List.of("Message-" + signalName), Collections.emptyList());
 
-        // When: Signal is sent to trigger ad hoc node
-        Optional<TestModel> result = processService.signalProcessInstance(process, processInstanceId, signalData, adHocNodeName);
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
 
-        // Then: Signal should be accepted
         assertThat(result).isPresent();
         verify(processInstance).send(any());
     }
 
     @Test
-    void testSignalProcessInstance_InvalidSignal_ReturnsEmpty() {
-        // Given: Process instance not accepting the signal
-        String processInstanceId = "test-signal-instance3";
-        String invalidSignal = "InvalidSignal";
-        Object signalData = "test-data";
+    void signalAccepted_whenInstanceHasMatchingAdHocFragment() {
+        String id = "pi-3";
+        String adHocName = "AdHocTask";
+        AdHocFragment fragment = new AdHocFragment.Builder(adHocName).withName(adHocName).withAutoStart(false).build();
 
-        when(processInstances.findById(eq(processInstanceId), any(ProcessInstanceReadMode.class)))
-                .thenReturn(Optional.of(processInstance));
-        when(processInstances.acceptingEventType(invalidSignal, processInstanceId))
-                .thenReturn(Stream.empty());
+        givenInstanceWithEventTypes(id, Collections.emptyList(), List.of(fragment));
 
-        // When: Invalid signal is sent
-        Optional<TestModel> result = processService.signalProcessInstance(process, processInstanceId, signalData, invalidSignal);
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, null, adHocName);
 
-        // Then: Should return empty Optional
+        assertThat(result).isPresent();
+        verify(processInstance).send(any());
+    }
+
+    @Test
+    void signalAccepted_whenInstanceHasBothSignalEventAndAdHocFragment() {
+        String id = "pi-4";
+        String signalName = "HelloMartin";
+        String adHocName = "AdHocTask";
+        AdHocFragment fragment = new AdHocFragment.Builder(adHocName).withName(adHocName).withAutoStart(false).build();
+
+        givenInstanceWithEventTypes(id, List.of(signalName), List.of(fragment));
+
+        assertThat(processService.signalProcessInstance(process, id, "data", signalName)).isPresent();
+        assertThat(processService.signalProcessInstance(process, id, null, adHocName)).isPresent();
+    }
+
+    @Test
+    void signalAccepted_whenInstanceHasMultipleAdHocFragments() {
+        String id = "pi-5";
+        String node1 = "AdHocTask1";
+        String node2 = "AdHocTask2";
+        AdHocFragment f1 = new AdHocFragment.Builder(node1).withName(node1).withAutoStart(false).build();
+        AdHocFragment f2 = new AdHocFragment.Builder(node2).withName(node2).withAutoStart(true).build();
+
+        givenInstanceWithEventTypes(id, Collections.emptyList(), List.of(f1, f2));
+
+        assertThat(processService.signalProcessInstance(process, id, null, node1)).isPresent();
+        assertThat(processService.signalProcessInstance(process, id, null, node2)).isPresent();
+    }
+
+    // --- rejection / empty result tests ---
+
+    @Test
+    void signalRejected_whenInstanceNotWaitingForSignal() {
+        String id = "pi-6";
+
+        givenInstanceWithEventTypes(id, List.of("OtherSignal"), Collections.emptyList());
+
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", "HelloMartin");
+
         assertThat(result).isEmpty();
     }
 
     @Test
-    void testSignalProcessInstance_NonExistentInstance_ReturnsEmpty() {
-        // Given: Non-existent process instance
-        String processInstanceId = "non-existent";
-        String signalName = "HelloMartin";
-        Object signalData = "test-data";
+    void signalRejected_whenInstanceDoesNotExist() {
+        when(processInstances.findById("non-existent")).thenReturn(Optional.empty());
 
-        when(processInstances.findById(eq(processInstanceId), any(ProcessInstanceReadMode.class)))
-                .thenReturn(Optional.empty());
-        when(processInstances.acceptingEventType(signalName, processInstanceId))
-                .thenReturn(Stream.empty());
+        Optional<TestModel> result = processService.signalProcessInstance(process, "non-existent", "data", "HelloMartin");
 
-        // When: Signal is sent to non-existent instance
-        Optional<TestModel> result = processService.signalProcessInstance(process, processInstanceId, signalData, signalName);
-
-        // Then: Should return empty Optional
         assertThat(result).isEmpty();
     }
 
     @Test
-    void testSignalProcessInstance_MultipleAdHocNodes_AcceptsCorrectOne() {
-        // Given: Process instance with multiple ad hoc nodes
-        String processInstanceId = "test-signal-instance4";
-        String adHocNode1 = "AdHocTask1";
-        String adHocNode2 = "AdHocTask2";
-        TestModel model = new TestModel();
+    void signalRejected_whenInstanceHasNoEventsAndNoAdHocFragments() {
+        String id = "pi-7";
 
-        when(processInstances.findById(eq(processInstanceId), any(ProcessInstanceReadMode.class)))
-                .thenReturn(Optional.of(processInstance));
-        when(processInstances.acceptingEventType(adHocNode1, processInstanceId))
-                .thenReturn(Stream.of(processInstance));
-        when(processInstances.acceptingEventType(adHocNode2, processInstanceId))
-                .thenReturn(Stream.of(processInstance));
-        when(processInstance.checkError()).thenReturn(processInstance);
-        when(processInstance.variables()).thenReturn(model);
+        givenInstanceWithEventTypes(id, Collections.emptyList(), Collections.emptyList());
 
-        // When: Signal first ad hoc node
-        Optional<TestModel> result1 = processService.signalProcessInstance(process, processInstanceId, null, adHocNode1);
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", "HelloMartin");
 
-        // Then: Should accept
-        assertThat(result1).isPresent();
-
-        // When: Signal second ad hoc node
-        Optional<TestModel> result2 = processService.signalProcessInstance(process, processInstanceId, null, adHocNode2);
-
-        // Then: Should accept
-        assertThat(result2).isPresent();
+        assertThat(result).isEmpty();
     }
+
+    // --- edge cases ---
 
     @Test
-    void testSignalProcessInstance_BothSignalAndAdHoc_AcceptsBoth() {
-        // Given: Process instance with both signal event and ad hoc node
-        String processInstanceId = "test-signal-instance5";
+    void signalAccepted_whenEventTypesContainsNullAlongsideMatchingSignal() {
+        // getEventTypes() may contain null entries; ensure no NPE in the filter
+        String id = "pi-8";
         String signalName = "HelloMartin";
-        String adHocNodeName = "AdHocTask";
-        TestModel model = new TestModel();
 
-        when(processInstances.findById(eq(processInstanceId), any(ProcessInstanceReadMode.class)))
-                .thenReturn(Optional.of(processInstance));
-        when(processInstances.acceptingEventType(signalName, processInstanceId))
-                .thenReturn(Stream.of(processInstance));
-        when(processInstances.acceptingEventType(adHocNodeName, processInstanceId))
-                .thenReturn(Stream.of(processInstance));
-        when(processInstance.checkError()).thenReturn(processInstance);
-        when(processInstance.variables()).thenReturn(model);
+        List<String> eventTypesWithNulls = new java.util.ArrayList<>();
+        eventTypesWithNulls.add(null);
+        eventTypesWithNulls.add(signalName);
+        eventTypesWithNulls.add(null);
+        givenInstanceWithEventTypes(id, eventTypesWithNulls, Collections.emptyList());
 
-        // When: Signal traditional event
-        Optional<TestModel> resultSignal = processService.signalProcessInstance(process, processInstanceId, "data", signalName);
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
 
-        // Then: Should accept
-        assertThat(resultSignal).isPresent();
-
-        // When: Signal ad hoc node
-        Optional<TestModel> resultAdHoc = processService.signalProcessInstance(process, processInstanceId, null, adHocNodeName);
-
-        // Then: Should accept
-        assertThat(resultAdHoc).isPresent();
+        assertThat(result).isPresent();
     }
 
-    /**
-     * Test model for testing
-     */
+    // --- test model ---
+
     static class TestModel implements MappableToModel<TestModel>, Model {
         @Override
         public TestModel toModel() {

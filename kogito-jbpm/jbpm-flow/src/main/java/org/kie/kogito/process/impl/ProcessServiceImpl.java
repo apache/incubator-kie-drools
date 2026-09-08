@@ -162,9 +162,15 @@ public class ProcessServiceImpl implements ProcessService {
     public <T extends MappableToModel<R>, R> Optional<R> signalProcessInstance(Process<T> process, String id, Object data, String signalName) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(),
-                () -> process
-                        .instances().acceptingEventType(signalName, id)
-                        .findFirst()
+                () -> process.instances()
+                        .findById(id)
+                        .filter(pi -> {
+                            boolean isWaitingForSignal = pi.eventTypes().stream()
+                                    .anyMatch(e -> signalName.equals(e) || ("Message-" + signalName).equals(e));
+                            boolean isAdHocNode = pi.adHocFragments().stream()
+                                    .anyMatch(f -> f.getName().equals(signalName));
+                            return isWaitingForSignal || isAdHocNode;
+                        })
                         .map(pi -> {
                             pi.send(SignalFactory.of(signalName, data));
                             return pi.checkError().variables().toModel();
