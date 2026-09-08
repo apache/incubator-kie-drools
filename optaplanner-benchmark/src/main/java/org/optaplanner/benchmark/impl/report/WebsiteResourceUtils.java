@@ -29,14 +29,11 @@ public class WebsiteResourceUtils {
     private static final String RESOURCE_NAMESPACE = "/org/optaplanner/benchmark/impl/report/";
 
     public static void copyResourcesTo(File benchmarkReportDirectory) {
-        // Bootstrap 4.1.2 
         copyResource(benchmarkReportDirectory, "twitterbootstrap/css/bootstrap.css");
         // copyResource(benchmarkReportDirectory, "twitterbootstrap/css/bootstrap.min.css");
         copyResource(benchmarkReportDirectory, "twitterbootstrap/css/prettify.css");
-        // Bootstrap 4 bundles Popper.js; glyphicons removed (not part of Bootstrap 4)
         copyResource(benchmarkReportDirectory, "twitterbootstrap/js/bootstrap.js");
         // copyResource(benchmarkReportDirectory, "twitterbootstrap/js/bootstrap.min.js");
-        // jQuery 3.5.0 
         copyResource(benchmarkReportDirectory, "twitterbootstrap/js/jquery.js");
         // copyResource(benchmarkReportDirectory, "twitterbootstrap/js/jquery.min.js");
         copyResource(benchmarkReportDirectory, "twitterbootstrap/js/prettify.js");
