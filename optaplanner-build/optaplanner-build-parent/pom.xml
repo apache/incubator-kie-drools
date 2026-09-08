@@ -154,7 +154,7 @@
         <artifactId>sshd-core</artifactId>
         <version>${version.org.apache.sshd}</version>
       </dependency>
-      <!-- CVE-2026-59296: micrometer-core 1.16.6 (via Quarkus 3.27.4) -->
+      <!-- CVE-2026-59296: micrometer-core 1.16.6 (via Quarkus 3.33.2) -->
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-core</artifactId>
