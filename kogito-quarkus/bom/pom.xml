@@ -39,10 +39,6 @@
     <version.io.quarkiverse.reactivemessaging.http>2.7.1</version.io.quarkiverse.reactivemessaging.http>
     <version.io.quarkiverse.embedded.postgresql>0.8.0</version.io.quarkiverse.embedded.postgresql>
     <version.io.quarkus.camel>3.33.2</version.io.quarkus.camel>
-    <!-- CVE-2026-59296: micrometer 1.16.6 is vulnerable; 1.16.7 is the fix.
-      Quarkus 3.27.x pulls in micrometer-registry-statsd 1.16.6 from quarkus-bom.
-      Override the version here (quarkus-specific BOM) rather than in kie-parent. -->
-    <version.io.micrometer>1.16.7</version.io.micrometer>
     <!-- Quarkus-platform-aligned pins. These live here, not in kie-parent, so that the Quarkus upgrade does not
          change what the Spring Boot side resolves. -->
     <version.io.grpc>1.81.0</version.io.grpc>
