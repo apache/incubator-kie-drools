@@ -154,7 +154,7 @@
         <artifactId>sshd-core</artifactId>
         <version>${version.org.apache.sshd}</version>
       </dependency>
-      <!-- CVE fix: override micrometer version brought in by quarkus-bom 3.27.4 (1.14.7) to 1.16.7 -->
+      <!-- CVE-2026-59296: micrometer-core 1.16.6 (via Quarkus 3.27.4) -->
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-core</artifactId>
@@ -267,6 +267,7 @@
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>
           <version>${version.io.quarkus}</version>
+          <extensions>true</extensions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
