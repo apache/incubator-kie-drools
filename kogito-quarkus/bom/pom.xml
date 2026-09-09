@@ -149,7 +149,7 @@
         <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
         <version>${version.io.quarkiverse.reactivemessaging.http}</version>
       </dependency>
-      <!-- CVE fix: quarkus-bom:3.27.x pins all MongoDB driver artifacts to 5.5.1.
+      <!-- CVE fix: quarkus-bom:3.33.x pins all MongoDB driver artifacts to 5.5.1.
            Override to match mongodb-driver-sync:${version.mongodb-driver-sync} already
            pinned in kie-parent. Must appear before the quarkus-bom import to take precedence.
            https://jira.mongodb.org/browse/JAVA-6266 -->
