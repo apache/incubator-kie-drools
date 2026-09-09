@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
@@ -37,12 +38,14 @@ import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.MutableProcessInstances;
+import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -68,17 +71,21 @@ public class AbstractProcessInstanceTest {
 
     private AbstractProcessInstance<TestModel> processInstance;
 
+    private AbstractProcess<TestModel> process;
+
+    private InternalProcessRuntime pr;
+
     @SuppressWarnings("unchecked")
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        AbstractProcess<TestModel> process = mock(AbstractProcess.class);
+        process = mock(AbstractProcess.class);
         Process piProcess = mock(Process.class);
         when(process.process()).thenReturn(piProcess);
         when(process.instances()).thenReturn(instances);
         when(process.get()).thenReturn(piProcess);
-        InternalProcessRuntime pr = mock(InternalProcessRuntime.class);
+        pr = mock(InternalProcessRuntime.class);
         when(pr.createProcessInstance(any(), any(), any())).thenReturn(wpi);
         when(pr.getProcessInstanceManager()).thenReturn(pim);
         UnitOfWorkManager unitOfWorkManager = mock(UnitOfWorkManager.class);
@@ -141,10 +148,44 @@ public class AbstractProcessInstanceTest {
         assertThat(processInstance.version()).isEqualTo(10l);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldKeepProcessInstanceStateWhenConnected() {
+        AbstractProcessInstance<TestModel> connected = new TestProcessInstance(process, new TestModel(), pr, wpi);
+
+        assertThat(connected.internalGetProcessInstance()).isSameAs(wpi);
+
+        Consumer<AbstractProcessInstance<?>> reloadSupplier = mock(Consumer.class);
+        connected.internalSetReloadSupplier(reloadSupplier);
+
+        connected.internalLoadState();
+
+        verify(reloadSupplier, never()).accept(any());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldNotKeepProcessInstanceStateWhenReadOnly() {
+        AbstractProcessInstance<TestModel> readOnly = new TestProcessInstance(process, new TestModel(), null, wpi);
+
+        assertThat(readOnly.internalGetProcessInstance()).isNull();
+
+        Consumer<AbstractProcessInstance<?>> reloadSupplier = mock(Consumer.class);
+        readOnly.internalSetReloadSupplier(reloadSupplier);
+
+        assertThatThrownBy(readOnly::internalLoadState).isInstanceOf(ProcessInstanceNotFoundException.class);
+
+        verify(reloadSupplier, times(1)).accept(readOnly);
+    }
+
     static class TestProcessInstance extends AbstractProcessInstance<TestModel> {
 
         public TestProcessInstance(AbstractProcess<TestModel> process, TestModel variables, InternalProcessRuntime rt) {
             super(process, variables, rt);
+        }
+
+        public TestProcessInstance(AbstractProcess<TestModel> process, TestModel variables, InternalProcessRuntime rt, WorkflowProcessInstanceImpl wpi) {
+            super(process, variables, rt, wpi);
         }
     }
 
