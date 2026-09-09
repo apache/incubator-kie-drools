@@ -1805,7 +1805,12 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final BaseDescr original,
                                                         final String expression) {
         DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
-        ConstraintConnectiveDescr result = parser.parse(normalizeEval(expression));
+        String toParse = normalizeEval(expression);
+        if (!toParse.equals(expression) && containsTernaryOperator(toParse)) {
+            toParse = expression;
+        }
+        ConstraintConnectiveDescr result = parser.parse(toParse);
+
         if (parser.hasErrors()) {
             for (DroolsParserException error : parser.getErrors()) {
                 registerDescrBuildError(context, patternDescr,
@@ -1816,6 +1821,27 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         result.setResource(patternDescr.getResource());
         result.copyLocation(original);
         return result;
+    }
+
+    static boolean containsTernaryOperator(String expr) {
+        for (int i = 0; i < expr.length(); i++) {
+            char c = expr.charAt(i);
+            if (c == '"' || c == '\'') {
+                char quote = c;
+                i++;
+                while (i < expr.length()) {
+                    if (expr.charAt(i) == '\\') {
+                        i++;
+                    } else if (expr.charAt(i) == quote) {
+                        break;
+                    }
+                    i++;
+                }
+            } else if (c == '?' && (i + 1 >= expr.length() || expr.charAt(i + 1) != '.')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void registerDescrBuildError(RuleBuildContext context, BaseDescr patternDescr, String error) {
