@@ -273,7 +273,7 @@
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <!-- JUnit 6: single version property for jupiter + platform + vintage artifacts. See version.junit above for the legacy JUnit 4 API. -->
     <version.org.junit>6.0.3</version.org.junit>
-    <version.org.keycloak>26.1.0</version.org.keycloak>
+    <version.org.keycloak>26.1.5</version.org.keycloak>
     <version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
     <version.org.mockito>5.18.0</version.org.mockito>
     <version.org.mongo>5.3.1</version.org.mongo>
