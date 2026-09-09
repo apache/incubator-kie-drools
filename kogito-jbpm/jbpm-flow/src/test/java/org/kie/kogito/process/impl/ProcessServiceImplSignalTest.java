@@ -21,6 +21,7 @@ package org.kie.kogito.process.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,8 @@ import org.kie.kogito.Application;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.config.ConfigBean;
+import org.kie.kogito.process.BaseEventDescription;
+import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
@@ -83,9 +86,13 @@ class ProcessServiceImplSignalTest {
 
     // --- helpers ---
 
-    private void givenInstanceWithEventTypes(String id, List<String> eventTypes, List<AdHocFragment> adHocFragments) {
+    private static EventDescription<?> eventDesc(String eventName) {
+        return new BaseEventDescription(eventName, "node-1", "Node", "signal", "ni-1", "pi-1", null);
+    }
+
+    private void givenInstanceWithEvents(String id, Set<EventDescription<?>> events, List<AdHocFragment> adHocFragments) {
         when(processInstances.findById(id)).thenReturn(Optional.of(processInstance));
-        when(processInstance.eventTypes()).thenReturn(eventTypes);
+        when(processInstance.events()).thenReturn(events);
         when(processInstance.adHocFragments()).thenReturn(adHocFragments);
         when(processInstance.checkError()).thenReturn(processInstance);
         when(processInstance.variables()).thenReturn(new TestModel());
@@ -98,7 +105,7 @@ class ProcessServiceImplSignalTest {
         String id = "pi-1";
         String signalName = "HelloMartin";
 
-        givenInstanceWithEventTypes(id, List.of(signalName), Collections.emptyList());
+        givenInstanceWithEvents(id, Set.of(eventDesc(signalName)), Collections.emptyList());
 
         Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
 
@@ -108,11 +115,11 @@ class ProcessServiceImplSignalTest {
 
     @Test
     void signalAccepted_whenInstanceWaitingForMessageEvent() {
-        // Message catch events register their listener key as "Message-<name>"
+        // Message catch events expose the event name as "Message-<name>" in the description
         String id = "pi-2";
         String signalName = "MyMessage";
 
-        givenInstanceWithEventTypes(id, List.of("Message-" + signalName), Collections.emptyList());
+        givenInstanceWithEvents(id, Set.of(eventDesc("Message-" + signalName)), Collections.emptyList());
 
         Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
 
@@ -126,7 +133,7 @@ class ProcessServiceImplSignalTest {
         String adHocName = "AdHocTask";
         AdHocFragment fragment = new AdHocFragment.Builder(adHocName).withName(adHocName).withAutoStart(false).build();
 
-        givenInstanceWithEventTypes(id, Collections.emptyList(), List.of(fragment));
+        givenInstanceWithEvents(id, Collections.emptySet(), List.of(fragment));
 
         Optional<TestModel> result = processService.signalProcessInstance(process, id, null, adHocName);
 
@@ -141,7 +148,7 @@ class ProcessServiceImplSignalTest {
         String adHocName = "AdHocTask";
         AdHocFragment fragment = new AdHocFragment.Builder(adHocName).withName(adHocName).withAutoStart(false).build();
 
-        givenInstanceWithEventTypes(id, List.of(signalName), List.of(fragment));
+        givenInstanceWithEvents(id, Set.of(eventDesc(signalName)), List.of(fragment));
 
         assertThat(processService.signalProcessInstance(process, id, "data", signalName)).isPresent();
         assertThat(processService.signalProcessInstance(process, id, null, adHocName)).isPresent();
@@ -155,10 +162,24 @@ class ProcessServiceImplSignalTest {
         AdHocFragment f1 = new AdHocFragment.Builder(node1).withName(node1).withAutoStart(false).build();
         AdHocFragment f2 = new AdHocFragment.Builder(node2).withName(node2).withAutoStart(true).build();
 
-        givenInstanceWithEventTypes(id, Collections.emptyList(), List.of(f1, f2));
+        givenInstanceWithEvents(id, Collections.emptySet(), List.of(f1, f2));
 
         assertThat(processService.signalProcessInstance(process, id, null, node1)).isPresent();
         assertThat(processService.signalProcessInstance(process, id, null, node2)).isPresent();
+    }
+
+    @Test
+    void signalRejected_whenEventDescriptionContainsRawExpressionInsteadOfResolvedName() {
+        // Regression: before the fix, getEventDescriptions() could return the raw #{signalName}
+        // expression instead of the resolved value. The filter must not match it.
+        String id = "pi-expr";
+        String signalName = "myVarSignal";
+
+        givenInstanceWithEvents(id, Set.of(eventDesc("#{signalName}")), Collections.emptyList());
+
+        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
+
+        assertThat(result).isEmpty();
     }
 
     // --- rejection / empty result tests ---
@@ -167,7 +188,7 @@ class ProcessServiceImplSignalTest {
     void signalRejected_whenInstanceNotWaitingForSignal() {
         String id = "pi-6";
 
-        givenInstanceWithEventTypes(id, List.of("OtherSignal"), Collections.emptyList());
+        givenInstanceWithEvents(id, Set.of(eventDesc("OtherSignal")), Collections.emptyList());
 
         Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", "HelloMartin");
 
@@ -187,30 +208,11 @@ class ProcessServiceImplSignalTest {
     void signalRejected_whenInstanceHasNoEventsAndNoAdHocFragments() {
         String id = "pi-7";
 
-        givenInstanceWithEventTypes(id, Collections.emptyList(), Collections.emptyList());
+        givenInstanceWithEvents(id, Collections.emptySet(), Collections.emptyList());
 
         Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", "HelloMartin");
 
         assertThat(result).isEmpty();
-    }
-
-    // --- edge cases ---
-
-    @Test
-    void signalAccepted_whenEventTypesContainsNullAlongsideMatchingSignal() {
-        // getEventTypes() may contain null entries; ensure no NPE in the filter
-        String id = "pi-8";
-        String signalName = "HelloMartin";
-
-        List<String> eventTypesWithNulls = new java.util.ArrayList<>();
-        eventTypesWithNulls.add(null);
-        eventTypesWithNulls.add(signalName);
-        eventTypesWithNulls.add(null);
-        givenInstanceWithEventTypes(id, eventTypesWithNulls, Collections.emptyList());
-
-        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
-
-        assertThat(result).isPresent();
     }
 
     // --- test model ---

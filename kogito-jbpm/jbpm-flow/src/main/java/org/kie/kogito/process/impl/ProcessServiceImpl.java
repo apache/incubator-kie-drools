@@ -165,11 +165,12 @@ public class ProcessServiceImpl implements ProcessService {
                 () -> process.instances()
                         .findById(id)
                         .filter(pi -> {
-                            boolean isWaitingForSignal = pi.eventTypes().stream()
-                                    .anyMatch(e -> signalName.equals(e) || ("Message-" + signalName).equals(e));
-                            boolean isAdHocNode = pi.adHocFragments().stream()
+                            if (pi.events().stream().anyMatch(e -> signalName.equals(e.getEvent()) || ("Message-" + signalName).equals(e.getEvent()))) {
+                                return true;
+                            }
+                            return pi.adHocFragments()
+                                    .stream()
                                     .anyMatch(f -> f.getName().equals(signalName));
-                            return isWaitingForSignal || isAdHocNode;
                         })
                         .map(pi -> {
                             pi.send(SignalFactory.of(signalName, data));

@@ -272,15 +272,6 @@ public interface ProcessInstance<T> {
     Set<EventDescription<?>> events();
 
     /**
-     * Returns the resolved event types this process instance is currently waiting for.
-     * Uses runtime-resolved values, so variable expressions (e.g. {@code #{myVar}}) are
-     * returned as their actual value rather than the raw expression.
-     *
-     * @return resolved event type strings
-     */
-    Collection<String> eventTypes();
-
-    /**
      * Returns the process milestones
      *
      * @return All the process milestones with their current status
