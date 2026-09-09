@@ -70,8 +70,13 @@ class PatternBuilderTest {
     }
 
     @Test
-    void ternaryAtEndOfExpression() {
-        assertThat(PatternBuilder.containsTernaryOperator("x?")).isTrue();
+    void questionMarkWithoutColon() {
+        assertThat(PatternBuilder.containsTernaryOperator("x?")).isFalse();
+    }
+
+    @Test
+    void colonInsideStringAfterQuestionMark() {
+        assertThat(PatternBuilder.containsTernaryOperator("x ? \":\"")).isFalse();
     }
 
     @Test

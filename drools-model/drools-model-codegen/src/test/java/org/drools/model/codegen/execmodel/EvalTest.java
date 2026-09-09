@@ -777,7 +777,8 @@ public class EvalTest extends BaseModelTest {
     }
 
     @ParameterizedTest
-    @MethodSource("parametersStandardOnly") // exec-model doesn't support ternary constraint
+    @MethodSource("parametersStandardOnly") // standard only: inline eval with ternary is not supported in exec-model.
+                                            // See https://github.com/apache/incubator-kie/issues/7097
     void testTernaryEvalInsidePattern(RUN_TYPE runType) {
         String str =
                 "import " + MyPerson.class.getCanonicalName() + ";\n" +
@@ -795,36 +796,38 @@ public class EvalTest extends BaseModelTest {
         //-- 1st round
 
         KieSession ksession = getKieSession(runType, str);
+        try {
+            MyPerson person = new MyPerson();
+            person.setFlag1("foo"); // matches the rule
+            person.setFlag2("bar");
 
-        MyPerson person = new MyPerson();
-        person.setFlag1("foo"); // matches the rule
-        person.setFlag2("bar");
+            ksession.insert("go");
+            ksession.insert(person);
+            int fired = ksession.fireAllRules(10);
 
-        ksession.insert("go");
-        ksession.insert(person);
-        int fired = ksession.fireAllRules(10);
-
-        assertThat(fired).isEqualTo(1);
-        assertThat(person.getOtherAttribute()).isEqualTo("done");
-
-        ksession.dispose();
+            assertThat(fired).isEqualTo(1);
+            assertThat(person.getOtherAttribute()).isEqualTo("done");
+        } finally {
+            ksession.dispose();
+        }
 
         //-- 2nd round
 
         ksession = getKieSession(runType, str);
+        try {
+            MyPerson person = new MyPerson();
+            person.setFlag1("bar"); // doesn't match the rule
+            person.setFlag2("bar");
 
-        person = new MyPerson();
-        person.setFlag1("bar"); // doesn't match the rule
-        person.setFlag2("bar");
+            ksession.insert("go");
+            ksession.insert(person);
+            int fired = ksession.fireAllRules(10); // do not fire
 
-        ksession.insert("go");
-        ksession.insert(person);
-        fired = ksession.fireAllRules(10); // do not fire
-
-        assertThat(fired).isZero();
-        assertThat(person.getOtherAttribute()).isNull();
-
-        ksession.dispose();
+            assertThat(fired).isZero();
+            assertThat(person.getOtherAttribute()).isNull();
+        } finally {
+            ksession.dispose();
+        }
     }
 
     public static class MyPerson {

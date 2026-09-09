@@ -1824,6 +1824,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
     }
 
     static boolean containsTernaryOperator(String expr) {
+        boolean foundQuestion = false;
         for (int i = 0; i < expr.length(); i++) {
             char c = expr.charAt(i);
             if (c == '"' || c == '\'') {
@@ -1837,7 +1838,9 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                     }
                     i++;
                 }
-            } else if (c == '?' && (i + 1 >= expr.length() || expr.charAt(i + 1) != '.')) {
+            } else if (!foundQuestion && c == '?' && (i + 1 >= expr.length() || expr.charAt(i + 1) != '.')) {
+                foundQuestion = true;
+            } else if (foundQuestion && c == ':') {
                 return true;
             }
         }
