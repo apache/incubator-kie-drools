@@ -19,6 +19,7 @@
 package org.kie.kogito.process.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -160,6 +161,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public <T extends MappableToModel<R>, R> Optional<R> signalProcessInstance(Process<T> process, String id, Object data, String signalName) {
+        Objects.requireNonNull(signalName, "signalName must not be null");
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(),
                 () -> process.instances()

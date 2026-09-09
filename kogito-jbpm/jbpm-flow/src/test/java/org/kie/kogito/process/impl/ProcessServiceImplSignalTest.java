@@ -38,6 +38,7 @@ import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -193,6 +194,13 @@ class ProcessServiceImplSignalTest {
         Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", "HelloMartin");
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void signalThrows_whenSignalNameIsNull() {
+        assertThatThrownBy(() -> processService.signalProcessInstance(process, "pi-1", "data", null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("signalName");
     }
 
     @Test
