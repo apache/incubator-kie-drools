@@ -281,9 +281,11 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
             if (variableScopeInstance == null) {
                 variableScopeInstance = (VariableScopeInstance) getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
             }
-            Variable variable = variableScopeInstance.getVariableScope().findVariable(variableName);
-            if (variable != null) {
-                dataType = new NamedDataType(variable.getName(), variable.getType());
+            if (variableScopeInstance != null) {
+                Variable variable = variableScopeInstance.getVariableScope().findVariable(variableName);
+                if (variable != null) {
+                    dataType = new NamedDataType(variable.getName(), variable.getType());
+                }
             }
         }
         EventNode eventNode = getEventNode();

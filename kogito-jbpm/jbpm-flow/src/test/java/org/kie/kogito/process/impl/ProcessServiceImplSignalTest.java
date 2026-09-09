@@ -115,20 +115,6 @@ class ProcessServiceImplSignalTest {
     }
 
     @Test
-    void signalAccepted_whenInstanceWaitingForMessageEvent() {
-        // Message catch events expose the event name as "Message-<name>" in the description
-        String id = "pi-2";
-        String signalName = "MyMessage";
-
-        givenInstanceWithEvents(id, Set.of(eventDesc("Message-" + signalName)), Collections.emptyList());
-
-        Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", signalName);
-
-        assertThat(result).isPresent();
-        verify(processInstance).send(any());
-    }
-
-    @Test
     void signalAccepted_whenInstanceHasMatchingAdHocFragment() {
         String id = "pi-3";
         String adHocName = "AdHocTask";

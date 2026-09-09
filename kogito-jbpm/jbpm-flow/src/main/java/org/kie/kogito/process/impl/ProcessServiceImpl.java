@@ -19,8 +19,8 @@
 package org.kie.kogito.process.impl;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -167,7 +167,7 @@ public class ProcessServiceImpl implements ProcessService {
                 () -> process.instances()
                         .findById(id)
                         .filter(pi -> {
-                            if (pi.events().stream().anyMatch(e -> signalName.equals(e.getEvent()) || ("Message-" + signalName).equals(e.getEvent()))) {
+                            if (pi.events().stream().anyMatch(e -> signalName.equals(e.getEvent()))) {
                                 return true;
                             }
                             return pi.adHocFragments()
