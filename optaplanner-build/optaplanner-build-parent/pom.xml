@@ -42,7 +42,7 @@
     <version.org.drools>${project.version}</version.org.drools>
 
     <!-- Normal dependency versions -->
-    <version.ch.qos.logback>1.5.35</version.ch.qos.logback>
+    <version.ch.qos.logback>1.6.3</version.ch.qos.logback>
     <!-- CVE-2026-49844: log4j-api versions below 2.25.5 are vulnerable. Upgrade log4j to 2.26.1.
          This covers log4j-to-slf4j (explicitly managed) and log4j-api (promoted by quarkus-bom to 2.25.1).
          https://logging.apache.org/security.html#CVE-2026-49844 -->
