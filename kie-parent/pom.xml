@@ -197,7 +197,7 @@
     <version.maven.plugin>3.15.1</version.maven.plugin>
     <version.maven.project>2.2.1</version.maven.project>
     <version.maven.resolver.api>1.9.27</version.maven.resolver.api>
-    <version.mongodb-driver-sync>5.5.1</version.mongodb-driver-sync>
+    <version.mongodb-driver-sync>5.9.2</version.mongodb-driver-sync>
     <version.nashorn>15.3</version.nashorn>
     <version.native2ascii-maven-plugin>1.0-beta-1</version.native2ascii-maven-plugin>
     <version.net.byte-buddy>1.17.6</version.net.byte-buddy>

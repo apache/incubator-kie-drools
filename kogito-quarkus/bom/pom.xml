@@ -149,6 +149,35 @@
         <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
         <version>${version.io.quarkiverse.reactivemessaging.http}</version>
       </dependency>
+      <!-- CVE fix: quarkus-bom:3.33.x pins all MongoDB driver artifacts to 5.5.1.
+           Override to match mongodb-driver-sync:${version.mongodb-driver-sync} already
+           pinned in kie-parent. Must appear before the quarkus-bom import to take precedence.
+           https://jira.mongodb.org/browse/JAVA-6266 -->
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-sync</artifactId>
+        <version>${version.mongodb-driver-sync}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-core</artifactId>
+        <version>${version.mongodb-driver-sync}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-reactivestreams</artifactId>
+        <version>${version.mongodb-driver-sync}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>bson</artifactId>
+        <version>${version.mongodb-driver-sync}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>bson-record-codec</artifactId>
+        <version>${version.mongodb-driver-sync}</version>
+      </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
