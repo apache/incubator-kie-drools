@@ -31,6 +31,7 @@
     <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie.kogito:kogito-quarkus-bom</allowedPomsList>
     <quarkus.logging.manager>org.jboss.logmanager.LogManager</quarkus.logging.manager>
+    
     <version.io.quarkus>3.33.3.2</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.io.quarkiverse.jackson-jq>2.4.0</version.io.quarkiverse.jackson-jq>
@@ -43,7 +44,6 @@
          change what the Spring Boot side resolves. -->
     <version.io.grpc>1.81.0</version.io.grpc>
     <version.io.smallrye.reactive.messaging.in.memory>4.33.0</version.io.smallrye.reactive.messaging.in.memory>
-    <version.com.google.guava>33.5.0-jre</version.com.google.guava>
     <version.io.smallrye.mutiny>3.1.1</version.io.smallrye.mutiny>
     <version.org.hibernate>7.2.19.Final</version.org.hibernate>
     <version.org.postgresql>42.7.13</version.org.postgresql>
