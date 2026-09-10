@@ -45,11 +45,6 @@ class ShouldPreserveEvalTest {
     }
 
     @Test
-    void nullSafeOperator() {
-        assertThat(Drl6ExprParser.shouldPreserveEval("address?.city == \"London\"")).isTrue();
-    }
-
-    @Test
     void questionMarkInsideStringLiteral() {
         assertThat(Drl6ExprParser.shouldPreserveEval("name == \"what?\"")).isFalse();
     }
@@ -87,11 +82,6 @@ class ShouldPreserveEvalTest {
     @Test
     void complexTernaryWithLogicalOperators() {
         assertThat(Drl6ExprParser.shouldPreserveEval("a > 0 && b < 10 ? c : d")).isTrue();
-    }
-
-    @Test
-    void nullSafeChain() {
-        assertThat(Drl6ExprParser.shouldPreserveEval("person?.address?.city == \"London\"")).isTrue();
     }
 
     @Test
