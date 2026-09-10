@@ -73,6 +73,22 @@ org.kie.kogito/jobs-service-postgresql:999-SNAPSHOT image, which is built as par
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Ensure data-index-service-postgresql binary is built before running integration tests.
+         Build-ordering sentinel only: type=pom + full exclusions adds nothing to classpath.
+         Without this edge the partial CI build skips the service module and the
+         DataIndexPostgreSqlContainer image is missing at runtime. -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-service-postgresql</artifactId>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <profiles>
