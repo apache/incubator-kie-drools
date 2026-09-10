@@ -98,6 +98,7 @@ import org.drools.drl.ast.descr.PredicateDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
 import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.parser.Drl6ExprParser;
 import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.DroolsParserException;
@@ -1806,7 +1807,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final String expression) {
         DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
         String toParse = normalizeEval(expression);
-        if (!toParse.equals(expression) && containsTernaryOperator(toParse)) {
+        if (!toParse.equals(expression) && Drl6ExprParser.shouldPreserveEval(toParse)) {
             toParse = expression;
         }
         ConstraintConnectiveDescr result = parser.parse(toParse);
@@ -1821,30 +1822,6 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         result.setResource(patternDescr.getResource());
         result.copyLocation(original);
         return result;
-    }
-
-    static boolean containsTernaryOperator(String expr) {
-        boolean foundQuestion = false;
-        for (int i = 0; i < expr.length(); i++) {
-            char c = expr.charAt(i);
-            if (c == '"' || c == '\'') {
-                char quote = c;
-                i++;
-                while (i < expr.length()) {
-                    if (expr.charAt(i) == '\\') {
-                        i++;
-                    } else if (expr.charAt(i) == quote) {
-                        break;
-                    }
-                    i++;
-                }
-            } else if (!foundQuestion && c == '?' && (i + 1 >= expr.length() || expr.charAt(i + 1) != '.')) {
-                foundQuestion = true;
-            } else if (foundQuestion && c == ':') {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void registerDescrBuildError(RuleBuildContext context, BaseDescr patternDescr, String error) {
