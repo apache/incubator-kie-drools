@@ -72,8 +72,10 @@ public class Drl6ExprParser implements DrlExprParser {
     
     /**
      * Returns whether to preserve the eval wrapper around the supplied contents.
-     * Question-mark tokens at any nesting depth may indicate a ternary whose branches
-     * would be lost during constraint parsing. Strings and comments are ignored.
+     * The constraint parser enters at conditionalOrExpression, which is below
+     * ternaryExpression in the grammar, so a top-level ternary's branches are
+     * silently discarded. Question-mark tokens at any nesting depth may indicate
+     * such a ternary. Strings and comments are ignored.
      * Lexer errors also preserve the wrapper, leaving validation to compilation.
      * This is a conservative check, not validation of ternary syntax.
      */
