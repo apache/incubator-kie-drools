@@ -240,7 +240,7 @@ public class PropertyChangeSupportTest {
             ksession.fireAllRules();
             assertThat(fact.getListenerCount()).isEqualTo(1);
 
-            SessionPseudoClock clock = ksession.getSessionClock();
+            SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
             clock.advanceTime(2, TimeUnit.SECONDS);
             ksession.fireAllRules();
 
