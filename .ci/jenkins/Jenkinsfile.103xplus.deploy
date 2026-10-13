@@ -80,16 +80,6 @@ pipeline {
             }
         }
 
-        stage('Setup Maven') {
-            // The CI agent image may ship an older Maven than the one kie-parent's enforcer
-            // requires (version.org.apache.maven). Install the required version into the workspace.
-            steps {
-                script {
-                    installMaven()
-                }
-            }
-        }
-
         stage('Prepare for PR') {
             when {
                 expression { return isCreatePr() }
@@ -291,44 +281,11 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-void installMaven() {
-    // Fallback only used if the version can't be read from kie-parent
-    def mavenVersion = '3.9.16'
-    def pomFile = "${getRepoName()}/kie-parent/pom.xml"
-    if (fileExists(pomFile)) {
-        def pomVersion = sh(returnStdout: true, script: "grep -o '<version.org.apache.maven>[^<]*' ${pomFile} | head -1 | cut -d'>' -f2").trim()
-        if (pomVersion) {
-            mavenVersion = pomVersion
-        }
-    }
-    echo "Installing Maven ${mavenVersion}"
-
-    withEnv(["MAVEN_VERSION=${mavenVersion}"]) {
-        sh '''#!/usr/bin/env bash
-        set -euo pipefail
-        INSTALL_DIR="${WORKSPACE}/.tools"
-        MAVEN_DIR="${INSTALL_DIR}/apache-maven-${MAVEN_VERSION}"
-        if [ ! -x "${MAVEN_DIR}/bin/mvn" ]; then
-            ARCHIVE="apache-maven-${MAVEN_VERSION}-bin.tar.gz"
-            BASE_URL="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/${MAVEN_VERSION}"
-            mkdir -p "${INSTALL_DIR}"
-            curl -fsSL --retry 5 -o "${INSTALL_DIR}/${ARCHIVE}" "${BASE_URL}/${ARCHIVE}"
-            curl -fsSL --retry 5 -o "${INSTALL_DIR}/${ARCHIVE}.sha512" "${BASE_URL}/${ARCHIVE}.sha512"
-            echo "$(cut -d' ' -f1 "${INSTALL_DIR}/${ARCHIVE}.sha512")  ${INSTALL_DIR}/${ARCHIVE}" | sha512sum -c -
-            tar -xzf "${INSTALL_DIR}/${ARCHIVE}" -C "${INSTALL_DIR}"
-            rm -f "${INSTALL_DIR}/${ARCHIVE}" "${INSTALL_DIR}/${ARCHIVE}.sha512"
-        fi
-        '''
-    }
-
-    env.MAVEN_HOME = "${env.WORKSPACE}/.tools/apache-maven-${mavenVersion}"
-    env.PATH = "${env.MAVEN_HOME}/bin:${env.PATH}"
-    sh 'mvn -version'
-}
-
-MavenCommand getMavenCommand() {
+MavenCommand getMavenCommand(String directory = '') {
+    directory = directory ?: getRepoName()
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
+                .inDirectory(directory)
                 .withProperty('full')
     return mvnCmd
 }
