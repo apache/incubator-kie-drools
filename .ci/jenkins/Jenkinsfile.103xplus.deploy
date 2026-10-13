@@ -281,11 +281,9 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-MavenCommand getMavenCommand(String directory = '') {
-    directory = directory ?: getRepoName()
+MavenCommand getMavenCommand() {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
-                .inDirectory(directory)
                 .withProperty('full')
     return mvnCmd
 }
