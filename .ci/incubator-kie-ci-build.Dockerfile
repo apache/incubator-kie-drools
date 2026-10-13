@@ -19,7 +19,7 @@
 
 # CI builder image for incubator-kie (Drools) Jenkins jobs.
 # Published per stream by .ci/jenkins/Jenkinsfile.ci-image-build, e.g.
-#   docker.io/apache/incubator-kie-ci-build:10.3.x
+#   docker.io/apache/incubator-kie-kogito-ci-build:10.3.x-latest
 #
 # Keep SDKMAN_MAVEN in sync with <version.org.apache.maven> in kie-parent/pom.xml
 # (enforced by maven-enforcer-plugin, rule requireMavenVersion).

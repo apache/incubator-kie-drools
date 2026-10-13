@@ -18,9 +18,9 @@
  */
 
 // Builds and publishes the CI builder image from .ci/incubator-kie-ci-build.Dockerfile.
-// One tag per stream (e.g. main, 10.3.x, 10.4.x): set IMAGE_TAG to the stream name.
+// One tag per stream (e.g. main-latest, 10.3.x-latest, 10.4.x-latest): set IMAGE_TAG to the stream name.
 // Then point the jobs' AGENT_DOCKER_BUILDER_IMAGE to
-//   docker.io/apache/incubator-kie-ci-build:<IMAGE_TAG>
+//   docker.io/apache/incubator-kie-kogito-ci-build:<IMAGE_TAG>
 
 pipeline {
     agent {
@@ -28,14 +28,14 @@ pipeline {
     }
 
     parameters {
-        string(name: 'IMAGE_TAG', defaultValue: "${env.BRANCH_NAME}", description: 'Image tag, one per stream, e.g. 10.3.x', trim: true)
+        string(name: 'IMAGE_TAG', defaultValue: "${env.BRANCH_NAME}", description: 'Image tag, one per stream, e.g. 10.3.x-latest', trim: true)
     }
 
     environment {
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
         IMAGE_REGISTRY = 'docker.io'
         IMAGE_ACCOUNT = 'apache'
-        IMAGE_NAME = 'incubator-kie-ci-build'
+        IMAGE_NAME = 'incubator-kie-kogito-ci-build'
         DOCKERHUB_USER_CREDS_ID = 'DOCKERHUB_USER'
         DOCKERHUB_TOKEN_CREDS_ID = 'DOCKERHUB_TOKEN'
     }
