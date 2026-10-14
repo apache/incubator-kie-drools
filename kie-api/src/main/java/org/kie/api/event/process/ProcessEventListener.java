@@ -122,7 +122,7 @@ public interface ProcessEventListener
     default void onSignal(SignalEvent event) {}
 
     /**
-     * Invoked when a process instance migration occurs across.
+     * Invoked when a process instance migration occurs across process versions.
      *
      * @param event the non-null {@link ProcessMigrationEvent}
      */

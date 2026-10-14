@@ -71,7 +71,7 @@ public interface KogitoWorkItemHandler {
      * Returns the set of allowed target phase transitions from the specified phase status.
      *
      * @param phaseStatus the non-null current phase status
-     * @return an unmodifiable {@link Set} of allowed transition phase identifiers
+     * @return a {@link Set} of allowed transition phase identifiers
      */
     Set<String> allowedTransitions(String phaseStatus);
 

@@ -32,8 +32,8 @@ public interface BusinessCalendar {
     /**
      * Calculates the duration in milliseconds from the current time to the business time matching the expression.
      *
-     * @param timeExpression time expression that is supported by business calendar implementation.
-     * @return duration expressed in milliseconds; always &gt;= 0
+     * @param timeExpression time expression that is supported by business calendar implementation
+     * @return duration expressed in milliseconds
      * @see #calculateBusinessTimeAsDate(String)
      */
     long calculateBusinessTimeAsDuration(String timeExpression);
@@ -41,8 +41,8 @@ public interface BusinessCalendar {
     /**
      * Calculates the future date matching the expression within valid business calendar hours.
      *
-     * @param timeExpression the non-null ISO-8601 or custom cron/interval time expression
-     * @return the future {@link Date} when the time expression matches; never {@code null}
+     * @param timeExpression time expression supported by the business calendar implementation
+     * @return the future {@link Date} when the time expression matches
      */
     Date calculateBusinessTimeAsDate(String timeExpression);
 }

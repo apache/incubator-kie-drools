@@ -111,7 +111,7 @@ public interface UserTaskLifeCycle {
      *
      * @param ut the non-null target user task instance
      * @param identity the non-null requesting user identity
-     * @return an unmodifiable {@link List} of allowed {@link UserTaskTransition} instances
+     * @return a {@link List} of allowed {@link UserTaskTransition} instances
      */
     List<UserTaskTransition> allowedTransitions(UserTaskInstance ut, IdentityProvider identity);
 
