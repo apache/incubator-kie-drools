@@ -30,6 +30,23 @@ public class ProcessWorkItemHandlerExceptionHandler extends AbstractExceptionHan
     public static final String ERROR_HANDLING_STRATEGY = "ErrorHandlingStrategy";
     public static final String ERROR_HANDLING_RETRIES = "ErrorHandlingRetries";
 
+    public static boolean canDecorate(KogitoWorkItemHandler handler, KogitoWorkItem workItem) {
+        if (handler == null || handler instanceof AbstractExceptionHandlingTaskHandler || workItem == null) {
+            return false;
+        }
+        Object processId = workItem.getParameter(ERROR_HANDLER_PROCESS_ID);
+        Object strategy = workItem.getParameter(ERROR_HANDLING_STRATEGY);
+        return processId != null && !processId.toString().trim().isEmpty()
+                && strategy != null && !strategy.toString().trim().isEmpty();
+    }
+
+    public static KogitoWorkItemHandler wrapIfNeeded(KogitoWorkItemHandler handler, KogitoWorkItem workItem) {
+        if (canDecorate(handler, workItem)) {
+            return new ProcessWorkItemHandlerExceptionHandler(handler);
+        }
+        return handler;
+    }
+
     public ProcessWorkItemHandlerExceptionHandler(KogitoWorkItemHandler originalTaskHandler) {
         super(originalTaskHandler);
     }

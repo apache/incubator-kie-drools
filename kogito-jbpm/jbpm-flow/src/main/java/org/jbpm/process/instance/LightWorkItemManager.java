@@ -29,7 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.drools.core.process.WorkItem;
-import org.jbpm.process.workitem.builtin.AbstractExceptionHandlingTaskHandler;
 import org.jbpm.process.workitem.builtin.ProcessWorkItemHandlerExceptionHandler;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -67,23 +66,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
 
     @Override
     public void registerWorkItemHandler(String workItemName, KogitoWorkItemHandler handler) {
-        this.workItemHandlers.put(workItemName, wrapIfNeeded(handler));
-    }
-
-    /**
-     * Wraps the given handler with {@link ProcessWorkItemHandlerExceptionHandler} unless
-     * it is already an {@link AbstractExceptionHandlingTaskHandler} (prevents double-wrapping).
-     * This ensures that any handler registered through any path — SPI, CDI config, or
-     * direct constructor injection — automatically gains BPMN process-level error-subprocess
-     * routing when the task carries {@code ErrorHandlerProcessId} and {@code ErrorHandlingStrategy}
-     * Data Inputs. When those parameters are absent, the decorator is transparent and the
-     * original exception propagates unchanged (backward compatible).
-     */
-    private static KogitoWorkItemHandler wrapIfNeeded(KogitoWorkItemHandler handler) {
-        if (handler == null || handler instanceof AbstractExceptionHandlingTaskHandler) {
-            return handler;
-        }
-        return new ProcessWorkItemHandlerExceptionHandler(handler);
+        this.workItemHandlers.put(workItemName, handler);
     }
 
     @Override
@@ -210,6 +193,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
         if (handler == null) {
             throw new KogitoWorkItemHandlerNotFoundException(workItem.getName());
         }
+        handler = ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(handler, workItem);
 
         KogitoProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceStringId());
         WorkItemTransition lastTransition = null;

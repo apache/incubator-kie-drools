@@ -183,4 +183,33 @@ public class ProcessWorkItemHandlerExceptionHandlerTest {
         assertThatThrownBy(() -> handler.transitionToPhase(null, workItem, handler.startingTransition(Collections.emptyMap())))
                 .isSameAs(originalException);
     }
+
+    @Test
+    public void testCanDecorateAndWrapIfNeeded() {
+        SuccessfulWorkItemHandler rawHandler = new SuccessfulWorkItemHandler();
+
+        // Null checks
+        assertThat(ProcessWorkItemHandlerExceptionHandler.canDecorate(null, null)).isFalse();
+        assertThat(ProcessWorkItemHandlerExceptionHandler.canDecorate(rawHandler, null)).isFalse();
+
+        // Work item without error params
+        KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
+        assertThat(ProcessWorkItemHandlerExceptionHandler.canDecorate(rawHandler, workItem)).isFalse();
+        assertThat(ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(rawHandler, workItem)).isSameAs(rawHandler);
+
+        // Work item with partial params
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLER_PROCESS_ID, "error_proc");
+        assertThat(ProcessWorkItemHandlerExceptionHandler.canDecorate(rawHandler, workItem)).isFalse();
+        assertThat(ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(rawHandler, workItem)).isSameAs(rawHandler);
+
+        // Work item with both params
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLING_STRATEGY, "RETRY");
+        assertThat(ProcessWorkItemHandlerExceptionHandler.canDecorate(rawHandler, workItem)).isTrue();
+        KogitoWorkItemHandler wrapped = ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(rawHandler, workItem);
+        assertThat(wrapped).isInstanceOf(ProcessWorkItemHandlerExceptionHandler.class);
+
+        // Already decorated handler should not be double-wrapped
+        assertThat(ProcessWorkItemHandlerExceptionHandler.canDecorate(wrapped, workItem)).isFalse();
+        assertThat(ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(wrapped, workItem)).isSameAs(wrapped);
+    }
 }

@@ -350,4 +350,15 @@ public class WorkItemHandlerExceptionHandlingTest {
         assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
         assertThat(instance.variables().getIsChecked()).isFalse();
     }
+
+    @Test
+    public void testRegisteredHandlerIsNotWrappedInManager() throws Exception {
+        TestWorkItemHandler rawHandler = new TestWorkItemHandler();
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(application, "MyCustomTask", rawHandler);
+
+        org.kie.kogito.process.Process<UserTaskWithBooleanOutputModel> processDefinition = UserTaskWithBooleanOutputProcess.newProcess(application);
+        KogitoWorkItemHandler retrievedHandler = processDefinition.getKogitoWorkItemHandler("MyCustomTask");
+        assertThat(retrievedHandler).isSameAs(rawHandler);
+    }
 }
