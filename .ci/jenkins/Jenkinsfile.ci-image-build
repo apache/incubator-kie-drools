@@ -76,8 +76,9 @@ pipeline {
         stage('Test built image') {
             steps {
                 // Test before pushing so a broken image is never published.
+                // --privileged: the image entrypoint starts the Docker-in-Docker daemon.
                 sh """#!/bin/bash -el
-                    docker run --rm ${env.FULL_IMAGE} bash -lc 'java -version && mvn --version && git --version && gh --version'
+                    docker run --rm --privileged --group-add docker ${env.FULL_IMAGE} bash -lc 'wait-for-docker.sh && java -version && mvn --version && git --version && gh --version && docker info > /dev/null && echo DOCKER_OK'
                 """.trim()
             }
         }
