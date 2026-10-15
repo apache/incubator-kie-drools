@@ -111,6 +111,23 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     private ProcessInstanceLockStrategy processInstanceLockStrategy;
 
+    /**
+     * Transaction registrar for deferred lock release. When non-null (set by
+     * {@link JDBCProcessInstances#connectInstance} via {@link #internalSetTransactionRegistrar}),
+     * write operations defer the JVM-level lock release until after the surrounding transaction
+     * commits, preventing other threads from reading a stale optimistic-lock version.
+     */
+    private Consumer<Runnable> transactionRegistrar;
+
+    /**
+     * Sets the transaction registrar so that write operations release the JVM lock only after
+     * the surrounding transaction commits. Called by the persistence layer after the instance
+     * is unmarshalled from the DB. A {@code null} value (the default) means unlock immediately.
+     */
+    public void internalSetTransactionRegistrar(Consumer<Runnable> transactionRegistrar) {
+        this.transactionRegistrar = transactionRegistrar;
+    }
+
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);
     }
@@ -612,11 +629,26 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     private <R> R executeInWorkflowProcessInstance(Function<WorkflowProcessInstanceImpl, R> execution) {
-        // Check if this is a reentrant call before entering the lock
+        // Check reentrance before acquiring the lock: isLockedByCurrentThread returns true only
+        // when the current thread *already* holds the lock, so it must be read before
+        // executeWriteOperation acquires it — otherwise every outermost call looks reentrant.
         boolean isReentrant = processInstanceLockStrategy.isLockedByCurrentThread(id);
-
-        return processInstanceLockStrategy.executeOperation(id, () -> {
+        return processInstanceLockStrategy.executeWriteOperation(id, () -> {
+            // The process instance (and its optimistic-lock version) may have been loaded from
+            // the DB *before* this lock was acquired (e.g. by JDBCProcessInstances.findById in
+            // ProcessInstanceJobExecutor). Discard that stale snapshot so that the SELECT issued
+            // by reloadSupplier happens *inside* the lock, guaranteeing the version we write back
+            // was read under mutual exclusion with every other writer.
+            // Guards:
+            //   !isReentrant — reentrant callers must not null out the parent's live state.
+            //   reloadSupplier != null — brand-new instances (start path) have no supplier yet;
+            //                           their processInstance was set in the constructor.
+            if (!isReentrant && reloadSupplier != null) {
+                LOG.trace("executeInWorkflowProcessInstance [{}] discarding stale snapshot (version={}) before lock-guarded reload", id, this.version);
+                this.processInstance = null;
+            }
             WorkflowProcessInstanceImpl workflowProcessInstance = internalLoadProcessInstanceState();
+            LOG.trace("executeInWorkflowProcessInstance [{}] state loaded, version={}, reentrant={}", id, this.version, isReentrant);
             if (isProcessInstanceConnected()) {
                 getProcessRuntime().getProcessInstanceManager().addProcessInstance(workflowProcessInstance);
             }
@@ -636,6 +668,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             }
 
             if (isProcessInstanceConnected()) {
+                LOG.trace("executeInWorkflowProcessInstance [{}] about to syncPersistence with version={}", id, this.version);
                 syncPersistence(workflowProcessInstance);
                 getProcessRuntime().getProcessInstanceManager().removeProcessInstance(workflowProcessInstance);
             }
@@ -646,7 +679,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             }
 
             return outcome;
-        });
+        }, transactionRegistrar);
     }
 
     @Override

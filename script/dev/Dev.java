@@ -18,7 +18,7 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 21
+//JAVA 17+
 //SOURCES ../ci/CiComputeBuildScopes.java
 
 import java.io.IOException;

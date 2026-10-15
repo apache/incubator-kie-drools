@@ -395,7 +395,13 @@ public class KieBuilderImpl
     }
 
     private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<InternalResource> file ) {
-        String packageNameFromFolder = getRelativePackageName(folderNameForFile.replace( '/', '.' ));
+        int firstNonSeparator = 0;
+        while (firstNonSeparator < folderNameForFile.length()
+                && folderNameForFile.charAt(firstNonSeparator) == '/') {
+            firstNonSeparator++;
+        }
+        String packageNameFromFolder = getRelativePackageName(
+                folderNameForFile.substring(firstNonSeparator).replace('/', '.'));
         if (discoverPackage) {
             String packageNameForFile = packageNameFromAsset(fileName, file.get());
             if (packageNameForFile != null) {

@@ -18,8 +18,11 @@
  */
 package org.drools.ruleunits.dsl;
 
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.model.Model;
 import org.drools.modelcompiler.KieBaseBuilder;
@@ -27,12 +30,15 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.conf.EventProcessing;
+import org.drools.ruleunits.api.conf.EventProcessingType;
 import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.EntryPointDataProcessor;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.drools.ruleunits.impl.RuleUnitProviderImpl;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.rule.EntryPoint;
 
 import java.util.Map;
@@ -66,7 +72,14 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
         public ModelRuleUnit(Class<T> type, Model model, UnitGlobalsResolver unitGlobalsResolver) {
             super(type);
             this.unitGlobalsResolver = unitGlobalsResolver;
-            this.ruleBase = KieBaseBuilder.createKieBaseFromModel( model );
+            EventProcessing annotation = type.getAnnotation(EventProcessing.class);
+            if (annotation == null) {
+                this.ruleBase = KieBaseBuilder.createKieBaseFromModel(model);
+            } else {
+                EventProcessingOption option = annotation.value() == EventProcessingType.STREAM
+                        ? EventProcessingOption.STREAM : EventProcessingOption.CLOUD;
+                this.ruleBase = KieBaseBuilder.createKieBaseFromModel(model, option);
+            }
             if (DUMP_GENERATED_RETE) {
                 ReteDumper.dumpRete(this.ruleBase);
             }
@@ -74,7 +87,15 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
 
         @Override
         public RuleUnitInstance<T> internalCreateInstance(T data, RuleConfig ruleConfig) {
-            ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
+            ReteEvaluator reteEvaluator;
+            org.drools.ruleunits.api.conf.ClockType clockType = ruleConfig.getClockType();
+            if (clockType != null) {
+                SessionConfiguration sessionConfiguration = RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);
+                sessionConfiguration.setClockType(clockType == org.drools.ruleunits.api.conf.ClockType.PSEUDO ? ClockType.PSEUDO_CLOCK : ClockType.REALTIME_CLOCK);
+                reteEvaluator = new RuleUnitExecutorImpl(ruleBase, sessionConfiguration);
+            } else {
+                reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
+            }
             return new DSLRuleUnitInstance<>(this, data, reteEvaluator, unitGlobalsResolver, ruleConfig);
         }
     }

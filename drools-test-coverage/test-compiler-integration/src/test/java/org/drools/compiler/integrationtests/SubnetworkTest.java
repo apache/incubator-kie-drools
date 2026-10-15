@@ -521,4 +521,68 @@ public class SubnetworkTest {
             kieSession.dispose();
         }
     }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void subnetworkSharedByNotAndAccumulate_notRuleFirst_shouldNotThrowClassCastException(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // incubator-kie#7188
+        testSubnetworkSharedByNotAndAccumulate(kieBaseTestConfiguration, true);
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void subnetworkSharedByNotAndAccumulate_accumulateRuleFirst_shouldNotThrowClassCastException(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // incubator-kie#7188
+        testSubnetworkSharedByNotAndAccumulate(kieBaseTestConfiguration, false);
+    }
+
+    private void testSubnetworkSharedByNotAndAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration, boolean notRuleFirst) {
+        final String notRule =
+                "rule NotRule when\n" +
+                "    not( X( $id : id ) and $y : Y( parentId == $id ) )\n" +
+                "then\n" +
+                "    list.add(\"NotRule\");\n" +
+                "end\n";
+        final String accumulateRule =
+                "rule AccumulateRule when\n" +
+                "    accumulate( X( $id : id ) and $y : Y( parentId == $id ); $count : count($y) )\n" +
+                "then\n" +
+                "    list.add(\"AccumulateRule \" + $count);\n" +
+                "end\n";
+        final String drl =
+                "import " + X.class.getCanonicalName() + "\n" +
+                "import " + Y.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                (notRuleFirst ? notRule + accumulateRule : accumulateRule + notRule);
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("subnetwork-test", kieBaseTestConfiguration, drl);
+
+        final KieSession withoutMatchSession = kbase.newKieSession();
+        try {
+            final List<String> list = new ArrayList<>();
+            withoutMatchSession.setGlobal("list", list);
+            withoutMatchSession.insert(new X(1));
+            withoutMatchSession.insert(new Y(2));
+
+            withoutMatchSession.fireAllRules();
+
+            assertThat(list).containsExactlyInAnyOrder("NotRule", "AccumulateRule 0");
+        } finally {
+            withoutMatchSession.dispose();
+        }
+
+        final KieSession withMatchSession = kbase.newKieSession();
+        try {
+            final List<String> list = new ArrayList<>();
+            withMatchSession.setGlobal("list", list);
+            withMatchSession.insert(new X(1));
+            withMatchSession.insert(new Y(1));
+
+            withMatchSession.fireAllRules();
+
+            assertThat(list).containsExactly("AccumulateRule 1");
+        } finally {
+            withMatchSession.dispose();
+        }
+    }
 }

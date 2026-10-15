@@ -18,7 +18,7 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 21
+//JAVA 17+
 //SOURCES DepGraph.java
 
 import java.io.BufferedReader;

@@ -40,6 +40,7 @@ public class DroolsEntryPointImpl implements DroolsEntryPoint {
         entryPoint.insert( object );
     }
 
+    @Deprecated(since = "5.0.1", forRemoval = false)
     @Override
     public void insert(Object object, boolean dynamic) {
         ((WorkingMemoryEntryPoint ) entryPoint).insert(object, dynamic);

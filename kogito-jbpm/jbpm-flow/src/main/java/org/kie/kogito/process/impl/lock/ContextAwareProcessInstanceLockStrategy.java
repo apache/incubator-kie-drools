@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.process.impl.lock;
 
+import java.util.function.Consumer;
+
 import org.kie.kogito.services.context.ProcessInstanceContext;
 
 /**
@@ -65,6 +67,19 @@ public class ContextAwareProcessInstanceLockStrategy implements ProcessInstanceL
                 ProcessInstanceContext.clear();
             }
         });
+    }
+
+    @Override
+    public <T> T executeWriteOperation(String processInstanceId, WorkflowAtomicExecutor<T> operation,
+            Consumer<Runnable> transactionRegistrar) {
+        return delegate.executeWriteOperation(processInstanceId, () -> {
+            ProcessInstanceContext.setProcessInstanceId(processInstanceId);
+            try {
+                return operation.execute();
+            } finally {
+                ProcessInstanceContext.clear();
+            }
+        }, transactionRegistrar);
     }
 
     @Override

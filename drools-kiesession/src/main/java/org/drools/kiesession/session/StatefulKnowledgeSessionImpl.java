@@ -1245,6 +1245,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        false );
     }
 
+    @Deprecated(since = "5.0.1", forRemoval = false)
     public FactHandle insert(final Object object,
                              final boolean dynamic) {
         return insert( object,

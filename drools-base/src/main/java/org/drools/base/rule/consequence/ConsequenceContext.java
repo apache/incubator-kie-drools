@@ -56,7 +56,11 @@ public interface ConsequenceContext extends RuleContext {
      *            the object to be asserted
      * @param dynamic -
      *            specifies the object implements onPropertyChangeListener
+     * @deprecated since 5.0.1, the per-instance dynamic flag is a legacy Drools 4 API.
+     *             Use {@link #insert(Object)} and declare the fact type with
+     *             {@code @propertyChangeSupport} instead.
      */
+    @Deprecated(since = "5.0.1", forRemoval = false)
     FactHandle insert(Object object, boolean dynamic);
 
     FactHandle insertLogical(Object object) ;

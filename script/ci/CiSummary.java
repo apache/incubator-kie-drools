@@ -18,7 +18,7 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 21
+//JAVA 17+
 //COMPILE_OPTIONS -encoding UTF-8
 //DEPS com.samskivert:jmustache:1.16
 

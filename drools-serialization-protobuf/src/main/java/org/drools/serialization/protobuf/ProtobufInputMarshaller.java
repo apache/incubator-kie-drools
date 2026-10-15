@@ -425,9 +425,30 @@ public class ProtobufInputMarshaller {
                 assertHandleIntoOTN( context, wm, handle, pctxs );
             }
 
+            reattachPropertyChangeListener( entryPoint, handle );
+
             if (handle.isExpired()) {
                 wm.addPropagation(new WorkingMemoryReteExpireAction((DefaultEventHandle) handle));
             }
+        }
+    }
+
+    /**
+     * Restores the listener for types declared with {@code @propertyChangeSupport}.
+     * JavaBeans PropertyChangeSupport drops the non-serializable entry point listener
+     * during marshalling, so it must be registered again on read.
+     */
+    private static void reattachPropertyChangeListener( EntryPoint entryPoint,
+                                                        InternalFactHandle handle ) {
+        Object object = handle.getObject();
+        if ( object == null || !(entryPoint instanceof NamedEntryPoint) ) {
+            return;
+        }
+        NamedEntryPoint namedEntryPoint = (NamedEntryPoint) entryPoint;
+        ObjectTypeConf typeConf = namedEntryPoint.getObjectTypeConfigurationRegistry()
+                .getOrCreateObjectTypeConf( namedEntryPoint.getEntryPoint(), object );
+        if ( typeConf.isDynamic() ) {
+            namedEntryPoint.addPropertyChangeListener( handle, false );
         }
     }
 

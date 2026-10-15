@@ -25,10 +25,12 @@ import org.kie.kogito.app.jobs.spi.JobStore;
 import org.kie.kogito.app.jobs.spi.TransactionRollbackMarker;
 import org.kie.kogito.event.EventPublisher;
 
+import io.vertx.core.Vertx;
+
 public interface JobSchedulerBuilder {
 
     static JobSchedulerBuilder newJobSchedulerBuilder() {
-        return new VertxJobScheduler().new VertxJobSchedulerBuilder();
+        return VertxJobScheduler.builder();
     }
 
     JobScheduler build();
@@ -56,6 +58,12 @@ public interface JobSchedulerBuilder {
     JobSchedulerBuilder withTimeoutInterceptor(JobTimeoutInterceptor... interceptors);
 
     JobSchedulerBuilder withNumberOfWorkerThreads(Integer numberOfWorkerThreads);
+
+    /**
+     * Supplies the platform-managed Vert.x instance to use as the execution runtime.
+     * If not called, the scheduler creates and owns a standalone instance.
+     */
+    JobSchedulerBuilder withVertx(Vertx vertx);
 
     JobSchedulerBuilder withJobSynchronization(JobSynchronization jobSynchronization);
 

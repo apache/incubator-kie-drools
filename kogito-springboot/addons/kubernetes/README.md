@@ -34,9 +34,16 @@ When using this add-on is important to set the following properties in your test
 ```properties
 spring.main.cloud-platform=KUBERNETES
 spring.cloud.bootstrap.enabled=true
+# Required when running tests outside a real Kubernetes cluster (Spring Cloud Kubernetes 5.0.2+).
+# Fabric8InformerAutoConfiguration performs eager namespace resolution and API server connection
+# on startup. Without this property, ApplicationContext loading fails with an Unauthorized (401)
+# error when no valid cluster credentials are present.
+spring.cloud.kubernetes.discovery.enabled=false
 ```
 
-This will guarantee that he right `KubernetesClient` bean is created for you. See more at [Kubernetes Ecosystem Awareness](https://docs.spring.io/spring-cloud-kubernetes/docs/current/reference/html/#kubernetes-ecosystem-awareness).
+This will guarantee that the right `KubernetesClient` bean is created for you. See more at [Kubernetes Ecosystem Awareness](https://docs.spring.io/spring-cloud-kubernetes/docs/current/reference/html/#kubernetes-ecosystem-awareness).
+
+> **Note:** `spring.cloud.kubernetes.discovery.enabled=false` is a **test-only** setting. Do not add it to your production `application.properties` as it disables Kubernetes service discovery at runtime.
 
 ## Caching
 

@@ -1699,6 +1699,10 @@ public class PropertyReactivityTest {
 
         final State state = new State("initial");
         session.insert(state);
+
+        // listener must be registered immediately after insert, before fireAllRules
+        assertThat(state.getPropertyChangeListeners().length).isEqualTo(1);
+
         session.fireAllRules();
 
         assertThat(((List) session.getGlobal("list")).size()).isEqualTo(1);

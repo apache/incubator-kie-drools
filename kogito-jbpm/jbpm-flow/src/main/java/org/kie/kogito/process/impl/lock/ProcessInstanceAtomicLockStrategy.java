@@ -21,6 +21,7 @@ package org.kie.kogito.process.impl.lock;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +102,7 @@ public class ProcessInstanceAtomicLockStrategy implements ProcessInstanceLockStr
                 LOG.trace("Lock released for {}", processInstanceId);
             }
 
-            // evaluate atomically if the lock is still in used before removing it.
+            // evaluate atomically if the lock is still in use before removing it.
             locks.computeIfPresent(processInstanceId, (pid, holder) -> {
                 holder.removeReference();
                 if (holder.isReferenced()) {
@@ -112,7 +113,96 @@ public class ProcessInstanceAtomicLockStrategy implements ProcessInstanceLockStr
                 }
             });
         }
+    }
 
+    /**
+     * Write path with optional deferred unlock.
+     *
+     * <p>
+     * When {@code transactionRegistrar} is non-null and the current thread does not already
+     * hold the lock (non-reentrant call), the lock release is deferred to after the surrounding
+     * transaction commits. The registrar receives an unlock {@link Runnable} and must arrange
+     * for it to run in an {@code afterCompletion}/{@code afterCommit} callback; when no active
+     * transaction is present the registrar must run the action immediately.
+     *
+     * <p>
+     * Reentrant calls (the lock is already held by the current thread) always release
+     * immediately in the {@code finally} block, regardless of {@code transactionRegistrar},
+     * because the outermost non-reentrant frame is responsible for the deferred release.
+     *
+     * <p>
+     * On the exception path the lock is always released immediately so that other threads
+     * are not blocked behind a failed operation.
+     */
+    @Override
+    public <T> T executeWriteOperation(String processInstanceId, WorkflowAtomicExecutor<T> executor,
+            Consumer<Runnable> transactionRegistrar) {
+        if (transactionRegistrar == null) {
+            return executeOperation(processInstanceId, executor);
+        }
+
+        boolean alreadyHeld = isLockedByCurrentThread(processInstanceId);
+
+        ProcessInstanceLockHolder holder = locks.compute(processInstanceId, (pid, h) -> {
+            ProcessInstanceLockHolder newHolder = h == null ? new ProcessInstanceLockHolder() : h;
+            newHolder.addReference();
+            LOG.trace("Creating lock {} from list as none is waiting for it by {}", newHolder.lock, pid);
+            return newHolder;
+        });
+
+        boolean alreadyAcquired = holder.isHeldByCurrentThread();
+        boolean deferred = false;
+        try {
+            if (!alreadyAcquired) {
+                LOG.trace("About to acquire lock for {}", processInstanceId);
+            }
+            holder.lock();
+            if (!alreadyAcquired) {
+                LOG.trace("Lock acquired for {}", processInstanceId);
+            }
+
+            T result = executor.execute();
+
+            if (!alreadyHeld) {
+                // Defer lock release to after the surrounding transaction commits.
+                // The registrar captures the holder reference so the post-commit callback
+                // can unlock it even after this stack frame has returned.
+                final ProcessInstanceLockHolder deferredHolder = holder;
+                LOG.trace("Deferring lock release to post-commit for {}", processInstanceId);
+                transactionRegistrar.accept(() -> {
+                    deferredHolder.unlock();
+                    LOG.trace("Lock released (post-commit) for {}", processInstanceId);
+                    locks.computeIfPresent(processInstanceId, (pid, h) -> {
+                        h.removeReference();
+                        if (h.isReferenced()) {
+                            return h;
+                        } else {
+                            LOG.trace("Removing lock {} from list as none is waiting for it by {}", h.lock, pid);
+                            return null;
+                        }
+                    });
+                });
+                deferred = true;
+            }
+            return result;
+        } finally {
+            if (!deferred) {
+                // Reentrant call, or exception path: release immediately.
+                holder.unlock();
+                if (!alreadyAcquired) {
+                    LOG.trace("Lock released for {}", processInstanceId);
+                }
+                locks.computeIfPresent(processInstanceId, (pid, h) -> {
+                    h.removeReference();
+                    if (h.isReferenced()) {
+                        return h;
+                    } else {
+                        LOG.trace("Removing lock {} from list as none is waiting for it by {}", h.lock, pid);
+                        return null;
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -121,7 +211,7 @@ public class ProcessInstanceAtomicLockStrategy implements ProcessInstanceLockStr
         return holder != null && holder.isHeldByCurrentThread();
     }
 
-    public static synchronized ProcessInstanceLockStrategy instance() {
+    public static synchronized ProcessInstanceAtomicLockStrategy instance() {
         if (INSTANCE == null) {
             INSTANCE = new ProcessInstanceAtomicLockStrategy();
         }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-//JAVA 21
+//JAVA 17+
 
 import java.io.BufferedReader;
 import java.io.IOException;

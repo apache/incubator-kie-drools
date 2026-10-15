@@ -57,6 +57,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
         insert( object, false );
     }
 
+    @Deprecated(since = "5.0.1", forRemoval = false)
     @Override
     public void insert(Object object, boolean dynamic) {
         TerminalNode terminalNode = ((InternalMatch)getMatch()).getTerminalNode();

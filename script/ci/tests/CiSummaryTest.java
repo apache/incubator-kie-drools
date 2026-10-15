@@ -18,7 +18,7 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 21
+//JAVA 17+
 //DEPS org.junit.platform:junit-platform-console-standalone:1.11.4
 
 import org.junit.jupiter.api.*;

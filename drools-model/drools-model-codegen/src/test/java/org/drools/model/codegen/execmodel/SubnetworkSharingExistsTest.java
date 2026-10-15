@@ -73,7 +73,7 @@ public class SubnetworkSharingExistsTest extends BaseModelTest {
                 "        TextField(name == \"field1\" && value == \"A\")\n" +
                 "        exists(\n" +
                 "            TextField(name == \"field3\" && value == \"1\")\n" +
-                "            && TextField(name == \"field2\" && value == \"20\")\n" +
+                "            and TextField(name == \"field2\" && value == \"20\")\n" +
                 "        )\n" +
                 "    then\n" +
                 "    end\n" +
@@ -84,8 +84,8 @@ public class SubnetworkSharingExistsTest extends BaseModelTest {
                 "        $outputField: TextField(name == \"outputField\")\n" +
                 "        exists(\n" +
                 "            TextField(name == \"field1\" && value == \"A\")\n" +
-                "            && TextField(name == \"field3\" && value == \"1\")\n" +
-                "            && TextField(name == \"field2\" && value == \"20\")\n" +
+                "            and TextField(name == \"field3\" && value == \"1\")\n" +
+                "            and TextField(name == \"field2\" && value == \"20\")\n" +
                 "        )\n" +
                 "    then\n" +
                 "    end\n";

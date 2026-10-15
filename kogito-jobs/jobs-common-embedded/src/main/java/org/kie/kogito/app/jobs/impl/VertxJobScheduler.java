@@ -91,6 +91,8 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
     private Vertx vertx;
 
+    private boolean ownsVertx;
+
     private WorkerExecutor workerExecutor;
 
     private JobContextFactory jobContextFactory;
@@ -206,6 +208,12 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         }
 
         @Override
+        public JobSchedulerBuilder withVertx(Vertx vertx) {
+            VertxJobScheduler.this.vertx = vertx;
+            return this;
+        }
+
+        @Override
         public JobSchedulerBuilder withJobDescriptorMergers(JobDescriptionMerger... jobDescriptionMergers) {
             VertxJobScheduler.this.jobDescriptionMergers.addAll(List.of(jobDescriptionMergers));
             return this;
@@ -223,6 +231,10 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
             return this;
         }
 
+    }
+
+    public static VertxJobSchedulerBuilder builder() {
+        return new VertxJobScheduler().new VertxJobSchedulerBuilder();
     }
 
     public VertxJobScheduler() {
@@ -326,7 +338,11 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
     @Override
     public void init() {
-        this.vertx = Vertx.builder().build();
+        if (this.vertx == null) {
+            LOG.info("No Vert.x instance provided — creating a standalone one with default settings.");
+            this.vertx = Vertx.builder().build();
+            this.ownsVertx = true;
+        }
         this.workerExecutor = this.vertx.createSharedWorkerExecutor("Jobs", numberOfWorkerThreads);
         this.maxRefreshJobsIntervalWindow = Math.max(maxRefreshJobsIntervalWindow, refreshJobsInterval);
         this.refreshJobsIntervalTimerId = this.vertx.setPeriodic(0L, refreshJobsInterval, this);
@@ -352,12 +368,15 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
         // clean up
         this.workerExecutor.close();
-        this.vertx.close();
+        if (this.ownsVertx) {
+            this.vertx.close();
+        }
         this.jobsScheduled.clear();
 
         this.refreshJobsIntervalTimerId = null;
         this.workerExecutor = null;
         this.vertx = null;
+        this.ownsVertx = false;
     }
 
     @Override

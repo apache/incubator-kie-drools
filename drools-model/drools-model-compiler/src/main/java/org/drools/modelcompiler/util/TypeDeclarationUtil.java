@@ -51,7 +51,8 @@ import static org.drools.base.rule.TypeDeclaration.createTypeDeclarationForBean;
 public class TypeDeclarationUtil {
 
     private static final Set<String> KNOWN_ANNOTATIONS = Set.of(
-        "role", "duration", "timestamp", "expires", "propertyReactive", "classReactive"
+        "role", "duration", "timestamp", "expires", "propertyReactive", "classReactive",
+        "propertyChangeSupport"
     );
 
     public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType, PropertySpecificOption propertySpecificOption, TypeResolver typeResolver) {
@@ -113,6 +114,9 @@ public class TypeDeclarationUtil {
                     break;
                 case "classReactive":
                     typeDeclaration.setPropertyReactive( false );
+                    break;
+                case "propertyChangeSupport":
+                    typeDeclaration.setDynamic( true );
                     break;
             }
             

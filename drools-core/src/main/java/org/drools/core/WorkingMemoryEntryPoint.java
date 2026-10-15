@@ -42,15 +42,19 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
      * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
      * on the Object to automatically trigger <code>update</code> calls
      * if <code>dynamic</code> is <code>true</code>.
-     * 
+     *
      * @param object
      *            The fact object.
      * @param dynamic
      *            true if Drools should add JavaBean
      *            <code>PropertyChangeListeners</code> to the object.
-     * 
+     *
      * @return The new fact-handle associated with the object.
+     * @deprecated since 5.0.1, the per-instance dynamic flag is a legacy Drools 4 API.
+     *             Use {@link #insert(Object)} and declare the fact type with
+     *             {@code @propertyChangeSupport} instead.
      */
+    @Deprecated(since = "5.0.1", forRemoval = false)
     FactHandle insert(Object object,
                       boolean dynamic);
 

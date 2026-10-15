@@ -26,5 +26,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class WIHRegister extends DefaultWorkItemHandlerConfig {
     {
         register("CustomTask", new CustomWorkItemHandler());
+        register("BranchCounter", new BranchCounterWorkItemHandler());
     }
 }

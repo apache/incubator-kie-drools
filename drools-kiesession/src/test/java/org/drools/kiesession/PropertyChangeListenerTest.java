@@ -47,6 +47,9 @@ public class PropertyChangeListenerTest {
         this.entryPoint = buildContext.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();;
     }
     
+    // This test intentionally exercises the deprecated insert(Object, boolean) API.
+    // It is kept to verify that the deprecated dynamic=true behavior still works correctly.
+    @SuppressWarnings("deprecation")
     @Test
     public void test1() {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();

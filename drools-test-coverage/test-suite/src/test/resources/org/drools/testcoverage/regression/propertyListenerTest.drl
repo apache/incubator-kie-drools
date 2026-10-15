@@ -24,10 +24,12 @@ import java.util.Set;
 import java.util.HashSet;
 import org.drools.testcoverage.regression.PropertyListenerTest.Person;
 
+// This rule intentionally uses the deprecated insert(fact, true) RHS syntax.
+// It is kept to verify that the deprecated dynamic=true behavior still works correctly.
 rule "Insert All Person Objects"
     when
         $people : ArrayList()
-    then 
+    then
         for (Object person : $people) {
             insert(person, true);
         }

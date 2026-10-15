@@ -21,6 +21,7 @@ package org.kie.kogito.persistence.jdbc;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,6 +50,14 @@ public class JDBCProcessInstances<T extends Model> implements MutableProcessInst
     private final boolean lock;
     private final Repository repository;
 
+    /**
+     * Optional transaction registrar: when set, {@link #connectInstance} passes it to the
+     * process instance so write operations release the JVM lock only after the surrounding
+     * transaction commits. Null means "unlock immediately" — safe for non-transactional or
+     * test environments.
+     */
+    private Consumer<Runnable> transactionRegistrar;
+
     public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock) {
         this(process, dataSource, lock, null, null);
     }
@@ -63,6 +72,16 @@ public class JDBCProcessInstances<T extends Model> implements MutableProcessInst
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners()
                 .withContextEntry(MarshallerContextName.MARSHALLER_HEADERS_CONFIG, headersConfig).build();
         this.repository = new GenericRepository(dataSource, processes);
+    }
+
+    /**
+     * Sets the transaction registrar to enable deferred lock release.
+     * Called by the framework-specific factory (Quarkus/Spring) when a transaction manager is
+     * available. The consumer receives an unlock {@link Runnable} and must arrange for it to
+     * run after the surrounding transaction commits (or immediately when no transaction is active).
+     */
+    public void setTransactionRegistrar(Consumer<Runnable> transactionRegistrar) {
+        this.transactionRegistrar = transactionRegistrar;
     }
 
     @Override
@@ -96,7 +115,9 @@ public class JDBCProcessInstances<T extends Model> implements MutableProcessInst
         if (isActive(instance) || instance.status() == ProcessInstance.STATE_PENDING) {
             String[] eventTypes = getUniqueEvents(instance);
             if (lock) {
-                boolean isUpdated = repository.updateWithLock(process.id(), process.version(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version(), eventTypes);
+                long versionBeforeWrite = instance.version();
+                boolean isUpdated = repository.updateWithLock(process.id(), process.version(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), versionBeforeWrite, eventTypes);
+                LOGGER.trace("updateWithLock [{}] UPDATE WHERE version={} -> isUpdated={}", id, versionBeforeWrite, isUpdated);
                 if (!isUpdated) {
                     throw new ProcessInstanceOptimisticLockingException(id);
                 }
@@ -168,12 +189,16 @@ public class JDBCProcessInstances<T extends Model> implements MutableProcessInst
     }
 
     private void connectInstance(ProcessInstance<?> instance) {
-        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(pi -> {
+        AbstractProcessInstance<?> api = (AbstractProcessInstance<?>) instance;
+        api.internalSetReloadSupplier(pi -> {
             Repository.Record r = repository.findByIdInternal(process.id(), process.version(), UUID.fromString(pi.id())).orElseThrow();
             pi.setVersion(r.version());
             marshaller.createdReloadFunction(r::payload).accept(pi);
             pi.internalGetProcessInstance().setRootProcessId(r.rootProcessId());
             pi.internalGetProcessInstance().setRootProcessVersion(r.rootProcessVersion());
         });
+        if (transactionRegistrar != null) {
+            api.internalSetTransactionRegistrar(transactionRegistrar);
+        }
     }
 }
