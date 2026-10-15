@@ -181,6 +181,17 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public <T extends Model> void signalProcess(Process<T> process, Object data, String signalName) {
+        Objects.requireNonNull(signalName, "signalName must not be null");
+        UnitOfWorkExecutor.executeInUnitOfWork(
+                application.unitOfWorkManager(),
+                () -> {
+                    process.send(SignalFactory.of(signalName, data));
+                    return null;
+                });
+    }
+
+    @Override
     public <T extends Model> Optional<List<WorkItem>> getWorkItems(Process<T> process, String id, Policy... policy) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)
