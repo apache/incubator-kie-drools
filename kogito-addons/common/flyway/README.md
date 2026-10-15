@@ -95,8 +95,8 @@ KIE Flyway is disabled by default (in Quarkus is enabled in `test`/`dev` profile
 `kie.flyway.enabled` property in the `application.properties` (by default is false)
 
 ### Allowing out-of-order migrations
-By default, Flyway runs migrations in version order and fails if a new migration has a version lower than the last applied one.
-Set `kie.flyway.out-of-order=true` (default `false`) in the `application.properties` to let Flyway apply such migrations anyway.
+By default, KIE Flyway allows out-of-order migrations (`kie.flyway.out-of-order=true`): if a migration with a version lower than the last applied one is found, it will be applied anyway.
+Set `kie.flyway.out-of-order=false` in the `application.properties` to enforce strict version ordering — Flyway will then fail if such a migration is detected.
 This applies to all KIE modules.
 
 ### Excluding specific KIE Modules via configuration.
@@ -134,7 +134,7 @@ import org.kie.flyway.initializer.KieFlywayInitializer;
 Additional Parameters that can be used:
 * Custom ClassLoader to load the `kie-flyway.properties` from.
 * Module Exclusions (`Collection<String>`) to skip from the initialization.
-* Out-of-order (`boolean`, default `false`): allows Flyway to run migrations with a version lower than the last applied one.
+* Out-of-order (`boolean`, default `true`): allows Flyway to run migrations with a version lower than the last applied one.
 
 ```java
 import org.kie.flyway.initializer.KieFlywayInitializer;

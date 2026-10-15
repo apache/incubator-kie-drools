@@ -28,7 +28,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class KieFlywaySpringbootProperties {
     private boolean enabled = false;
 
-    private boolean outOfOrder = false;
+    private boolean outOfOrder = true;
 
     private Map<String, KieFlywaySpringbootNamedModule> modules = new HashMap<>();
 

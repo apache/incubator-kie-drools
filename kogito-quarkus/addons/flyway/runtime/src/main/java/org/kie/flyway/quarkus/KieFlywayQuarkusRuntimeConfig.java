@@ -42,7 +42,7 @@ public interface KieFlywayQuarkusRuntimeConfig {
      * Allows migrations to be run "out of order".
      * If you already have versions 1 and 3 applied, and now a version 2 is found, it will be applied too instead of being ignored.
      */
-    @WithDefault("false")
+    @WithDefault("true")
     boolean outOfOrder();
 
     /**

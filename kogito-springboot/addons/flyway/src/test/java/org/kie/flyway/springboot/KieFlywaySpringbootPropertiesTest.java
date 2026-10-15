@@ -55,8 +55,8 @@ class KieFlywaySpringbootPropertiesTest {
     }
 
     @Test
-    void outOfOrderDefaultsToFalse() {
-        contextRunner.run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isOutOfOrder()).isFalse());
+    void outOfOrderDefaultsToTrue() {
+        contextRunner.run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isOutOfOrder()).isTrue());
     }
 
     @Test
