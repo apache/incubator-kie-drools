@@ -176,7 +176,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             getProcessInstance().setState(STATE_ABORTED);
             throw wihnfe;
         } catch (ProcessWorkItemHandlerException handlerException) {
-            if (triggerCount++ < handlerException.getRetries() + 1) {
+            if (triggerCount++ <= handlerException.getRetries()) {
                 this.workItemId = workItem.getStringId();
                 handleWorkItemHandlerException(handlerException, workItem);
             } else {

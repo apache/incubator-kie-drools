@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.process.WorkItem;
+import org.jbpm.process.workitem.builtin.ProcessWorkItemHandlerExceptionHandler;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
@@ -117,6 +118,7 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
         if (handler == null) {
             throw new KogitoWorkItemHandlerNotFoundException(workItem.getName());
         }
+        handler = ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(handler, workItem);
         WorkItemTransition lastTransition = null;
         Optional<WorkItemTransition> nextTransition = Optional.of(transition);
         while (nextTransition.isPresent()) {
