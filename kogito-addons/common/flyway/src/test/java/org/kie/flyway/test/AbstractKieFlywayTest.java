@@ -113,6 +113,20 @@ public abstract class AbstractKieFlywayTest {
         }
     }
 
+    protected void verifyMigrationAbsent(String moduleName, String version, TestDataSource dataSource) {
+        try (Connection con = dataSource.getDataSource().getConnection();
+                PreparedStatement stmt = con.prepareStatement(MODULE_MIGRATIONS_QUERY_TEMPLATE.formatted(moduleName))) {
+            stmt.setString(1, version);
+            try (ResultSet rs = stmt.executeQuery()) {
+                assertThat(rs.next())
+                        .as("Migration version %s for module %s should not have been applied", version, moduleName)
+                        .isFalse();
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     protected void verifyTableDoesntExist(String tableName, TestDataSource dataSource) {
         try (Connection con = dataSource.getDataSource().getConnection();
                 PreparedStatement stmt = con.prepareStatement(QUERY_QUERY_TABLE_EXISTS);) {
