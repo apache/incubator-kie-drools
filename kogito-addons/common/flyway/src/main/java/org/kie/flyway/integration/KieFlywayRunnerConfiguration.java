@@ -25,10 +25,20 @@ public class KieFlywayRunnerConfiguration {
 
     private final boolean enabled;
     private final Collection<KieFlywayNamedModule> modules;
+    private final boolean outOfOrder;
 
     public KieFlywayRunnerConfiguration(boolean enabled, Collection<KieFlywayNamedModule> modules) {
+        this(enabled, modules, false);
+    }
+
+    public KieFlywayRunnerConfiguration(boolean enabled, Collection<KieFlywayNamedModule> modules, boolean outOfOrder) {
         this.enabled = enabled;
         this.modules = modules;
+        this.outOfOrder = outOfOrder;
+    }
+
+    public boolean isOutOfOrder() {
+        return outOfOrder;
     }
 
     public boolean isEnabled() {

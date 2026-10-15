@@ -58,6 +58,22 @@ class KieFlywayQuarkusRuntimeConfigTest {
     }
 
     @Test
+    void outOfOrderDefaultsToFalse() {
+        KieFlywayQuarkusRuntimeConfig runtimeConfig = buildConfig()
+                .getConfigMapping(KieFlywayQuarkusRuntimeConfig.class);
+
+        assertThat(runtimeConfig.outOfOrder()).isFalse();
+    }
+
+    @Test
+    void outOfOrderCanBeSetToTrue() {
+        KieFlywayQuarkusRuntimeConfig runtimeConfig = buildConfig("kie.flyway.out-of-order", "true")
+                .getConfigMapping(KieFlywayQuarkusRuntimeConfig.class);
+
+        assertThat(runtimeConfig.outOfOrder()).isTrue();
+    }
+
+    @Test
     void moduleEnabledTrue() {
         KieFlywayQuarkusRuntimeConfig runtimeConfig = buildConfig("kie.flyway.modules.\"test-module\".enabled", "true")
                 .getConfigMapping(KieFlywayQuarkusRuntimeConfig.class);

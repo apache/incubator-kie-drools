@@ -48,12 +48,14 @@ public class KieFlywayInitializer {
     private final DataSource dataSource;
     private final DataBaseInfo databaseInfo;
     private final List<String> moduleExclusions;
+    private final boolean outOfOrder;
 
-    private KieFlywayInitializer(KieModuleFlywayConfigLoader configLoader, DataSource dataSource, Collection<String> moduleExclusions) {
+    private KieFlywayInitializer(KieModuleFlywayConfigLoader configLoader, DataSource dataSource, Collection<String> moduleExclusions, boolean outOfOrder) {
         this.configLoader = configLoader;
         this.dataSource = dataSource;
         this.databaseInfo = readDataBaseInfo(dataSource);
         this.moduleExclusions = new ArrayList<>(moduleExclusions);
+        this.outOfOrder = outOfOrder;
     }
 
     public void migrate() {
@@ -103,6 +105,7 @@ public class KieFlywayInitializer {
                 .baselineOnMigrate(true)
                 .baselineVersion(KIE_FLYWAY_BASELINE_VERSION)
                 .baselineDescription(KIE_FLYWAY_BASELINE_MESSAGE_TEMPLATE.formatted(config.getModule()))
+                .outOfOrder(outOfOrder)
                 .locations(locations)
                 .load()
                 .migrate();
@@ -118,6 +121,7 @@ public class KieFlywayInitializer {
         private KieModuleFlywayConfigLoader configLoader;
         private DataSource dataSource;
         private final List<String> moduleExclusions = new ArrayList<>();
+        private boolean outOfOrder = false;
 
         public Builder withClassLoader(ClassLoader classLoader) {
             this.configLoader = new DefaultKieModuleFlywayConfigLoader(classLoader);
@@ -134,6 +138,11 @@ public class KieFlywayInitializer {
             return this;
         }
 
+        public Builder withOutOfOrder(boolean outOfOrder) {
+            this.outOfOrder = outOfOrder;
+            return this;
+        }
+
         public KieFlywayInitializer build() {
             if (Objects.isNull(dataSource)) {
                 throw new KieFlywayException("Cannot create KieFlywayInitializer migration, dataSource is null.");
@@ -144,7 +153,7 @@ public class KieFlywayInitializer {
                 this.configLoader = new DefaultKieModuleFlywayConfigLoader();
             }
 
-            return new KieFlywayInitializer(configLoader, dataSource, moduleExclusions);
+            return new KieFlywayInitializer(configLoader, dataSource, moduleExclusions, outOfOrder);
         }
     }
 

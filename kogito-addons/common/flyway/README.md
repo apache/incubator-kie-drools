@@ -94,6 +94,11 @@ kie-persistence-jdbc
 KIE Flyway is disabled by default (in Quarkus is enabled in `test`/`dev` profiles) and can be enabled / disabled with 
 `kie.flyway.enabled` property in the `application.properties` (by default is false)
 
+### Allowing out-of-order migrations
+By default, Flyway runs migrations in version order and fails if a new migration has a version lower than the last applied one.
+Set `kie.flyway.out-of-order=true` (default `false`) in the `application.properties` to let Flyway apply such migrations anyway.
+This applies to all KIE modules.
+
 ### Excluding specific KIE Modules via configuration.
 In some cases you may want to exclude the KIE Modules present in your application from the KIE Flyway initialization, to do so you can use 
 `kie.flyway.modules.<module-name>.enabled` property in the `application.properties`
@@ -128,7 +133,8 @@ import org.kie.flyway.initializer.KieFlywayInitializer;
 
 Additional Parameters that can be used:
 * Custom ClassLoader to load the `kie-flyway.properties` from.
-* Module Exclusions (`Collection<String>`) t
+* Module Exclusions (`Collection<String>`) to skip from the initialization.
+* Out-of-order (`boolean`, default `false`): allows Flyway to run migrations with a version lower than the last applied one.
 
 ```java
 import org.kie.flyway.initializer.KieFlywayInitializer;
@@ -138,6 +144,7 @@ import org.kie.flyway.initializer.KieFlywayInitializer;
                 .withDatasource(dataSource)
                 .withClassLoader(this.getClass().getClassLoader())
                 .withModuleExclusions(List.of("data-index", "jobs-service"))
+                .withOutOfOrder(outOfOrder)
                 .build()
                 .migrate();
 ```
