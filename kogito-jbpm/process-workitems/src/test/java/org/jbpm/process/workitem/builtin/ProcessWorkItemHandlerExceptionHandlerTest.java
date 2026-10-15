@@ -155,6 +155,28 @@ public class ProcessWorkItemHandlerExceptionHandlerTest {
     }
 
     @Test
+    public void testFailingExecutionWithEnumStrategyAndObjectProcessId() {
+        RuntimeException originalException = new IllegalStateException("Service unavailable");
+        FailingWorkItemHandler originalHandler = new FailingWorkItemHandler(originalException);
+        ProcessWorkItemHandlerExceptionHandler handler = new ProcessWorkItemHandlerExceptionHandler(originalHandler);
+
+        KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLER_PROCESS_ID, new StringBuilder("error_proc_obj"));
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLING_STRATEGY, ProcessWorkItemHandlerException.HandlingStrategy.ABORT);
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLING_RETRIES, 2L);
+
+        assertThatThrownBy(() -> handler.transitionToPhase(null, workItem, handler.startingTransition(Collections.emptyMap())))
+                .isInstanceOf(ProcessWorkItemHandlerException.class)
+                .satisfies(e -> {
+                    ProcessWorkItemHandlerException ex = (ProcessWorkItemHandlerException) e;
+                    assertThat(ex.getProcessId()).isEqualTo("error_proc_obj");
+                    assertThat(ex.getStrategy()).isEqualTo(ProcessWorkItemHandlerException.HandlingStrategy.ABORT);
+                    assertThat(ex.getRetries()).isEqualTo(2);
+                    assertThat(ex.getCause()).isSameAs(originalException);
+                });
+    }
+
+    @Test
     public void testFailingExecutionWithInvalidRetries() {
         RuntimeException originalException = new IllegalStateException("Service unavailable");
         FailingWorkItemHandler originalHandler = new FailingWorkItemHandler(originalException);
@@ -168,6 +190,22 @@ public class ProcessWorkItemHandlerExceptionHandlerTest {
         assertThatThrownBy(() -> handler.transitionToPhase(null, workItem, handler.startingTransition(Collections.emptyMap())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid ErrorHandlingRetries value: 'not-a-number'");
+    }
+
+    @Test
+    public void testFailingExecutionWithInvalidRetriesType() {
+        RuntimeException originalException = new IllegalStateException("Service unavailable");
+        FailingWorkItemHandler originalHandler = new FailingWorkItemHandler(originalException);
+        ProcessWorkItemHandlerExceptionHandler handler = new ProcessWorkItemHandlerExceptionHandler(originalHandler);
+
+        KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLER_PROCESS_ID, "error_handling");
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLING_STRATEGY, "RETRY");
+        workItem.setParameter(ProcessWorkItemHandlerExceptionHandler.ERROR_HANDLING_RETRIES, Boolean.TRUE);
+
+        assertThatThrownBy(() -> handler.transitionToPhase(null, workItem, handler.startingTransition(Collections.emptyMap())))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid ErrorHandlingRetries value: 'true'. Expected an integer.");
     }
 
     @Test

@@ -18,6 +18,8 @@
  */
 package org.jbpm.process.workitem.builtin;
 
+import java.util.Arrays;
+
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
@@ -61,31 +63,44 @@ public class ProcessWorkItemHandlerExceptionHandler extends AbstractExceptionHan
             throw (ProcessWorkItemHandlerException) cause;
         }
 
-        String processId = (String) workItem.getParameter(ERROR_HANDLER_PROCESS_ID);
-        String strategyStr = (String) workItem.getParameter(ERROR_HANDLING_STRATEGY);
+        Object processIdObj = workItem.getParameter(ERROR_HANDLER_PROCESS_ID);
+        Object strategyObj = workItem.getParameter(ERROR_HANDLING_STRATEGY);
         Object retriesObj = workItem.getParameter(ERROR_HANDLING_RETRIES);
 
-        if (processId != null && !processId.trim().isEmpty() && strategyStr != null && !strategyStr.trim().isEmpty()) {
+        String processId = processIdObj != null ? processIdObj.toString().trim() : null;
+        String strategyStr = strategyObj != null ? strategyObj.toString().trim() : null;
+
+        if (processId != null && !processId.isEmpty() && strategyStr != null && !strategyStr.isEmpty()) {
             ProcessWorkItemHandlerException.HandlingStrategy strategy;
-            try {
-                strategy = ProcessWorkItemHandlerException.HandlingStrategy.valueOf(strategyStr.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid " + ERROR_HANDLING_STRATEGY + " value: '" + strategyStr + "'. Expected RETRY, COMPLETE, ABORT, or RETHROW.", e);
+            if (strategyObj instanceof ProcessWorkItemHandlerException.HandlingStrategy) {
+                strategy = (ProcessWorkItemHandlerException.HandlingStrategy) strategyObj;
+            } else {
+                try {
+                    strategy = ProcessWorkItemHandlerException.HandlingStrategy.valueOf(strategyStr.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Invalid " + ERROR_HANDLING_STRATEGY + " value: '" + strategyObj + "'. Expected one of: "
+                            + Arrays.toString(ProcessWorkItemHandlerException.HandlingStrategy.values()) + ".", e);
+                }
             }
 
             int retries = 0;
             if (retriesObj instanceof Number) {
                 retries = ((Number) retriesObj).intValue();
-            } else if (retriesObj instanceof String && !((String) retriesObj).trim().isEmpty()) {
-                try {
-                    retries = Integer.parseInt(((String) retriesObj).trim());
-                } catch (NumberFormatException nfe) {
-                    throw new IllegalArgumentException("Invalid " + ERROR_HANDLING_RETRIES + " value: '" + retriesObj + "'. Expected an integer.", nfe);
+            } else if (retriesObj instanceof String) {
+                String retriesStr = ((String) retriesObj).trim();
+                if (!retriesStr.isEmpty()) {
+                    try {
+                        retries = Integer.parseInt(retriesStr);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException("Invalid " + ERROR_HANDLING_RETRIES + " value: '" + retriesObj + "'. Expected an integer.", nfe);
+                    }
                 }
+            } else if (retriesObj != null) {
+                throw new IllegalArgumentException("Invalid " + ERROR_HANDLING_RETRIES + " value: '" + retriesObj + "'. Expected an integer.");
             }
 
             throw new ProcessWorkItemHandlerException(
-                    processId.trim(),
+                    processId,
                     strategy,
                     cause instanceof Exception ? (Exception) cause : new RuntimeException(cause),
                     retries);
@@ -93,6 +108,9 @@ public class ProcessWorkItemHandlerExceptionHandler extends AbstractExceptionHan
 
         if (cause instanceof RuntimeException) {
             throw (RuntimeException) cause;
+        }
+        if (cause instanceof Error) {
+            throw (Error) cause;
         }
         throw new RuntimeException(cause);
     }
