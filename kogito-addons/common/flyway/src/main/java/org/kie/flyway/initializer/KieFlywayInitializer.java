@@ -121,7 +121,7 @@ public class KieFlywayInitializer {
         private KieModuleFlywayConfigLoader configLoader;
         private DataSource dataSource;
         private final List<String> moduleExclusions = new ArrayList<>();
-        private boolean outOfOrder = false;
+        private boolean outOfOrder = true;
 
         public Builder withClassLoader(ClassLoader classLoader) {
             this.configLoader = new DefaultKieModuleFlywayConfigLoader(classLoader);
