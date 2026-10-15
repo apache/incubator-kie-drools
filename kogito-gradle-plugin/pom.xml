@@ -126,6 +126,7 @@
     <dependency>
       <groupId>dev.gradleplugins</groupId>
       <artifactId>gradle-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
