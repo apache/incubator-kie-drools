@@ -19,55 +19,78 @@
 package org.kie.flyway.springboot;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class KieFlywaySpringbootPropertiesTest {
 
+    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withUserConfiguration(TestConfig.class);
+
+    @Configuration
+    @EnableConfigurationProperties(KieFlywaySpringbootProperties.class)
+    static class TestConfig {
+    }
+
     @Test
     void enabledDefaultsToFalse() {
-        KieFlywaySpringbootProperties properties = new KieFlywaySpringbootProperties();
-        assertThat(properties.isEnabled()).isFalse();
+        contextRunner.run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isEnabled()).isFalse());
     }
 
     @Test
     void enabledCanBeSetToTrue() {
-        KieFlywaySpringbootProperties properties = new KieFlywaySpringbootProperties();
-        properties.setEnabled(true);
-        assertThat(properties.isEnabled()).isTrue();
+        contextRunner
+                .withPropertyValues("kie.flyway.enabled=true")
+                .run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isEnabled()).isTrue());
+    }
+
+    @Test
+    void enabledCanBeSetToFalse() {
+        contextRunner
+                .withPropertyValues("kie.flyway.enabled=false")
+                .run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isEnabled()).isFalse());
     }
 
     @Test
     void outOfOrderDefaultsToFalse() {
-        KieFlywaySpringbootProperties properties = new KieFlywaySpringbootProperties();
-        assertThat(properties.isOutOfOrder()).isFalse();
+        contextRunner.run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isOutOfOrder()).isFalse());
     }
 
     @Test
     void outOfOrderCanBeSetToTrue() {
-        KieFlywaySpringbootProperties properties = new KieFlywaySpringbootProperties();
-        properties.setOutOfOrder(true);
-        assertThat(properties.isOutOfOrder()).isTrue();
+        contextRunner
+                .withPropertyValues("kie.flyway.out-of-order=true")
+                .run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isOutOfOrder()).isTrue());
+    }
+
+    @Test
+    void outOfOrderCanBeSetToFalse() {
+        contextRunner
+                .withPropertyValues("kie.flyway.out-of-order=false")
+                .run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).isOutOfOrder()).isFalse());
     }
 
     @Test
     void modulesDefaultsToEmpty() {
-        KieFlywaySpringbootProperties properties = new KieFlywaySpringbootProperties();
-        assertThat(properties.getModules()).isEmpty();
-    }
-
-    @Test
-    void moduleEnabledDefaultsToTrue() {
-        KieFlywaySpringbootProperties.KieFlywaySpringbootNamedModule module =
-                new KieFlywaySpringbootProperties.KieFlywaySpringbootNamedModule();
-        assertThat(module.isEnabled()).isTrue();
+        contextRunner.run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class).getModules()).isEmpty());
     }
 
     @Test
     void moduleEnabledCanBeSetToFalse() {
-        KieFlywaySpringbootProperties.KieFlywaySpringbootNamedModule module =
-                new KieFlywaySpringbootProperties.KieFlywaySpringbootNamedModule();
-        module.setEnabled(false);
-        assertThat(module.isEnabled()).isFalse();
+        contextRunner
+                .withPropertyValues("kie.flyway.modules.data-index.enabled=false")
+                .run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class)
+                        .getModules().get("data-index").isEnabled()).isFalse());
+    }
+
+    @Test
+    void moduleEnabledDefaultsToTrue() {
+        contextRunner
+                .withPropertyValues("kie.flyway.modules.data-index.enabled=true")
+                .run(ctx -> assertThat(ctx.getBean(KieFlywaySpringbootProperties.class)
+                        .getModules().get("data-index").isEnabled()).isTrue());
     }
 }
