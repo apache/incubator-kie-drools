@@ -91,7 +91,7 @@ public class EventTypeFilter implements EventFilter, Serializable {
             CorrelationInstance messageCorrelation = correlationManager.computeCorrelationInstance(messageRef, event);
             CorrelationInstance processCorrelation = correlationManager.computeSubscription(messageRef, resolver);
             logger.debug("The event type {} is correlated, computing correlations. Message correlation is {}; process correlation is: {} ", type, messageCorrelation, processCorrelation);
-            return messageCorrelation.equals(processCorrelation);
+            return messageCorrelation.matchesSubscription(processCorrelation);
         }
 
         return isAccepted(type, resolver);

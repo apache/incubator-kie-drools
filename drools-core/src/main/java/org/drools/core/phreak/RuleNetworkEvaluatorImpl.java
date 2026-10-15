@@ -603,7 +603,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             for (int i = 1; i < length; i++) {
                 bns[i - 1] = ((RightInputAdapterNode)sinks[i]).getBetaNode();
                 Memory nodeMem2 = nodeMemories.getNodeMemory(bns[i - 1]);
-                if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
+                if (NodeTypeEnums.AccumulateNode == bns[i - 1].getType()) {
                     bms[i - 1] = ((AccumulateMemory) nodeMem2).getBetaMemory();
                 } else {
                     bms[i - 1] = (BetaMemory) nodeMem2;
