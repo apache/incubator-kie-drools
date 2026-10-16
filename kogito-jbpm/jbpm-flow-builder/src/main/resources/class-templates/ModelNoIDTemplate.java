@@ -22,6 +22,7 @@ import org.kie.kogito.MapInput;
 import org.kie.kogito.MapInputId;
 import org.kie.kogito.MapOutput;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,8 @@ import java.util.Set;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class XXXModel implements Model, MapInput, MapInputId, MapOutput,
@@ -38,6 +41,10 @@ public class XXXModel implements Model, MapInput, MapInputId, MapOutput,
     // Ephemeral REST request-body carrier - always tracks modifications from construction.
     @JsonIgnore
     private transient final Set<String> __modifiedFields = new HashSet<>();
+
+    // Captures JSON properties that have no corresponding declared process variable field.
+    @JsonIgnore
+    private transient final Map<String, Object> __additionalProperties = new HashMap<>();
 
     @JsonIgnore
     @Override
@@ -48,6 +55,22 @@ public class XXXModel implements Model, MapInput, MapInputId, MapOutput,
     // Marks a field as explicitly set, so PATCH can tell a null apart from an omitted field.
     void markModified(String field) {
         __modifiedFields.add(field);
+    }
+
+    @JsonAnySetter
+    void __setAdditionalProperty(String name, Object value) {
+        __additionalProperties.put(name, value);
+    }
+
+    @JsonAnyGetter
+    Map<String, Object> __getAdditionalProperties() {
+        return Collections.unmodifiableMap(__additionalProperties);
+    }
+
+    @JsonIgnore
+    @Override
+    public Map<String, Object> getAdditionalProperties() {
+        return __additionalProperties;
     }
 
 }

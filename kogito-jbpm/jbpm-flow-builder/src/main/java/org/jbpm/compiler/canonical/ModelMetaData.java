@@ -262,6 +262,9 @@ public class ModelMetaData {
 
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
 
+        // Include any undeclared variables that were forwarded from the Input model.
+        toMapBody.addStatement(new MethodCallExpr(new NameExpr("params"), "putAll")
+                .addArgument(new MethodCallExpr(null, "getAdditionalProperties")));
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
         toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
 
