@@ -563,9 +563,17 @@ public class TypeDeclaration
     }
 
     public static void processTypeAnnotations( TypeDeclaration type, Annotated annotated, PropertySpecificOption propertySpecificOption ) {
+        configureRole( type, annotated );
         configureExpirationOffset( type, annotated );
         configurePropertyReactivity( type, annotated, propertySpecificOption );
         configurePropertyChangeSupport( type, annotated );
+    }
+
+    private static void configureRole( TypeDeclaration type, Annotated annotated ) {
+        Role role = annotated.getTypedAnnotation(Role.class);
+        if (role != null) {
+            type.setRole(role.value());
+        }
     }
 
     private static void configureExpirationOffset( TypeDeclaration type, Annotated annotated ) {
