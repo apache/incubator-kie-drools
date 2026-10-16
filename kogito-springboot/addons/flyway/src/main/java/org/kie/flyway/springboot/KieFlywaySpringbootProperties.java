@@ -28,6 +28,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class KieFlywaySpringbootProperties {
     private boolean enabled = false;
 
+    private boolean outOfOrder = true;
+
     private Map<String, KieFlywaySpringbootNamedModule> modules = new HashMap<>();
 
     public boolean isEnabled() {
@@ -36,6 +38,14 @@ public class KieFlywaySpringbootProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isOutOfOrder() {
+        return outOfOrder;
+    }
+
+    public void setOutOfOrder(boolean outOfOrder) {
+        this.outOfOrder = outOfOrder;
     }
 
     public Map<String, KieFlywaySpringbootNamedModule> getModules() {

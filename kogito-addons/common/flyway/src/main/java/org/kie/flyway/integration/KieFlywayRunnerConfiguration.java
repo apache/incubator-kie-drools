@@ -21,14 +21,35 @@ package org.kie.flyway.integration;
 
 import java.util.Collection;
 
+import org.kie.api.annotations.KieProperty;
+
 public class KieFlywayRunnerConfiguration {
+
+    @KieProperty(type = "boolean", defaultValue = "false", allowedValues = "true,false")
+    public static final String KIE_FLYWAY_ENABLED_PROPERTY = "kie.flyway.enabled";
+
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
+    public static final String KIE_FLYWAY_OUT_OF_ORDER_PROPERTY = "kie.flyway.out-of-order";
+
+    @KieProperty(type = "boolean", defaultValue = "true", allowedValues = "true,false")
+    public static final String KIE_FLYWAY_MODULE_ENABLED_PROPERTY = "kie.flyway.modules.<module-name>.enabled";
 
     private final boolean enabled;
     private final Collection<KieFlywayNamedModule> modules;
+    private final boolean outOfOrder;
 
     public KieFlywayRunnerConfiguration(boolean enabled, Collection<KieFlywayNamedModule> modules) {
+        this(enabled, modules, true);
+    }
+
+    public KieFlywayRunnerConfiguration(boolean enabled, Collection<KieFlywayNamedModule> modules, boolean outOfOrder) {
         this.enabled = enabled;
         this.modules = modules;
+        this.outOfOrder = outOfOrder;
+    }
+
+    public boolean isOutOfOrder() {
+        return outOfOrder;
     }
 
     public boolean isEnabled() {

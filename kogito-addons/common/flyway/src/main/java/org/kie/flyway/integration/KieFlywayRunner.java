@@ -68,6 +68,7 @@ public class KieFlywayRunner {
                 .withDatasource(dataSource)
                 .withClassLoader(classLoader)
                 .withModuleExclusions(excludedModules)
+                .withOutOfOrder(configuration.isOutOfOrder())
                 .build().migrate();
     }
 
