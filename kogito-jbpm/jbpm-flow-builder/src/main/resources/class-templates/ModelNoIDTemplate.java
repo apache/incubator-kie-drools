@@ -73,4 +73,14 @@ public class XXXModel implements Model, MapInput, MapInputId, MapOutput,
         return __additionalProperties;
     }
 
+    // Overridden only so the setter can be hidden from JSON and OpenAPI, like the getter.
+    @JsonIgnore
+    @Override
+    public void setAdditionalProperties(Map<String, Object> props) {
+        __additionalProperties.clear();
+        if (props != null) {
+            __additionalProperties.putAll(props);
+        }
+    }
+
 }
