@@ -108,7 +108,7 @@ public class TaskTest extends BaseRestTest {
 
     @Test
     void testJsonSchemaFiles() {
-        long expectedJsonSchemas = 33;
+        long expectedJsonSchemas = 34;
         Path jsonDir = Paths.get("target", "classes").resolve(JsonSchemaUtil.getJsonDir());
         try (Stream<Path> paths = Files.walk(jsonDir)) {
             long generatedJsonSchemas = paths
