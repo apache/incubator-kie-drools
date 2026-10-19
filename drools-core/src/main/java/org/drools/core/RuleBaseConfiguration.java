@@ -642,6 +642,10 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
     }
 
     public boolean isShareBetaNodes() {
+        // Beta node sharing in sequential mode causes NPE and incorrect results (incubator-kie#7201)
+        if (this.sequential) {
+            return false;
+        }
         return this.shareBetaNodes;
     }
 
