@@ -170,6 +170,16 @@ class ProcessEventDispatcherTest {
     }
 
     @Test
+    void testDataEventWithoutTargetSignalsProcessThroughService() throws Exception {
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, null, o -> o.getData());
+        TestEvent data = new TestEvent("pepe");
+        dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(data));
+
+        verify(processService, times(1)).signalProcess(process, data, "Message-" + DUMMY_TOPIC);
+        verify(process, never()).send(any());
+    }
+
+    @Test
     void testIgnoredCloudEvent() throws Exception {
         EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, null, o -> o.getData());
         final TestCloudEvent<TestEvent> payload = new TestCloudEvent<>(new TestEvent("test"), "differentTopic", "differentSource");

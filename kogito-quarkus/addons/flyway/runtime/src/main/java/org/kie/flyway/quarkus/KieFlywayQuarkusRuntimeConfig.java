@@ -39,6 +39,13 @@ public interface KieFlywayQuarkusRuntimeConfig {
     boolean enabled();
 
     /**
+     * Allows migrations to be run "out of order".
+     * If you already have versions 1 and 3 applied, and now a version 2 is found, it will be applied too instead of being ignored.
+     */
+    @WithDefault("true")
+    boolean outOfOrder();
+
+    /**
      * List of {@link KieQuarkusFlywayNamedModuleConfig} that allow to enable or disable a given module
      */
     Map<String, KieQuarkusFlywayNamedModuleConfig> modules();

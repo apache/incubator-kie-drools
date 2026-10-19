@@ -29,6 +29,7 @@ import org.drools.base.base.ClassFieldInspector;
 import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.base.factmodel.FieldDefinition;
 import org.drools.base.factmodel.GeneratedFact;
+import org.drools.base.rule.Annotated;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
@@ -40,6 +41,7 @@ import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.PropertyChangeSupport;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +73,15 @@ public class TypeDeclarationFactory {
             type.setTypeClass( existingClass );
             type.setNovel( existingClass == null );
             type.setNature( existingClass == null ? TypeDeclaration.Nature.DEFINITION : TypeDeclaration.Nature.DECLARATION );
+
+            // Pre-populate from Java class annotations so that finalizeConfigurator()
+            // (which runs before wireFieldAccessors) sees the correct role, expiration,
+            // reactivity, and dynamic settings. DRL annotations applied next will override.
+            if ( existingClass != null ) {
+                TypeDeclaration.processTypeAnnotations( type,
+                        new Annotated.ClassAdapter( existingClass ),
+                        context.getBuilderConfiguration().getOption( PropertySpecificOption.KEY ) );
+            }
         }
 
         processTypeAnnotations(typeDescr, type);
@@ -85,6 +96,9 @@ public class TypeDeclarationFactory {
         }
     }
 
+    // Processes annotations from the DRL descriptor, overriding values pre-populated from
+    // Java class annotations in processTypeDeclaration(). Runs before finalizeConfigurator(),
+    // which needs @Role and @PropertyChangeSupport already set.
     public static void processAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
         Role role = getTypedAnnotation(typeDescr, Role.class);
         if (role != null) {
@@ -102,7 +116,9 @@ public class TypeDeclarationFactory {
             type.setKind(TypeDeclaration.Kind.TRAIT);
         }
 
-        type.setDynamic( typeDescr.hasAnnotation(PropertyChangeSupport.class) );
+        if (typeDescr.hasAnnotation(PropertyChangeSupport.class)) {
+            type.setDynamic(true);
+        }
     }
 
     protected void checkRedeclaration( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {

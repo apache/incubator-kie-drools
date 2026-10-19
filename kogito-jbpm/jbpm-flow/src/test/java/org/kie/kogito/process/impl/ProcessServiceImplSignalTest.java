@@ -34,14 +34,20 @@ import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
+import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,6 +59,7 @@ import static org.mockito.Mockito.when;
 class ProcessServiceImplSignalTest {
 
     private ProcessServiceImpl processService;
+    private org.kie.kogito.uow.UnitOfWork unitOfWork;
     private Process<TestModel> process;
     private ProcessInstances<TestModel> processInstances;
     private ProcessInstance<TestModel> processInstance;
@@ -74,7 +81,7 @@ class ProcessServiceImplSignalTest {
         when(process.instances()).thenReturn(processInstances);
 
         // Make the UoW execute the supplied callable immediately
-        org.kie.kogito.uow.UnitOfWork unitOfWork = mock(org.kie.kogito.uow.UnitOfWork.class);
+        unitOfWork = mock(org.kie.kogito.uow.UnitOfWork.class);
         when(unitOfWorkManager.newUnitOfWork()).thenReturn(unitOfWork);
         when(unitOfWorkManager.currentUnitOfWork()).thenReturn(unitOfWork);
         doAnswer(invocation -> {
@@ -207,6 +214,39 @@ class ProcessServiceImplSignalTest {
         Optional<TestModel> result = processService.signalProcessInstance(process, id, "data", "HelloMartin");
 
         assertThat(result).isEmpty();
+    }
+
+    // --- process level signal tests ---
+
+    @Test
+    void signalProcess_sendsSignalWithinUnitOfWork() {
+        processService.signalProcess(process, "data", "Message-test");
+
+        ArgumentCaptor<Signal> signal = ArgumentCaptor.forClass(Signal.class);
+        InOrder order = inOrder(unitOfWork, process);
+        order.verify(unitOfWork).start();
+        order.verify(process).send(signal.capture());
+        order.verify(unitOfWork).end();
+        assertThat(signal.getValue().channel()).isEqualTo("Message-test");
+        assertThat(signal.getValue().payload()).isEqualTo("data");
+    }
+
+    @Test
+    void signalProcess_abortsUnitOfWorkWhenSendFails() {
+        doThrow(new IllegalStateException("boom")).when(process).send(any());
+
+        assertThatThrownBy(() -> processService.signalProcess(process, "data", "Message-test"))
+                .isInstanceOf(IllegalStateException.class);
+
+        verify(unitOfWork).abort();
+        verify(unitOfWork, never()).end();
+    }
+
+    @Test
+    void signalProcess_throwsWhenSignalNameIsNull() {
+        assertThatThrownBy(() -> processService.signalProcess(process, "data", null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("signalName");
     }
 
     // --- test model ---

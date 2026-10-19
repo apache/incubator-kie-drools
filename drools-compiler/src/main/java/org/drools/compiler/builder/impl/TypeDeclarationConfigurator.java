@@ -99,7 +99,13 @@ public class TypeDeclarationConfigurator {
             }
         }
 
+        // Annotations were pre-populated from Java and overridden by DRL in processAnnotations().
+        // The composite Annotated here re-applies them with DRL priority for @Timestamp/@Duration
+        // extractor wiring, which requires compiler infrastructure unavailable in earlier steps.
         Annotated annotatedType = toAnnotated(typeDescr);
+        if (type.getTypeClass() != null) {
+            annotatedType = Annotated.withFallback(annotatedType, new Annotated.ClassAdapter(type.getTypeClass()));
+        }
         processMvelBasedAccessors(context, results, pkgRegistry, annotatedType, type );
         processTypeAnnotations( type, annotatedType, context.getBuilderConfiguration().getOption(PropertySpecificOption.KEY));
         return true;

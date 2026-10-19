@@ -50,7 +50,7 @@ public class KieFlywaySpringbootInitializer implements InitializingBean, Ordered
                 .map(entry -> new KieFlywayNamedModule(entry.getKey(), entry.getValue().isEnabled()))
                 .toList();
 
-        KieFlywayRunner.get(new KieFlywayRunnerConfiguration(properties.isEnabled(), kieFlywayNamedModules))
+        KieFlywayRunner.get(new KieFlywayRunnerConfiguration(properties.isEnabled(), kieFlywayNamedModules, properties.isOutOfOrder()))
                 .runFlyway(dataSource);
     }
 

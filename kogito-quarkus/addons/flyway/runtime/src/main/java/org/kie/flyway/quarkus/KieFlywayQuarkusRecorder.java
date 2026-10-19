@@ -53,7 +53,7 @@ public class KieFlywayQuarkusRecorder {
                 .map(entry -> new KieFlywayNamedModule(entry.getKey(), entry.getValue().enabled()))
                 .toList();
 
-        KieFlywayRunnerConfiguration kieFlywayConfig = new KieFlywayRunnerConfiguration(runtimeConfig.enabled(), kieFlywayNamedModules);
+        KieFlywayRunnerConfiguration kieFlywayConfig = new KieFlywayRunnerConfiguration(runtimeConfig.enabled(), kieFlywayNamedModules, runtimeConfig.outOfOrder());
         KieFlywayRunner.get(kieFlywayConfig)
                 .runFlyway(dataSource);
     }

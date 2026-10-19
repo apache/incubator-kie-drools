@@ -29,6 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.drools.core.process.WorkItem;
+import org.jbpm.process.workitem.builtin.ProcessWorkItemHandlerExceptionHandler;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
@@ -192,6 +193,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
         if (handler == null) {
             throw new KogitoWorkItemHandlerNotFoundException(workItem.getName());
         }
+        handler = ProcessWorkItemHandlerExceptionHandler.wrapIfNeeded(handler, workItem);
 
         KogitoProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceStringId());
         WorkItemTransition lastTransition = null;

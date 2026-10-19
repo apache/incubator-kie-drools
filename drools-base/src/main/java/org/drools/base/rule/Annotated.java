@@ -20,9 +20,46 @@ package org.drools.base.rule;
 
 import java.lang.annotation.Annotation;
 
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.PropertyReactive;
+
 public interface Annotated {
     boolean hasAnnotation( Class<? extends Annotation> annotationClass );
     <A extends Annotation> A getTypedAnnotation( Class<A> annotationClass );
+
+    static Annotated withFallback(Annotated primary, Annotated fallback) {
+        // @PropertyReactive and @ClassReactive are mutually exclusive declarations of the
+        // same setting. If primary declares either one, suppress fallback for both so that
+        // a DRL @propertyReactive does not get combined with a Java @ClassReactive.
+        boolean primaryDeclaresReactivity =
+                primary.hasAnnotation(PropertyReactive.class) || primary.hasAnnotation(ClassReactive.class);
+        return new Annotated() {
+            @Override
+            public boolean hasAnnotation(Class<? extends Annotation> annotationClass) {
+                if (primary.hasAnnotation(annotationClass)) {
+                    return true;
+                }
+                if (primaryDeclaresReactivity
+                        && (annotationClass == PropertyReactive.class || annotationClass == ClassReactive.class)) {
+                    return false;
+                }
+                return fallback.hasAnnotation(annotationClass);
+            }
+
+            @Override
+            public <A extends Annotation> A getTypedAnnotation(Class<A> annotationClass) {
+                A annotation = primary.getTypedAnnotation(annotationClass);
+                if (annotation != null) {
+                    return annotation;
+                }
+                if (primaryDeclaresReactivity
+                        && (annotationClass == PropertyReactive.class || annotationClass == ClassReactive.class)) {
+                    return null;
+                }
+                return fallback.getTypedAnnotation(annotationClass);
+            }
+        };
+    }
 
     class ClassAdapter implements Annotated {
 

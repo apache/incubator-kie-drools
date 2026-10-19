@@ -63,6 +63,11 @@ public interface ProcessService {
 
     <T extends MappableToModel<R>, R> Optional<R> signalProcessInstance(Process<T> process, String id, Object data, String signalName);
 
+    /**
+     * Sends a signal to all the instances of the given process waiting for it.
+     */
+    <T extends Model> void signalProcess(Process<T> process, Object data, String signalName);
+
     <T> void migrateProcessInstances(Process<T> process, String targetProcessId, String targetProcessVersion, String... id) throws UnsupportedOperationException;
 
     <T> long migrateAll(Process<T> process, String targetProcessId, String targetProcessVersion) throws UnsupportedOperationException;

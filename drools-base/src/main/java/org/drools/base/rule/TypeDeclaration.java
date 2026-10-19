@@ -37,6 +37,7 @@ import org.drools.util.ClassUtils;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Expires.Policy;
+import org.kie.api.definition.type.PropertyChangeSupport;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
@@ -562,8 +563,17 @@ public class TypeDeclaration
     }
 
     public static void processTypeAnnotations( TypeDeclaration type, Annotated annotated, PropertySpecificOption propertySpecificOption ) {
+        configureRole( type, annotated );
         configureExpirationOffset( type, annotated );
         configurePropertyReactivity( type, annotated, propertySpecificOption );
+        configurePropertyChangeSupport( type, annotated );
+    }
+
+    private static void configureRole( TypeDeclaration type, Annotated annotated ) {
+        Role role = annotated.getTypedAnnotation(Role.class);
+        if (role != null) {
+            type.setRole(role.value());
+        }
     }
 
     private static void configureExpirationOffset( TypeDeclaration type, Annotated annotated ) {
@@ -581,5 +591,12 @@ public class TypeDeclaration
         boolean propertyReactive = propertySpecificOption.isPropSpecific( annotated.hasAnnotation( PropertyReactive.class ),
                                                                           annotated.hasAnnotation( ClassReactive.class ) );
         type.setPropertyReactive(propertyReactive);
+    }
+
+    private static void configurePropertyChangeSupport( TypeDeclaration type, Annotated annotated ) {
+        // only ever switch it on: a DRL declaration may already have made the type dynamic
+        if ( annotated.hasAnnotation( PropertyChangeSupport.class ) ) {
+            type.setDynamic( true );
+        }
     }
 }
