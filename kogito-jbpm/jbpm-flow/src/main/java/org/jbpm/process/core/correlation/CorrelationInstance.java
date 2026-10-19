@@ -18,7 +18,9 @@
  */
 package org.jbpm.process.core.correlation;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CorrelationInstance {
@@ -82,6 +84,35 @@ public class CorrelationInstance {
             }
         }
         return true;
+    }
+
+    public boolean matchesSubscription(CorrelationInstance subscription) {
+        if (subscription == null) {
+            return false;
+        }
+        if (!id.equals(subscription.id) || !name.equals(subscription.name)) {
+            return false;
+        }
+        if (properties.size() != subscription.properties.size()) {
+            return false;
+        }
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            Object messageVal = entry.getValue();
+            Object subscriptionVal = subscription.properties.get(entry.getKey());
+            if (!correlationPropertyMatches(messageVal, subscriptionVal)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean correlationPropertyMatches(Object messageVal, Object subscriptionVal) {
+        if (messageVal == null || subscriptionVal == null) {
+            return messageVal == subscriptionVal;
+        }
+        List<Object> messageList = messageVal instanceof Object[] ? Arrays.asList((Object[]) messageVal) : List.of(messageVal);
+        List<Object> subscriptionList = subscriptionVal instanceof Object[] ? Arrays.asList((Object[]) subscriptionVal) : List.of(subscriptionVal);
+        return messageList.stream().anyMatch(subscriptionList::contains);
     }
 
     @Override

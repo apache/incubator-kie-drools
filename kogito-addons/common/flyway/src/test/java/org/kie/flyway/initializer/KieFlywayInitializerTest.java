@@ -31,6 +31,7 @@ import org.kie.flyway.test.AbstractKieFlywayTest;
 import org.kie.flyway.test.dataSources.H2TestDataSource;
 import org.kie.flyway.test.dataSources.PostgreSQLTestDataSource;
 import org.kie.flyway.test.dataSources.TestDataSource;
+import org.kie.flyway.test.models.KieFlywayMigration;
 import org.kie.flyway.test.utils.TestClassLoader;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -146,6 +147,69 @@ public class KieFlywayInitializerTest extends AbstractKieFlywayTest {
 
         validateKieFlywayIndex("guitars", EXPECTED_GUITARS_MIGRATIONS, dataSource);
         validateGuitarsData(dataSource);
+    }
+
+    @Test
+    public void testFlywayMigrationOutOfOrderEnabled() {
+        // First run: apply all guitars migrations (V1.0.0 through V1.0.5)
+        classLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
+
+        H2TestDataSource dataSource = new H2TestDataSource();
+
+        KieFlywayInitializer.builder()
+                .withDatasource(dataSource.getDataSource())
+                .withClassLoader(classLoader)
+                .build()
+                .migrate();
+
+        // Second run: add late migration V1.0.3 (lower than already-applied V1.0.5)
+        // with outOfOrder=true it must be applied successfully
+        TestClassLoader classLoader2 = new TestClassLoader(this.getClass().getClassLoader());
+        classLoader2.addKieFlywayModule("initializers/kie-flyway.guitars_late.properties");
+
+        KieFlywayInitializer.builder()
+                .withDatasource(dataSource.getDataSource())
+                .withClassLoader(classLoader2)
+                .withOutOfOrder(true)
+                .build()
+                .migrate();
+
+        validateKieFlywayIndex("guitars",
+                List.of(new KieFlywayMigration("1.0.3", "Insert late guitar h2")),
+                dataSource);
+
+        dataSource.shutDown();
+    }
+
+    @Test
+    public void testFlywayMigrationOutOfOrderDisabled() {
+        // First run: apply all guitars migrations (V1.0.0 through V1.0.5)
+        classLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
+
+        H2TestDataSource dataSource = new H2TestDataSource();
+
+        KieFlywayInitializer.builder()
+                .withDatasource(dataSource.getDataSource())
+                .withClassLoader(classLoader)
+                .build()
+                .migrate();
+
+        // Second run: add late migration V1.0.3 with outOfOrder=false (default).
+        // Flyway detects V1.0.3 on the classpath but already past V1.0.5 in the history,
+        // so it throws a validation exception rather than silently skipping it.
+        TestClassLoader classLoader2 = new TestClassLoader(this.getClass().getClassLoader());
+        classLoader2.addKieFlywayModule("initializers/kie-flyway.guitars_late.properties");
+
+        assertThatThrownBy(() -> KieFlywayInitializer.builder()
+                .withDatasource(dataSource.getDataSource())
+                .withClassLoader(classLoader2)
+                .withOutOfOrder(false)
+                .build()
+                .migrate())
+                        .hasMessageContaining("1.0.3")
+                        .hasMessageContaining("outOfOrder");
+
+        dataSource.shutDown();
     }
 
     @Test

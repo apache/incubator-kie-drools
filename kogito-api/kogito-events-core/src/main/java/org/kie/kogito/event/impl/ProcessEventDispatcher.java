@@ -38,7 +38,6 @@ import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.process.SignalFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +93,7 @@ public class ProcessEventDispatcher<M extends Model, D> implements EventDispatch
         ProcessInstance<M> processInstance = startNewInstance(trigger, event);
         // we signal all the processes waiting for trigger (this covers intermediate catch events)
         LOGGER.debug("sending event to process {} with trigger {} and payload {}", process.id(), trigger, data);
-        process.send(SignalFactory.of("Message-" + trigger, data));
+        processService.signalProcess(process, data, "Message-" + trigger);
         return processInstance;
     }
 

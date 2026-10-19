@@ -29,6 +29,7 @@ import org.kie.flyway.KieFlywayException;
 import org.kie.flyway.test.AbstractKieFlywayTest;
 import org.kie.flyway.test.dataSources.H2TestDataSource;
 import org.kie.flyway.test.dataSources.TestDataSource;
+import org.kie.flyway.test.models.KieFlywayMigration;
 import org.kie.flyway.test.utils.TestClassLoader;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -123,6 +124,50 @@ public class KieFlywayRunnerTest extends AbstractKieFlywayTest {
 
         validateKieFlywayIndex("guitars", EXPECTED_GUITARS_MIGRATIONS, TEST_DATA_SOURCE);
         validateGuitarsData(TEST_DATA_SOURCE);
+    }
+
+    @Test
+    public void testFlywayMigrationsWithOutOfOrderEnabled() {
+        // Fresh datasource: apply guitars up to V1.0.5, then add late V1.0.3 with outOfOrder=true.
+        H2TestDataSource dataSource = new H2TestDataSource();
+
+        testClassLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
+        TestKieFlywayRunner.get(new KieFlywayRunnerConfiguration(true, new ArrayList<>()), testClassLoader)
+                .runFlyway(dataSource.getDataSource());
+
+        TestClassLoader classLoader2 = new TestClassLoader(this.getClass().getClassLoader());
+        classLoader2.addKieFlywayModule("initializers/kie-flyway.guitars_late.properties");
+
+        TestKieFlywayRunner.get(new KieFlywayRunnerConfiguration(true, new ArrayList<>(), true), classLoader2)
+                .runFlyway(dataSource.getDataSource());
+
+        validateKieFlywayIndex("guitars",
+                List.of(new KieFlywayMigration("1.0.3", "Insert late guitar h2")),
+                dataSource);
+
+        dataSource.shutDown();
+    }
+
+    @Test
+    public void testFlywayMigrationsWithOutOfOrderDisabled() {
+        // Fresh datasource: apply guitars up to V1.0.5, then present late V1.0.3 with outOfOrder=false.
+        // Flyway detects V1.0.3 on the classpath but past V1.0.5 in the history,
+        // so it throws a validation exception rather than silently skipping it.
+        H2TestDataSource dataSource = new H2TestDataSource();
+
+        testClassLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
+        TestKieFlywayRunner.get(new KieFlywayRunnerConfiguration(true, new ArrayList<>()), testClassLoader)
+                .runFlyway(dataSource.getDataSource());
+
+        TestClassLoader classLoader2 = new TestClassLoader(this.getClass().getClassLoader());
+        classLoader2.addKieFlywayModule("initializers/kie-flyway.guitars_late.properties");
+
+        assertThatThrownBy(() -> TestKieFlywayRunner.get(new KieFlywayRunnerConfiguration(true, new ArrayList<>(), false), classLoader2)
+                .runFlyway(dataSource.getDataSource()))
+                        .hasMessageContaining("1.0.3")
+                        .hasMessageContaining("outOfOrder");
+
+        dataSource.shutDown();
     }
 
     @AfterAll
