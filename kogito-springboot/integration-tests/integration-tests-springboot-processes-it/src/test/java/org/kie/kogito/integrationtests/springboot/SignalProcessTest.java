@@ -314,4 +314,56 @@ class SignalProcessTest extends BaseRestTest {
                 .statusCode(200)
                 .body("var1", not(nullValue()));
     }
+
+    @Test
+    void testDynamicSignalEndpoint() {
+        // Given: Process instance waiting for dynamic signal "Approved"
+        String pid = given()
+                .contentType(ContentType.JSON)
+                .body("{\"signalName\":\"Approved\"}")
+                .when()
+                .post("/dynamicsignals")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+
+        // When: Send an incorrect dynamic signal
+        // Then: Should return 412 as the process is not accepting this signal
+        given()
+                .contentType(ContentType.JSON)
+                .body("{}")
+                .when()
+                .post("/dynamicsignals/{pid}/signal/{signalName}", pid, "Rejected")
+                .then()
+                .statusCode(412);
+
+        // Then: Process instance should still be active and waiting for "Approved"
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/dynamicsignals/{pid}", pid)
+                .then()
+                .statusCode(200)
+                .body("signalName", is("Approved"));
+
+        // When: Send the correct dynamic signal "Approved"
+        // Then: Signal should be accepted and process should complete
+        given()
+                .contentType(ContentType.JSON)
+                .body("{}")
+                .when()
+                .post("/dynamicsignals/{pid}/signal/{signalName}", pid, "Approved")
+                .then()
+                .statusCode(200);
+
+        // Then: Completed process instance should no longer be available
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/dynamicsignals/{pid}", pid)
+                .then()
+                .statusCode(404);
+    }
 }

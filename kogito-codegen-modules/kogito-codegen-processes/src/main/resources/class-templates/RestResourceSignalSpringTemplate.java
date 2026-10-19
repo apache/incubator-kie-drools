@@ -59,4 +59,15 @@ public class $Type$Resource {
         return processService.signalProcessInstance(process, id, data, "$signalName$")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, String.format("Process instance %s is not currently accepting signal '%s'", id, "$signalName$")));
     }
+
+    @PostMapping(value = "/{id}/signal/{signalName}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(type = "object")))
+    public $Type$Output dynamicSignalInstance(@PathVariable("id") final String id,
+            @PathVariable("signalName") final String signalName,
+            final @RequestBody(required = false) com.fasterxml.jackson.databind.JsonNode data) {
+        return processService.signalProcessInstance(process, id,
+                data != null ? org.kie.kogito.jackson.utils.JsonObjectUtils.toJavaValue(data) : null, signalName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
+                        String.format("Process instance %s is not currently accepting signal '%s'", id, signalName)));
+    }
 }
