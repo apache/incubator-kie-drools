@@ -286,7 +286,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
                 return (T) (this.shareAlphaNodes ? ShareAlphaNodesOption.YES : ShareAlphaNodesOption.NO);
             }
             case ShareBetaNodesOption.PROPERTY_NAME: {
-                return (T) (this.shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO);
+                return (T) (isShareBetaNodes() ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO);
             }
             case IndexRightBetaMemoryOption.PROPERTY_NAME: {
                 return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
