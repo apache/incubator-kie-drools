@@ -454,8 +454,26 @@ public class KnowledgeBaseConfigurationTest {
         // checking the string based getProperty() method
         assertThat(config.getProperty("drools.ruleBaseUpdateHandler")).isEqualTo("");
     }
-    
-    
-    
+
+    @Test
+    public void testSequentialDisablesBetaNodeSharing() {
+        config.setOption( SequentialOption.YES );
+        config.setOption( ShareBetaNodesOption.YES );
+
+        assertThat(config.getOption(ShareBetaNodesOption.KEY)).isEqualTo(ShareBetaNodesOption.NO);
+        assertThat(config.getOption(SequentialOption.KEY)).isEqualTo(SequentialOption.YES);
+    }
+
+    @Test
+    public void testSequentialDisablesBetaNodeSharingRegardlessOfSetterOrder() {
+        config.setOption( ShareBetaNodesOption.YES );
+        config.setOption( SequentialOption.YES );
+
+        assertThat(config.getOption(ShareBetaNodesOption.KEY)).isEqualTo(ShareBetaNodesOption.NO);
+
+        config.setOption( SequentialOption.NO );
+
+        assertThat(config.getOption(ShareBetaNodesOption.KEY)).isEqualTo(ShareBetaNodesOption.YES);
+    }
 
 }
