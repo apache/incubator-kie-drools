@@ -181,6 +181,9 @@ public class JsonSchemaGeneratorTest {
 
         @VariableInfo
         private List items;
+
+        @VariableInfo
+        private List<String> tags;
     }
 
     private static class HolderWithObjectField {
@@ -493,7 +496,7 @@ public class JsonSchemaGeneratorTest {
     }
 
     @Test
-    public void testUntypedCollectionFieldIsIncludedInSchema() throws IOException {
+    public void testUntypedCollectionFieldIsExcludedFromSchema() throws IOException {
         Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(
                 Stream.of(ProcessInputModelWithUntypedCollectionVar.class)).build().generate();
         assertThat(files).hasSize(1);
@@ -502,8 +505,10 @@ public class JsonSchemaGeneratorTest {
         JsonNode properties = reader.readTree(files.iterator().next().contents()).get("properties");
         assertThat(properties).isNotNull();
         assertThat(properties.has("name")).isTrue();
-        assertThat(properties.has("items")).isTrue();
-        assertThat(properties.get("items").get("type").asText()).isEqualTo("array");
+        assertThat(properties.has("items")).isFalse();
+        assertThat(properties.has("tags")).isTrue();
+        assertThat(properties.get("tags").get("type").asText()).isEqualTo("array");
+        assertThat(properties.get("tags").get("items").get("type").asText()).isEqualTo("string");
     }
 
     @Test
