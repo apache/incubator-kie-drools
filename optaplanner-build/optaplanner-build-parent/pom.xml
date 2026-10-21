@@ -131,10 +131,28 @@
            maven-core. Remove once those ship ASM >= 9.11. -->
       <dependency>
         <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-bom</artifactId>
+        <artifactId>asm</artifactId>
         <version>${version.org.ow2.asm}</version>
-        <type>pom</type>
-        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-analysis</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>${version.org.ow2.asm}</version>
       </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>
