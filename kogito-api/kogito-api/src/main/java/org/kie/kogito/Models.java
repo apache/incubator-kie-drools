@@ -50,7 +50,7 @@ public class Models {
                 }
             }
         }
-        if (VariableLegacyMode.isEnabled() && m instanceof Model model) {
+        if (m instanceof Model model) {
             map.putAll(model.getAdditionalProperties());
         }
         return map;
@@ -79,7 +79,7 @@ public class Models {
                 }
             }
         }
-        if (VariableLegacyMode.isEnabled() && m instanceof Model model) {
+        if (m instanceof Model model) {
             Map<String, Object> additionalProperties = new java.util.HashMap<>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String key = entry.getKey();

@@ -50,7 +50,6 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
 import org.kie.kogito.Models;
-import org.kie.kogito.VariableLegacyMode;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.correlation.CorrelationInstance;
@@ -838,9 +837,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 f.setAccessible(true);
                 vmap.put(f.getName(), f.get(variables));
             }
-            if (VariableLegacyMode.isEnabled()) {
-                vmap.putAll(variables.getAdditionalProperties());
-            }
+            vmap.putAll(variables.getAdditionalProperties());
         } catch (IllegalAccessException e) {
             throw new Error(e);
         }
@@ -858,16 +855,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 f.setAccessible(true);
                 f.set(variables, vmap.get(f.getName()));
             }
-            if (VariableLegacyMode.isEnabled()) {
-                Map<String, Object> additionalProperties = new HashMap<>();
-                for (Map.Entry<String, Object> entry : vmap.entrySet()) {
-                    String key = entry.getKey();
-                    if (!"$v".equals(key) && !isDeclaredField(variables.getClass(), key)) {
-                        additionalProperties.put(key, entry.getValue());
-                    }
+            Map<String, Object> additionalProperties = new HashMap<>();
+            for (Map.Entry<String, Object> entry : vmap.entrySet()) {
+                String key = entry.getKey();
+                if (!"$v".equals(key) && !isDeclaredField(variables.getClass(), key)) {
+                    additionalProperties.put(key, entry.getValue());
                 }
-                variables.setAdditionalProperties(additionalProperties);
             }
+            variables.setAdditionalProperties(additionalProperties);
         } catch (IllegalAccessException e) {
             throw new Error(e);
         }

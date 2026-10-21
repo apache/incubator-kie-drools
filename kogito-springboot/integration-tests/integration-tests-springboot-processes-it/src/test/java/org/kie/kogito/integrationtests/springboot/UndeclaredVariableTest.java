@@ -33,7 +33,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
 /**
- * Verifies that a process can accept an undeclared variable as input (kogito.workflow.variable-legacy-mode=true, opt-in).
+ * Verifies that a process can accept an undeclared variable as input (always enabled by default).
  * The BPMN "undeclaredVariable" has no declared process variables.
  * When started with a "payload" key in the body the process enters a signal-wait state and stays ACTIVE.
  */
@@ -43,7 +43,7 @@ class UndeclaredVariableTest extends BaseRestTest {
 
     @Test
     void testUndeclaredVariableKeepsProcessActive() {
-        // Start the process with an undeclared variable – must succeed (variable-legacy-mode compatibility mode is on)
+        // Start the process with an undeclared variable – must succeed (undeclared variables are supported by default)
         String pid = given()
                 .contentType(ContentType.JSON)
                 .body(Collections.singletonMap("payload", "someValue"))
