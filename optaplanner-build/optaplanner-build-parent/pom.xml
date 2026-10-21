@@ -59,7 +59,8 @@
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
-    <!-- override ASM transitive dependency -->
+    <!-- CVE-2026-110258, CVE-2026-110270: override OW2 ASM 9.9.1 pulled in transitively via quarkus-bom
+         and maven-core. Remove once those ship ASM >= 9.11. -->
     <version.org.ow2.asm>9.11.1</version.org.ow2.asm>
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.eclipse.parsson>1.1.8</version.org.eclipse.parsson>
@@ -126,7 +127,8 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- override ASM transitive dependency -->
+      <!-- CVE-2026-110258, CVE-2026-110270: ASM 9.9.1 pulled in transitively via quarkus-bom and
+           maven-core. Remove once those ship ASM >= 9.11. -->
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-bom</artifactId>

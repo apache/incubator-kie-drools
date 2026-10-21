@@ -286,7 +286,8 @@
     <version.org.mvel>2.5.4.Final</version.org.mvel>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
-    <!-- override ASM transitive dependency -->
+    <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: override OW2 ASM pulled in transitively
+         at 9.3 via json-smart/accessors-smart and at 9.9.1 via maven-core. -->
     <version.org.ow2.asm>9.11.1</version.org.ow2.asm>
     <version.org.postgresql>42.7.12</version.org.postgresql>
     <version.org.powermock>2.0.9</version.org.powermock>
@@ -2066,7 +2067,9 @@
         <version>${version.nashorn}</version>
         <scope>test</scope>
       </dependency>
-      <!-- override ASM transitive dependency -->
+      <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: ASM pulled in transitively at 9.3
+           via json-smart -> accessors-smart (spring-boot-starter-test, json-path, oauth2-oidc-sdk, infinispan)
+           and at 9.9.1 via maven-core (kie-ci, maven plugin modules). Remove once those ship ASM >= 9.11. -->
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-bom</artifactId>
