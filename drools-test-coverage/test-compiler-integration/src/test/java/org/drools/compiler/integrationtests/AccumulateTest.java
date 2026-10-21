@@ -36,9 +36,12 @@ import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.core.RuleSessionConfiguration;
+import org.drools.core.marshalling.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.drools.commands.runtime.rule.InsertElementsCommand;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Primitives;
+import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
 import org.drools.testcoverage.common.model.Order;
@@ -49,6 +52,7 @@ import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.SerializationHelper;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -60,7 +64,9 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -4286,6 +4292,45 @@ public class AccumulateTest {
             assertThat(results.get(0).longValue()).isEqualTo(-2L);
             assertThat(results.get(1).longValue()).isEqualTo(12L);
         } finally {
+            ksession.dispose();
+        }
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMarshallCollectIntoArrayListFromSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        final String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $p: Person()\n" +
+                "  $list: ArrayList() from collect (\n" +
+                "    Address() from $p.addresses\n" +
+                "  )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        System.setProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS,
+                "org.drools.testcoverage.common.model.Person;" +
+                "org.drools.testcoverage.common.model.Address");
+        try {
+            ksession.getEnvironment().set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES,
+                    new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
+
+            final Person mario = new Person("Mario", 40);
+            mario.addAddress(new Address("Via Roma", 1, "Rome"));
+            mario.addAddress(new Address("Via Milano", 2, "Milan"));
+            ksession.insert(mario);
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
+        } finally {
+            System.clearProperty(org.drools.core.util.KeyStoreConstants.PROP_ALLOWED_DESER_CLASS_PATTERNS);
             ksession.dispose();
         }
     }

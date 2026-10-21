@@ -22,6 +22,7 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Collection;
@@ -59,6 +60,10 @@ public class GenericCollectAccumulator implements Accumulator {
                              Declaration[] innerDeclarations,
                              ValueResolver valueResolver) {
         Object value = handle.getObject();
+        if (value instanceof SubnetworkTuple) {
+            // as in CollectAccumulator: collect the fact matched by the subnetwork, not the tuple wrapping it
+            value = ( (SubnetworkTuple) value ).getFactHandle().getObject();
+        }
         ((Collection) context).add( value );
         return value;
     }
