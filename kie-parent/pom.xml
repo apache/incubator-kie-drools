@@ -342,6 +342,17 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: ASM pulled in transitively at 9.3
+           via json-smart -> accessors-smart (spring-boot-starter-test, json-path, oauth2-oidc-sdk, infinispan)
+           and at 9.9.1 via maven-core (kie-ci, maven plugin modules). Remove once those ship ASM >= 9.11.
+           Must be imported before other BOMs (jetty-bom, infinispan-bom, etc.) so this pin wins. -->
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-bom</artifactId>
+        <version>${version.org.ow2.asm}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-bom</artifactId>
@@ -2066,16 +2077,6 @@
         <artifactId>nashorn-core</artifactId>
         <version>${version.nashorn}</version>
         <scope>test</scope>
-      </dependency>
-      <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: ASM pulled in transitively at 9.3
-           via json-smart -> accessors-smart (spring-boot-starter-test, json-path, oauth2-oidc-sdk, infinispan)
-           and at 9.9.1 via maven-core (kie-ci, maven plugin modules). Remove once those ship ASM >= 9.11. -->
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-bom</artifactId>
-        <version>${version.org.ow2.asm}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.postgresql</groupId>
