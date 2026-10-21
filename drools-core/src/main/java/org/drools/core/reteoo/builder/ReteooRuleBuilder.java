@@ -57,8 +57,12 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.kie.api.conf.EventProcessingOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReteooRuleBuilder implements RuleBuilder {
+
+    private static final Logger log = LoggerFactory.getLogger(ReteooRuleBuilder.class);
 
     protected BuildUtils utils;
 
@@ -119,6 +123,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         // transform rule and gets the array of subrules
         final GroupElement[] subrules = rule.getTransformedLhs( LogicTransformer.getInstance(), kBase.getGlobals() );
+
+        if (kBase.getRuleBaseConfiguration().isSequential() && rule.isDataDriven()) {
+            log.warn("@Propagation(IMMEDIATE) on rule '{}' is ignored in sequential mode", rule.getName());
+        }
 
         for (int i = 0; i < subrules.length; i++) {
             // creates a clean build context for each subrule
