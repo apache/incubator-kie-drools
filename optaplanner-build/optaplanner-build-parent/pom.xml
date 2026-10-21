@@ -59,7 +59,7 @@
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
-    <!-- CVE-2026-110258, CVE-2026-110270: override vulnerable ASM 9.9.1 from quarkus-bom to 9.11.1 -->
+    <!-- override ASM transitive dependency -->
     <version.org.ow2.asm>9.11.1</version.org.ow2.asm>
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.eclipse.parsson>1.1.8</version.org.eclipse.parsson>
@@ -126,31 +126,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- CVE-2026-110258, CVE-2026-110270: override vulnerable ASM 9.9.1 from quarkus-bom to 9.11.1 -->
+      <!-- override ASM transitive dependency -->
       <dependency>
         <groupId>org.ow2.asm</groupId>
-        <artifactId>asm</artifactId>
+        <artifactId>asm-bom</artifactId>
         <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-analysis</artifactId>
-        <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-commons</artifactId>
-        <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-tree</artifactId>
-        <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-util</artifactId>
-        <version>${version.org.ow2.asm}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>

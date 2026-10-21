@@ -286,7 +286,7 @@
     <version.org.mvel>2.5.4.Final</version.org.mvel>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
-    <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: baseline version for OW2 ASM, enforced via dependencyManagement below. -->
+    <!-- override ASM transitive dependency -->
     <version.org.ow2.asm>9.11.1</version.org.ow2.asm>
     <version.org.postgresql>42.7.12</version.org.postgresql>
     <version.org.powermock>2.0.9</version.org.powermock>
@@ -2066,36 +2066,13 @@
         <version>${version.nashorn}</version>
         <scope>test</scope>
       </dependency>
-      <!-- CVE-2026-110257, CVE-2026-110258, CVE-2026-110259, CVE-2026-110260, CVE-2026-110261, CVE-2026-110263,
-           CVE-2026-110591: ASM family is pulled in transitively at vulnerable versions that kie-parent did not manage:
-           9.3 via json-smart -> accessors-smart (spring-boot-starter-test, json-path, oauth2-oidc-sdk, infinispan)
-           and 9.9.1 via maven-core (kie-ci, maven plugin modules). Pin all artifacts to 9.11.1 (fix is in >= 9.11).
-           No <scope> on purpose so the scope of each transitive path (test/provided/compile) is preserved.
-           Remove once json-smart/accessors-smart and maven-core ship asm >= 9.11. -->
+      <!-- override ASM transitive dependency -->
       <dependency>
         <groupId>org.ow2.asm</groupId>
-        <artifactId>asm</artifactId>
+        <artifactId>asm-bom</artifactId>
         <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-analysis</artifactId>
-        <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-commons</artifactId>
-        <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-tree</artifactId>
-        <version>${version.org.ow2.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-util</artifactId>
-        <version>${version.org.ow2.asm}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.postgresql</groupId>
