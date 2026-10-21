@@ -313,6 +313,9 @@
     <version.org.wiremock.webhooks>3.0.4</version.org.wiremock.webhooks>
     <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
+    <!-- CVE-2026-90559, CVE-2026-108106: snappy-java <= 1.1.10.8 has out-of-bounds write and unbounded memory allocation DoS vulnerabilities.
+         Override to 1.1.10.12. -->
+    <version.org.xerial.snappy>1.1.10.12</version.org.xerial.snappy>
     <version.org.yaml.snakeyaml>2.6</version.org.yaml.snakeyaml>
     <version.pitest-maven>1.2.0</version.pitest-maven>
     <version.plexus>2.2.0</version.plexus>
@@ -2311,6 +2314,12 @@
         <artifactId>xmlunit-matchers</artifactId>
         <version>${version.org.xmlunit}</version>
         <scope>test</scope>
+      </dependency>
+      <!-- CVE-2026-90559, CVE-2026-108106: override snappy-java to 1.1.10.12 -->
+      <dependency>
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${version.org.xerial.snappy}</version>
       </dependency>
       <dependency>
         <groupId>simple-jndi</groupId>

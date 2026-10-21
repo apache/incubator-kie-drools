@@ -66,6 +66,9 @@
     <version.org.eclipse.parsson>1.1.8</version.org.eclipse.parsson>
     <version.org.springframework>7.0.9</version.org.springframework>
     <version.org.springframework.boot>4.1.1</version.org.springframework.boot>
+    <!-- CVE-2026-90559, CVE-2026-108106: quarkus-bom 3.33.4 ships snappy-java 1.1.10.8; override to 1.1.10.12.
+         Must be declared before quarkus-bom import so this value takes precedence. -->
+    <version.org.xerial.snappy>1.1.10.12</version.org.xerial.snappy>
     <version.com.fasterxml.jackson.databind>2.22.2</version.com.fasterxml.jackson.databind>
     <!-- ************************************************************************ -->
     <!-- Plugins -->
@@ -153,6 +156,12 @@
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-util</artifactId>
         <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <!-- CVE-2026-90559, CVE-2026-108106: override snappy-java before quarkus-bom import -->
+      <dependency>
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${version.org.xerial.snappy}</version>
       </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>
