@@ -31,6 +31,6 @@ public interface KogitoWorkflowRuntimeConfig {
      * Persistence runtime configuration
      */
     @WithName("persistence")
-    public KogitoPersistenceRuntimeConfig persistenceConfig();
+    KogitoPersistenceRuntimeConfig persistenceConfig();
 
 }
