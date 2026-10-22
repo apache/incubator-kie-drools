@@ -68,6 +68,16 @@ jobs:
           distribution: temurin
           cache: maven
 
+      # The runner image's Maven may be older than the minimum enforced by kie-parent.
+      # Keep the version in sync with version.org.apache.maven in kie-parent/pom.xml.
+      - name: 'SETUP :: Install Maven'
+        shell: bash
+        run: |
+          curl -sfL https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.16/apache-maven-3.9.16-bin.zip -o "${{ runner.temp }}/maven.zip"
+          echo "ed41650d42485cfc243fad22158caf9cbb5dc408ce7a09ddb94dd42a019de929ca43065bfa450612cf12bf78b5cafa3884b96c090de326ff590448c933454af3  ${{ runner.temp }}/maven.zip" | sha512sum -c -
+          unzip -q "${{ runner.temp }}/maven.zip" -d "${{ runner.temp }}"
+          echo "${{ runner.temp }}/apache-maven-3.9.16/bin" >> $GITHUB_PATH
+
       - name: 'SETUP :: Block apache.snapshots Maven repository'
         shell: bash
         run: |
