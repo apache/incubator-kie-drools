@@ -78,6 +78,7 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.model.api.Binding;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.Context;
 import org.kie.dmn.model.api.ContextEntry;
@@ -97,6 +98,7 @@ import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.Invocation;
 import org.kie.dmn.model.api.Iterator;
 import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.Quantified;
 import org.kie.dmn.model.api.Relation;
@@ -376,10 +378,15 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                         ContextEntry parentEntry = (ContextEntry) ctxDef.getParent();
                         type = compiler.resolveTypeRef(model, parentEntry.getVariable(), parentEntry.getVariable(),
                                                        parentEntry.getVariable().getTypeRef());
-                    } else if (node instanceof BusinessKnowledgeModelNode) {
-                        type = ((BusinessKnowledgeModelNode) node).getResultType();
-                    } else if (node instanceof DecisionNode) {
-                        type = ((DecisionNode) node).getResultType();
+                    } else if (isResultOfDecisionOrBKM(ctxDef, node)) {
+                        // only a context producing the result of the node takes the result type of the node:
+                        // a nested context (e.g. the `return` of a `for`) produces just a part of that result
+                        // and must not be coerced to the (possibly collection) type of the node
+                        if (node instanceof BusinessKnowledgeModelNode) {
+                            type = ((BusinessKnowledgeModelNode) node).getResultType();
+                        } else if (node instanceof DecisionNode) {
+                            type = ((DecisionNode) node).getResultType();
+                        }
                     }
                     ctxEval.addEntry(
                             DMNContextEvaluator.RESULT_ENTRY,
@@ -392,6 +399,58 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             ctx.exitFrame();
         }
         return ctxEval;
+    }
+
+    /**
+     * Checks whether the given <code>Context</code> produces the result of the <code>Decision</code> or
+     * <code>BusinessKnowledgeModel</code> node it is compiled for, i.e. it is the root expression of the node, or it is a
+     * <code>then</code>/<code>else</code> branch of a <code>Conditional</code> that is the root expression of the node.
+     * Only in that case the result type of the node describes the value produced by the context. A context nested in
+     * any other expression (e.g. the <code>return</code> of a <code>for</code>, an element of a <code>list</code>, an
+     * invocation binding, the body of a nested function) produces just a part of the result of the node.
+     * The check compares the model elements instead of using the parent links, that are populated only when a model is
+     * unmarshalled and are missing in a model built programmatically.
+     * @param ctxDef the context being compiled
+     * @param node the Decision or BusinessKnowledgeModel node the context belongs to
+     * @return <code>true</code> if the value of the context is the result of the node
+     */
+    private static boolean isResultOfDecisionOrBKM(Context ctxDef, DMNBaseNode node) {
+        return isSameOrConditionalBranchOf(getRootExpression(node), ctxDef);
+    }
+
+    /**
+     * @param node the Decision or BusinessKnowledgeModel node
+     * @return the expression of the Decision, or the body of the function definition of the BusinessKnowledgeModel;
+     * <code>null</code> if not available
+     */
+    private static Expression getRootExpression(DMNBaseNode node) {
+        NamedElement source = node.getSource();
+        if (source instanceof Decision decision) {
+            return decision.getExpression();
+        }
+        if (source instanceof BusinessKnowledgeModel bkm) {
+            FunctionDefinition encapsulatedLogic = bkm.getEncapsulatedLogic();
+            return encapsulatedLogic != null ? encapsulatedLogic.getExpression() : null;
+        }
+        return null;
+    }
+
+    private static boolean isSameOrConditionalBranchOf(Expression root, Expression expression) {
+        if (root == null) {
+            return false;
+        }
+        if (root == expression) {
+            return true;
+        }
+        if (root instanceof Conditional conditional) {
+            return isSameOrConditionalBranchOf(getChildExpression(conditional.getThen()), expression) ||
+                    isSameOrConditionalBranchOf(getChildExpression(conditional.getElse()), expression);
+        }
+        return false;
+    }
+
+    private static Expression getChildExpression(ChildExpression child) {
+        return child != null ? child.getExpression() : null;
     }
 
     private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model,
