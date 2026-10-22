@@ -25,11 +25,10 @@
 //
 // MANDATORY parameters : RELEASE_VERSION, TAG_NAME
 // Real RC run          : DEPLOY=true, PUSH_TAG=true, DRY_RUN=false
-// Branch cut (once per minor, before rc1 only) - two independent parameters:
-//                        CREATE_STREAM_BRANCH=true  -> creates X.Y.x from STREAM_BASE_BRANCH
-//                        UPDATE_STREAM_VERSION=true -> sets X.Y.999-SNAPSHOT in all files on X.Y.x
-//                        Set both for a normal branch cut, then the RC continues on X.Y.x.
-//                        Leave both false for rc2, final and patch releases (branch already exists).
+// Branch cut (once per minor, before rc1 only):
+//                        CREATE_STREAM_BRANCH=true -> creates X.Y.x from STREAM_BASE_BRANCH,
+//                        sets X.Y.999-SNAPSHOT, pushes it, then continues the RC on X.Y.x.
+//                        Leave it false for rc2, final and patch releases (branch already exists).
 
 pipeline {
     agent {
@@ -49,8 +48,7 @@ pipeline {
     parameters {
         string(name: 'RELEASE_VERSION', defaultValue: '', description: 'MANDATORY. Exact release version, e.g. 10.3.0', trim: true)
         string(name: 'TAG_NAME', defaultValue: '', description: 'MANDATORY. RC tag name, e.g. 10.3.0-rc1 (must start with RELEASE_VERSION and be a new tag)', trim: true)
-        booleanParam(name: 'CREATE_STREAM_BRANCH', defaultValue: false, description: 'Branch cut, part 1: create branch X.Y.x (derived from RELEASE_VERSION) from STREAM_BASE_BRANCH and push it. Only for the first RC of a new minor (e.g. 10.3.0-rc1). Fails if X.Y.x already exists')
-        booleanParam(name: 'UPDATE_STREAM_VERSION', defaultValue: false, description: 'Branch cut, part 2: update the version in all files to X.Y.999-SNAPSHOT on branch X.Y.x, commit and push. Use together with CREATE_STREAM_BRANCH for a normal branch cut, or alone if X.Y.x was already created but not yet versioned')
+        booleanParam(name: 'CREATE_STREAM_BRANCH', defaultValue: false, description: 'Branch cut: create X.Y.x (derived from RELEASE_VERSION) from STREAM_BASE_BRANCH, set X.Y.999-SNAPSHOT and push it BEFORE building the RC. Only for the first RC of a new minor (e.g. 10.3.0-rc1). Fails if X.Y.x already exists')
         string(name: 'STREAM_BASE_BRANCH', defaultValue: 'main', description: 'Used only when CREATE_STREAM_BRANCH=true. Branch the stream branch is cut from', trim: true)
         booleanParam(name: 'SKIP_TESTS', defaultValue: true, description: 'Skip running tests during reactor build')
         booleanParam(name: 'DEPLOY', defaultValue: true, description: 'Deploy artifacts to Apache Nexus staging')
@@ -90,7 +88,7 @@ pipeline {
 
         stage('Create Stream Branch') {
             when {
-                expression { return params.CREATE_STREAM_BRANCH || params.UPDATE_STREAM_VERSION }
+                expression { return params.CREATE_STREAM_BRANCH }
             }
             steps {
                 script {
@@ -101,9 +99,7 @@ pipeline {
                             '--base',    params.STREAM_BASE_BRANCH,
                             '--push'
                         ]
-                        if (params.CREATE_STREAM_BRANCH)  branchArgs << '--create-branch'
-                        if (params.UPDATE_STREAM_VERSION) branchArgs << '--update-version'
-                        if (params.DRY_RUN)               branchArgs << '--dry-run'
+                        if (params.DRY_RUN) branchArgs << '--dry-run'
 
                         sh """#!/usr/bin/env bash
                         set -euo pipefail

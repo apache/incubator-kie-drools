@@ -20,37 +20,26 @@
 
 set -euo pipefail
 
-# Branch cut (Automation A).  Two independent actions:
-#
-#   --create-branch   Create the X.Y.x development stream branch from the base
-#                     branch (default: main) and push it.
-#   --update-version  On X.Y.x, set the dev version X.Y.999-SNAPSHOT in all
-#                     files (the "D commit") and push it.
-#
-# If neither flag is given, both actions are performed (normal branch cut).
-# Run ONCE per minor version, BEFORE the first RC.
+# Branch cut (Automation A): creates the X.Y.x development stream branch from
+# the base branch (default: main) and moves it to the X.Y.999-SNAPSHOT dev
+# version (the "D commit").  Run ONCE per minor version, BEFORE the first RC.
 #
 #   main  ──── c ──── c ──── c ───────────────────────────>  999-SNAPSHOT
 #                            └── [D commit] ──── c ────>  X.Y.x (X.Y.999-SNAPSHOT)
 #
 # Usage:
-#   ./script/release/00-create-stream-branch.sh <version> [--create-branch] [--update-version]
-#                                               [--base <branch>] [--remote <name>] [--push] [--dry-run]
+#   ./script/release/00-create-stream-branch.sh <version> [--base <branch>] [--push] [--dry-run]
+#   ./script/release/00-create-stream-branch.sh --version <version> [--base <branch>] [--push] [--dry-run]
 #
 # Examples:
-#   ./script/release/00-create-stream-branch.sh 10.3.0 --push                    # both
-#   ./script/release/00-create-stream-branch.sh 10.3.0 --create-branch --push    # only create + push the branch
-#   ./script/release/00-create-stream-branch.sh 10.3.0 --update-version --push   # branch exists: only set 10.3.999-SNAPSHOT
-#   ./script/release/00-create-stream-branch.sh --version 10.3 --dry-run
+#   ./script/release/00-create-stream-branch.sh 10.3.0 --push
+#   ./script/release/00-create-stream-branch.sh --version 10.3 --base main --dry-run
 #
 # Options:
 #   <version> | --version <ver>   Release version (10.3.0) or minor (10.3).  Only major.minor is used.
-#   --create-branch               Create X.Y.x from --base (fails if it already exists)
-#   --update-version              Update versions to X.Y.999-SNAPSHOT on X.Y.x, commit (fails if X.Y.x does not exist
-#                                 unless --create-branch is also given)
-#   --base <branch>               Branch to cut from (default: main). Used by --create-branch
+#   --base <branch>               Branch to cut from (default: main)
 #   --remote <name>               Git remote (default: origin)
-#   --push                        Push to the remote (default: local only)
+#   --push                        Push the new branch to the remote (default: local only)
 #   --dry-run                     Print what would happen without making any changes
 #
 # After this script the working tree is left checked out on X.Y.x.
@@ -61,42 +50,32 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 VERSION=""
 BASE_BRANCH="main"
 REMOTE="origin"
-CREATE_BRANCH=false
-UPDATE_VERSION=false
 PUSH=false
 DRY_RUN=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --version)         VERSION="${2:-}"; shift 2 ;;
-        --base)            BASE_BRANCH="${2:-}"; shift 2 ;;
-        --remote)          REMOTE="${2:-}"; shift 2 ;;
-        --create-branch)   CREATE_BRANCH=true; shift ;;
-        --update-version)  UPDATE_VERSION=true; shift ;;
-        --push)            PUSH=true; shift ;;
-        --dry-run)         DRY_RUN=true; shift ;;
+        --version)  VERSION="${2:-}"; shift 2 ;;
+        --base)     BASE_BRANCH="${2:-}"; shift 2 ;;
+        --remote)   REMOTE="${2:-}"; shift 2 ;;
+        --push)     PUSH=true; shift ;;
+        --dry-run)  DRY_RUN=true; shift ;;
         *)
             if [[ -z "${VERSION}" && ! "$1" =~ ^- ]]; then
                 VERSION="$1"
                 shift
             else
                 echo "Unknown option: $1"
-                echo "Usage: $0 [<version> | --version <version>] [--create-branch] [--update-version] [--base <branch>] [--push] [--dry-run]"
+                echo "Usage: $0 [<version> | --version <version>] [--base <branch>] [--push] [--dry-run]"
                 exit 1
             fi
             ;;
     esac
 done
 
-# Neither action selected -> full branch cut.
-if [[ "${CREATE_BRANCH}" == "false" && "${UPDATE_VERSION}" == "false" ]]; then
-    CREATE_BRANCH=true
-    UPDATE_VERSION=true
-fi
-
 if [[ -z "${VERSION}" ]]; then
     echo "ERROR: Version is required."
-    echo "Usage: $0 10.3.0 [--create-branch] [--update-version] [--base main] [--push] [--dry-run]"
+    echo "Usage: $0 10.3.0 [--base main] [--push] [--dry-run]"
     exit 1
 fi
 
@@ -112,10 +91,10 @@ DEV_VERSION="${MAJOR_MINOR}.999-SNAPSHOT"
 cd "${REPO_ROOT}"
 
 echo "========================================"
-echo "Apache KIE repo — stream branch cut"
+echo "Apache KIE repo — create stream branch"
 echo "Stream branch   : ${STREAM_BRANCH}"
-echo "Create branch   : ${CREATE_BRANCH} (from ${REMOTE}/${BASE_BRANCH})"
-echo "Update version  : ${UPDATE_VERSION} (${DEV_VERSION})"
+echo "Cut from        : ${REMOTE}/${BASE_BRANCH}"
+echo "Dev version     : ${DEV_VERSION}"
 echo "Push            : ${PUSH}"
 echo "Dry run         : ${DRY_RUN}"
 echo "========================================"
@@ -131,81 +110,47 @@ if [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
     exit 1
 fi
 
-REMOTE_HAS_BRANCH=false
 if git ls-remote --exit-code --heads "${REMOTE}" "${STREAM_BRANCH}" &>/dev/null; then
-    REMOTE_HAS_BRANCH=true
+    echo "ERROR: Branch '${STREAM_BRANCH}' already exists on '${REMOTE}'."
+    echo "       The branch cut is done once per minor version. For rc2 / patch"
+    echo "       releases reuse the existing branch and skip this step."
+    exit 1
 fi
 
-if [[ "${CREATE_BRANCH}" == "true" ]]; then
-    if [[ "${REMOTE_HAS_BRANCH}" == "true" ]]; then
-        echo "ERROR: Branch '${STREAM_BRANCH}' already exists on '${REMOTE}'."
-        echo "       The branch cut is done once per minor version. For rc2 / patch"
-        echo "       releases reuse the existing branch and skip this step."
-        exit 1
-    fi
-    if git rev-parse --verify "${STREAM_BRANCH}" &>/dev/null; then
-        echo "ERROR: Local branch '${STREAM_BRANCH}' already exists. Delete it first:"
-        echo "  git branch -D ${STREAM_BRANCH}"
-        exit 1
-    fi
-else
-    # --update-version only: the branch must already exist on the remote.
-    if [[ "${REMOTE_HAS_BRANCH}" != "true" ]]; then
-        echo "ERROR: Branch '${STREAM_BRANCH}' does not exist on '${REMOTE}'."
-        echo "       Create it first (--create-branch) or run with both actions."
-        exit 1
-    fi
+if git rev-parse --verify "${STREAM_BRANCH}" &>/dev/null; then
+    echo "ERROR: Local branch '${STREAM_BRANCH}' already exists. Delete it first:"
+    echo "  git branch -D ${STREAM_BRANCH}"
+    exit 1
 fi
 
 if [[ "${DRY_RUN}" == "true" ]]; then
     echo ""
     echo "[DRY RUN] Would execute:"
-    if [[ "${CREATE_BRANCH}" == "true" ]]; then
-        echo "  git fetch ${REMOTE} +refs/heads/${BASE_BRANCH}:refs/remotes/${REMOTE}/${BASE_BRANCH}"
-        echo "  git checkout -b ${STREAM_BRANCH} ${REMOTE}/${BASE_BRANCH}"
-    else
-        echo "  git fetch ${REMOTE} +refs/heads/${STREAM_BRANCH}:refs/remotes/${REMOTE}/${STREAM_BRANCH}"
-        echo "  git checkout -B ${STREAM_BRANCH} ${REMOTE}/${STREAM_BRANCH}"
-    fi
-    if [[ "${UPDATE_VERSION}" == "true" ]]; then
-        echo "  ./script/release/01-update-version.sh ${DEV_VERSION}"
-        echo "  git add -A"
-        echo "  git commit -m \"Update version to ${DEV_VERSION}\""
-    fi
+    echo "  git fetch ${REMOTE} +refs/heads/${BASE_BRANCH}:refs/remotes/${REMOTE}/${BASE_BRANCH}"
+    echo "  git checkout -b ${STREAM_BRANCH} ${REMOTE}/${BASE_BRANCH}"
+    echo "  ./script/release/01-update-version.sh ${DEV_VERSION}"
+    echo "  git add -A"
+    echo "  git commit -m \"Update version to ${DEV_VERSION}\""
     if [[ "${PUSH}" == "true" ]]; then
         echo "  git push ${REMOTE} ${STREAM_BRANCH}"
     fi
     exit 0
 fi
 
-# ── Create branch / check out existing branch ────────────────────────────────
-if [[ "${CREATE_BRANCH}" == "true" ]]; then
-    echo ""
-    echo "--- Creating ${STREAM_BRANCH} from ${REMOTE}/${BASE_BRANCH} ---"
-    git fetch "${REMOTE}" "+refs/heads/${BASE_BRANCH}:refs/remotes/${REMOTE}/${BASE_BRANCH}"
-    git checkout -b "${STREAM_BRANCH}" "${REMOTE}/${BASE_BRANCH}"
-else
-    echo ""
-    echo "--- Checking out existing ${STREAM_BRANCH} ---"
-    git fetch "${REMOTE}" "+refs/heads/${STREAM_BRANCH}:refs/remotes/${REMOTE}/${STREAM_BRANCH}"
-    git checkout -B "${STREAM_BRANCH}" "${REMOTE}/${STREAM_BRANCH}"
-fi
+# ── Branch cut ───────────────────────────────────────────────────────────────
+echo ""
+echo "--- Creating ${STREAM_BRANCH} from ${REMOTE}/${BASE_BRANCH} ---"
+git fetch "${REMOTE}" "+refs/heads/${BASE_BRANCH}:refs/remotes/${REMOTE}/${BASE_BRANCH}"
+git checkout -b "${STREAM_BRANCH}" "${REMOTE}/${BASE_BRANCH}"
 
-# ── Update version ───────────────────────────────────────────────────────────
-if [[ "${UPDATE_VERSION}" == "true" ]]; then
-    echo ""
-    echo "--- Updating version to ${DEV_VERSION} ---"
-    "${SCRIPT_DIR}/01-update-version.sh" "${DEV_VERSION}"
+echo ""
+echo "--- Updating version to ${DEV_VERSION} ---"
+"${SCRIPT_DIR}/01-update-version.sh" "${DEV_VERSION}"
 
-    echo ""
-    echo "--- Committing D commit ---"
-    git add -A
-    if git diff --cached --quiet; then
-        echo "No changes: ${STREAM_BRANCH} is already on ${DEV_VERSION}, nothing to commit."
-    else
-        git commit -m "Update version to ${DEV_VERSION}"
-    fi
-fi
+echo ""
+echo "--- Committing D commit ---"
+git add -A
+git commit -m "Update version to ${DEV_VERSION}"
 
 if [[ "${PUSH}" == "true" ]]; then
     echo ""
@@ -215,7 +160,7 @@ fi
 
 echo ""
 echo "========================================"
-echo "Stream branch ${STREAM_BRANCH} done (create=${CREATE_BRANCH}, update-version=${UPDATE_VERSION})."
+echo "Stream branch ${STREAM_BRANCH} ready (${DEV_VERSION})."
 echo ""
 if [[ "${PUSH}" != "true" ]]; then
     echo "Next step (not pushed yet):"
