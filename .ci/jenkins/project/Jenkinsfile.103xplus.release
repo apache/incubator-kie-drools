@@ -25,6 +25,10 @@
 //
 // MANDATORY parameters : RELEASE_VERSION, TAG_NAME
 // Real RC run          : DEPLOY=true, PUSH_TAG=true, DRY_RUN=false
+// Branch cut (once per minor, before rc1 only):
+//                        CREATE_STREAM_BRANCH=true -> creates X.Y.x from STREAM_BASE_BRANCH,
+//                        sets X.Y.999-SNAPSHOT, pushes it, then continues the RC on X.Y.x.
+//                        Leave it false for rc2, final and patch releases (branch already exists).
 
 pipeline {
     agent {
@@ -44,6 +48,8 @@ pipeline {
     parameters {
         string(name: 'RELEASE_VERSION', defaultValue: '', description: 'MANDATORY. Exact release version, e.g. 10.3.0', trim: true)
         string(name: 'TAG_NAME', defaultValue: '', description: 'MANDATORY. RC tag name, e.g. 10.3.0-rc1 (must start with RELEASE_VERSION and be a new tag)', trim: true)
+        booleanParam(name: 'CREATE_STREAM_BRANCH', defaultValue: false, description: 'Branch cut: create X.Y.x (derived from RELEASE_VERSION) from STREAM_BASE_BRANCH, set X.Y.999-SNAPSHOT and push it BEFORE building the RC. Only for the first RC of a new minor (e.g. 10.3.0-rc1). Fails if X.Y.x already exists')
+        string(name: 'STREAM_BASE_BRANCH', defaultValue: 'main', description: 'Used only when CREATE_STREAM_BRANCH=true. Branch the stream branch is cut from', trim: true)
         booleanParam(name: 'SKIP_TESTS', defaultValue: true, description: 'Skip running tests during reactor build')
         booleanParam(name: 'DEPLOY', defaultValue: true, description: 'Deploy artifacts to Apache Nexus staging')
         string(name: 'STAGING_URL', defaultValue: '', description: 'Custom Nexus staging URL (optional)')
@@ -76,6 +82,34 @@ pipeline {
                         error "TAG_NAME '${params.TAG_NAME}' must start with RELEASE_VERSION '${params.RELEASE_VERSION}'"
                     }
                     currentBuild.displayName = "Release ${params.RELEASE_VERSION} (${params.TAG_NAME})"
+                }
+            }
+        }
+
+        stage('Create Stream Branch') {
+            when {
+                expression { return params.CREATE_STREAM_BRANCH }
+            }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: params.GIT_PUSH_CREDS_ID, usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        def branchArgs = [
+                            './script/release/00-create-stream-branch.sh',
+                            '--version', params.RELEASE_VERSION,
+                            '--base',    params.STREAM_BASE_BRANCH,
+                            '--push'
+                        ]
+                        if (params.DRY_RUN) branchArgs << '--dry-run'
+
+                        sh """#!/usr/bin/env bash
+                        set -euo pipefail
+                        git config user.email "${params.GIT_AUTHOR_EMAIL}"
+                        git config user.name  "${params.GIT_AUTHOR_NAME}"
+                        git config --local credential.helper '!f() { echo username=\$GITHUB_USER; echo password=\$GITHUB_TOKEN; }; f'
+                        chmod +x script/release/*.sh
+                        ${branchArgs.collect { "'${it.replace("'", "'\\''")}'" }.join(' ')}
+                        """
+                    }
                 }
             }
         }
