@@ -21,6 +21,7 @@ package org.jbpm.workflow.core.impl;
 import java.io.Serializable;
 import java.util.function.Function;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.process.instance.impl.AssignmentProducer;
@@ -32,23 +33,37 @@ import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class OutputExpressionAssignment implements AssignmentAction {
 
+    private static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_$][\\w$]*");
+
     private DataDefinition from;
     private Serializable toCompiled;
     private DataDefinition to;
+    // set only when the expression is a bare variable name, e.g. #{var}
+    private String targetVariable;
 
     public OutputExpressionAssignment(DataDefinition from, DataDefinition to) {
         this.from = from;
         this.to = to;
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(this.to.getExpression());
         if (matcher.find()) {
-            toCompiled = MVELProcessHelper.compileExpression(matcher.group(1) + " = _value");
+            String expression = matcher.group(1).trim();
+            if (IDENTIFIER.matcher(expression).matches()) {
+                targetVariable = expression;
+            }
+            toCompiled = MVELProcessHelper.compileExpression(expression + " = _value");
         }
     }
 
     @Override
     public void execute(Function<String, Object> sourceResolver, Function<String, Object> targetResolver, AssignmentProducer producer) throws Exception {
-        // producer in this case is void
-        Object value = MVELProcessHelper.evaluator().executeExpression(toCompiled, new ImmutableDefaultFactory() {
+        if (targetVariable != null) {
+            // assigning to a variable cannot be done through MVEL here, so hand it to the producer
+            producer.accept(targetVariable, sourceResolver.apply(from.getLabel()));
+            return;
+        }
+        // otherwise (e.g. #{account.person}) the MVEL expression writes the value into the target object itself;
+        // to.getId() is not a variable, so nothing is produced (it would leak an undeclared process variable)
+        MVELProcessHelper.evaluator().executeExpression(toCompiled, new ImmutableDefaultFactory() {
 
             @Override
             public boolean isResolveable(String name) {
@@ -65,7 +80,6 @@ public class OutputExpressionAssignment implements AssignmentAction {
             }
 
         });
-        producer.accept(to.getId(), value);
     }
 
 }
