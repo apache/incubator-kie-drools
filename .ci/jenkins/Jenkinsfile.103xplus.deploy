@@ -276,10 +276,6 @@ boolean isCreatePr() {
     return params.CREATE_PR
 }
 
-boolean isStreamDevVersion() {
-    return getProjectVersion()?.contains('-SNAPSHOT') ?: false
-}
-
 String getRepoName() {
     return env.REPO_NAME
 }
