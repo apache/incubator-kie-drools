@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
@@ -407,41 +408,48 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
      * @param node the node the context belongs to
      * @return <code>true</code> if the value of the context is the result of the node
      */
-    private static boolean isResultOfDecisionOrBKM(Context ctxDef, DMNBaseNode node) {
-        return isSameOrConditionalBranchOf(getRootExpression(node), ctxDef);
+    static boolean isResultOfDecisionOrBKM(Context ctxDef, DMNBaseNode node) {
+        return getRootExpression(node)
+                .map(root -> isSameOrConditionalBranchOf(root, ctxDef))
+                .orElse(false);
     }
 
     /**
-     * @return the expression of the Decision, or the body of the function definition of the BKM; <code>null</code> if not available
+     * @param node the Decision or BusinessKnowledgeModel node
+     * @return the expression of the Decision, or the body of the function definition of the BKM; empty if not available
      */
-    private static Expression getRootExpression(DMNBaseNode node) {
+    static Optional<Expression> getRootExpression(DMNBaseNode node) {
         NamedElement source = node.getSource();
         if (source instanceof Decision decision) {
-            return decision.getExpression();
+            return Optional.ofNullable(decision.getExpression());
         }
         if (source instanceof BusinessKnowledgeModel bkm) {
-            FunctionDefinition encapsulatedLogic = bkm.getEncapsulatedLogic();
-            return encapsulatedLogic != null ? encapsulatedLogic.getExpression() : null;
+            return Optional.ofNullable(bkm.getEncapsulatedLogic()).map(FunctionDefinition::getExpression);
         }
-        return null;
+        return Optional.empty();
     }
 
-    private static boolean isSameOrConditionalBranchOf(Expression root, Expression expression) {
-        if (root == null) {
-            return false;
-        }
+    /**
+     * @param root the root expression of a node
+     * @param expression the expression to look for
+     * @return <code>true</code> if <code>expression</code> is the very same instance (not just an equal one) of <code>root</code>,
+     * or of a <code>then</code>/<code>else</code> branch of <code>root</code>, when it is a <code>Conditional</code>
+     */
+    static boolean isSameOrConditionalBranchOf(Expression root, Expression expression) {
         if (root == expression) {
             return true;
         }
         if (root instanceof Conditional conditional) {
-            return isSameOrConditionalBranchOf(getChildExpression(conditional.getThen()), expression) ||
-                    isSameOrConditionalBranchOf(getChildExpression(conditional.getElse()), expression);
+            return Stream.of(conditional.getThen(), conditional.getElse())
+                    .map(DMNEvaluatorCompiler::getChildExpression)
+                    .flatMap(Optional::stream)
+                    .anyMatch(branch -> isSameOrConditionalBranchOf(branch, expression));
         }
         return false;
     }
 
-    private static Expression getChildExpression(ChildExpression child) {
-        return child != null ? child.getExpression() : null;
+    static Optional<Expression> getChildExpression(ChildExpression child) {
+        return Optional.ofNullable(child).map(ChildExpression::getExpression);
     }
 
     private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model,
