@@ -883,7 +883,7 @@ public class SequentialInsertDeleteUpdateTest {
     }
 
     // =====================================================================
-    // ruleflow-group tests
+    // agenda-group tests
     // =====================================================================
 
     /**
@@ -902,13 +902,13 @@ public class SequentialInsertDeleteUpdateTest {
                 "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( \"g2\" ).setFocus();\n" +
                 "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( \"g1\" ).setFocus();\n" +
                 "end\n" +
-                "rule R1 ruleflow-group \"g1\" when\n" +
+                "rule R1 agenda-group \"g1\" when\n" +
                 "    $p : Person()\n" +
                 "then\n" +
                 "    insert( new Cheese( \"stilton\", 10 ) );\n" +
                 "    list.add( \"R1\" );\n" +
                 "end\n" +
-                "rule R2 ruleflow-group \"g2\" when\n" +
+                "rule R2 agenda-group \"g2\" when\n" +
                 "    $c : Cheese()\n" +
                 "then\n" +
                 "    list.add( \"R2:\" + $c.getType() );\n" +
@@ -934,13 +934,13 @@ public class SequentialInsertDeleteUpdateTest {
                 "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( \"g1\" ).setFocus();\n" +
                 "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( \"g2\" ).setFocus();\n" +
                 "end\n" +
-                "rule R1 ruleflow-group \"g1\" when\n" +
+                "rule R1 agenda-group \"g1\" when\n" +
                 "    $p : Person()\n" +
                 "then\n" +
                 "    insert( new Cheese( \"stilton\", 10 ) );\n" +
                 "    list.add( \"R1\" );\n" +
                 "end\n" +
-                "rule R2 ruleflow-group \"g2\" when\n" +
+                "rule R2 agenda-group \"g2\" when\n" +
                 "    $c : Cheese()\n" +
                 "then\n" +
                 "    list.add( \"R2:\" + $c.getType() );\n" +
@@ -965,13 +965,13 @@ public class SequentialInsertDeleteUpdateTest {
                 "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( \"g2\" ).setFocus();\n" +
                 "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( \"g1\" ).setFocus();\n" +
                 "end\n" +
-                "rule R1 ruleflow-group \"g1\" when\n" +
+                "rule R1 agenda-group \"g1\" when\n" +
                 "    $c : Cheese( type == \"stilton\" )\n" +
                 "then\n" +
                 "    delete( $c );\n" +
                 "    list.add( \"R1\" );\n" +
                 "end\n" +
-                "rule R2 ruleflow-group \"g2\" when\n" +
+                "rule R2 agenda-group \"g2\" when\n" +
                 "    $c : Cheese()\n" +
                 "then\n" +
                 "    list.add( \"R2:\" + $c.getType() );\n" +
