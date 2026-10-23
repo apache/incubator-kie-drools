@@ -150,7 +150,10 @@
     <version.io.fabric8>7.3.1</version.io.fabric8>
     <version.io.fabric8.kubernetes-client>7.3.1</version.io.fabric8.kubernetes-client>
     <version.io.grpc>1.76.0</version.io.grpc>
-    <version.io.micrometer>1.16.7</version.io.micrometer>
+    <!-- CVE-2026-82596 (CWE-119, LatencyUtils 2.0.3, no upstream fix): micrometer-core 1.16.7 pulls LatencyUtils:2.0.3 as a runtime dependency.
+         Micrometer 1.17.0 dropped that dependency, so pin to 1.17.1 (latest stable) to remove it from the resolved tree.
+         Remove this note once the baseline Micrometer version is permanently >= 1.17.0. -->
+    <version.io.micrometer>1.17.1</version.io.micrometer>
     <version.io.netty>4.1.138.Final</version.io.netty>
     <version.io.opentelemetry>1.0.0-alpha</version.io.opentelemetry>
     <version.io.rest-assured>5.5.6</version.io.rest-assured>
@@ -286,6 +289,9 @@
     <version.org.mvel>2.5.4.Final</version.org.mvel>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
+    <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: override OW2 ASM pulled in transitively
+         at 9.3 via json-smart/accessors-smart and at 9.9.1 via maven-core. -->
+    <version.org.ow2.asm>9.11.1</version.org.ow2.asm>
     <version.org.postgresql>42.7.12</version.org.postgresql>
     <version.org.powermock>2.0.9</version.org.powermock>
     <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
@@ -310,6 +316,9 @@
     <version.org.wiremock.webhooks>3.0.4</version.org.wiremock.webhooks>
     <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
+    <!-- CVE-2026-90559, CVE-2026-108106: snappy-java <= 1.1.10.8 has out-of-bounds write and unbounded memory allocation DoS vulnerabilities.
+         Override to 1.1.10.12. -->
+    <version.org.xerial.snappy>1.1.10.12</version.org.xerial.snappy>
     <version.org.yaml.snakeyaml>2.6</version.org.yaml.snakeyaml>
     <version.pitest-maven>1.2.0</version.pitest-maven>
     <version.plexus>2.2.0</version.plexus>
@@ -797,10 +806,24 @@
         <artifactId>grpc-util</artifactId>
         <version>${version.io.grpc}</version>
       </dependency>
+      <!-- CVE-2026-82596: micrometer-core, -commons and -observation are released together and must stay aligned.
+           quarkus-bom 3.33.4 ships commons/observation 1.16.7, which would otherwise be mixed with core 1.17.1.
+           Remove once quarkus-bom ships micrometer >= 1.17.0. -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-commons</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
       <!-- Used by drools-metric -->
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-core</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
+      <!-- CVE-2026-82596: kept aligned with micrometer-core, see micrometer-commons above. -->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-observation</artifactId>
         <version>${version.io.micrometer}</version>
       </dependency>
       <dependency>
@@ -2064,6 +2087,34 @@
         <version>${version.nashorn}</version>
         <scope>test</scope>
       </dependency>
+      <!-- CVE-2026-110257..110263, CVE-2026-110591, CVE-2026-110270: ASM pulled in transitively at 9.3
+           via json-smart -> accessors-smart (spring-boot-starter-test, json-path, oauth2-oidc-sdk, infinispan)
+           and at 9.9.1 via maven-core (kie-ci, maven plugin modules). Remove once those ship ASM >= 9.11. -->
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-analysis</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>${version.org.ow2.asm}</version>
+      </dependency>
       <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
@@ -2308,6 +2359,12 @@
         <artifactId>xmlunit-matchers</artifactId>
         <version>${version.org.xmlunit}</version>
         <scope>test</scope>
+      </dependency>
+      <!-- CVE-2026-90559, CVE-2026-108106: override snappy-java to 1.1.10.12 -->
+      <dependency>
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${version.org.xerial.snappy}</version>
       </dependency>
       <dependency>
         <groupId>simple-jndi</groupId>
