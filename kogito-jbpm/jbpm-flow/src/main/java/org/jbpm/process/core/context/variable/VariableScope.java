@@ -85,7 +85,7 @@ public class VariableScope extends AbstractContext {
         }
         Variable var = findVariable(name);
         if (var == null) {
-            throw new IllegalArgumentException("Variable '" + name + "' is not defined in process " + processName);
+            return;
         }
         if (var.getType() != null && value != null) {
             boolean isValidType = var.getType().verifyDataType(value);

@@ -38,6 +38,7 @@ import org.kie.kogito.codegen.VariableInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -179,6 +180,18 @@ public class JsonSchemaGenerator {
                     fieldScope.getDeclaredName(),
                     declaringType.getSimpleName());
             return true;
+        }
+
+        if (fieldScope.getType().isInstanceOf(Collection.class)) {
+            ResolvedType elementType = fieldScope.getTypeParameterFor(Collection.class, 0);
+            if (elementType == null || Object.class.equals(elementType.getErasedType())) {
+                logger.warn("Field '{}' in '{}' is declared as a collection without type information and will be excluded from the " +
+                        "generated JSON schema. The UI cannot render a form widget for an untyped collection. " +
+                        "Use a typed collection to enable form rendering.",
+                        fieldScope.getDeclaredName(),
+                        declaringType.getSimpleName());
+                return true;
+            }
         }
 
         return false;

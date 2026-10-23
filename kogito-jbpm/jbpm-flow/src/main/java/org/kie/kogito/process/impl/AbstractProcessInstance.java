@@ -835,9 +835,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         try {
             for (Field f : variables.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
-                Object v = f.get(variables);
-                vmap.put(f.getName(), v);
+                vmap.put(f.getName(), f.get(variables));
             }
+            vmap.putAll(variables.getAdditionalProperties());
         } catch (IllegalAccessException e) {
             throw new Error(e);
         }
@@ -855,10 +855,27 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 f.setAccessible(true);
                 f.set(variables, vmap.get(f.getName()));
             }
+            Map<String, Object> additionalProperties = new HashMap<>();
+            for (Map.Entry<String, Object> entry : vmap.entrySet()) {
+                String key = entry.getKey();
+                if (!"$v".equals(key) && !isDeclaredField(variables.getClass(), key)) {
+                    additionalProperties.put(key, entry.getValue());
+                }
+            }
+            variables.setAdditionalProperties(additionalProperties);
         } catch (IllegalAccessException e) {
             throw new Error(e);
         }
         vmap.put("$v", variables);
+    }
+
+    private boolean isDeclaredField(Class<?> clazz, String fieldName) {
+        try {
+            clazz.getDeclaredField(fieldName);
+            return true;
+        } catch (NoSuchFieldException e) {
+            return false;
+        }
     }
 
     @Override
