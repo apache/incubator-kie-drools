@@ -52,6 +52,7 @@ import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Adult;
 import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Customer;
@@ -4233,6 +4234,347 @@ public class AccumulateTest extends BaseModelTest {
         } catch (Throwable ex) {
             fail("Should not have thrown.", ex);
         }
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoArrayListFromSubnetwork(RUN_TYPE runType) {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $list: ArrayList() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($list);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        // the collected list must hold the facts, not the subnetwork tuples wrapping them
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+    }
+
+    // a custom concrete Collection target routed through GenericCollectAccumulator;
+    // it needs a public no-arg constructor because the generic path uses CustomType::new as a Supplier
+    public static class MyAddressCollection extends ArrayList<Object> {
+        public MyAddressCollection() {
+            super();
+        }
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoSetFromSubnetwork(RUN_TYPE runType) {
+        // Set target: routed through the collectSet path in FromCollectVisitor
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $set: java.util.Set() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($set);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        // the collected set must hold the facts, not the subnetwork tuples wrapping them
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoHashSetFromSubnetwork(RUN_TYPE runType) {
+        // HashSet is a concrete type that is not List/Collection/Set, so it is routed
+        // through GenericCollectAccumulator
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + HashSet.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $set: HashSet() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($set);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoLinkedListFromSubnetwork(RUN_TYPE runType) {
+        // LinkedList is a concrete type that is not List/Collection/Set, so it is routed
+        // through GenericCollectAccumulator
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + java.util.LinkedList.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $list: LinkedList() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($list);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoCustomCollectionFromSubnetwork(RUN_TYPE runType) {
+        // a user-defined concrete Collection goes through GenericCollectAccumulator, which
+        // instantiates it via a no-arg constructor supplier (CustomType::new)
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + MyAddressCollection.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $coll: MyAddressCollection() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($coll);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoArrayListFromSubnetworkWithUpdate(RUN_TYPE runType) {
+        // after removing an address and updating the Person through the subnetwork, the
+        // collected ArrayList must reflect only the remaining address, with no leaked
+        // SubnetworkTuple and no stale element
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $list: ArrayList() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.clear();\n" +
+                     "  result.addAll($list);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+
+        // drop one address and re-evaluate through the subnetwork
+        mario.getAddresses().remove(milan);
+        ksession.update(marioFH, mario);
+        ksession.fireAllRules();
+
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactly(rome);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoArrayListFromSubnetworkWithDelete(RUN_TYPE runType) {
+        // deleting the Person must retract the whole subnetwork match; the rule should no
+        // longer fire for it and the collected content must reflect the deletion
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p: Person()\n" +
+                     "  $list: ArrayList() from collect (\n" +
+                     "    Address() from $p.addresses\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.clear();\n" +
+                     "  result.addAll($list);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        Person mario = new Person("Mario", 40);
+        mario.addAddress(rome);
+        mario.addAddress(milan);
+        FactHandle marioFH = ksession.insert(mario);
+
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+        assertThat(result).hasOnlyElementsOfType(Address.class);
+        assertThat(result).containsExactlyInAnyOrder(rome, milan);
+
+        // deleting the person removes the only match: the rule must not fire again
+        ksession.delete(marioFH);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoArrayListFromSubnetworkWithInnerAccumulate(RUN_TYPE runType) {
+        // the inner source of the collect is a pattern sourced from accumulate, which also
+        // builds a subnetwork; ArrayList target exercises the GenericCollectAccumulator path.
+        // count(...) yields a single Long equal to the number of Address facts (2), so the
+        // outer collect gathers exactly that one Long - not the SubnetworkTuple wrapping it.
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $list: ArrayList() from collect (\n" +
+                     "    Long() from accumulate ( $a: Address(); count($a) )\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($list);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Address("Rome"));
+        ksession.insert(new Address("Milan"));
+
+        ksession.fireAllRules();
+
+        // the collected list must hold the Long produced by the inner accumulate,
+        // not the subnetwork tuple wrapping it
+        assertThat(result).hasOnlyElementsOfType(Long.class);
+        assertThat(result).containsExactly(2L);
+    }
+
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectIntoArrayListFromSubnetworkWithNestedCollect(RUN_TYPE runType) {
+        // the inner source of the collect is itself a "from collect", which builds a
+        // subnetwork too. The inner collect produces a single ArrayList holding the Address
+        // facts; the outer ArrayList (GenericCollectAccumulator path) must gather that one
+        // inner list as its single element - not the SubnetworkTuple wrapping it.
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + Address.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $outer: ArrayList() from collect (\n" +
+                     "    ArrayList() from collect (\n" +
+                     "      Address()\n" +
+                     "    )\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($outer);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Address rome = new Address("Rome");
+        Address milan = new Address("Milan");
+        ksession.insert(rome);
+        ksession.insert(milan);
+
+        ksession.fireAllRules();
+
+        // the outer list holds exactly one element: the ArrayList produced by the inner
+        // collect, not the subnetwork tuple wrapping it
+        assertThat(result).hasOnlyElementsOfType(ArrayList.class);
+        assertThat(result).hasSize(1);
+        assertThat((ArrayList<Object>) result.get(0))
+                .hasOnlyElementsOfType(Address.class)
+                .containsExactlyInAnyOrder(rome, milan);
     }
 
     @ParameterizedTest
