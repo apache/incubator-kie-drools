@@ -95,31 +95,6 @@
          </semantic:return>
       </semantic:for>
    </semantic:decision>
-   <semantic:decision id="d_ForReturnContextPath" name="For Return Context Path">
-      <semantic:variable name="For Return Context Path" typeRef="tStrList"/>
-      <semantic:for iteratorVariable="x">
-         <semantic:in>
-            <semantic:literalExpression>
-               <semantic:text>["a", "b", "c"]</semantic:text>
-            </semantic:literalExpression>
-         </semantic:in>
-         <semantic:return>
-            <semantic:context>
-               <semantic:contextEntry>
-                  <semantic:variable name="c" typeRef="tKeyValue"/>
-                  <semantic:literalExpression>
-                     <semantic:text>{k: x + x}</semantic:text>
-                  </semantic:literalExpression>
-               </semantic:contextEntry>
-               <semantic:contextEntry>
-                  <semantic:literalExpression>
-                     <semantic:text>c.k</semantic:text>
-                  </semantic:literalExpression>
-               </semantic:contextEntry>
-            </semantic:context>
-         </semantic:return>
-      </semantic:for>
-   </semantic:decision>
    <semantic:decision id="d_ForReturnContextStructEntry" name="For Return Context Struct Entry">
       <semantic:variable name="For Return Context Struct Entry" typeRef="tAttributeList"/>
       <semantic:for iteratorVariable="x">
@@ -142,21 +117,6 @@
                   </semantic:literalExpression>
                </semantic:contextEntry>
             </semantic:context>
-         </semantic:return>
-      </semantic:for>
-   </semantic:decision>
-   <semantic:decision id="d_PlainFor" name="Plain For">
-      <semantic:variable name="Plain For" typeRef="tStrList"/>
-      <semantic:for iteratorVariable="x">
-         <semantic:in>
-            <semantic:literalExpression>
-               <semantic:text>["a", "b", "c"]</semantic:text>
-            </semantic:literalExpression>
-         </semantic:in>
-         <semantic:return>
-            <semantic:literalExpression>
-               <semantic:text>x + x</semantic:text>
-            </semantic:literalExpression>
          </semantic:return>
       </semantic:for>
    </semantic:decision>
@@ -250,44 +210,6 @@
             </semantic:literalExpression>
          </semantic:contextEntry>
       </semantic:context>
-   </semantic:decision>
-   <semantic:decision id="d_ContextAsFilterSource" name="Context As Filter Source">
-      <semantic:variable name="Context As Filter Source" typeRef="tStrList"/>
-      <semantic:filter>
-         <semantic:in>
-            <semantic:context>
-               <semantic:contextEntry>
-                  <semantic:literalExpression>
-                     <semantic:text>"a"</semantic:text>
-                  </semantic:literalExpression>
-               </semantic:contextEntry>
-            </semantic:context>
-         </semantic:in>
-         <semantic:match>
-            <semantic:literalExpression>
-               <semantic:text>item = "a"</semantic:text>
-            </semantic:literalExpression>
-         </semantic:match>
-      </semantic:filter>
-   </semantic:decision>
-   <semantic:decision id="d_ContextInSatisfies" name="Context In Satisfies">
-      <semantic:variable name="Context In Satisfies" typeRef="boolean"/>
-      <semantic:some iteratorVariable="x">
-         <semantic:in>
-            <semantic:literalExpression>
-               <semantic:text>["a"]</semantic:text>
-            </semantic:literalExpression>
-         </semantic:in>
-         <semantic:satisfies>
-            <semantic:context>
-               <semantic:contextEntry>
-                  <semantic:literalExpression>
-                     <semantic:text>x = "a"</semantic:text>
-                  </semantic:literalExpression>
-               </semantic:contextEntry>
-            </semantic:context>
-         </semantic:satisfies>
-      </semantic:some>
    </semantic:decision>
    <semantic:decision id="d_ForContextInTypedEntry" name="For Context In Typed Entry">
       <semantic:variable name="For Context In Typed Entry" typeRef="tStrList"/>
@@ -386,20 +308,6 @@
          </semantic:else>
       </semantic:conditional>
    </semantic:decision>
-   <semantic:decision id="d_RootContextResultEntryContext" name="Root Context Result Entry Context">
-      <semantic:variable name="Root Context Result Entry Context" typeRef="tStrList"/>
-      <semantic:context>
-         <semantic:contextEntry>
-            <semantic:context>
-               <semantic:contextEntry>
-                  <semantic:literalExpression>
-                     <semantic:text>"a"</semantic:text>
-                  </semantic:literalExpression>
-               </semantic:contextEntry>
-            </semantic:context>
-         </semantic:contextEntry>
-      </semantic:context>
-   </semantic:decision>
    <semantic:decision id="d_TypedEntryContext" name="Typed Entry Context">
       <semantic:variable name="Typed Entry Context" typeRef="tStrList"/>
       <semantic:context>
@@ -416,16 +324,6 @@
          <semantic:contextEntry>
             <semantic:literalExpression>
                <semantic:text>inner</semantic:text>
-            </semantic:literalExpression>
-         </semantic:contextEntry>
-      </semantic:context>
-   </semantic:decision>
-   <semantic:decision id="d_UntypedRootContext" name="Untyped Root Context">
-      <semantic:variable name="Untyped Root Context" typeRef="Any"/>
-      <semantic:context>
-         <semantic:contextEntry>
-            <semantic:literalExpression>
-               <semantic:text>"a"</semantic:text>
             </semantic:literalExpression>
          </semantic:contextEntry>
       </semantic:context>

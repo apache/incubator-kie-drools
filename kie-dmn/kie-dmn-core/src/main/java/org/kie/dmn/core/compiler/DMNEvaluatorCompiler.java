@@ -379,9 +379,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                         type = compiler.resolveTypeRef(model, parentEntry.getVariable(), parentEntry.getVariable(),
                                                        parentEntry.getVariable().getTypeRef());
                     } else if (isResultOfDecisionOrBKM(ctxDef, node)) {
-                        // only a context producing the result of the node takes the result type of the node:
-                        // a nested context (e.g. the `return` of a `for`) produces just a part of that result
-                        // and must not be coerced to the (possibly collection) type of the node
+                        // a context nested in another expression (e.g. the `return` of a `for`) yields just a part of the node result
                         if (node instanceof BusinessKnowledgeModelNode) {
                             type = ((BusinessKnowledgeModelNode) node).getResultType();
                         } else if (node instanceof DecisionNode) {
@@ -402,16 +400,11 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
     }
 
     /**
-     * Checks whether the given <code>Context</code> produces the result of the <code>Decision</code> or
-     * <code>BusinessKnowledgeModel</code> node it is compiled for, i.e. it is the root expression of the node, or it is a
-     * <code>then</code>/<code>else</code> branch of a <code>Conditional</code> that is the root expression of the node.
-     * Only in that case the result type of the node describes the value produced by the context. A context nested in
-     * any other expression (e.g. the <code>return</code> of a <code>for</code>, an element of a <code>list</code>, an
-     * invocation binding, the body of a nested function) produces just a part of the result of the node.
-     * The check compares the model elements instead of using the parent links, that are populated only when a model is
-     * unmarshalled and are missing in a model built programmatically.
+     * Checks if the given <code>Context</code> produces the result of the <code>Decision</code> or <code>BusinessKnowledgeModel</code>:
+     * it is the root expression of the node, or a <code>then</code>/<code>else</code> branch of a root <code>Conditional</code>.
+     * The model elements are compared, since the parent links are populated only when a model is unmarshalled.
      * @param ctxDef the context being compiled
-     * @param node the Decision or BusinessKnowledgeModel node the context belongs to
+     * @param node the node the context belongs to
      * @return <code>true</code> if the value of the context is the result of the node
      */
     private static boolean isResultOfDecisionOrBKM(Context ctxDef, DMNBaseNode node) {
@@ -419,9 +412,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
     }
 
     /**
-     * @param node the Decision or BusinessKnowledgeModel node
-     * @return the expression of the Decision, or the body of the function definition of the BusinessKnowledgeModel;
-     * <code>null</code> if not available
+     * @return the expression of the Decision, or the body of the function definition of the BKM; <code>null</code> if not available
      */
     private static Expression getRootExpression(DMNBaseNode node) {
         NamedElement source = node.getSource();
