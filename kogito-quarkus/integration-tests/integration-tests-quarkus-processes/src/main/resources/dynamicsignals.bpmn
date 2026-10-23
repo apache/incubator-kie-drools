@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" namespace="https://kie.org/bpmn/_A1FD5170-EA8F-47F8-B4FA-1A97B71B6CE7" id="_80139D11-2182-4568-AF43-680DFF2979E8" name="BPMN_CE038D3D-C342-44C5-BD86-B0D8D4C55FC2" targetNamespace="https://kie.apache.org/bpmn/_F6B98217-442F-49C1-A644-A9437E914FA7" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <itemDefinition id="_29E24C02-87B8-440E-A3AF-BCAEF9817D43" structureRef="String" />
   <signal id="_6C15940C-1FAD-4FC4-8E3C-77D2B095A85C" structureRef="Signal__7475CADType" name="Signal__7475CAD" />
