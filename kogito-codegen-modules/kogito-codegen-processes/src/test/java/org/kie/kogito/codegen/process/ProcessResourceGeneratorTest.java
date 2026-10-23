@@ -45,8 +45,10 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
@@ -89,6 +91,74 @@ public class ProcessResourceGeneratorTest {
         String expectedDescription = "";
 
         testOpenApiDocumentation(contextBuilder, fileName, expectedSummary, expectedDescription);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testDynamicSignalEndpointGeneration(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/signalevent/IntermediateCatchEventSignalWithVariable.bpmn2";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        // 1. No static endpoint for the raw "#{signalName}" literal must be present.
+        boolean hasRawDynamicEndpoint = classDeclaration.getMethods().stream()
+                .filter(m -> isRestMethod(m) && m.getNameAsString().startsWith(SIGNAL_METHOD))
+                .anyMatch(m -> m.toString().contains("#{signalName}"));
+        assertThat(hasRawDynamicEndpoint)
+                .as("No static REST endpoint should be generated for a dynamic signal name #{signalName}")
+                .isFalse();
+
+        // 2. Exactly one dynamic endpoint (signal_dynamic) must be present.
+        List<MethodDeclaration> dynamicMethods = classDeclaration.getMethods().stream()
+                .filter(m -> isRestMethod(m) && m.getNameAsString().equals(SIGNAL_METHOD + "dynamic"))
+                .toList();
+        assertThat(dynamicMethods)
+                .as("Exactly one dynamic signal endpoint must be generated")
+                .hasSize(1);
+
+        MethodDeclaration dynamicMethod = dynamicMethods.get(0);
+
+        // 3. The method must accept a 'signalName' path parameter.
+        Optional<Parameter> signalNameParam = dynamicMethod.getParameters().stream()
+                .filter(p -> p.getNameAsString().equals("signalName"))
+                .findFirst();
+        assertThat(signalNameParam)
+                .as("Dynamic signal endpoint must declare a 'signalName' path parameter")
+                .isPresent();
+
+        // 4. The 'signalName' parameter must carry a path-binding annotation (e.g. @PathParam or @PathVariable) pointing to "signalName".
+        boolean hasPathAnnotation = signalNameParam.get().getAnnotations().stream()
+                .anyMatch(a -> {
+                    String s = a.toString();
+                    return s.contains("signalName");
+                });
+        assertThat(hasPathAnnotation)
+                .as("The 'signalName' path parameter must be annotated with its path binding (e.g. @PathParam(\"signalName\"))")
+                .isTrue();
+
+        // 5. The endpoint URL path must contain "signal/{signalName}".
+        boolean hasCorrectPath = dynamicMethod.getAnnotations().stream()
+                .anyMatch(a -> a.toString().contains("signal/{signalName}"));
+        assertThat(hasCorrectPath)
+                .as("The dynamic signal endpoint path must contain 'signal/{signalName}'")
+                .isTrue();
+
+        // 6. The method body must pass the 'signalName' variable (not a string literal) as the signal name argument.
+        boolean hasVariableSignalName = dynamicMethod.getBody()
+                .map(body -> body.findAll(NameExpr.class).stream()
+                        .anyMatch(n -> "signalName".equals(n.getNameAsString())))
+                .orElse(false);
+        assertThat(hasVariableSignalName)
+                .as("The dynamic signal endpoint body must reference the 'signalName' variable, not a literal")
+                .isTrue();
+
+        boolean hasLiteralDynamicSignal = dynamicMethod.getBody()
+                .map(body -> body.findAll(StringLiteralExpr.class).stream()
+                        .anyMatch(s -> s.getValue().contains("#{signalName}")))
+                .orElse(false);
+        assertThat(hasLiteralDynamicSignal)
+                .as("The dynamic signal endpoint body must NOT contain a literal '#{signalName}'")
+                .isFalse();
     }
 
     @ParameterizedTest

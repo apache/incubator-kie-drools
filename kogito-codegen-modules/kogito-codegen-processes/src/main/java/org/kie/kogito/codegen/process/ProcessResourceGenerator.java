@@ -295,7 +295,16 @@ public class ProcessResourceGenerator {
                             .findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("signalInstance"))
                             .orElseThrow(() -> new NoSuchElementException("signalInstance method not found in SignalResourceTemplate"));
 
+                    MethodDeclaration dynamicSignalInstanceDeclaration = signalTemplate
+                            .findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("dynamicSignalInstance"))
+                            .orElseThrow(() -> new NoSuchElementException("dynamicSignalInstance method not found in SignalResourceTemplate"));
+
                     Collection<TriggerMetaData> startSignalTriggers = getStartSignalTriggers();
+
+                    boolean hasDynamicSignals = signalsMap.keySet()
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .anyMatch(this::isDynamicSignalName);
 
                     signalsMap.entrySet()
                             .stream()
@@ -371,7 +380,13 @@ public class ProcessResourceGenerator {
                                     interpolated = interpolated.replace("$signalPath$", sanitizeName(signalName));
                                     vv.setString(interpolated);
                                 });
+
                             });
+                    if (hasDynamicSignals) {
+                        MethodDeclaration dynamicSignal = dynamicSignalInstanceDeclaration.clone();
+                        dynamicSignal.setName(SIGNAL_METHOD_PREFFIX + "dynamic");
+                        template.addMember(dynamicSignal);
+                    }
                 });
     }
 
