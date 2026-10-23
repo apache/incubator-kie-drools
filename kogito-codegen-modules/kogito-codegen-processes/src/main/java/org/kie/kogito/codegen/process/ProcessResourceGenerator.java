@@ -517,7 +517,6 @@ public class ProcessResourceGenerator {
     private void interpolateUserTaskStrings(StringLiteralExpr vv, WorkItemModelMetaData userTask) {
         String s = vv.getValue();
         String interpolated = s.replace("$taskName$", sanitizeName(userTask.getName()));
-        interpolated = interpolated.replace("$taskNodeName$", userTask.getNodeName());
         vv.setString(interpolated);
     }
 

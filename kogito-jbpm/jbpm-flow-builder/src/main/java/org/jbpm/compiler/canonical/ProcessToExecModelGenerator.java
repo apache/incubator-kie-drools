@@ -20,7 +20,9 @@ package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -256,10 +258,9 @@ public class ProcessToExecModelGenerator {
 
     public List<WorkItemModelMetaData> generateWorkItemModel(WorkflowProcess process) {
         String packageName = process.getPackageName();
-        List<WorkItemModelMetaData> workItemTaskModels = new ArrayList<>();
+        Map<String, WorkItemModelMetaData> workItemModels = new LinkedHashMap<>();
 
-        VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(
-                VariableScope.VARIABLE_SCOPE);
+        VariableScope variableScope = getVariableScope(process);
 
         for (Node node : ((WorkflowProcessImpl) process).getNodesRecursively()) {
             if (node instanceof WorkItemNode workItemNode) {
@@ -268,12 +269,15 @@ public class ProcessToExecModelGenerator {
                 if (nodeVariableScope == null) {
                     nodeVariableScope = variableScope;
                 }
-                workItemTaskModels.add(new WorkItemModelMetaData(packageName, variableScope, nodeVariableScope,
-                        workItemNode, process.getId()));
+                String taskName = WorkItemModelMetaData.resolveTaskName(workItemNode);
+                workItemModels
+                        .computeIfAbsent(WorkItemModelMetaData.normalizeTaskName(taskName),
+                                k -> new WorkItemModelMetaData(taskName, process.getId(), packageName, variableScope))
+                        .add(workItemNode, nodeVariableScope);
             }
         }
 
-        return workItemTaskModels;
+        return new ArrayList<>(workItemModels.values());
     }
 
     public static String extractProcessId(String processId) {

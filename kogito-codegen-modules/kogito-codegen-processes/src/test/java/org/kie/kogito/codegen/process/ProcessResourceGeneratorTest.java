@@ -52,6 +52,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.kie.kogito.codegen.process.ProcessResourceGenerator.INVALID_CONTEXT_TEMPLATE;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
 public class ProcessResourceGeneratorTest {
 
@@ -105,6 +106,58 @@ public class ProcessResourceGeneratorTest {
         classDeclaration.getMethods().stream()
                 .filter(method -> isRestMethod(method) && method.getNameAsString().startsWith(SIGNAL_METHOD))
                 .forEach(method -> assertMethodOutputModelType(method, outputType));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testDuplicateTaskNameUserTasksEndpointsSingleEndpointSet(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/usertask/DuplicateTaskNamesProcess.bpmn";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        List<String> methodNames = classDeclaration.getMethods().stream()
+                .map(MethodDeclaration::getNameAsString)
+                .toList();
+
+        // Exactly one completeTask_SharedTaskName method in the class
+        assertThat(methodNames).anyMatch(name -> name.matches("completeTask_SharedTaskName_\\d+"));
+
+        long completeTaskCount = methodNames.stream()
+                .filter(name -> name.matches("completeTask_SharedTaskName_\\d+"))
+                .count();
+        assertThat(completeTaskCount).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testDuplicatedWorkItemWithoutTaskNameGenerateDuplicatedEndpointSet(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/workitem/DuplicateWorkItemWithoutTaskNameInput.bpmn";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        List<String> methodNames = classDeclaration.getMethods().stream()
+                .map(MethodDeclaration::getNameAsString)
+                .toList();
+
+        // Must generate indexed methods for each work item node without hardcoding exact index numbers
+        assertThat(methodNames).anyMatch(name -> name.matches("completeTask_Rest_Call_1_\\d+"));
+        assertThat(methodNames).anyMatch(name -> name.matches("completeTask_Rest_Call_2_\\d+"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testDuplicatedWorkItemsWithSharedTaskNameInputGenerateSingleEndpointSet(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/workitem/DuplicateWorkItemWithSharedTaskNameInput.bpmn";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        List<String> methodNames = classDeclaration.getMethods().stream()
+                .map(MethodDeclaration::getNameAsString)
+                .toList();
+
+        // Both service tasks share the TaskName input "SharedTaskName": exactly one endpoint set, none per node name
+        assertThat(methodNames.stream().filter(name -> name.matches("completeTask_SharedTaskName_\\d+")).count()).isEqualTo(1);
+        assertThat(methodNames).noneMatch(name -> name.contains("LogVariable1") || name.contains("LogVariable2"));
     }
 
     @ParameterizedTest
@@ -321,7 +374,8 @@ public class ProcessResourceGeneratorTest {
     private ClassOrInterfaceDeclaration getResourceClassDeclaration(KogitoBuildContext.Builder contextBuilder, String fileName) {
         KogitoWorkflowProcess process = parseProcess(fileName);
         CompilationUnit compilationUnit = getCompilationUnit(contextBuilder, process);
-        Optional<ClassOrInterfaceDeclaration> classDeclaration = compilationUnit.getClassByName(process.getId() + "Resource");
+        String className = sanitizeClassName(process.getId() + "Resource");
+        Optional<ClassOrInterfaceDeclaration> classDeclaration = compilationUnit.getClassByName(className);
         assertThat(classDeclaration).isNotEmpty();
         return classDeclaration.orElseThrow();
     }
@@ -362,6 +416,7 @@ public class ProcessResourceGeneratorTest {
         ProcessMetaData metaData = execModelGen.generate();
 
         toReturn
+                .withWorkItems(new WorkItemModelClassGenerator(workFlowProcess).generate())
                 .withSignals(metaData.getSignals())
                 .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
                 .withTransaction(withTransaction)
