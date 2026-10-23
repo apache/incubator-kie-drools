@@ -30,6 +30,7 @@ public class DynamicFilter extends AbstractLinkedListNode<DynamicFilter> {
     private AlphaNodeFieldConstraint  constraint;
     private LinkedList<SignalAdapter> signalAdapters;
     private int                       adapterIndex;
+    private long                      deliveryEpoch;
 
     public DynamicFilter(DynamicFilterProto proto) {
         this.constraint    = proto.getConstraint();
@@ -41,7 +42,13 @@ public class DynamicFilter extends AbstractLinkedListNode<DynamicFilter> {
         return adapterIndex;
     }
 
+    /**
+     * Adapters must be appended in registration order: {@link #assertObject} relies on
+     * {@code signalAdapters} being ordered by non-decreasing registration epoch to stop at the
+     * first adapter registered during the current delivery.
+     */
     public void addSignalAdapter(SignalAdapter signalAdapter) {
+        signalAdapter.setRegistrationEpoch(deliveryEpoch);
         signalAdapters.add(signalAdapter);
     }
 
@@ -56,9 +63,14 @@ public class DynamicFilter extends AbstractLinkedListNode<DynamicFilter> {
     public void assertObject(final FactHandle factHandle,
                              final ValueResolver valueResolver) {
 
+        final long startEpoch = ++this.deliveryEpoch;
+
         if (constraint.getRequiredDeclarations().length == 0) {
             if (constraint.isAllowed(factHandle, valueResolver)) {
                 for (SignalAdapter current = signalAdapters.getFirst(); current != null; ) {
+                    if (current.getRegistrationEpoch() >= startEpoch) {
+                        break;
+                    }
                     SignalAdapter next = current.getNext();
                     current.receive(valueResolver, factHandle);
                     current = next;
@@ -66,8 +78,11 @@ public class DynamicFilter extends AbstractLinkedListNode<DynamicFilter> {
             }
         } else {
             for (SignalAdapter current = signalAdapters.getFirst(); current != null; ) {
+                if (current.getRegistrationEpoch() >= startEpoch) {
+                    break;
+                }
                 SignalAdapter next = current.getNext();
-                if (test(factHandle, valueResolver, current.getAnchorTuple())) {
+                if (test(factHandle, current.getAnchorTuple(), valueResolver)) {
                     current.receive(valueResolver, factHandle);
                 }
                 current = next;
@@ -75,11 +90,11 @@ public class DynamicFilter extends AbstractLinkedListNode<DynamicFilter> {
         }
     }
 
-    private boolean test(FactHandle factHandle, ValueResolver valueResolver, BaseTuple tuple) {
+    private boolean test(final FactHandle factHandle, final BaseTuple anchorTuple, final ValueResolver valueResolver) {
         if (constraint instanceof BetaConstraint) {
             BetaConstraint<ContextEntry> betaConstraint = (BetaConstraint<ContextEntry>) constraint;
             ContextEntry ctx = betaConstraint.createContext();
-            ctx.updateFromTuple(valueResolver, tuple);
+            ctx.updateFromTuple(valueResolver, anchorTuple);
             return betaConstraint.isAllowedCachedLeft(ctx, factHandle);
         }
         throw new IllegalStateException("test() called with a non-beta constraint: " + constraint.getClass());

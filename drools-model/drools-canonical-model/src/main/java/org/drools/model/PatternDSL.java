@@ -94,6 +94,7 @@ import org.drools.model.view.BindViewItem2;
 import org.drools.model.view.BindViewItem3;
 import org.drools.model.view.BindViewItem4;
 import org.drools.model.view.CombinedExprViewItem;
+import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
@@ -1906,6 +1907,28 @@ public class PatternDSL extends DSL {
 
     // -- rule --
 
+    public static ExistentialExprViewItem absent(ViewItemBuilder<?> expression) {
+        return new ExistentialExprViewItem(Condition.Type.NOT, expression.get());
+    }
+
+    public static CombinedExprViewItem absent(ViewItemBuilder<?> first, ViewItemBuilder<?> second, ViewItemBuilder<?>... rest) {
+        ViewItem[] items = new ViewItem[2 + rest.length];
+        items[0] = first.get();
+        items[1] = second.get();
+        for (int i = 0; i < rest.length; i++) {
+            items[2 + i] = rest[i].get();
+        }
+        return new CombinedExprViewItem(Condition.Type.NOR, items);
+    }
+
+    public static CombinedExprViewItem oneOf(SequenceStep first, SequenceStep second, SequenceStep... rest) {
+        return new CombinedExprViewItem(Condition.Type.XOR, prependStep(first, second, rest));
+    }
+
+    public static CombinedExprViewItem noneOrAll(SequenceStep first, SequenceStep second, SequenceStep... rest) {
+        return new CombinedExprViewItem(Condition.Type.XNOR, prependStep(first, second, rest));
+    }
+
     public static SequenceViewItem sequence(SequenceStep... steps) {
         if (steps == null || steps.length == 0) {
             throw new IllegalArgumentException("sequence() requires at least one step");
@@ -1920,6 +1943,16 @@ public class PatternDSL extends DSL {
 
     public static CombinedExprViewItem and(ViewItemBuilder<?> first, ViewItemBuilder<?>... rest) {
         return new CombinedExprViewItem(Condition.Type.AND, viewItems(first, rest));
+    }
+
+    private static ViewItem[] prependStep(SequenceStep first, SequenceStep second, SequenceStep[] rest) {
+        ViewItem[] all = new ViewItem[2 + rest.length];
+        all[0] = (ViewItem) first;
+        all[1] = (ViewItem) second;
+        for (int i = 0; i < rest.length; i++) {
+            all[i + 2] = (ViewItem) rest[i];
+        }
+        return all;
     }
 
     private static ViewItem[] viewItems(ViewItemBuilder<?> first, ViewItemBuilder<?>[] rest) {
